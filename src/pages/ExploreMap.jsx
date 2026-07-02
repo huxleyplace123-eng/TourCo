@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from "react";
-import { Compass, Utensils, Wine, Waves, Sparkles, ArrowRight, X, Navigation, Trees, Droplets, Bird, Mountain, Plane, Building2 } from "lucide-react";
+import { Compass, Utensils, Wine, Waves, Sparkles, ArrowRight, X, Navigation, Trees, Droplets, Bird, Mountain, Plane, Building2, MapPin, Check } from "lucide-react";
 import { c, grad, glass, gradText, money } from "../theme.js";
 import { activities } from "../data.js";
 import { restaurants } from "../restaurants.js";
 import { beaches, bars } from "../places.js";
 import { landmarks, LANDMARK_LAYERS } from "../mapPoints.js";
-import { activityImage, restaurantImage, barImage, beachImage, pageHero } from "../images.js";
+import { activityImage, restaurantImage, barImage, beachImage, pageHero, cdnImage } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { MapHero } from "../components/MapHero.jsx";
@@ -35,6 +35,25 @@ const ACTIVITY_LAYERS = [
   { key: "beaches", label: "Beaches", icon: Waves, color: "#38BDF8" },
   { key: "eat", label: "Eat", icon: Utensils, color: "#FFD000" },
   { key: "bars", label: "Nightlife", icon: Wine, color: "#FF6B5A" },
+];
+
+// ── Region field-guide ── the "where to go / what to do / where it is" layer the
+// map needed. Real local knowledge per coastal hub, with a granular photo.
+const REGION_GUIDE = [
+  { name: "Guanacaste", where: "Far northwest · ~4 hr / short flight to LIR (Liberia)", known: "Dry-forest sun & luxury", img: "photo-1510414842594-a61c69b5ae57",
+    doThis: ["Catamaran & snorkel days", "Sport fishing out of Flamingo", "Rincón de la Vieja volcano & hot springs"], best: "Reliable sun Dec–Apr, resorts & calm swimming bays." },
+  { name: "Tamarindo", where: "Nicoya Peninsula · ~1 hr from Liberia", known: "Surf-town energy", img: "photo-1520942702018-0862200e6873",
+    doThis: ["Beginner-friendly surf lessons", "Estuary wildlife boat", "Sunset beach bars & nightlife"], best: "First-time surfers and a lively après-beach scene." },
+  { name: "Jacó", where: "Central Pacific · ~1.5 hr from San José (SJO)", known: "Adventure & nightlife", img: "photo-1502680390469-be75c86b636f",
+    doThis: ["Backcountry ATV & waterfalls", "Tárcoles crocodile river", "Beach clubs after dark"], best: "The closest big-adventure hub to the airport." },
+  { name: "Quepos", where: "Central Pacific · gateway to Manuel Antonio", known: "Sport-fishing capital", img: "photo-1516815231560-8f41ec531527",
+    doThis: ["Offshore marlin & sailfish charters", "Marina dinners & ceviche", "White-water rafting the Savegre"], best: "Serious anglers and a working marina town base." },
+  { name: "Manuel Antonio", where: "Central Pacific · ~3 hr from San José", known: "Wildlife & beaches", img: "photo-1519046904884-53103b34b206",
+    doThis: ["The national park (sloths & monkeys)", "Rainforest zipline & canopy", "Sunset catamaran cruise"], best: "First-timers — the most wildlife in the smallest area." },
+  { name: "Uvita", where: "South Pacific · ~1 hr past Manuel Antonio", known: "Whales & waterfalls", img: "photo-1552733407-5d5c46c3bb3b",
+    doThis: ["Marino Ballena whale watching", "Nauyaca & Uvita waterfalls", "The Whale's Tail sandbar at low tide"], best: "Longest humpback season on Earth (Jul–Nov + Dec–Apr)." },
+  { name: "Dominical", where: "South Pacific · between Uvita & Manuel Antonio", known: "Surf & jungle", img: "photo-1502680390469-be75c86b636f",
+    doThis: ["Powerful beach-break surf", "Río Nuevo & Diamante falls", "Laid-back jungle-town living"], best: "Surfers and travelers chasing the raw, uncrowded coast." },
 ];
 const LM_ICON = { trees: Trees, droplets: Droplets, bird: Bird, mountain: Mountain, plane: Plane, building: Building2 };
 
@@ -209,6 +228,52 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
               </div>
             )}
           </div>
+        </div>
+      </Section>
+
+      {/* ── WHERE TO GO & WHAT TO DO ── the field guide the map needed ── */}
+      <Section bg={c.sand} pad={40}>
+        <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 30px" }}>
+          <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>Your field guide</div>
+          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 6px" }}>Where to go & what to do</h2>
+          <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.55, margin: 0 }}>Seven coastal hubs, each with its own personality. Here's what each is known for, exactly where it is, and the moves that make it worth the drive.</p>
+        </div>
+
+        <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))" }}>
+          {REGION_GUIDE.map((r, i) => (
+            <div key={r.name} style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 20, overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 20px 50px -34px rgba(0,0,0,.7)" }}>
+              {/* granular real photo */}
+              <div style={{ position: "relative" }}>
+                <Photo src={cdnImage(r.img, 640)} fallback={grad.ocean} alt={r.name} height={168}
+                  overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.1) 0%, transparent 35%, rgba(11,26,46,.9) 100%)" }} />} />
+                <span style={{ position: "absolute", top: 12, left: 12, zIndex: 2, background: c.gold, color: c.ink, fontSize: 11, fontWeight: 800, padding: "4px 10px", borderRadius: 999, textTransform: "uppercase", letterSpacing: 0.3 }}>{r.known}</span>
+                <div style={{ position: "absolute", bottom: 11, left: 14, right: 14, zIndex: 2 }}>
+                  <div style={{ color: "#fff", fontSize: 21, fontWeight: 800, letterSpacing: -0.5, textShadow: "0 2px 12px rgba(0,0,0,.6)" }}>{r.name}</div>
+                </div>
+              </div>
+              {/* location + what to do */}
+              <div style={{ padding: "14px 16px 16px", display: "flex", flexDirection: "column", gap: 11, flex: 1 }}>
+                <div style={{ display: "flex", gap: 7, alignItems: "flex-start", color: c.stone, fontSize: 12.5, fontWeight: 600 }}>
+                  <MapPin size={14} color={c.teal} style={{ flexShrink: 0, marginTop: 1 }} />{r.where}
+                </div>
+                <div>
+                  <div style={{ color: c.teal, fontWeight: 800, fontSize: 11.5, textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 6 }}>What to do</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                    {r.doThis.map((d) => (
+                      <div key={d} style={{ display: "flex", gap: 7, alignItems: "flex-start", color: c.charcoal, fontSize: 13, lineHeight: 1.4 }}>
+                        <Check size={13} color={c.gold} style={{ flexShrink: 0, marginTop: 2 }} />{d}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ marginTop: "auto", paddingTop: 4, display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(255,208,0,.08)", border: "1px solid rgba(255,208,0,.2)", borderRadius: 11, padding: "9px 11px" }}>
+                  <Sparkles size={13} color={c.gold} style={{ flexShrink: 0, marginTop: 2 }} />
+                  <span style={{ fontSize: 12, color: c.charcoal, lineHeight: 1.45 }}><b style={{ color: c.gold }}>Best for:</b> {r.best}</span>
+                </div>
+                <Button variant="ghost" size="sm" full onClick={() => go("build")}>Plan a trip around {r.name} <ArrowRight size={13} /></Button>
+              </div>
+            </div>
+          ))}
         </div>
       </Section>
 

@@ -84,6 +84,7 @@ const HERO_SETS = {
     { id: "photo-1544551763-92ab472cad5d", label: "Dive the reef" },           // snorkeling
     { id: "photo-1568430462989-44163eb1752f", label: "Watch the whales" },     // whale watching
     { id: "photo-1620658927695-c33df6fb8130", label: "Chase waterfalls" },     // jungle waterfall
+    { id: "photo-1762237855157-eb0ba25e39d4", label: "Party 'til sunrise" },   // nightlife / beach-bar party
   ],
   // Pure fishing set — for any fishing-forward surface.
   fishing: [
