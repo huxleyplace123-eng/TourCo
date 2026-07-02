@@ -1,184 +1,166 @@
 import React, { useState } from "react";
-import { ArrowRight, ArrowLeft, Check, Compass, Users, Heart, Calendar, MapPin, Plus, ShieldCheck, MessageCircle, Sparkles } from "lucide-react";
-import { c, grad, money } from "../theme.js";
-import { activities } from "../data.js";
-import { activityImage } from "../images.js";
-import { Section, Button, Field, Select, TextInput } from "../components/ui.jsx";
-import { Photo, useCountUp } from "../motion.jsx";
+import { Sparkles, Compass, Users, Calendar, Car, Mountain, Waves, RotateCcw, Plus, MessageCircle } from "lucide-react";
+import { c, grad, glass, money } from "../theme.js";
+import { Section, Button, Field, Select } from "../components/ui.jsx";
+import { PageHero } from "../components/PageHero.jsx";
+import { pageHero } from "../images.js";
+import { SmartPlan } from "../components/SmartPlan.jsx";
+import { buildMyCostaRica } from "../intelligence/index.js";
+import { Reveal } from "../motion.jsx";
 
-const STEPS = ["Trip basics", "Pick activities", "Review & reserve"];
+const REGIONS = ["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Not sure yet"];
 
-function Stepper({ step }) {
+function ChipRow({ options, value, onToggle, single }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap", marginBottom: 30 }}>
-      {STEPS.map((label, i) => {
-        const done = i < step, active = i === step;
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      {options.map((o) => {
+        const on = single ? value === o.v : value.includes(o.v);
         return (
-          <React.Fragment key={label}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 30, height: 30, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, background: done ? c.emerald : active ? c.charcoal : "rgba(255,255,255,.12)", color: done || active ? "#fff" : c.stone }}>
-                {done ? <Check size={15} /> : i + 1}
-              </span>
-              <span style={{ fontWeight: 700, fontSize: 14, color: active || done ? c.charcoal : c.stone }}>{label}</span>
-            </div>
-            {i < STEPS.length - 1 && <span style={{ width: 26, height: 2, background: "rgba(255,255,255,.12)" }} />}
-          </React.Fragment>
+          <button key={o.v} onClick={() => onToggle(o.v)} style={{
+            display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 14px", borderRadius: 999, cursor: "pointer",
+            fontWeight: 700, fontSize: 13.5, transition: "all .15s",
+            background: on ? "rgba(34,211,238,.14)" : "rgba(255,255,255,.05)",
+            border: on ? `1.5px solid ${c.teal}` : `1.5px solid ${c.line}`,
+            color: on ? c.teal : c.charcoal,
+          }}>
+            {o.icon && <o.icon size={14} />}{o.label}
+          </button>
         );
       })}
     </div>
   );
 }
 
-export function Build({ go, trip, addToTrip, viewActivity }) {
-  const [step, setStep] = useState(0);
-  const [plan, setPlan] = useState({ dest: "Manuel Antonio", dates: "", group: "2", type: "Couple / Honeymoon" });
+function buildFlags(form) {
+  const out = [...form.fears];
+  if (form.avoidLongDrives) out.push("avoidLongDrives");
+  if (form.youngKids) out.push("youngKids");
+  return out;
+}
 
-  const chosen = trip.map((t) => activities.find((a) => a.id === t.id)).filter(Boolean);
-  const total = trip.reduce((s, g) => s + (activities.find((a) => a.id === g.id)?.price || 0) * g.pax, 0);
-  const deposit = useCountUp(Math.round(total * 0.2));
+function solIntro(form, result) {
+  const bits = [];
+  if (result.brief.inSeason.length) bits.push(`it's ${result.brief.inSeason[0].toLowerCase()} right now, so I built around it`);
+  if (form.avoidLongDrives) bits.push("I kept the driving short and grouped each day by area");
+  if (form.youngKids) bits.push("everything's paced and safe for the little ones");
+  if (form.fears.length) bits.push(`and I steered clear of ${form.fears.join(" & ")}`);
+  const tail = bits.length ? ` — ${bits.join(", ")}.` : ".";
+  return `I sequenced each day around real drive times, tides, and the weather${tail} Add it to your trip and I'll reconfirm every operator before you go.`;
+}
 
-  // Suggested activities based on trip type / destination
-  const suggested = activities.filter((a) => {
-    if (plan.dest !== "Not sure yet" && a.region !== plan.dest && step === 1) return a.region === plan.dest || true;
-    return true;
+export function Build({ go, trip, addToTrip, removeFromTrip }) {
+  const [form, setForm] = useState({
+    region: "Manuel Antonio", days: "4", pax: "2", who: "couple", vibe: "nature",
+    budget: "mid", avoidLongDrives: false, youngKids: false, fears: [],
   });
+  const [result, setResult] = useState(null);
+  const [building, setBuilding] = useState(false);
 
-  const next = () => setStep((s) => Math.min(2, s + 1));
-  const back = () => setStep((s) => Math.max(0, s - 1));
+  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+  const toggleFear = (v) => setForm((f) => ({ ...f, fears: f.fears.includes(v) ? f.fears.filter((x) => x !== v) : [...f.fears, v] }));
+
+  const build = () => {
+    setBuilding(true);
+    setTimeout(() => {
+      const res = buildMyCostaRica({
+        who: form.who, vibe: form.vibe, budget: form.budget,
+        region: form.region, days: parseInt(form.days, 10), pax: parseInt(form.pax, 10) || 2,
+        avoidLongDrives: form.avoidLongDrives, youngKids: form.youngKids, fears: form.fears,
+      });
+      setResult(res);
+      setBuilding(false);
+    }, 900);
+  };
+
+  const addAll = () => {
+    result?.plan.days.forEach((d) => d.activities.forEach((a) => addToTrip(a.id)));
+    go("portal");
+  };
 
   return (
     <>
-      <div style={{ background: grad.hero, padding: "48px 20px 40px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 15% 30%, rgba(34,211,238,.4), transparent 45%)" }} />
-        <div style={{ position: "relative", maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,.16)", color: "#fff", fontWeight: 700, fontSize: 12, padding: "5px 11px", borderRadius: 999 }}>
-            <Sparkles size={13} /> Build my adventure
-          </span>
-          <h1 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", fontWeight: 800, letterSpacing: -1, margin: "14px 0 6px" }}>Let's plan your Costa Rica trip</h1>
-          <p style={{ color: "rgba(255,255,255,.88)", fontSize: 16 }}>Three quick steps. Free to plan — only 20% to reserve.</p>
-        </div>
-      </div>
+      <PageHero image={pageHero("packages")} align="center" eyebrow="Build My Costa Rica" title="Your trip, planned around you" accentWord="you"
+        sub="Tell Sol where you're staying and how you travel — get a personalized, day-by-day plan built from vetted local operators, real logistics, and live season intelligence." />
 
       <Section bg={c.sand}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <Stepper step={step} />
-
-          {/* STEP 1 — basics */}
-          {step === 0 && (
-            <div style={{ background: c.white, borderRadius: 22, padding: 28, border: "1px solid rgba(255,255,255,.08)" }}>
-              <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 800, color: c.charcoal }}>Tell us the basics</h2>
-              <p style={{ color: c.stone, margin: "0 0 22px" }}>Your concierge uses this to tailor every suggestion.</p>
+        {!result ? (
+          <div style={{ maxWidth: 760, margin: "0 auto", ...glass, borderRadius: 24, padding: "clamp(22px,4vw,36px)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 22 }}>
               <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
-                <Field label="Destination"><Select value={plan.dest} onChange={(v) => setPlan({ ...plan, dest: v })} icon={Compass} options={["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Not sure yet"]} /></Field>
-                <Field label="Travel dates"><TextInput value={plan.dates} onChange={(v) => setPlan({ ...plan, dates: v })} icon={Calendar} placeholder="e.g. Jul 12–19" /></Field>
-                <Field label="Group size"><Select value={plan.group} onChange={(v) => setPlan({ ...plan, group: v })} icon={Users} options={["1", "2", "3–4", "5–8", "9+"]} /></Field>
-                <Field label="Trip type"><Select value={plan.type} onChange={(v) => setPlan({ ...plan, type: v })} icon={Heart} options={["Family", "Couple / Honeymoon", "Adult group weekend", "Fishing trip", "Adventure", "Luxury group"]} /></Field>
-              </div>
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
-                <Button variant="dark" size="lg" onClick={next}>Pick activities <ArrowRight size={18} /></Button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 2 — pick activities */}
-          {step === 1 && (
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
-                <div>
-                  <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: c.charcoal }}>Add what you love</h2>
-                  <p style={{ color: c.stone, margin: "4px 0 0" }}>Tap to add. {trip.length} in your trip so far.</p>
+                <Field label="Where are you staying?"><Select value={form.region} onChange={(v) => set("region", v)} icon={Compass} options={REGIONS} /></Field>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <Field label="How many days?"><Select value={form.days} onChange={(v) => set("days", v)} icon={Calendar} options={["2", "3", "4", "5", "6", "7"]} /></Field>
+                  <Field label="Group size"><Select value={form.pax} onChange={(v) => set("pax", v)} icon={Users} options={["1", "2", "3", "4", "5", "6", "8"]} /></Field>
                 </div>
-                <Button variant="ghost" onClick={() => go("activities")}>Browse all <ArrowRight size={15} /></Button>
               </div>
-              <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))" }}>
-                {suggested.map((a) => {
-                  const added = trip.some((t) => t.id === a.id);
-                  return (
-                    <div key={a.id} style={{ background: c.white, borderRadius: 16, overflow: "hidden", border: added ? `2px solid ${c.emerald}` : "1px solid rgba(255,255,255,.08)" }}>
-                      <Photo src={activityImage(a)} fallback={grad.ocean} alt={a.title} height={110} />
-                      <div style={{ padding: 14 }}>
-                        <div style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{a.category}</div>
-                        <div style={{ fontWeight: 800, color: c.charcoal, fontSize: 15, margin: "3px 0 8px", lineHeight: 1.2 }}>{a.title}</div>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 14 }}>{money(a.price)}</span>
-                          <Button variant={added ? "dark" : "primary"} size="sm" onClick={() => addToTrip(a.id)}>
-                            {added ? <><Check size={14} />Added</> : <><Plus size={14} />Add</>}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
-                <Button variant="ghost" onClick={back}><ArrowLeft size={16} />Back</Button>
-                <Button variant="dark" size="lg" onClick={next} disabled={trip.length === 0} style={trip.length === 0 ? { opacity: 0.5, cursor: "not-allowed" } : {}}>
-                  Review trip <ArrowRight size={18} />
-                </Button>
-              </div>
-            </div>
-          )}
 
-          {/* STEP 3 — review */}
-          {step === 2 && (
-            <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 22, alignItems: "start" }}>
-              <div style={{ background: c.white, borderRadius: 22, padding: 24, border: "1px solid rgba(255,255,255,.08)" }}>
-                <h2 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 800, color: c.charcoal }}>Your adventure plan</h2>
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", color: c.stone, fontSize: 13.5, fontWeight: 600, margin: "6px 0 18px" }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><MapPin size={14} />{plan.dest}</span>
-                  {plan.dates && <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Calendar size={14} />{plan.dates}</span>}
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Users size={14} />{plan.group} people</span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Heart size={14} />{plan.type}</span>
-                </div>
-                {chosen.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: 30, color: c.stone }}>
-                    <p style={{ fontWeight: 700, color: c.charcoal }}>No activities yet</p>
-                    <Button variant="ghost" onClick={() => setStep(1)}>Add activities</Button>
+              <Field label="Who's coming?">
+                <ChipRow single value={form.who} onToggle={(v) => set("who", v)} options={[
+                  { v: "couple", label: "Couple 💕" }, { v: "family", label: "Family 👨‍👩‍👧" },
+                  { v: "group", label: "Group 🍻" }, { v: "solo", label: "Solo 🎒" },
+                ]} />
+              </Field>
+
+              <Field label="What's your adventure style?">
+                <ChipRow single value={form.vibe} onToggle={(v) => set("vibe", v)} options={[
+                  { v: "thrill", label: "Adrenaline 🔥" }, { v: "chill", label: "Chill & scenic 🌅" },
+                  { v: "nature", label: "Wildlife 🦥" }, { v: "water", label: "On the water 🌊" },
+                ]} />
+              </Field>
+
+              <Field label="Budget per experience">
+                <ChipRow single value={form.budget} onToggle={(v) => set("budget", v)} options={[
+                  { v: "low", label: "Under $100" }, { v: "mid", label: "$100–200" }, { v: "high", label: "Treat us 💎" }, { v: "any", label: "No limit" },
+                ]} />
+              </Field>
+
+              <Field label="Anything Sol should work around?">
+                <ChipRow value={buildFlags(form)} onToggle={(v) => {
+                  if (v === "avoidLongDrives") set("avoidLongDrives", !form.avoidLongDrives);
+                  else if (v === "youngKids") set("youngKids", !form.youngKids);
+                  else toggleFear(v);
+                }} options={[
+                  { v: "avoidLongDrives", label: "Hate long drives", icon: Car },
+                  { v: "youngKids", label: "Young kids", icon: Users },
+                  { v: "water", label: "Afraid of water", icon: Waves },
+                  { v: "heights", label: "Afraid of heights", icon: Mountain },
+                  { v: "boats", label: "Get seasick", icon: Waves },
+                ]} />
+              </Field>
+
+              <Button variant="primary" size="lg" full onClick={build} disabled={building}>
+                {building ? <>Sol is building your plan…</> : <><Sparkles size={18} />Build my Costa Rica</>}
+              </Button>
+              <p style={{ textAlign: "center", color: c.stone, fontSize: 12.5, margin: 0 }}>Free · no signup · powered by TicoWild's local trip brain</p>
+            </div>
+          </div>
+        ) : (
+          <div style={{ maxWidth: 920, margin: "0 auto" }}>
+            <Reveal>
+              <div style={{ ...glass, borderRadius: 22, padding: "22px 24px", marginBottom: 24 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                  <span style={{ width: 44, height: 44, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 19, color: c.ink }}>S</span>
+                  <div>
+                    <div style={{ color: "#fff", fontWeight: 800, fontSize: 17 }}>Here's your {result.plan.totals.days}-day plan 🌴</div>
+                    <div style={{ color: c.stone, fontSize: 13 }}>Built around {form.region} · {form.pax} traveler{form.pax !== "1" ? "s" : ""} · {result.brief.month}</div>
                   </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    {chosen.map((a) => {
-                      const g = trip.find((t) => t.id === a.id);
-                      return (
-                        <div key={a.id} style={{ display: "flex", gap: 12, alignItems: "center", padding: 10, borderRadius: 14, background: c.sand }}>
-                          <div style={{ width: 64, height: 54, borderRadius: 10, overflow: "hidden", flexShrink: 0 }}>
-                            <Photo src={activityImage(a)} fallback={grad.ocean} alt={a.title} height={54} zoom={false} />
-                          </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontWeight: 800, color: c.charcoal, fontSize: 14.5, lineHeight: 1.2 }}>{a.title}</div>
-                            <div style={{ color: c.stone, fontSize: 12.5 }}>{a.region} · {money(a.price)} × {g?.pax || 2}</div>
-                          </div>
-                          <div style={{ fontWeight: 800, color: c.charcoal }}>{money(a.price * (g?.pax || 2))}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+                </div>
+                <p style={{ color: "rgba(243,247,255,.85)", fontSize: 15, lineHeight: 1.6, margin: 0 }}>{solIntro(form, result)}</p>
               </div>
+            </Reveal>
 
-              <div style={{ position: "sticky", top: 92, background: c.white, borderRadius: 22, padding: 24, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", color: c.stone, fontSize: 14, marginBottom: 8 }}>
-                  <span>Trip total</span><span style={{ fontWeight: 700, color: c.charcoal }}>{money(total)}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 12, borderTop: "1px dashed rgba(255,255,255,.12)" }}>
-                  <span style={{ fontWeight: 800, color: c.charcoal }}>Due today (20%)</span>
-                  <span style={{ fontWeight: 800, fontSize: 24, color: c.emerald }}>{money(deposit)}</span>
-                </div>
-                <Button variant="primary" full size="lg" style={{ marginTop: 18 }} onClick={() => window.alert("Reservation flow — connect payments here.")}>
-                  <ShieldCheck size={17} />Reserve for {money(total * 0.2)}
-                </Button>
-                <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => window.alert("Opening WhatsApp concierge…")}>
-                  <MessageCircle size={15} />Send plan to concierge
-                </Button>
-                <p style={{ textAlign: "center", color: c.stone, fontSize: 12, marginTop: 12, marginBottom: 0 }}>Balance due closer to your travel dates. No spam, ever.</p>
-                <Button variant="ghost" full size="sm" style={{ marginTop: 14 }} onClick={back}><ArrowLeft size={15} />Back to activities</Button>
-              </div>
+            <SmartPlan chosen={result.plan.days.flatMap((d) => d.activities)} pax={parseInt(form.pax, 10) || 2} />
+
+            <div style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
+              <Button variant="primary" onClick={addAll}><Plus size={16} />Add all to my trip</Button>
+              <Button variant="ghost" onClick={() => setResult(null)}><RotateCcw size={15} />Start over</Button>
+              <Button variant="ghost" onClick={() => window.alert("Opening WhatsApp concierge…")}><MessageCircle size={15} />Tweak with a local</Button>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </Section>
 
-      <style>{`@media(min-width:820px){.two-col{grid-template-columns:1fr 1fr!important}}@media(min-width:940px){.detail-grid{grid-template-columns:1fr 340px!important}}`}</style>
+      <style>{`@media(min-width:720px){.two-col{grid-template-columns:1.3fr 1fr!important}}`}</style>
     </>
   );
 }

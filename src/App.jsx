@@ -67,7 +67,8 @@ export default function App() {
         {page === "activities" && <Activities {...shared} />}
         {page === "detail" && <Detail activeId={activeId} {...shared} />}
         {page === "packages" && <Packages {...shared} />}
-        {page === "build" && <AskJohn {...shared} />}
+        {page === "build" && <Build {...shared} />}
+        {page === "ask" && <AskJohn {...shared} />}
         {page === "builder" && <Build {...shared} />}
         {page === "guide" && <Guide {...shared} />}
         {page === "why" && <Why {...shared} />}
