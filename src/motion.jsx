@@ -95,7 +95,7 @@ export function TiltCard({ children, style = {}, radius = 22, max = 10, glareCol
   };
   const reset = () => setT((s) => ({ ...s, rx: 0, ry: 0, active: false }));
   return (
-    <div style={{ perspective: 900 }}>
+    <div style={{ perspective: 900, height: "100%" }}>
       <div
         ref={ref}
         onMouseMove={onMove}

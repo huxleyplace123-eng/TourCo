@@ -41,16 +41,8 @@ export function John({ go, addToTrip, trip, viewActivity }) {
       <Section bg={c.sand}>
         <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))" }}>
           {picks.map((a, i) => (
-            <Reveal key={a.id} delay={(i % 3) * 70}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-                <ActivityCard a={a} onAdd={addToTrip} onView={viewActivity} inTrip={trip.some((t) => t.id === a.id)} />
-                {NOTES[a.id] && (
-                  <div style={{ background: c.white, borderRadius: "0 0 16px 16px", marginTop: -12, padding: "18px 16px 14px", border: "1px solid rgba(255,255,255,.08)", borderTop: "none", display: "flex", gap: 10 }}>
-                    <Quote size={16} color={c.teal} style={{ flexShrink: 0, marginTop: 2 }} />
-                    <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, color: c.stone, fontStyle: "italic" }}>{NOTES[a.id]}</p>
-                  </div>
-                )}
-              </div>
+            <Reveal key={a.id} delay={(i % 3) * 70} style={{ height: "100%" }}>
+              <ActivityCard a={a} onAdd={addToTrip} onView={viewActivity} inTrip={trip.some((t) => t.id === a.id)} note={NOTES[a.id]} />
             </Reveal>
           ))}
         </div>
