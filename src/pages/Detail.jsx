@@ -7,6 +7,7 @@ import { Section, Button, Badge } from "../components/ui.jsx";
 import { Photo, Reveal } from "../motion.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
 import { trustForActivity, depositTerms } from "../intelligence/trust.js";
+import { VibeScores } from "../components/VibeScores.jsx";
 
 function InfoList({ title, icon: Icon, items }) {
   return (
@@ -72,6 +73,9 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
               <h2 style={{ margin: "0 0 10px", fontSize: 20, fontWeight: 800, color: c.charcoal }}>About this experience</h2>
               <p style={{ color: c.stone, fontSize: 16, lineHeight: 1.7, margin: 0 }}>{a.desc}</p>
             </div>
+
+            {/* TicoWild Vibe Scores — the brain, not a directory */}
+            <VibeScores activity={a} />
 
             {/* John's local take */}
             <div style={{ background: grad.jungle, borderRadius: 18, padding: 24, color: "#fff", position: "relative", overflow: "hidden" }}>

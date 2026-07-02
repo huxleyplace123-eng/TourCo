@@ -121,6 +121,38 @@ export function activityInsights(a, monthIdx) {
   return { ctx, climate: cl, insights: out };
 }
 
+// ── Vibe Scores ── the "brain, not a directory" signal. 0–5 per dimension,
+// derived from category/level/region/season. This is what replaces lazy star
+// ratings ("everyone has 4.7"). Returns an ordered array for the UI.
+export function vibeScores(a, monthIdx = monthIndexNow()) {
+  const cat = a.category, lvl = a.level;
+  const ctx = activityContext(a);
+  const cl = climateFor(monthIdx);
+  const clamp = (n) => Math.max(0, Math.min(5, Math.round(n)));
+
+  const thrill = clamp(lvl === "High" ? 5 : lvl === "Moderate" ? 3 : /ATV|Rafting|Paragl|Zip|Surf/.test(cat) ? 4 : 1.5);
+  const kidSafe = clamp(a.family ? (lvl === "High" ? 3 : lvl === "Moderate" ? 4 : 5) : 1.5);
+  // drive pain = how far the region sits from the main hub cluster (Manuel Antonio)
+  const drivePain = clamp(driveHours(a.region, "Manuel Antonio") * 1.4 + (ctx.hours > 6 ? 1 : 0));
+  const photo = clamp(/Catamaran|Waterfall|Whale|Snorkel|Paragl|Zip|Surf|Luxury/.test(cat) ? 5 : /Fishing|ATV|Wildlife/.test(cat) ? 4 : 3);
+  // rain resilience = inverse of weather sensitivity, softened
+  const rain = clamp(5 - ctx.weatherSensitive * 4);
+  const wildlife = clamp(/Wildlife|Whale|Snorkel|Waterfall/.test(cat) ? (ctx.season && SEASONS[ctx.season]?.months.includes(monthIdx) ? 5 : 4) : /Fishing|Rafting/.test(cat) ? 3 : 1.5);
+  const local = clamp(3.5 + ((a.rating || 4.5) - 4.5) * 3); // operator confidence from rating
+  const value = clamp(a.price < 90 ? 5 : a.price < 160 ? 4 : a.price < 260 ? 3 : 2);
+
+  return [
+    { key: "thrill", label: "Thrill", value: thrill, icon: "flame" },
+    { key: "kidSafe", label: "Kid-safe", value: kidSafe, icon: "users" },
+    { key: "wildlife", label: "Wildlife odds", value: wildlife, icon: "leaf" },
+    { key: "photo", label: "Photo value", value: photo, icon: "camera" },
+    { key: "rain", label: "Rain resilience", value: rain, icon: "cloud" },
+    { key: "drivePain", label: "Drive ease", value: clamp(5 - drivePain), icon: "car" }, // inverted → higher = easier
+    { key: "local", label: "Local confidence", value: local, icon: "shield" },
+    { key: "value", label: "Value", value: value, icon: "tag" },
+  ];
+}
+
 // Month helpers so the UI can work with names or a Date.
 export const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 export function monthIndexNow() { try { return new Date().getMonth(); } catch { return 0; } }

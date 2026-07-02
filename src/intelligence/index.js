@@ -6,7 +6,7 @@
 // a travel app whose intelligence is a swappable reasoning layer over real tools.
 
 import { activities } from "../data.js";
-import { activityInsights, monthIndexNow, MONTHS, climateFor, SEASONS } from "./context.js";
+import { activityInsights, vibeScores, monthIndexNow, MONTHS, climateFor, SEASONS } from "./context.js";
 import { planTrip } from "./planner.js";
 
 // TOOL: recommend activities for a traveler profile (who/vibe/budget/month).
@@ -37,6 +37,12 @@ export function recommendActivities(profile = {}) {
 export function getInsights(activityId, monthIdx) {
   const a = activities.find((x) => x.id === activityId);
   return a ? activityInsights(a, monthIdx ?? monthIndexNow()) : null;
+}
+
+// TOOL: TicoWild Vibe Scores for one activity (thrill/kid-safe/photo/…).
+export function getVibeScores(activityOrId, monthIdx) {
+  const a = typeof activityOrId === "string" ? activities.find((x) => x.id === activityOrId) : activityOrId;
+  return a ? vibeScores(a, monthIdx ?? monthIndexNow()) : [];
 }
 
 // TOOL: build an optimized day-by-day plan from a set of activities.
