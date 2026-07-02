@@ -59,15 +59,17 @@ export const heroSlides = (w = 1900) => HERO_SLIDES.map((s) => ({ src: cdn(s.id,
 // are DELIBERATELY different photos from HERO_SLIDES / the Meet Tico hero, so no
 // two hero areas share imagery. Fishing is the star of the home + fishing sets.
 const HERO_SETS = {
-  // Homepage / dashboard — an adventure reel led by sport fishing + boats,
-  // now with parasailing and a jungle waterfall in the rotation.
+  // Homepage / dashboard — a full adventure reel, INTERLEAVED so no two similar
+  // scenes sit back to back: fishing → parasail → waterfall → boat → beach.
   home: [
-    { id: "photo-1708748978230-510e06b24530", label: "Offshore, rods out" },   // rod rack + boat wake
-    { id: "photo-1537872384762-e785271d14f8", label: "Big-game reel" },        // reel over churning sea
-    { id: "photo-1625183656263-171183307b15", label: "The catch is on" },      // anglers on a boat
+    { id: "photo-1708748978230-510e06b24530", label: "Offshore, rods out" },   // sport fishing
     { id: "photo-1632904074880-b77f02b6d01e", label: "Up on the parasail" },   // parasailing over ocean
     { id: "photo-1620658927695-c33df6fb8130", label: "Jungle waterfall" },     // waterfall into turquoise pool
+    { id: "photo-1537872384762-e785271d14f8", label: "Big-game reel" },        // fishing reel
     { id: "photo-1519046904884-53103b34b206", label: "Hidden cove" },          // secluded palm cove
+    { id: "photo-1625183656263-171183307b15", label: "The catch is on" },      // anglers on a boat
+    { id: "photo-1642391326087-b1cff0dd3b6f", label: "Parasail at sunset" },   // parasail silhouette
+    { id: "photo-1505142468610-359e7d316be0", label: "Turquoise break" },      // aerial waves / beach
   ],
   // Activities — on-the-water action + open ocean.
   activities: [
@@ -87,6 +89,32 @@ const HERO_SETS = {
     { id: "photo-1625183656263-171183307b15", label: "On the water" },
     { id: "photo-1515631604561-23e0be68ee06", label: "Fish on!" },             // landing a fish
     { id: "photo-1708748978230-510e06b24530", label: "Trolling the wake" },
+  ],
+  // Eat & Drink — restaurants + bars, people eating, drinking, having fun.
+  eat: [
+    { id: "photo-1541532713592-79a0317b6b77", label: "Cheers, mae" },          // friends toasting drinks
+    { id: "photo-1559339352-11d035aa65de", label: "Fresh off the boat" },      // open-air seaside restaurant
+    { id: "photo-1517248135467-4c7edcad34c4", label: "A table for the night" },// warm restaurant interior
+    { id: "photo-1414235077428-338989a2e8c0", label: "Plated & perfect" },     // plated dish, moody
+    { id: "photo-1436076863939-06870fe779c2", label: "Sunset toast" },         // beers clinking at sunset
+    { id: "photo-1566417713940-fe7c737a9ef2", label: "After dark" },           // nightlife / bartender
+  ],
+  // Deals — savings on food + drink + nightlife, vivid and tempting.
+  deals: [
+    { id: "photo-1551024709-8f23befc6f87", label: "2-for-1 cocktails" },       // colorful cocktails
+    { id: "photo-1436076863939-06870fe779c2", label: "Happy-hour pours" },     // beers at sunset
+    { id: "photo-1541532713592-79a0317b6b77", label: "Group deals, more fun" },// friends toasting
+    { id: "photo-1566417713940-fe7c737a9ef2", label: "Nightlife savings" },    // bar / neon
+    { id: "photo-1559339352-11d035aa65de", label: "Dine for less" },           // seaside restaurant
+  ],
+  // Local's Guide — exploring: trails, viewpoints, the map, wildlife.
+  guide: [
+    { id: "photo-1551632811-561732d1e306", label: "On the trail" },            // backpacker on green trail
+    { id: "photo-1440581572325-0bea30075d9d", label: "Into the rainforest" },  // sunlit forest path
+    { id: "photo-1488646953014-85cb44e25828", label: "Plot the route" },       // map + camera + pack flatlay
+    { id: "photo-1620658927695-c33df6fb8130", label: "Chasing waterfalls" },   // jungle waterfall
+    { id: "photo-1540573133985-87b6da6d54a9", label: "Meet the locals" },      // monkey / wildlife
+    { id: "photo-1473116763249-2faaef81ccda", label: "End at the beach" },     // sunset beach
   ],
 };
 

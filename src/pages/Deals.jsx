@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Tag, Clock, MapPin, ShieldCheck, Sparkles, ArrowRight, Ticket, Check, Lock, Copy, Gift, PiggyBank, Sun } from "lucide-react";
 import { c, grad, glass, gradText } from "../theme.js";
 import { deals, DEAL_TAGS, freeThings, moneyTips } from "../places.js";
-import { pageHero, dealImage } from "../images.js";
+import { pageHero, dealImage, themedSlides } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { Reveal, Photo } from "../motion.jsx";
@@ -79,7 +79,7 @@ export function Deals({ go, trip }) {
 
   return (
     <>
-      <PageHero image={pageHero("activities")} eyebrow="Deals, codes & free things" title="Real Costa Rica savings" accentWord="savings"
+      <PageHero slides={themedSlides("deals")} eyebrow="Deals, codes & free things" title="Real Costa Rica savings" accentWord="savings"
         sub={`${codeCount} verified promo codes, happy hours, free-to-do gems, and local money-saving tips — plus the Pura Vida Pass you unlock the moment you book.`} />
 
       <Section bg={c.sand}>

@@ -3,7 +3,7 @@ import { MapPin, Utensils, Wine, ArrowRight, Clock } from "lucide-react";
 import { c, grad, glass } from "../theme.js";
 import { restaurants, DINING_COLLECTIONS } from "../restaurants.js";
 import { bars, BAR_TAGS } from "../places.js";
-import { restaurantImage, barImage, pageHero } from "../images.js";
+import { restaurantImage, barImage, pageHero, themedSlides } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { TiltCard, Photo, Reveal } from "../motion.jsx";
@@ -74,7 +74,7 @@ export function Restaurants({ go }) {
 
   return (
     <>
-      <PageHero image={pageHero("packages")} eyebrow="Where to eat & drink" title="Dining & nightlife, in context"
+      <PageHero slides={themedSlides("eat")} eyebrow="Where to eat & drink" title="Dining & nightlife, in context"
         sub="Not a directory — the right spot for the moment. Best after a tour, best for sunset, best local sodas, best happy hours. All local-tested." />
 
       <Section bg={c.sand}>

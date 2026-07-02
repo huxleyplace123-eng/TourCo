@@ -7,6 +7,7 @@ import { regionImage, pageHero, beachImage } from "../images.js";
 import { Section, SectionHead, Eyebrow, Button } from "../components/ui.jsx";
 import { Photo, Lift, Reveal } from "../motion.jsx";
 import { PageHero } from "../components/PageHero.jsx";
+import { GuideHero } from "../components/GuideHero.jsx";
 import { TicoAvatar, TicoRating, TicoPick, TicoSectionIntro, useTicoBeach } from "../components/Tico.jsx";
 
 // Beach card — extracted so Tico's rating hook lives at a component boundary.
@@ -99,8 +100,7 @@ export function Guide({ go }) {
   const shownBeaches = useMemo(() => beaches.filter((b) => beachTag === "all" || b.tags.includes(beachTag)), [beachTag]);
   return (
     <>
-      <PageHero image={pageHero("guide")} eyebrow="Local's Guide" title="Costa Rica, region by region"
-        sub="Where to go for what. Written by the people who actually live and guide here." />
+      <GuideHero go={go} />
 
       <Section bg={c.sand}>
         <SectionHead eyebrow="Explore" title="Pick your corner of the coast" accent />
