@@ -5,7 +5,8 @@ import { activities } from "../data.js";
 import { activityImage } from "../images.js";
 import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { Photo, useCountUp } from "../motion.jsx";
-import { TripTimeline, StoryPoster } from "../components/TripStory.jsx";
+import { StoryPoster } from "../components/TripStory.jsx";
+import { SmartPlan } from "../components/SmartPlan.jsx";
 
 function EmptyState({ go }) {
   return (
@@ -59,8 +60,8 @@ export function MyTrips({ go, trip, removeFromTrip }) {
         {chosen.length > 0 && view === "story" ? (
           <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 30, alignItems: "start" }}>
             <div>
-              <h2 style={{ fontSize: 22, fontWeight: 800, color: c.charcoal, margin: "0 0 20px" }}>Your day-by-day story</h2>
-              <TripTimeline chosen={chosen} />
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: c.charcoal, margin: "0 0 20px" }}>Your smart day-by-day</h2>
+              <SmartPlan chosen={chosen} pax={chosen[0]?.pax || 2} />
               <div style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
                 <Button variant="primary" onClick={() => window.alert("Reservation flow — connect payments here.")}>
                   <ShieldCheck size={16} />Reserve for {money(total * 0.2)}

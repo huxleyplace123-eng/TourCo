@@ -5,6 +5,7 @@ import { activities } from "../data.js";
 import { activityImage } from "../images.js";
 import { Button } from "../components/ui.jsx";
 import { Photo, useCountUp } from "../motion.jsx";
+import { recommendActivities, monthBriefing } from "../intelligence/index.js";
 
 // ── John's brain: a small rules engine with personality. Each step asks a
 // question; the answer scores every activity AND makes John react like a real
@@ -129,9 +130,13 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
     setTyping(true);
     setTimeout(() => {
       setTyping(false);
-      const finalAnswers = answers;
-      const ranked = [...activities].sort((a, b) => score(b, finalAnswers) - score(a, finalAnswers)).slice(0, 5);
-      setMsgs((m) => [...m, { from: "john", text: "Perfect. Based on that, here's what I'd book for you 👇 Add the ones you love — I'll handle the rest." }]);
+      // John calls the intelligence engine (tool) instead of local rules —
+      // the same tool a real LLM concierge would call.
+      const profile = { who: answers.who, vibe: answers.vibe, budget: answers.budget };
+      const ranked = recommendActivities(profile).slice(0, 5).map((r) => r.a);
+      const brief = monthBriefing();
+      const seasonLine = brief.inSeason.length ? ` Heads up — it's ${brief.inSeason[0].toLowerCase()} right now, so I bumped that up your list.` : "";
+      setMsgs((m) => [...m, { from: "john", text: `Perfect. Based on that, here's what I'd book for you 👇${seasonLine} Add the ones you love — I'll handle the rest.` }]);
       // reveal suggestions one at a time (they "fly in" on the right)
       ranked.forEach((a, i) => setTimeout(() => setSuggested((s) => [...s, a.id]), 400 + i * 320));
     }, 900);

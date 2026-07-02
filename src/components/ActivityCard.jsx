@@ -1,16 +1,35 @@
 import React from "react";
-import { MapPin, Clock, Compass, Star, Check, Plus, Users, Sparkles, ShieldCheck, ArrowRight, Quote } from "lucide-react";
+import { MapPin, Clock, Compass, Star, Check, Plus, Users, Sparkles, ShieldCheck, ArrowRight, Quote, Sun, CloudRain, TrendingUp, Tag } from "lucide-react";
 import { c, gradFor, money } from "../theme.js";
 import { operators } from "../data.js";
 import { activityImage } from "../images.js";
 import { Badge, Button } from "./ui.jsx";
 import { TiltCard, Photo } from "../motion.jsx";
+import { getInsights } from "../intelligence/index.js";
+
+const INSIGHT_ICON = { sparkle: Sparkles, clock: Clock, rain: CloudRain, sun: Sun, trend: TrendingUp, tag: Tag };
+const TONE = {
+  good: { bg: "rgba(34,211,238,.10)", bd: "rgba(34,211,238,.28)", fg: c.teal },
+  warn: { bg: "rgba(255,194,75,.12)", bd: "rgba(255,194,75,.3)", fg: c.gold },
+  info: { bg: "rgba(147,174,207,.10)", bd: "rgba(147,174,207,.25)", fg: c.stone },
+};
+
+// The single most useful live insight for a card (season > weather > else).
+function topInsight(a) {
+  const res = getInsights(a.id);
+  if (!res) return null;
+  const byType = (t) => res.insights.find((i) => i.type === t);
+  return byType("season") || byType("weather") || byType("demand") || res.insights[0] || null;
+}
 
 // Activity card — dark glass + real 3D tilt + neon glow + cinematic photo.
 // `note` (optional) renders John's take INSIDE the card so every card is a
 // single aligned unit of equal height.
 export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
   const op = operators.find((o) => o.id === a.operatorId);
+  const insight = topInsight(a);
+  const Ico = insight ? INSIGHT_ICON[insight.icon] || Sparkles : null;
+  const tone = insight ? TONE[insight.tone] || TONE.info : null;
   return (
     <TiltCard style={{ background: c.white, overflow: "hidden", border: `1px solid ${c.line}`, display: "flex", flexDirection: "column", height: "100%" }} radius={20}>
       <Photo
@@ -48,6 +67,13 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Clock size={13} />{a.duration}</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Compass size={13} />{a.level}</span>
         </div>
+
+        {/* live smart insight — season / weather / demand, computed by the engine */}
+        {insight && (
+          <div title="TripNest live insight" style={{ display: "inline-flex", alignItems: "center", gap: 6, alignSelf: "flex-start", background: tone.bg, border: `1px solid ${tone.bd}`, color: tone.fg, padding: "5px 10px", borderRadius: 999, fontSize: 11.5, fontWeight: 700 }}>
+            <Ico size={12} />{insight.text}
+          </div>
+        )}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 8 }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 11, color: c.stone, fontWeight: 600 }}>operated by</div>
