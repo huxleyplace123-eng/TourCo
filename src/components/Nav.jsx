@@ -19,7 +19,7 @@ export function Nav({ page, go, tripCount, openTrip }) {
     <div style={{ position: "sticky", top: 0, zIndex: 60, background: "rgba(11,26,46,.72)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: `1px solid ${c.line}` }}>
       <div style={{ maxWidth: 1180, margin: "0 auto", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <button onClick={() => go("home")} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}>
-          <Logo fontSize={20} mark={34} />
+          <Logo fontSize={22} />
         </button>
         <div className="nav-links" style={{ display: "none", gap: 4, alignItems: "center" }}>
           {LINKS.map(([id, label]) => (
