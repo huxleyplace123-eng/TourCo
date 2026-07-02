@@ -3,6 +3,8 @@ import { ArrowRight, TrendingUp, Users, ShieldCheck, Check, Send } from "lucide-
 import { c, grad } from "../theme.js";
 import { Section, SectionHead, Eyebrow, Button, Field, TextInput, Select } from "../components/ui.jsx";
 import { Reveal } from "../motion.jsx";
+import { PageHero } from "../components/PageHero.jsx";
+import { pageHero } from "../images.js";
 
 const PERKS = [
   { icon: Users, title: "Qualified travelers", body: "We send you guests who've already chosen their experience — fewer no-shows, higher-value bookings." },
@@ -18,16 +20,8 @@ export function Partner({ go }) {
 
   return (
     <>
-      <div style={{ background: grad.jungle, padding: "56px 20px 48px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 85% 20%, rgba(34,211,238,.4), transparent 45%)" }} />
-        <div style={{ position: "relative", maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
-          <Eyebrow><span style={{ color: c.gold }}>For operators</span></Eyebrow>
-          <h1 style={{ color: "#fff", fontSize: "clamp(30px,5vw,46px)", fontWeight: 800, letterSpacing: -1, margin: "6px 0 10px" }}>Partner with TicoWild</h1>
-          <p style={{ color: "rgba(255,255,255,.9)", fontSize: 18, lineHeight: 1.6 }}>
-            Join a curated network of Costa Rica's best local operators. We bring the travelers — you deliver the adventure.
-          </p>
-        </div>
-      </div>
+      <PageHero image={pageHero("partner")} align="center" eyebrow="For operators" title="Partner with TicoWild" accentWord="TicoWild"
+        sub="Join a curated network of Costa Rica's best local operators. We bring the travelers — you deliver the adventure." />
 
       <Section bg={c.sand}>
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))" }}>

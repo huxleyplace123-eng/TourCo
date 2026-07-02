@@ -5,6 +5,8 @@ import { activities } from "../data.js";
 import { Section, Eyebrow, Field, TextInput, Select, Button } from "../components/ui.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
 import { Reveal } from "../motion.jsx";
+import { PageHero } from "../components/PageHero.jsx";
+import { pageHero } from "../images.js";
 
 const CATEGORIES = ["All", ...Array.from(new Set(activities.map((a) => a.category)))];
 const REGIONS = ["All", ...Array.from(new Set(activities.map((a) => a.region)))];
@@ -46,15 +48,8 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
 
   return (
     <>
-      <div style={{ background: grad.jungle, padding: "54px 20px 40px" }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-          <Eyebrow><span style={{ color: c.gold }}>Browse activities</span></Eyebrow>
-          <h1 style={{ color: "#fff", fontSize: "clamp(30px,5vw,46px)", fontWeight: 800, letterSpacing: -1, margin: "6px 0 8px" }}>Every adventure, vetted</h1>
-          <p style={{ color: "rgba(255,255,255,.85)", fontSize: 17, maxWidth: 560 }}>
-            Add what you love to your trip. We'll handle the coordination and the deposit math.
-          </p>
-        </div>
-      </div>
+      <PageHero image={pageHero("activities")} eyebrow="Browse activities" title="Every adventure, vetted"
+        sub="Add what you love to your trip. We'll handle the coordination and the deposit math." />
 
       <Section bg={c.sand} pad={36}>
         <div className="filters-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24 }}>

@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { ArrowRight, Compass, MapPin, Clock, Trash2, ShieldCheck, MessageCircle, Calendar, List, Sparkles } from "lucide-react";
 import { c, grad, money } from "../theme.js";
 import { activities } from "../data.js";
-import { activityImage } from "../images.js";
+import { activityImage, pageHero } from "../images.js";
 import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { Photo, useCountUp } from "../motion.jsx";
 import { StoryPoster } from "../components/TripStory.jsx";
 import { SmartPlan } from "../components/SmartPlan.jsx";
+import { PageHero } from "../components/PageHero.jsx";
 
 function EmptyState({ go }) {
   return (
@@ -40,21 +41,15 @@ export function MyTrips({ go, trip, removeFromTrip }) {
 
   return (
     <>
-      <div style={{ background: grad.ocean, padding: "54px 20px 44px" }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-          <Eyebrow><span style={{ color: c.gold }}>My Trips</span></Eyebrow>
-          <h1 style={{ color: "#fff", fontSize: "clamp(30px,5vw,46px)", fontWeight: 800, letterSpacing: -1, margin: "6px 0 8px" }}>Your Costa Rica plan</h1>
-          <p style={{ color: "rgba(255,255,255,.9)", fontSize: 17, marginBottom: chosen.length ? 18 : 0 }}>
-            {chosen.length ? `${chosen.length} experience${chosen.length !== 1 ? "s" : ""} ready to reserve.` : "Everything you add lands right here."}
-          </p>
-          {chosen.length > 0 && (
-            <div style={{ display: "inline-flex", gap: 6, background: "rgba(0,0,0,.14)", padding: 5, borderRadius: 999 }}>
-              <ToggleBtn id="story" icon={Sparkles} label="Story view" />
-              <ToggleBtn id="list" icon={List} label="List view" />
-            </div>
-          )}
-        </div>
-      </div>
+      <PageHero image={pageHero("portal")} eyebrow="My Trips" title="Your Costa Rica plan"
+        sub={chosen.length ? `${chosen.length} experience${chosen.length !== 1 ? "s" : ""} ready to reserve.` : "Everything you add lands right here."}>
+        {chosen.length > 0 && (
+          <div style={{ display: "inline-flex", gap: 6, background: "rgba(0,0,0,.22)", padding: 5, borderRadius: 999, marginTop: 18 }}>
+            <ToggleBtn id="story" icon={Sparkles} label="Story view" />
+            <ToggleBtn id="list" icon={List} label="List view" />
+          </div>
+        )}
+      </PageHero>
 
       <Section bg={c.sand}>
         {chosen.length > 0 && view === "story" ? (

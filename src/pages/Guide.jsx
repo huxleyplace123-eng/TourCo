@@ -2,9 +2,10 @@ import React from "react";
 import { ArrowRight, MapPin, Sun, Umbrella, Compass, Utensils } from "lucide-react";
 import { c, grad } from "../theme.js";
 import { regions } from "../data.js";
-import { regionImage } from "../images.js";
+import { regionImage, pageHero } from "../images.js";
 import { Section, SectionHead, Eyebrow, Button } from "../components/ui.jsx";
 import { Photo, Lift, Reveal } from "../motion.jsx";
+import { PageHero } from "../components/PageHero.jsx";
 
 const TIPS = [
   { icon: Sun, title: "Best time to visit", body: "Dry season (Dec–Apr) for sun; green season (May–Nov) for lush jungle, fewer crowds, and lower prices." },
@@ -16,15 +17,8 @@ const TIPS = [
 export function Guide({ go }) {
   return (
     <>
-      <div style={{ background: grad.reef, padding: "54px 20px 44px" }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-          <Eyebrow><span style={{ color: c.gold }}>Local's Guide</span></Eyebrow>
-          <h1 style={{ color: "#fff", fontSize: "clamp(30px,5vw,46px)", fontWeight: 800, letterSpacing: -1, margin: "6px 0 8px" }}>Costa Rica, region by region</h1>
-          <p style={{ color: "rgba(255,255,255,.9)", fontSize: 17, maxWidth: 580 }}>
-            Where to go for what. Written by the people who actually live and guide here.
-          </p>
-        </div>
-      </div>
+      <PageHero image={pageHero("guide")} eyebrow="Local's Guide" title="Costa Rica, region by region"
+        sub="Where to go for what. Written by the people who actually live and guide here." />
 
       <Section bg={c.sand}>
         <SectionHead eyebrow="Explore" title="Pick your corner of the coast" accent />

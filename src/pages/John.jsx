@@ -1,10 +1,12 @@
 import React from "react";
 import { ArrowRight, Star, Quote, MessageCircle } from "lucide-react";
-import { c, grad } from "../theme.js";
+import { c, grad, glass } from "../theme.js";
 import { activities, operators } from "../data.js";
+import { pageHero, personImage } from "../images.js";
 import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
 import { Reveal } from "../motion.jsx";
+import { PageHero } from "../components/PageHero.jsx";
 
 // John's personal picks: highest-rated + a couple of signature experiences.
 const PICK_IDS = ["a15", "a4", "a1", "a11", "a16", "a10", "a7", "a12"];
@@ -24,19 +26,17 @@ export function John({ go, addToTrip, trip, viewActivity }) {
 
   return (
     <>
-      <div style={{ background: grad.jungle, padding: "50px 20px 46px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 88% 12%, rgba(255,208,0,.3), transparent 45%)" }} />
-        <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto", display: "flex", gap: 22, alignItems: "center", flexWrap: "wrap" }}>
-          <div style={{ width: 88, height: 88, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 38, color: c.charcoal, flexShrink: 0, boxShadow: "0 16px 40px -18px rgba(0,0,0,.6)" }}>J</div>
-          <div>
-            <Eyebrow><span style={{ color: c.gold }}>John Recommends</span></Eyebrow>
-            <h1 style={{ color: "#fff", fontSize: "clamp(28px,5vw,44px)", fontWeight: 800, letterSpacing: -1, margin: "4px 0 8px" }}>The ones I'd book myself</h1>
-            <p style={{ color: "rgba(255,255,255,.9)", fontSize: 17, maxWidth: 580, margin: 0 }}>
-              After years of guiding, these are the experiences I hand-pick for friends and family. Every one is vetted, and I know the operators personally.
-            </p>
-          </div>
+      <PageHero image={pageHero("john")} eyebrow="John Recommends" title="The ones I'd book myself"
+        sub="After years of guiding, these are the experiences I hand-pick for friends and family. Every one is vetted, and I know the operators personally.">
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 18 }}>
+          <span style={{ width: 46, height: 46, borderRadius: 999, overflow: "hidden", border: `2px solid ${c.gold}`, flexShrink: 0 }}>
+            <img src={personImage("john", 100)} alt="John" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </span>
+          <span style={{ ...glass, color: "#fff", padding: "8px 14px", borderRadius: 999, fontSize: 13, fontWeight: 600 }}>
+            Hand-picked by <b style={{ color: c.gold }}>John</b> · your local guide
+          </span>
         </div>
-      </div>
+      </PageHero>
 
       <Section bg={c.sand}>
         <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))" }}>
