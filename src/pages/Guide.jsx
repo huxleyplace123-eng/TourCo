@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { ArrowRight, MapPin, Sun, Umbrella, Compass, Utensils, Car, DollarSign, ShieldAlert, CloudRain, Wallet, Camera } from "lucide-react";
 import { c, grad } from "../theme.js";
 import { regions } from "../data.js";
-import { regionImage, pageHero } from "../images.js";
+import { beaches, BEACH_TAGS } from "../places.js";
+import { regionImage, pageHero, beachImage } from "../images.js";
 import { Section, SectionHead, Eyebrow, Button } from "../components/ui.jsx";
 import { Photo, Lift, Reveal } from "../motion.jsx";
 import { PageHero } from "../components/PageHero.jsx";
@@ -55,7 +56,20 @@ const PLAYBOOK = [
   ] },
 ];
 
+function BeachChip({ on, onClick, children }) {
+  return (
+    <button onClick={onClick} style={{
+      padding: "8px 14px", borderRadius: 999, cursor: "pointer", fontWeight: 700, fontSize: 13, transition: "all .15s",
+      background: on ? "rgba(34,211,238,.14)" : "rgba(255,255,255,.05)",
+      border: on ? `1.5px solid ${c.teal}` : `1.5px solid ${c.line}`,
+      color: on ? c.teal : c.charcoal,
+    }}>{children}</button>
+  );
+}
+
 export function Guide({ go }) {
+  const [beachTag, setBeachTag] = useState("all");
+  const shownBeaches = useMemo(() => beaches.filter((b) => beachTag === "all" || b.tags.includes(beachTag)), [beachTag]);
   return (
     <>
       <PageHero image={pageHero("guide")} eyebrow="Local's Guide" title="Costa Rica, region by region"
@@ -76,6 +90,40 @@ export function Guide({ go }) {
                     <div style={{ color: "#fff", fontSize: 22, fontWeight: 800, letterSpacing: -0.5, marginTop: 2 }}>{r.name}</div>
                   </div>
                 </Photo>
+              </Lift>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Beaches ── */}
+      <Section bg={c.sand} pad={40}>
+        <SectionHead eyebrow="The coastline" title="Beaches worth the sand in your car" accent
+          sub="Which beach for what — swimming, surf, snorkeling, sunsets, and the hidden ones locals keep quiet." />
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+          <BeachChip on={beachTag === "all"} onClick={() => setBeachTag("all")}>All beaches</BeachChip>
+          {BEACH_TAGS.map((t) => (
+            <BeachChip key={t.key} on={beachTag === t.key} onClick={() => setBeachTag(t.key)}>{t.label}</BeachChip>
+          ))}
+        </div>
+        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
+          {shownBeaches.map((b, i) => (
+            <Reveal key={b.id} delay={(i % 3) * 60}>
+              <Lift style={{ overflow: "hidden", border: `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column" }} radius={18}>
+                <Photo src={beachImage(b)} fallback={grad.reef} alt={b.name} height={150}
+                  overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 40%, rgba(11,26,46,.75) 100%)" }} />}>
+                  <div style={{ position: "absolute", bottom: 12, left: 14, right: 14, zIndex: 2 }}>
+                    <div style={{ color: c.gold, fontSize: 11.5, fontWeight: 800, display: "inline-flex", alignItems: "center", gap: 4 }}><MapPin size={12} />{b.region}</div>
+                    <div style={{ color: "#fff", fontSize: 19, fontWeight: 800, letterSpacing: -0.5, lineHeight: 1.1 }}>{b.name}</div>
+                  </div>
+                </Photo>
+                <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 8, flex: 1, background: c.white }}>
+                  <p style={{ margin: 0, color: c.stone, fontSize: 13.5, lineHeight: 1.5, flex: 1 }}>{b.blurb}</p>
+                  <div style={{ display: "flex", gap: 8, alignItems: "flex-start", background: "rgba(255,208,0,.08)", border: "1px solid rgba(255,208,0,.2)", borderRadius: 10, padding: "8px 10px" }}>
+                    <Sun size={13} color={c.gold} style={{ flexShrink: 0, marginTop: 2 }} />
+                    <span style={{ fontSize: 12, color: c.charcoal, lineHeight: 1.4 }}><b style={{ color: c.gold }}>Local tip:</b> {b.tip}</span>
+                  </div>
+                </div>
               </Lift>
             </Reveal>
           ))}

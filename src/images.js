@@ -107,6 +107,34 @@ const FOOD = {
   fine: "photo-1424847651672-bf20a4b0982b",        // plated fine dining
   default: "photo-1555396273-367ea4eb4db5",        // general restaurant
 };
+// Beach photos — vary by vibe.
+const BEACH_IMG = {
+  swimming: "photo-1507525428034-b723cf961d3e",
+  surf: "photo-1502680390469-be75c86b636f",
+  snorkel: "photo-1544551763-92ab472cad5d",
+  sunset: "photo-1552733407-5d5c46c3bb3b",
+  hidden: "photo-1559827260-dc66d52bef19",
+  default: "photo-1552733407-5d5c46c3bb3b",
+};
+export function beachImage(b, w = 700) {
+  const t = b.tags || [];
+  const key = /surf/.test(t.join(" ")) ? "surf" : t.includes("snorkel") ? "snorkel" : t.includes("swimming") ? "swimming" : t.includes("hidden") ? "hidden" : "sunset";
+  return cdn(BEACH_IMG[key] || BEACH_IMG.default, w);
+}
+// Bar / nightlife photos.
+const BAR_IMG = {
+  sunset: "photo-1470337458703-46ad1756a187",
+  nightclub: "photo-1566417713940-fe7c737a9ef2",
+  "craft-beer": "photo-1436076863939-06870fe779c2",
+  "live-music": "photo-1493676304819-0d7a8d026dcf",
+  default: "photo-1514362545857-3bc16c4c7d1b",
+};
+export function barImage(bar, w = 700) {
+  const t = bar.tags || [];
+  const key = t.includes("nightclub") ? "nightclub" : t.includes("craft-beer") ? "craft-beer" : t.includes("live-music") ? "live-music" : "sunset";
+  return cdn(BAR_IMG[key] || BAR_IMG.default, w);
+}
+
 export function restaurantImage(r, w = 700) {
   let key = "default";
   const t = r.tags || [];

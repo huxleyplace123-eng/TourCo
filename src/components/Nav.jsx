@@ -7,10 +7,10 @@ import { Button } from "./ui.jsx";
 const LINKS = [
   ["today", "Today"],
   ["activities", "Activities"],
-  ["eat", "Restaurants"],
-  ["packages", "Packages"],
+  ["eat", "Eat & Drink"],
+  ["deals", "Deals"],
   ["guide", "Local's Guide"],
-  ["why", "Why TicoWild"],
+  ["packages", "Packages"],
   ["portal", "My Trips"],
 ];
 
