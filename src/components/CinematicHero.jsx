@@ -83,13 +83,16 @@ export function CinematicHero({ go }) {
         }
       `}</style>
 
-      {/* ── Cinematic carousel, full-bleed, cross-fading + scroll-scrubbed ── */}
-      <div style={{ position: "absolute", inset: 0, ...layer(0.5) }}>
+      {/* ── Cinematic carousel, full-bleed, cross-fading + scroll-scrubbed ──
+          Backdrop sits "further back": minimal zoom so the WHOLE scene shows
+          (fishing boats, parasailing, waterfalls) instead of a tight crop. Only
+          a light mouse/scroll parallax drift, no compounding scale. */}
+      <div style={{ position: "absolute", inset: 0, transform: `translate3d(${mouse.x * 8}px, ${mouse.y * 6 + scrollY * 0.06}px, 0)`, transition: "transform .18s cubic-bezier(.2,.7,.2,1)" }}>
         {SLIDES.map((s, i) => (
           <img key={s.src} src={s.src} alt="" aria-hidden
-            style={{ position: "absolute", inset: "-8%", width: "116%", height: "116%", objectFit: "cover",
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center",
               opacity: (i === slide ? 1 : 0) * (1 - scrub * 0.5),
-              transform: `scale(${(i === slide ? 1.02 : 1) + scrub * 0.15})`,
+              transform: `scale(${1 + scrub * 0.12})`,
               transition: "opacity 1.6s ease, transform 6s ease" }} />
         ))}
       </div>

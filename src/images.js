@@ -59,13 +59,14 @@ export const heroSlides = (w = 1900) => HERO_SLIDES.map((s) => ({ src: cdn(s.id,
 // are DELIBERATELY different photos from HERO_SLIDES / the Meet Tico hero, so no
 // two hero areas share imagery. Fishing is the star of the home + fishing sets.
 const HERO_SETS = {
-  // Homepage / dashboard — an adventure reel led by sport fishing + boats.
+  // Homepage / dashboard — an adventure reel led by sport fishing + boats,
+  // now with parasailing and a jungle waterfall in the rotation.
   home: [
     { id: "photo-1708748978230-510e06b24530", label: "Offshore, rods out" },   // rod rack + boat wake
     { id: "photo-1537872384762-e785271d14f8", label: "Big-game reel" },        // reel over churning sea
     { id: "photo-1625183656263-171183307b15", label: "The catch is on" },      // anglers on a boat
-    { id: "photo-1533760881669-80db4d7b341a", label: "Wheels & jungle roads" },// motorcycle ride
-    { id: "photo-1546587348-d12660c30c50", label: "Emerald water" },           // lake / green water
+    { id: "photo-1632904074880-b77f02b6d01e", label: "Up on the parasail" },   // parasailing over ocean
+    { id: "photo-1620658927695-c33df6fb8130", label: "Jungle waterfall" },     // waterfall into turquoise pool
     { id: "photo-1519046904884-53103b34b206", label: "Hidden cove" },          // secluded palm cove
   ],
   // Activities — on-the-water action + open ocean.
@@ -74,7 +75,8 @@ const HERO_SETS = {
     { id: "photo-1625183656263-171183307b15", label: "Sport fishing" },
     { id: "photo-1505142468610-359e7d316be0", label: "Turquoise break" },      // aerial waves
     { id: "photo-1559599746-8823b38544c6", label: "Golden-hour sail" },        // boat at sunset
-    { id: "photo-1533760881669-80db4d7b341a", label: "Coastal ride" },         // motorcycle
+    { id: "photo-1642391326087-b1cff0dd3b6f", label: "Parasail at sunset" },   // parasailing silhouette
+    { id: "photo-1612452816734-05a1ea3da9a9", label: "Jungle waterfall" },     // tall green-forest falls
     { id: "photo-1519046904884-53103b34b206", label: "Secluded cove" },
   ],
   // Pure fishing set — for any fishing-forward surface.
