@@ -78,7 +78,7 @@ export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
 }
 
 // ── Section wrapper ──
-export function Section({ children, bg, pad = 80, id }) {
+export function Section({ children, bg, pad = 52, id }) {
   return (
     <section id={id} style={{ background: bg, padding: `${pad}px 20px` }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>{children}</div>

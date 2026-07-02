@@ -8,7 +8,7 @@ import { Eyebrow } from "./ui.jsx";
 // random flat gradient band. Pass `image` (any Photo URL), `eyebrow`, `title`
 // (string; last word auto-accents unless `accent={false}`), `sub`, `align`,
 // `children` (extra content under the copy), and `height`.
-export function PageHero({ image, eyebrow, title, sub, align = "left", children, height = 380, accentWord }) {
+export function PageHero({ image, eyebrow, title, sub, align = "left", children, height = 260, accentWord }) {
   const center = align === "center";
   const renderTitle = () => {
     if (typeof title !== "string" || accentWord === null) return title;
@@ -37,13 +37,13 @@ export function PageHero({ image, eyebrow, title, sub, align = "left", children,
         .tn-phero > *:nth-child(3){animation-delay:.12s}
         .tn-phero > *:nth-child(4){animation-delay:.18s}`}</style>
 
-      <div className="tn-phero" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "56px 20px 42px", width: "100%", textAlign: center ? "center" : "left" }}>
+      <div className="tn-phero" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "34px 20px 28px", width: "100%", textAlign: center ? "center" : "left" }}>
         {eyebrow && <Eyebrow><span style={{ color: c.gold }}>{eyebrow}</span></Eyebrow>}
-        <h1 style={{ color: "#fff", fontSize: "clamp(32px,5.4vw,54px)", fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.02, margin: "6px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)" }}>
+        <h1 style={{ color: "#fff", fontSize: "clamp(28px,4vw,42px)", fontWeight: 800, letterSpacing: -1.2, lineHeight: 1.05, margin: "4px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)" }}>
           {renderTitle()}
         </h1>
         {sub && (
-          <p style={{ color: "rgba(243,247,255,.82)", fontSize: 17.5, lineHeight: 1.6, maxWidth: 600, margin: center ? "14px auto 0" : "14px 0 0" }}>{sub}</p>
+          <p style={{ color: "rgba(243,247,255,.82)", fontSize: 15.5, lineHeight: 1.55, maxWidth: 560, margin: center ? "10px auto 0" : "10px 0 0" }}>{sub}</p>
         )}
         {children}
       </div>
