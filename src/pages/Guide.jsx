@@ -7,7 +7,7 @@ import { regionImage, pageHero, beachImage } from "../images.js";
 import { Section, SectionHead, Eyebrow, Button } from "../components/ui.jsx";
 import { Photo, Lift, Reveal } from "../motion.jsx";
 import { PageHero } from "../components/PageHero.jsx";
-import { TicoAvatar, TicoRating, TicoPick, useTicoBeach } from "../components/Tico.jsx";
+import { TicoAvatar, TicoRating, TicoPick, TicoSectionIntro, useTicoBeach } from "../components/Tico.jsx";
 
 // Beach card — extracted so Tico's rating hook lives at a component boundary.
 function BeachCard({ b }) {
@@ -125,8 +125,7 @@ export function Guide({ go }) {
 
       {/* ── Beaches ── */}
       <Section bg={c.sand} pad={40}>
-        <SectionHead eyebrow="The coastline" title="Beaches worth the sand in your car" accent
-          sub="Which beach for what — swimming, surf, snorkeling, sunsets, and the hidden ones locals keep quiet." />
+        <TicoSectionIntro kind="beaches" />
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
           <BeachChip on={beachTag === "all"} onClick={() => setBeachTag("all")}>All beaches</BeachChip>
           {BEACH_TAGS.map((t) => (

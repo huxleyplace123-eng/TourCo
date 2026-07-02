@@ -21,8 +21,8 @@ import { Today } from "./pages/Today.jsx";
 import { Restaurants } from "./pages/Restaurants.jsx";
 import { Deals } from "./pages/Deals.jsx";
 import { ExploreMap } from "./pages/ExploreMap.jsx";
+import { MeetTicoPage } from "./pages/MeetTicoPage.jsx";
 import { TicoDock } from "./components/TicoDock.jsx";
-import { MeetTico, shouldMeetTico } from "./components/MeetTico.jsx";
 
 function StickyDeposit({ total, count, onView }) {
   const shown = useCountUp(Math.round(total * 0.2));
@@ -42,7 +42,6 @@ export default function App() {
   const [activeId, setActiveId] = useState(null);
   const [trip, setTrip] = useState([]); // [{id, pax}]
   const [cartOpen, setCartOpen] = useState(false);
-  const [meetTico, setMeetTico] = useState(() => { try { return shouldMeetTico(); } catch { return false; } });
 
   const go = (p) => { setPage(p); setCartOpen(false); };
   // Always land at the top of a newly-opened page. Runs AFTER the new page
@@ -75,6 +74,7 @@ export default function App() {
         {page === "eat" && <Restaurants {...shared} />}
         {page === "deals" && <Deals {...shared} />}
         {page === "map" && <ExploreMap {...shared} />}
+        {page === "tico" && <MeetTicoPage {...shared} />}
         {page === "activities" && <Activities {...shared} />}
         {page === "detail" && <Detail activeId={activeId} {...shared} />}
         {page === "packages" && <Packages {...shared} />}
@@ -90,9 +90,6 @@ export default function App() {
       <style>{`@keyframes tnPageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){[style*="tnPageIn"]{animation:none!important}}`}</style>
 
       <Footer go={go} />
-
-      {/* Meet Tico — one-time intro where the visitor bonds with the character */}
-      {meetTico && <MeetTico onClose={() => setMeetTico(false)} />}
 
       {/* Tico — the living macaw companion, present on every page */}
       <TicoDock page={page} go={go} trip={trip} lift={trip.length > 0 && !["portal", "build", "builder"].includes(page)} />

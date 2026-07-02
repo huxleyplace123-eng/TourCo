@@ -118,6 +118,27 @@ export function ticoDealTake(d) {
 
 // ── PAGE GREETINGS ── the dock's line per page, each with a mood so Tico's face
 // greets you differently depending on where you are. Real character, not signage.
+// ── SECTION INTROS ── Tico's spoken framing for a section, so a page header
+// feels like HE is walking you through it. Returns { title, line, mood }.
+export function ticoSectionIntro(kind, ctx = {}) {
+  const region = ctx.region ? ` in ${ctx.region}` : "";
+  const map = {
+    topPicks:   { title: "Tico's Top Picks right now", mood: "proud",
+      line: "I ranked these myself — best experiences on the coast this season. #1 is where I'd take you first." },
+    activities: { title: "What I'd actually do", mood: "happy",
+      line: `Everything here is vetted and rated by me. The 🦜 picks are the ones I'd book for my own flock${region}.` },
+    eat:        { title: "Where I'd eat & drink", mood: "cheeky",
+      line: "Skip the tourist traps — these are the honest kitchens and the best sunset seats. My picks are marked." },
+    beaches:    { title: "The beaches I'd send you to", mood: "chill",
+      line: "Some for surf, some for snorkel, some the locals keep quiet. I ranked the sand for you." },
+    packages:   { title: "Trips I'd take myself", mood: "excited",
+      line: "Pre-built and road-tested. Open one and I'll tailor the days around you." },
+    deals:      { title: "Real savings, bird-approved", mood: "proud",
+      line: "I'd never send my flock to a rip-off. These codes are the real thing." },
+  };
+  return map[kind] || map.topPicks;
+}
+
 export function ticoPageLine(page) {
   const lines = {
     home:      { text: "¡Hola! I'm Tico. I've flown this whole coast — tell me your vibe and I'll plan it.", mood: "happy" },

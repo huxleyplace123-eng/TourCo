@@ -7,6 +7,9 @@ import { ActivityCard } from "../components/ActivityCard.jsx";
 import { Reveal } from "../motion.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { pageHero } from "../images.js";
+import { TicoSectionIntro } from "../components/Tico.jsx";
+import { TicoRanked } from "../components/TicoRanked.jsx";
+import { ticoActivityVerdict } from "../intelligence/tico.js";
 
 const CATEGORIES = ["All", ...Array.from(new Set(activities.map((a) => a.category)))];
 const REGIONS = ["All", ...Array.from(new Set(activities.map((a) => a.region)))];
@@ -43,6 +46,9 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
   if (sort === "Price: low") list = [...list].sort((a, b) => a.price - b.price);
   if (sort === "Price: high") list = [...list].sort((a, b) => b.price - a.price);
   if (sort === "Top rated") list = [...list].sort((a, b) => b.rating - a.rating);
+  if (sort === "Tico's ranking") list = [...list].sort((a, b) => ticoActivityVerdict(b).score - ticoActivityVerdict(a).score);
+
+  const noFilters = q === "" && cat === "All" && region === "All" && level === "All" && !familyOnly && !privateOnly;
 
   const reset = () => { setQ(""); setCat("All"); setRegion("All"); setLevel("All"); setFamilyOnly(false); setPrivateOnly(false); };
 
@@ -50,6 +56,14 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
     <>
       <PageHero image={pageHero("activities")} eyebrow="Browse activities" title="Every adventure, vetted"
         sub="Add what you love to your trip. We'll handle the coordination and the deposit math." />
+
+      {/* Tico's ranked top 5 — his personal order, shown when you're just browsing */}
+      {noFilters && (
+        <Section bg={c.sand} pad={30}>
+          <TicoSectionIntro kind="topPicks" />
+          <Reveal><TicoRanked items={activities} limit={5} onView={viewActivity} onAdd={addToTrip} trip={trip} /></Reveal>
+        </Section>
+      )}
 
       <Section bg={c.sand} pad={36}>
         <div className="filters-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24 }}>
@@ -62,7 +76,7 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
             <Field label="Category"><Select value={cat} onChange={setCat} options={CATEGORIES} icon={Compass} /></Field>
             <Field label="Region"><Select value={region} onChange={setRegion} options={REGIONS} icon={MapPin} /></Field>
             <Field label="Adventure level"><Select value={level} onChange={setLevel} options={["All", "Easy", "Moderate", "High"]} icon={Mountain} /></Field>
-            <Field label="Sort by"><Select value={sort} onChange={setSort} options={["Featured", "Price: low", "Price: high", "Top rated"]} icon={Star} /></Field>
+            <Field label="Sort by"><Select value={sort} onChange={setSort} options={["Featured", "Tico's ranking", "Price: low", "Price: high", "Top rated"]} icon={Star} /></Field>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 6 }}>
               <Toggle on={familyOnly} set={setFamilyOnly} label="Family-friendly" />
               <Toggle on={privateOnly} set={setPrivateOnly} label="Private available" />

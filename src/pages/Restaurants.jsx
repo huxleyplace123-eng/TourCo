@@ -7,7 +7,7 @@ import { restaurantImage, barImage, pageHero } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { TiltCard, Photo, Reveal } from "../motion.jsx";
-import { TicoAvatar, TicoRating, TicoPick, useTicoSpot } from "../components/Tico.jsx";
+import { TicoAvatar, TicoRating, TicoPick, TicoSectionIntro, useTicoSpot } from "../components/Tico.jsx";
 
 const REGIONS = ["All", ...Array.from(new Set([...restaurants, ...bars].map((r) => r.region)))];
 
@@ -78,6 +78,7 @@ export function Restaurants({ go }) {
         sub="Not a directory — the right spot for the moment. Best after a tour, best for sunset, best local sodas, best happy hours. All local-tested." />
 
       <Section bg={c.sand}>
+        <TicoSectionIntro kind="eat" />
         {/* Eat / Drink toggle */}
         <div style={{ display: "inline-flex", gap: 6, background: "rgba(255,255,255,.05)", border: `1px solid ${c.line}`, padding: 5, borderRadius: 999, marginBottom: 18 }}>
           <ModeBtn on={mode === "eat"} icon={Utensils} label="Eat" onClick={() => switchMode("eat")} />

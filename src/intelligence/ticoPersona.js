@@ -97,6 +97,10 @@ export function verdict(score) {
       "One of my picks — I don't hand these out lightly.",
       "Yes. This is the good stuff. Book it.",
       "I've sent a lot of travelers here and none came back grumpy.",
+      "This is the real thing, not a tourist trap. Trust the bird.",
+      "If a friend visited, this is where I'd take them.",
+      "Locals rate this too — that's how you know.",
+      "Do this one. You'll be telling stories about it later.",
     ],
   };
   if (score >= 4.4) return {

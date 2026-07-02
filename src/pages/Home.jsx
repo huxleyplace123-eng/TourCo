@@ -6,6 +6,8 @@ import { Button, Section, SectionHead } from "../components/ui.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
 import { Reveal } from "../motion.jsx";
 import { CinematicHero } from "../components/CinematicHero.jsx";
+import { TicoSectionIntro } from "../components/Tico.jsx";
+import { TicoRanked } from "../components/TicoRanked.jsx";
 
 export function Home({ go, addToTrip, trip, viewActivity }) {
   const featured = activities.slice(0, 8);
@@ -14,6 +16,17 @@ export function Home({ go, addToTrip, trip, viewActivity }) {
     <>
       {/* ── Living cinematic hero ── */}
       <CinematicHero go={go} />
+
+      {/* ── Tico's Top Picks ── his personal ranking, front and center ── */}
+      <Section bg={c.sand}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+          <TicoSectionIntro kind="topPicks" />
+          <Button variant="ghost" onClick={() => go("activities")}>See all Tico rates <ArrowRight size={16} /></Button>
+        </div>
+        <Reveal>
+          <TicoRanked items={activities} limit={5} onView={viewActivity} onAdd={addToTrip} trip={trip} />
+        </Reveal>
+      </Section>
 
       {/* ── Featured activities ── */}
       <Section bg={c.sand}>
