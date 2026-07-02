@@ -36,8 +36,20 @@ const BY_REGION = {
   Guanacaste: "photo-1510414842594-a61c69b5ae57",
 };
 
-// Cinematic hero — jungle-meets-coast aerial.
-const HERO = "photo-1518259102261-b40117eabbc9";
+// Cinematic hero carousel — gorgeous Costa Rica scenes travelers actually book.
+// Verified hotlinkable Unsplash CDN IDs (all 200 OK). They cross-fade behind
+// the hero so the backdrop feels alive: beach, fishing, sailing, zipline, etc.
+const HERO_SLIDES = [
+  { id: "photo-1552733407-5d5c46c3bb3b", label: "Pacific coastline" },   // beach / coast
+  { id: "photo-1507525428034-b723cf961d3e", label: "Turquoise shores" }, // catamaran / sea
+  { id: "photo-1544551763-46a013bb70d5", label: "Offshore fishing" },    // fishing boat
+  { id: "photo-1622977266039-dbb162254c12", label: "Rainforest canopy" },// zipline / jungle
+  { id: "photo-1432405972618-c60b0225b8f9", label: "Jungle waterfalls" },// waterfall
+  { id: "photo-1502680390469-be75c86b636f", label: "Surf & sunset" },    // surf
+];
+const HERO = HERO_SLIDES[0].id;
+
+export const heroSlides = (w = 1900) => HERO_SLIDES.map((s) => ({ src: cdn(s.id, w), label: s.label }));
 
 // Cinematic hero photo per curated package (by package id).
 const BY_PACKAGE = {

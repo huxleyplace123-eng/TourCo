@@ -13,15 +13,15 @@ export const c = {
   coral: "#FFD84D",
   gold: "#FFC24B",
   orchid: "#FF6B5A",
-  // dark-theme semantic tokens
-  sand: "#05070F",       // app canvas (deep midnight)
-  canvas2: "#0A0F1E",    // slightly lifted panel bg
-  white: "#0E1526",      // "surface" — cards/panels (dark, not white)
-  surface2: "#131C33",   // lifted surface
-  line: "rgba(255,255,255,.10)", // hairline borders on dark
-  charcoal: "#F3F7FF",   // primary text (near-white)
-  stone: "#8FA3C4",      // secondary text (cool grey-blue)
-  ink: "#05070F",        // true dark (text on neon buttons)
+  // dark OCEAN-BLUE semantic tokens — deep royal navy so it feels oceanfront
+  sand: "#04122E",       // app canvas (deep ocean navy)
+  canvas2: "#072148",    // slightly lifted panel bg
+  white: "#0A2A54",      // "surface" — cards/panels (rich royal blue)
+  surface2: "#0E3564",   // lifted surface
+  line: "rgba(120,190,255,.14)", // hairline borders (cool blue tint)
+  charcoal: "#F1F7FF",   // primary text (near-white)
+  stone: "#93AECF",      // secondary text (cool blue-grey)
+  ink: "#04122E",        // deep navy (text on neon buttons)
 };
 
 export const FONT =
@@ -35,8 +35,8 @@ export const grad = {
   orchid: `linear-gradient(135deg,#FF6B5A,#22D3EE)`,
   reef: `linear-gradient(160deg,#22D3EE,#38BDF8 80%)`,
   gold: `linear-gradient(135deg,#FFC24B,#FFD84D)`,
-  // aurora background wash for the whole app
-  aurora: `radial-gradient(60% 80% at 15% 10%, rgba(34,211,238,.16), transparent 60%), radial-gradient(50% 70% at 85% 20%, rgba(59,130,246,.18), transparent 60%), radial-gradient(60% 80% at 70% 100%, rgba(255,107,90,.10), transparent 60%)`,
+  // aurora background wash for the whole app — ocean blues + a warm sun glow
+  aurora: `radial-gradient(60% 80% at 15% 8%, rgba(34,211,238,.20), transparent 60%), radial-gradient(55% 75% at 85% 18%, rgba(56,189,248,.22), transparent 60%), radial-gradient(70% 90% at 75% 105%, rgba(10,53,100,.55), transparent 60%), radial-gradient(40% 50% at 92% 88%, rgba(255,194,75,.10), transparent 60%)`,
 };
 
 // Glass surface — frosted panel over the dark canvas.

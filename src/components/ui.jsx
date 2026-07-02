@@ -34,7 +34,7 @@ export function Button({ children, variant = "primary", onClick, full, size = "m
 }
 
 // ── Badge ── (pill with optional icon)
-export function Badge({ children, bg = "rgba(5,7,15,.55)", color = c.teal, icon: Icon }) {
+export function Badge({ children, bg = "rgba(4,18,46,.55)", color = c.teal, icon: Icon }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: bg, color, fontWeight: 700, fontSize: 12, padding: "5px 11px", borderRadius: 999, lineHeight: 1 }}>
       {Icon && <Icon size={13} />}

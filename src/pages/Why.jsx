@@ -80,7 +80,7 @@ export function Why({ go }) {
       {/* ── IMMERSIVE HERO ── */}
       <div style={{ position: "relative", overflow: "hidden", minHeight: 640, display: "flex", alignItems: "center" }}>
         <img src={heroImage(1900)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.5, animation: "tnKen2 22s ease-in-out infinite alternate" }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,7,15,.75) 0%, rgba(5,7,15,.55) 40%, rgba(5,7,15,.96) 100%)" }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.75) 0%, rgba(4,18,46,.55) 40%, rgba(4,18,46,.96) 100%)" }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 18% 20%, rgba(34,211,238,.22), transparent 55%), radial-gradient(50% 60% at 85% 80%, rgba(255,194,75,.16), transparent 55%)` }} />
         <div style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "80px 20px", textAlign: "center", width: "100%" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}><LiveTicker /></div>
@@ -120,7 +120,7 @@ export function Why({ go }) {
           <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 0 }}>
             <div style={{ position: "relative", minHeight: 320 }}>
               <Photo src={personImage("john", 900)} fallback={grad.jungle} alt="John, founder of TripNest" height={"100%"} zoom={false} style={{ height: "100%", minHeight: 320 }}
-                overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 40%, rgba(10,15,30,.6) 100%)" }} />} />
+                overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 40%, rgba(7,33,72,.6) 100%)" }} />} />
               <span style={{ position: "absolute", top: 18, left: 18, ...glass, color: "#fff", padding: "7px 13px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <MapPin size={13} color={c.teal} /> Born & raised in Costa Rica
               </span>
@@ -160,7 +160,7 @@ export function Why({ go }) {
               <div className="why-pillar" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 0, borderRadius: 26, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2 }} data-flip={i % 2 === 1}>
                 <div style={{ position: "relative", minHeight: 260 }}>
                   <Photo src={sceneImage(p.key, 1000)} fallback={grad[["jungle", "ocean", "reef", "sunset"][i % 4]]} alt={p.title} height={"100%"} zoom style={{ height: "100%", minHeight: 260 }}
-                    overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,7,15,.15), rgba(10,15,30,.5))" }} />} />
+                    overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.15), rgba(7,33,72,.5))" }} />} />
                   <span style={{ position: "absolute", top: 18, left: 18, ...glass, color: c.teal, padding: "6px 12px", borderRadius: 999, fontSize: 12, fontWeight: 800, letterSpacing: 0.5, textTransform: "uppercase" }}>{p.tag}</span>
                 </div>
                 <div style={{ padding: "clamp(24px,4vw,42px)", display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -195,7 +195,7 @@ export function Why({ go }) {
           <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr" }}>
             <div style={{ position: "relative", minHeight: 300 }}>
               <Photo key={r.scene} src={sceneImage(r.scene, 1000)} fallback={grad.ocean} alt="" height={"100%"} zoom={false} style={{ height: "100%", minHeight: 300 }}
-                overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,7,15,.2), rgba(10,15,30,.55))" }} />} />
+                overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.2), rgba(7,33,72,.55))" }} />} />
             </div>
             <div key={active} style={{ padding: "clamp(26px,4vw,44px)", display: "flex", flexDirection: "column", justifyContent: "center", animation: "tnFade .5s ease both" }}>
               <Quote size={34} color={c.teal} style={{ opacity: 0.7 }} />
@@ -257,7 +257,7 @@ export function Why({ go }) {
       <Section bg={c.sand} pad={64}>
         <div style={{ position: "relative", borderRadius: 32, overflow: "hidden", border: `1px solid ${c.line}`, minHeight: 340, display: "flex", alignItems: "center" }}>
           <img src={heroImage(1600)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55, animation: "tnKen2 20s ease-in-out infinite alternate" }} />
-          <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(120deg, rgba(5,7,15,.9), rgba(5,7,15,.55))" }} />
+          <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(120deg, rgba(4,18,46,.9), rgba(4,18,46,.55))" }} />
           <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 80% at 80% 30%, rgba(34,211,238,.22), transparent 60%)` }} />
           <div style={{ position: "relative", zIndex: 2, padding: "clamp(30px,5vw,56px)", maxWidth: 640 }}>
             <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,46px)", fontWeight: 800, letterSpacing: -1.5, margin: 0, lineHeight: 1.02 }}>

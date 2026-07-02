@@ -18,17 +18,17 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
         fallback={gradFor(a.category)}
         alt={a.title}
         height={172}
-        overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,7,15,.10) 0%, transparent 30%, rgba(5,7,15,.78) 100%)" }} />}
+        overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.10) 0%, transparent 30%, rgba(4,18,46,.78) 100%)" }} />}
       >
         <div style={{ position: "absolute", top: 12, left: 12, display: "flex", gap: 6, flexWrap: "wrap", zIndex: 2 }}>
-          <Badge icon={ShieldCheck} bg="rgba(5,7,15,.55)" color={c.teal}>Vetted</Badge>
+          <Badge icon={ShieldCheck} bg="rgba(4,18,46,.55)" color={c.teal}>Vetted</Badge>
           {a.confirm
-            ? <Badge bg="rgba(5,7,15,.55)" color="#fff" icon={Clock}>Concierge confirm</Badge>
+            ? <Badge bg="rgba(4,18,46,.55)" color="#fff" icon={Clock}>Concierge confirm</Badge>
             : <Badge bg="rgba(34,211,238,.9)" color={c.ink} icon={Check}>Available now</Badge>}
         </div>
         <div style={{ position: "absolute", bottom: 12, left: 12, display: "flex", gap: 6, zIndex: 2 }}>
-          {a.family && <Badge bg="rgba(5,7,15,.55)" color={c.blue} icon={Users}>Family</Badge>}
-          {a.private && <Badge bg="rgba(5,7,15,.55)" color={c.orchid} icon={Sparkles}>Private</Badge>}
+          {a.family && <Badge bg="rgba(4,18,46,.55)" color={c.blue} icon={Users}>Family</Badge>}
+          {a.private && <Badge bg="rgba(4,18,46,.55)" color={c.orchid} icon={Sparkles}>Private</Badge>}
         </div>
         <span style={{ position: "absolute", bottom: 12, right: 12, zIndex: 2, background: "rgba(34,211,238,.16)", border: "1px solid rgba(34,211,238,.5)", backdropFilter: "blur(6px)", color: "#fff", fontWeight: 800, fontSize: 12.5, padding: "5px 11px", borderRadius: 999, boxShadow: "0 0 18px -4px rgba(34,211,238,.7)" }}>
           {money(a.price)}/person

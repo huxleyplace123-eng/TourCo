@@ -19,7 +19,7 @@ function PackageCard({ p, featured, onOpen }) {
       style={{ position: "relative", overflow: "hidden", border: `1px solid ${c.line}`, cursor: "pointer", minHeight: featured ? 460 : 380, display: "flex" }}>
       <div onClick={() => onOpen(p)} style={{ position: "absolute", inset: 0 }}>
         <Photo src={packageImage(p.id, featured ? 1400 : 900)} fallback={grad[p.gradKey] || grad.ocean} alt={p.title} height={featured ? 460 : 380} zoom
-          overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,7,15,.15) 0%, rgba(5,7,15,.35) 45%, rgba(5,7,15,.94) 100%)" }} />} />
+          overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.15) 0%, rgba(4,18,46,.35) 45%, rgba(4,18,46,.94) 100%)" }} />} />
       </div>
       {/* content over photo */}
       <div style={{ position: "relative", zIndex: 2, marginTop: "auto", padding: featured ? 28 : 22, width: "100%", pointerEvents: "none" }}>
@@ -69,13 +69,13 @@ function PackageDrawer({ p, onClose, addToTrip }) {
   const days = Math.max(3, Math.min(p.items.length, 7));
 
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(5,7,15,.75)", backdropFilter: "blur(6px)", display: "flex", justifyContent: "center", alignItems: "flex-start", overflowY: "auto", padding: "40px 16px" }}>
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(4,18,46,.75)", backdropFilter: "blur(6px)", display: "flex", justifyContent: "center", alignItems: "flex-start", overflowY: "auto", padding: "40px 16px" }}>
       <div onClick={(e) => e.stopPropagation()} style={{ background: c.canvas2, border: `1px solid ${c.line}`, borderRadius: 26, maxWidth: 780, width: "100%", overflow: "hidden", boxShadow: "0 60px 120px -40px rgba(0,0,0,.9)", animation: "tnDrawer .4s cubic-bezier(.2,.7,.2,1) both" }}>
         <style>{`@keyframes tnDrawer{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}`}</style>
         {/* hero */}
         <div style={{ position: "relative", height: 240 }}>
           <Photo src={packageImage(p.id, 1400)} fallback={grad[p.gradKey]} alt={p.title} height={240} zoom={false}
-            overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,7,15,.2), rgba(10,15,30,.96))" }} />} />
+            overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.2), rgba(7,33,72,.96))" }} />} />
           <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, zIndex: 3, ...glass, width: 38, height: 38, borderRadius: 999, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#fff" }}><X size={18} /></button>
           <div style={{ position: "absolute", bottom: 20, left: 24, right: 24, zIndex: 2 }}>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
@@ -142,7 +142,7 @@ export function Packages({ go, addToTrip }) {
       {/* ── Dark cinematic hero ── */}
       <div style={{ position: "relative", overflow: "hidden", padding: "70px 20px 54px" }}>
         <img src={heroImage(1800)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.28 }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,7,15,.6), rgba(5,7,15,.9))" }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.6), rgba(4,18,46,.9))" }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 20% 20%, rgba(34,211,238,.2), transparent 55%), radial-gradient(50% 60% at 85% 80%, rgba(255,194,75,.14), transparent 55%)` }} />
         <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
           <Eyebrow><span style={{ color: c.gold }}>Ready-made trips</span></Eyebrow>

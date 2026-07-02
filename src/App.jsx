@@ -81,7 +81,7 @@ export default function App() {
 
       {/* Quick "added to trip" toast/modal */}
       {cartOpen && (
-        <div onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(10,46,143,.5)", zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 20 }}>
+        <div onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(7,33,72,.5)", zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 20 }}>
           <div onClick={(e) => e.stopPropagation()} style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 22, padding: 24, maxWidth: 420, width: "100%", marginBottom: 20, boxShadow: "0 40px 90px -30px rgba(0,0,0,.9)" }}>
             <h3 style={{ margin: "0 0 4px", color: c.charcoal, fontSize: 20, fontWeight: 800 }}>Added to your trip 🎉</h3>
             <p style={{ color: c.stone, fontSize: 14.5, margin: "0 0 16px" }}>

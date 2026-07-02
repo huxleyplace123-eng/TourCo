@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight, Compass, Calendar, Users, Heart, ChevronDown } from "lucide-react";
 import { c, grad, glass, gradText } from "../theme.js";
-import { heroImage } from "../images.js";
+import { heroSlides } from "../images.js";
 import { Button, Field } from "./ui.jsx";
 import { Magnetic } from "../motion.jsx";
+
+const SLIDES = heroSlides(1900);
 
 // Time-of-day accent — the glow shifts with the visitor's local hour.
 function timeGrade(hour) {
@@ -18,13 +20,16 @@ export function CinematicHero({ go }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
   const [hour, setHour] = useState(12);
+  const [slide, setSlide] = useState(0);
   const wrapRef = useRef(null);
 
   useEffect(() => {
     setHour(new Date().getHours());
     const onScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    // rotate the hero backdrop through beautiful Costa Rica scenes
+    const id = setInterval(() => setSlide((s) => (s + 1) % SLIDES.length), 5000);
+    return () => { window.removeEventListener("scroll", onScroll); clearInterval(id); };
   }, []);
 
   const onMove = (e) => {
@@ -70,14 +75,29 @@ export function CinematicHero({ go }) {
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
       `}</style>
 
-      {/* ── Cinematic photo, full-bleed, scroll-scrubbed ── */}
+      {/* ── Cinematic carousel, full-bleed, cross-fading + scroll-scrubbed ── */}
       <div style={{ position: "absolute", inset: 0, ...layer(0.5) }}>
-        <img src={heroImage(1900)} alt="" aria-hidden
-          style={{ position: "absolute", inset: "-8%", width: "116%", height: "116%", objectFit: "cover", opacity: 0.55 - scrub * 0.3, transform: `scale(${1 + scrub * 0.15})`, transition: "opacity .1s linear" }} />
+        {SLIDES.map((s, i) => (
+          <img key={s.src} src={s.src} alt="" aria-hidden
+            style={{ position: "absolute", inset: "-8%", width: "116%", height: "116%", objectFit: "cover",
+              opacity: (i === slide ? 0.6 : 0) * (1 - scrub * 0.55),
+              transform: `scale(${(i === slide ? 1.02 : 1) + scrub * 0.15})`,
+              transition: "opacity 1.6s ease, transform 6s ease" }} />
+        ))}
       </div>
-      {/* deep dark vignette so text pops */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, rgba(5,7,15,.94) 0%, rgba(5,7,15,.7) 45%, rgba(5,7,15,.35) 100%)" }} />
-      <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(5,7,15,.6) 100%)" }} />
+      {/* deep ocean vignette so text pops */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, rgba(4,18,46,.94) 0%, rgba(4,18,46,.7) 45%, rgba(4,18,46,.32) 100%)" }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(4,18,46,.6) 100%)" }} />
+      {/* scene label + slide dots */}
+      <div style={{ position: "absolute", bottom: 20, right: 24, zIndex: 3, display: "flex", alignItems: "center", gap: 12, opacity: 1 - scrub }}>
+        <span key={slide} style={{ ...glass, color: "#fff", padding: "6px 12px", borderRadius: 999, fontSize: 12, fontWeight: 700, animation: "tnRise .6s ease both" }}>{SLIDES[slide].label}</span>
+        <div style={{ display: "flex", gap: 6 }}>
+          {SLIDES.map((_, i) => (
+            <button key={i} onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`}
+              style={{ width: i === slide ? 20 : 7, height: 7, borderRadius: 999, border: "none", cursor: "pointer", background: i === slide ? c.teal : "rgba(255,255,255,.4)", transition: "all .3s" }} />
+          ))}
+        </div>
+      </div>
       {/* aurora + accent glows */}
       <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 12% 18%, ${g.accent}33, transparent 55%), radial-gradient(45% 55% at 88% 75%, rgba(59,130,246,.28), transparent 55%)`, ...layer(0.8) }} />
       {/* light rays */}
