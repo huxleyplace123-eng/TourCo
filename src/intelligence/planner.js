@@ -1,4 +1,4 @@
-// ── TripNest Intelligence: Smart Auto-Planner ────────────────────────────────
+// ── TicoWild Intelligence: Smart Auto-Planner ────────────────────────────────
 // A deterministic trip optimizer — the "guide brain" that a great local uses:
 // group activities by region (avoid long back-to-back drives), pace energy
 // (don't stack two high-adrenaline days), place each activity at its ideal

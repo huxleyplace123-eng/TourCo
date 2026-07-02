@@ -1,4 +1,4 @@
-// ── TripNest Intelligence: the tool surface ──────────────────────────────────
+// ── TicoWild Intelligence: the tool surface ──────────────────────────────────
 // One clean API the concierge calls to "think". Today the concierge (Ask John)
 // is a rules engine that calls these tools; tomorrow a real LLM calls the exact
 // same tools via function-calling. Keeping this seam means the brain can be

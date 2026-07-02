@@ -16,7 +16,7 @@ const PILLARS = [
   { icon: ShieldCheck, key: "vetted", tag: "Safety first", title: "Only vetted operators", body: "Every tour partner is insured, licensed, and personally checked by our team on the ground. If we wouldn't send our own family, they're not on the platform — period.", points: ["Insurance verified", "Licensed & permitted", "Vetted on-site"] },
   { icon: DollarSign, key: "pricing", tag: "No surprises", title: "Transparent pricing", body: "See real per-person prices upfront. Reserve for just 20%, settle the rest closer to your trip. No inflated tourist markups, no hidden fees, no games — ever.", points: ["Prices shown upfront", "Only 20% to reserve", "Zero hidden fees"] },
   { icon: MessageCircle, key: "concierge", tag: "Real humans", title: "A local in your corner", body: "Message John and the team on WhatsApp anytime. We coordinate every pickup, timing, and change so your days actually flow — no apps, no call centers, just locals who care.", points: ["WhatsApp, day or night", "Under 2-hour replies", "Every detail handled"] },
-  { icon: Heart, key: "personal", tag: "Made for you", title: "Built for your kind of trip", body: "Honeymoon, family week, fishing crew, or an adult group weekend — your plan adapts to exactly who you're traveling with. No two TripNest trips are ever the same.", points: ["Tailored to your group", "Paced to your style", "Yours to tweak anytime"] },
+  { icon: Heart, key: "personal", tag: "Made for you", title: "Built for your kind of trip", body: "Honeymoon, family week, fishing crew, or an adult group weekend — your plan adapts to exactly who you're traveling with. No two TicoWild trips are ever the same.", points: ["Tailored to your group", "Paced to your style", "Yours to tweak anytime"] },
 ];
 
 const REVIEWS = [
@@ -80,11 +80,11 @@ export function Why({ go }) {
       {/* ── IMMERSIVE HERO ── */}
       <div style={{ position: "relative", overflow: "hidden", minHeight: 640, display: "flex", alignItems: "center" }}>
         <img src={heroImage(1900)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.5, animation: "tnKen2 22s ease-in-out infinite alternate" }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.75) 0%, rgba(4,18,46,.55) 40%, rgba(4,18,46,.96) 100%)" }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 18% 20%, rgba(34,211,238,.22), transparent 55%), radial-gradient(50% 60% at 85% 80%, rgba(255,194,75,.16), transparent 55%)` }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.75) 0%, rgba(11,26,46,.55) 40%, rgba(11,26,46,.96) 100%)" }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 18% 20%, rgba(34,211,238,.22), transparent 55%), radial-gradient(50% 60% at 85% 80%, rgba(255,208,0,.16), transparent 55%)` }} />
         <div style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "80px 20px", textAlign: "center", width: "100%" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}><LiveTicker /></div>
-          <Eyebrow><span style={{ color: c.gold }}>Why TripNest</span></Eyebrow>
+          <Eyebrow><span style={{ color: c.gold }}>Why TicoWild</span></Eyebrow>
           <h1 style={{ color: "#fff", fontSize: "clamp(40px,7vw,78px)", fontWeight: 800, letterSpacing: -2.5, lineHeight: 0.98, margin: "8px 0 0", textShadow: "0 6px 40px rgba(0,0,0,.5)" }}>
             Adventure, without<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>the guesswork.</span>
           </h1>
@@ -119,8 +119,8 @@ export function Why({ go }) {
         <TiltCard max={4} radius={28} style={{ overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2 }}>
           <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 0 }}>
             <div style={{ position: "relative", minHeight: 320 }}>
-              <Photo src={personImage("john", 900)} fallback={grad.jungle} alt="John, founder of TripNest" height={"100%"} zoom={false} style={{ height: "100%", minHeight: 320 }}
-                overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 40%, rgba(7,33,72,.6) 100%)" }} />} />
+              <Photo src={personImage("john", 900)} fallback={grad.jungle} alt="John, founder of TicoWild" height={"100%"} zoom={false} style={{ height: "100%", minHeight: 320 }}
+                overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 40%, rgba(11,26,46,.6) 100%)" }} />} />
               <span style={{ position: "absolute", top: 18, left: 18, ...glass, color: "#fff", padding: "7px 13px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <MapPin size={13} color={c.teal} /> Born & raised in Costa Rica
               </span>
@@ -129,14 +129,14 @@ export function Why({ go }) {
               <Eyebrow><span style={{ color: c.gold }}>Meet your concierge</span></Eyebrow>
               <h2 style={{ color: "#fff", fontSize: "clamp(26px,3.5vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "6px 0 14px" }}>Hi, I'm John 👋</h2>
               <p style={{ color: "rgba(243,247,255,.82)", fontSize: 16.5, lineHeight: 1.7, margin: 0 }}>
-                I've spent 15 years guiding travelers across every corner of this coast. I started TripNest because I was tired of watching visitors get overcharged, over-scheduled, and handed off to call centers.
+                I've spent 15 years guiding travelers across every corner of this coast. I started TicoWild because I was tired of watching visitors get overcharged, over-scheduled, and handed off to call centers.
               </p>
               <p style={{ color: "rgba(243,247,255,.82)", fontSize: 16.5, lineHeight: 1.7, margin: "14px 0 0" }}>
                 So here's my promise: <b style={{ color: "#fff" }}>every operator I list, I'd trust with my own family</b>. Every price is honest. And when you message us, you're talking to a real local who actually knows the place.
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 22, flexWrap: "wrap" }}>
                 <span style={{ fontFamily: "'Segoe Script','Brush Script MT',cursive", fontSize: 30, color: c.teal, transform: "rotate(-4deg)" }}>John</span>
-                <span style={{ color: c.stone, fontSize: 13.5 }}>Founder & head concierge, TripNest</span>
+                <span style={{ color: c.stone, fontSize: 13.5 }}>Founder & head concierge, TicoWild</span>
               </div>
               <div style={{ marginTop: 22 }}>
                 <Button variant="dark" onClick={() => window.alert("Opening WhatsApp concierge…")}><MessageCircle size={17} />Message John directly</Button>
@@ -160,7 +160,7 @@ export function Why({ go }) {
               <div className="why-pillar" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 0, borderRadius: 26, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2 }} data-flip={i % 2 === 1}>
                 <div style={{ position: "relative", minHeight: 260 }}>
                   <Photo src={sceneImage(p.key, 1000)} fallback={grad[["jungle", "ocean", "reef", "sunset"][i % 4]]} alt={p.title} height={"100%"} zoom style={{ height: "100%", minHeight: 260 }}
-                    overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.15), rgba(7,33,72,.5))" }} />} />
+                    overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.15), rgba(11,26,46,.5))" }} />} />
                   <span style={{ position: "absolute", top: 18, left: 18, ...glass, color: c.teal, padding: "6px 12px", borderRadius: 999, fontSize: 12, fontWeight: 800, letterSpacing: 0.5, textTransform: "uppercase" }}>{p.tag}</span>
                 </div>
                 <div style={{ padding: "clamp(24px,4vw,42px)", display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -195,7 +195,7 @@ export function Why({ go }) {
           <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr" }}>
             <div style={{ position: "relative", minHeight: 300 }}>
               <Photo key={r.scene} src={sceneImage(r.scene, 1000)} fallback={grad.ocean} alt="" height={"100%"} zoom={false} style={{ height: "100%", minHeight: 300 }}
-                overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.2), rgba(7,33,72,.55))" }} />} />
+                overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.2), rgba(11,26,46,.55))" }} />} />
             </div>
             <div key={active} style={{ padding: "clamp(26px,4vw,44px)", display: "flex", flexDirection: "column", justifyContent: "center", animation: "tnFade .5s ease both" }}>
               <Quote size={34} color={c.teal} style={{ opacity: 0.7 }} />
@@ -247,7 +247,7 @@ export function Why({ go }) {
         <Reveal>
           <div style={{ marginTop: 20, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", justifyContent: "center", ...glass, borderRadius: 20, padding: "20px 26px", textAlign: "center" }}>
             <ShieldCheck size={26} color={c.gold} />
-            <span style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>The TripNest promise:</span>
+            <span style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>The TicoWild promise:</span>
             <span style={{ color: "rgba(243,247,255,.82)", fontSize: 15.5 }}>if an operator ever falls short of what we promised, we make it right. That's the deal.</span>
           </div>
         </Reveal>
@@ -257,7 +257,7 @@ export function Why({ go }) {
       <Section bg={c.sand} pad={64}>
         <div style={{ position: "relative", borderRadius: 32, overflow: "hidden", border: `1px solid ${c.line}`, minHeight: 340, display: "flex", alignItems: "center" }}>
           <img src={heroImage(1600)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55, animation: "tnKen2 20s ease-in-out infinite alternate" }} />
-          <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(120deg, rgba(4,18,46,.9), rgba(4,18,46,.55))" }} />
+          <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(120deg, rgba(11,26,46,.9), rgba(11,26,46,.55))" }} />
           <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 80% at 80% 30%, rgba(34,211,238,.22), transparent 60%)` }} />
           <div style={{ position: "relative", zIndex: 2, padding: "clamp(30px,5vw,56px)", maxWidth: 640 }}>
             <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,46px)", fontWeight: 800, letterSpacing: -1.5, margin: 0, lineHeight: 1.02 }}>

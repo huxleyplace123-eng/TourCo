@@ -12,12 +12,12 @@ export function Button({ children, variant = "primary", onClick, full, size = "m
     fontSize: size === "lg" ? 17 : size === "sm" ? 14 : 15.5,
   };
   const variants = {
-    primary: { background: c.gold, color: c.ink, boxShadow: "0 0 0 1px rgba(255,194,75,.4), 0 12px 34px -10px rgba(255,194,75,.6)" },
+    primary: { background: c.gold, color: c.ink, boxShadow: "0 0 0 1px rgba(255,208,0,.4), 0 12px 34px -10px rgba(255,208,0,.6)" },
     dark: { background: `linear-gradient(135deg,${c.teal},${c.emerald})`, color: c.ink, boxShadow: "0 0 0 1px rgba(34,211,238,.4), 0 12px 34px -12px rgba(34,211,238,.7)" },
     light: { background: "rgba(255,255,255,.08)", color: c.charcoal, border: `1px solid ${c.line}` },
     ghost: { background: "rgba(255,255,255,.04)", color: c.charcoal, border: `1.5px solid rgba(255,255,255,.18)` },
     glass: { background: "rgba(255,255,255,.08)", color: "#fff", border: "1.5px solid rgba(255,255,255,.28)", backdropFilter: "blur(10px)" },
-    gold: { background: c.gold, color: c.ink, boxShadow: "0 0 0 1px rgba(255,194,75,.4), 0 12px 34px -10px rgba(255,194,75,.6)" },
+    gold: { background: c.gold, color: c.ink, boxShadow: "0 0 0 1px rgba(255,208,0,.4), 0 12px 34px -10px rgba(255,208,0,.6)" },
   };
   return (
     <button
@@ -34,7 +34,7 @@ export function Button({ children, variant = "primary", onClick, full, size = "m
 }
 
 // ── Badge ── (pill with optional icon)
-export function Badge({ children, bg = "rgba(4,18,46,.55)", color = c.teal, icon: Icon }) {
+export function Badge({ children, bg = "rgba(11,26,46,.55)", color = c.teal, icon: Icon }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: bg, color, fontWeight: 700, fontSize: 12, padding: "5px 11px", borderRadius: 999, lineHeight: 1 }}>
       {Icon && <Icon size={13} />}

@@ -1,4 +1,4 @@
-// ── TripNest Intelligence: Living Context Layer ──────────────────────────────
+// ── TicoWild Intelligence: Living Context Layer ──────────────────────────────
 // A deterministic "guide brain" of real Costa Rica knowledge. No API cost.
 // Everything downstream (smart badges, the auto-planner, the concierge) reasons
 // over the facts derived here. Replace the static climate table with a live

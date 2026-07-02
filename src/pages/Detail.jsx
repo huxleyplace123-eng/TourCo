@@ -125,7 +125,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
               </div>
               {op?.insurance && (
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12, background: "rgba(47,107,235,.08)", color: c.emerald, padding: "7px 12px", borderRadius: 999, fontWeight: 700, fontSize: 12.5 }}>
-                  <ShieldCheck size={14} />Insured & vetted by TripNest
+                  <ShieldCheck size={14} />Insured & vetted by TicoWild
                 </div>
               )}
             </div>

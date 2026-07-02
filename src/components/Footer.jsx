@@ -30,7 +30,7 @@ export function Footer({ go }) {
           </p>
         </div>
         <Col title="Explore" links={[["activities", "Activities"], ["packages", "Packages"], ["build", "Build My Trip"], ["guide", "Local's Guide"]]} go={go} />
-        <Col title="Company" links={[["why", "Why TripNest"], ["partner", "Partner with us"], ["portal", "My Trips"]]} go={go} />
+        <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["portal", "My Trips"]]} go={go} />
         <div>
           <div style={{ fontWeight: 800, color: "#fff", marginBottom: 12 }}>Support</div>
           <Button variant="gold" size="sm" onClick={() => window.alert("Opening WhatsApp concierge…")}>
@@ -40,7 +40,7 @@ export function Footer({ go }) {
         </div>
       </div>
       <div style={{ maxWidth: 1180, margin: "30px auto 0", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.12)", fontSize: 13, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-        <span>© 2026 TripNest. A booking & coordination platform — not the tour operator.</span>
+        <span>© 2026 TicoWild. A booking & coordination platform — not the tour operator.</span>
         <span>Pura vida 🌿</span>
       </div>
     </footer>

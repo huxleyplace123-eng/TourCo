@@ -59,7 +59,7 @@ export function StoryPoster({ chosen, total, tripType = "adventure" }) {
   const days = chosen.length;
 
   const share = async () => {
-    const text = `My Costa Rica adventure with TripNest 🌿\n${chosen.map((x, i) => `Day ${i + 1}: ${x.a.title}`).join("\n")}\n\nPlanned by locals at TripNest.`;
+    const text = `My Costa Rica adventure with TicoWild 🌿\n${chosen.map((x, i) => `Day ${i + 1}: ${x.a.title}`).join("\n")}\n\nPlanned by locals at TicoWild.`;
     try {
       if (navigator.share) { await navigator.share({ title: "My Costa Rica Story", text }); return; }
       await navigator.clipboard.writeText(text);
@@ -106,7 +106,7 @@ export function StoryPoster({ chosen, total, tripType = "adventure" }) {
               <div style={{ fontSize: 26, fontWeight: 800 }}>{money(total)}</div>
             </div>
             <div style={{ textAlign: "right", fontSize: 13, fontWeight: 800 }}>
-              TripNest 🌿<div style={{ fontSize: 11, fontWeight: 600, opacity: .8 }}>planned by locals</div>
+              TicoWild 🌿<div style={{ fontSize: 11, fontWeight: 600, opacity: .8 }}>planned by locals</div>
             </div>
           </div>
         </div>

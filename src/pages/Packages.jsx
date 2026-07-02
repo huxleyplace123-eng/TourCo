@@ -19,13 +19,13 @@ function PackageCard({ p, featured, onOpen }) {
       style={{ position: "relative", overflow: "hidden", border: `1px solid ${c.line}`, cursor: "pointer", minHeight: featured ? 460 : 380, display: "flex" }}>
       <div onClick={() => onOpen(p)} style={{ position: "absolute", inset: 0 }}>
         <Photo src={packageImage(p.id, featured ? 1400 : 900)} fallback={grad[p.gradKey] || grad.ocean} alt={p.title} height={featured ? 460 : 380} zoom
-          overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.15) 0%, rgba(4,18,46,.35) 45%, rgba(4,18,46,.94) 100%)" }} />} />
+          overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.15) 0%, rgba(11,26,46,.35) 45%, rgba(11,26,46,.94) 100%)" }} />} />
       </div>
       {/* content over photo */}
       <div style={{ position: "relative", zIndex: 2, marginTop: "auto", padding: featured ? 28 : 22, width: "100%", pointerEvents: "none" }}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
           {featured && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: c.gold, color: c.ink, padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, letterSpacing: 0.3, boxShadow: "0 0 20px -4px rgba(255,194,75,.8)" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: c.gold, color: c.ink, padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, letterSpacing: 0.3, boxShadow: "0 0 20px -4px rgba(255,208,0,.8)" }}>
               <Star size={12} fill={c.ink} />MOST POPULAR
             </span>
           )}
@@ -69,13 +69,13 @@ function PackageDrawer({ p, onClose, addToTrip }) {
   const days = Math.max(3, Math.min(p.items.length, 7));
 
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(4,18,46,.75)", backdropFilter: "blur(6px)", display: "flex", justifyContent: "center", alignItems: "flex-start", overflowY: "auto", padding: "40px 16px" }}>
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(11,26,46,.75)", backdropFilter: "blur(6px)", display: "flex", justifyContent: "center", alignItems: "flex-start", overflowY: "auto", padding: "40px 16px" }}>
       <div onClick={(e) => e.stopPropagation()} style={{ background: c.canvas2, border: `1px solid ${c.line}`, borderRadius: 26, maxWidth: 780, width: "100%", overflow: "hidden", boxShadow: "0 60px 120px -40px rgba(0,0,0,.9)", animation: "tnDrawer .4s cubic-bezier(.2,.7,.2,1) both" }}>
         <style>{`@keyframes tnDrawer{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}`}</style>
         {/* hero */}
         <div style={{ position: "relative", height: 240 }}>
           <Photo src={packageImage(p.id, 1400)} fallback={grad[p.gradKey]} alt={p.title} height={240} zoom={false}
-            overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.2), rgba(7,33,72,.96))" }} />} />
+            overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.2), rgba(11,26,46,.96))" }} />} />
           <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, zIndex: 3, ...glass, width: 38, height: 38, borderRadius: 999, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#fff" }}><X size={18} /></button>
           <div style={{ position: "absolute", bottom: 20, left: 24, right: 24, zIndex: 2 }}>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
@@ -142,8 +142,8 @@ export function Packages({ go, addToTrip }) {
       {/* ── Dark cinematic hero ── */}
       <div style={{ position: "relative", overflow: "hidden", padding: "70px 20px 54px" }}>
         <img src={heroImage(1800)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.28 }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,18,46,.6), rgba(4,18,46,.9))" }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 20% 20%, rgba(34,211,238,.2), transparent 55%), radial-gradient(50% 60% at 85% 80%, rgba(255,194,75,.14), transparent 55%)` }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.6), rgba(11,26,46,.9))" }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 20% 20%, rgba(34,211,238,.2), transparent 55%), radial-gradient(50% 60% at 85% 80%, rgba(255,208,0,.14), transparent 55%)` }} />
         <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
           <Eyebrow><span style={{ color: c.gold }}>Ready-made trips</span></Eyebrow>
           <h1 style={{ color: "#fff", fontSize: "clamp(34px,6vw,60px)", fontWeight: 800, letterSpacing: -2, margin: "6px 0 10px", lineHeight: 1 }}>
@@ -173,7 +173,7 @@ export function Packages({ go, addToTrip }) {
       {/* closing CTA */}
       <Section bg={c.sand} pad={60}>
         <div style={{ position: "relative", borderRadius: 30, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2, padding: "56px 28px", textAlign: "center" }}>
-          <div style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 80% at 80% 20%, rgba(34,211,238,.18), transparent 55%), radial-gradient(60% 80% at 15% 90%, rgba(255,194,75,.12), transparent 55%)` }} />
+          <div style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 80% at 80% 20%, rgba(34,211,238,.18), transparent 55%), radial-gradient(60% 80% at 15% 90%, rgba(255,208,0,.12), transparent 55%)` }} />
           <div style={{ position: "relative" }}>
             <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,42px)", fontWeight: 800, letterSpacing: -1, margin: 0 }}>Nothing fits perfectly?</h2>
             <p style={{ color: "rgba(243,247,255,.8)", fontSize: 17, marginTop: 12, maxWidth: 520, marginInline: "auto" }}>Every package is a starting point. Tell John what you want and he'll build a custom one from scratch.</p>

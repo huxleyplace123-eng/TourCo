@@ -19,7 +19,7 @@ export function SmartPlan({ chosen, pax = 2, budget, monthIdx }) {
       {/* engine header */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 7, ...glass, color: c.teal, padding: "7px 13px", borderRadius: 999, fontWeight: 800, fontSize: 12.5 }}>
-          <Brain size={14} /> Optimized by TripNest AI
+          <Brain size={14} /> Optimized by TicoWild AI
         </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.stone, fontSize: 12.5, fontWeight: 600 }}>
           <Route size={13} />{plan.totals.days} days · {plan.totals.drive}h total drive
@@ -33,7 +33,7 @@ export function SmartPlan({ chosen, pax = 2, budget, monthIdx }) {
       {plan.warnings.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
           {plan.warnings.map((w, i) => (
-            <div key={i} style={{ display: "flex", gap: 9, alignItems: "flex-start", background: "rgba(255,194,75,.1)", border: "1px solid rgba(255,194,75,.28)", borderRadius: 12, padding: "10px 13px" }}>
+            <div key={i} style={{ display: "flex", gap: 9, alignItems: "flex-start", background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.28)", borderRadius: 12, padding: "10px 13px" }}>
               <AlertTriangle size={15} color={c.gold} style={{ flexShrink: 0, marginTop: 1 }} />
               <span style={{ color: c.charcoal, fontSize: 13.5, lineHeight: 1.45 }}>{w}</span>
             </div>

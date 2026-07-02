@@ -86,8 +86,8 @@ export function CinematicHero({ go }) {
         ))}
       </div>
       {/* deep ocean vignette so text pops */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, rgba(4,18,46,.94) 0%, rgba(4,18,46,.7) 45%, rgba(4,18,46,.32) 100%)" }} />
-      <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(4,18,46,.6) 100%)" }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, rgba(11,26,46,.94) 0%, rgba(11,26,46,.7) 45%, rgba(11,26,46,.32) 100%)" }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(11,26,46,.6) 100%)" }} />
       {/* scene label + slide dots */}
       <div style={{ position: "absolute", bottom: 20, right: 24, zIndex: 3, display: "flex", alignItems: "center", gap: 12, opacity: 1 - scrub }}>
         <span key={slide} style={{ ...glass, color: "#fff", padding: "6px 12px", borderRadius: 999, fontSize: 12, fontWeight: 700, animation: "tnRise .6s ease both" }}>{SLIDES[slide].label}</span>
@@ -99,7 +99,7 @@ export function CinematicHero({ go }) {
         </div>
       </div>
       {/* aurora + accent glows */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 12% 18%, ${g.accent}33, transparent 55%), radial-gradient(45% 55% at 88% 75%, rgba(59,130,246,.28), transparent 55%)`, ...layer(0.8) }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 12% 18%, ${g.accent}33, transparent 55%), radial-gradient(45% 55% at 88% 75%, rgba(34,211,238,.28), transparent 55%)`, ...layer(0.8) }} />
       {/* light rays */}
       <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(115deg, transparent 35%, rgba(255,255,255,.06) 50%, transparent 65%)", animation: "tnShimmer 8s ease-in-out infinite", pointerEvents: "none" }} />
 
@@ -203,7 +203,7 @@ export function CinematicHero({ go }) {
       <div aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 160, pointerEvents: "none" }}>
         <svg viewBox="0 0 1440 200" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
           <path style={{ animation: "tnWave 12s ease-in-out infinite alternate" }} fill="rgba(34,211,238,.06)" d="M0,120 C240,80 480,160 720,120 C960,80 1200,160 1440,120 L1440,200 L0,200 Z" />
-          <path style={{ animation: "tnWave 9s ease-in-out infinite alternate-reverse" }} fill="rgba(59,130,246,.08)" d="M0,150 C288,110 576,180 864,150 C1152,120 1296,170 1440,150 L1440,200 L0,200 Z" />
+          <path style={{ animation: "tnWave 9s ease-in-out infinite alternate-reverse" }} fill="rgba(34,211,238,.08)" d="M0,150 C288,110 576,180 864,150 C1152,120 1296,170 1440,150 L1440,200 L0,200 Z" />
           <path fill={c.sand} d="M0,178 C360,150 720,196 1080,176 C1260,166 1350,184 1440,178 L1440,200 L0,200 Z" />
         </svg>
       </div>
