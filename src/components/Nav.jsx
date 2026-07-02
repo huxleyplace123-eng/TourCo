@@ -5,6 +5,7 @@ import { Logo } from "./Logo.jsx";
 import { Button } from "./ui.jsx";
 
 const LINKS = [
+  ["today", "Today"],
   ["activities", "Activities"],
   ["packages", "Packages"],
   ["john", "John Recommends"],

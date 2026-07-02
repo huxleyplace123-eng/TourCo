@@ -97,11 +97,66 @@ export function monthBriefing(monthIdx = monthIndexNow()) {
   return { month: MONTHS[monthIdx], climate: cl, inSeason: active };
 }
 
+// Approx sunrise/sunset for Costa Rica's Pacific coast (near the equator, so
+// it barely moves): ~5:30am / ~5:50pm year-round. Good enough to feel local.
+function sunTimes(monthIdx) {
+  const shift = [0, 5, 8, 6, 2, 0, 0, 2, 2, -2, -4, -3][monthIdx] || 0; // minutes-ish
+  const fmt = (h, m) => `${((h + 11) % 12) + 1}:${String(((m % 60) + 60) % 60).padStart(2, "0")}${h < 12 ? "am" : "pm"}`;
+  return { sunrise: fmt(5, 32 + shift), sunset: fmt(17, 48 + shift) };
+}
+
+// TOOL: the daily home. Given the visitor's local hour + (optional) base region,
+// assemble a live "Today" briefing — greeting, best pick for today, a
+// don't-do-this-today warning, a local pick, sunset, and the season note.
+export function todayBriefing({ hour = 12, region = null, monthIdx = monthIndexNow() } = {}) {
+  const cl = climateFor(monthIdx);
+  const brief = monthBriefing(monthIdx);
+  const greet = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const sun = sunTimes(monthIdx);
+
+  // rank activities for a neutral profile, biased to the base region + weather
+  const ranked = recommendActivities({ region, monthIdx, avoidLongDrives: !!region })
+    .filter((r) => r.score > 0);
+
+  // best pick = top-ranked whose ideal time still fits the remaining day
+  const fits = ranked.filter((r) => {
+    const t = activityInsights(r.a, monthIdx).ctx.idealTime;
+    if (hour >= 15 && t === "morning") return false; // too late for a morning tour
+    return true;
+  });
+  const best = (fits[0] || ranked[0])?.a || null;
+  const localPick = ranked.find((r) => r.a.id !== best?.id && (r.a.rating || 0) >= 4.8)?.a || ranked[1]?.a || null;
+
+  // "don't do this today" — a weather/timing caution, real and specific
+  let avoid = null;
+  const rainy = cl.rain > 0.45;
+  if (rainy) {
+    const wet = activities.find((a) => activityInsights(a, monthIdx).ctx.weatherSensitive > 0.7 && a.region === (region || a.region));
+    if (wet) avoid = `Skip ${wet.category.toLowerCase()} this afternoon — ${cl.m} showers roll in after lunch. Do it first thing instead.`;
+  }
+  if (!avoid && hour >= 15) avoid = "Avoid starting a long ATV or waterfall drive now — coastal roads get hard to read after dark.";
+  if (!avoid) avoid = "Book water tours for the morning — the sea is calmest before the afternoon breeze.";
+
+  return {
+    greeting: greet,
+    region: region || null,
+    season: brief.inSeason[0] || null,
+    climateNote: cl.note,
+    sunrise: sun.sunrise,
+    sunset: sun.sunset,
+    best, localPick, avoid,
+    bestReason: best ? (activityInsights(best, monthIdx).insights[0]?.text || "our top pick right now") : null,
+  };
+}
+
 // A tiny "tool manifest" — the shape a real LLM would be handed for function
 // calling. Documents the brain's capabilities in one place.
 export const TOOLS = [
   { name: "recommendActivities", desc: "Rank activities for a traveler profile {who, vibe, budget, monthIdx}." },
+  { name: "buildMyCostaRica", desc: "Full personalized multi-day plan from a traveler profile." },
   { name: "getInsights", desc: "Weather/tide/season/demand insight for one activity id." },
-  { name: "buildPlan", desc: "Optimize a set of activity ids into a day-by-day trip {maxPerDay, budget, pax, monthIdx}." },
+  { name: "getVibeScores", desc: "0–5 vibe scores (thrill/kid-safe/photo/…) for one activity." },
+  { name: "buildPlan", desc: "Optimize a set of activity ids into a day-by-day trip." },
   { name: "monthBriefing", desc: "Season, climate, and wildlife windows for a month index." },
+  { name: "todayBriefing", desc: "The live daily home: greeting, best pick, avoid-today, sunset {hour, region}." },
 ];
