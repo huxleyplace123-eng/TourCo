@@ -33,9 +33,9 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
       {useSlides ? (
         slides.map((s, i) => (
           <img key={s.src} src={s.src} alt="" aria-hidden
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center",
               opacity: i === slide ? 1 : 0, transition: "opacity 1.6s ease",
-              transform: "scale(1.06)", animation: i === slide ? "tnHeroKen 8s ease-out both" : "none" }} />
+              transform: "scale(1)", animation: i === slide ? "tnHeroKenSoft 9s ease-out both" : "none" }} />
         ))
       ) : (
         image && (
@@ -67,6 +67,7 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
       )}
 
       <style>{`@keyframes tnHeroKen{0%{transform:scale(1.06)}100%{transform:scale(1.16)}}
+        @keyframes tnHeroKenSoft{0%{transform:scale(1)}100%{transform:scale(1.05)}}
         @keyframes tnHeroRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .tn-phero > *{animation:tnHeroRise .7s cubic-bezier(.2,.7,.2,1) both}
         .tn-phero > *:nth-child(2){animation-delay:.06s}

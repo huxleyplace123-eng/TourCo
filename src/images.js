@@ -71,15 +71,19 @@ const HERO_SETS = {
     { id: "photo-1642391326087-b1cff0dd3b6f", label: "Parasail at sunset" },   // parasail silhouette
     { id: "photo-1505142468610-359e7d316be0", label: "Turquoise break" },      // aerial waves / beach
   ],
-  // Activities — on-the-water action + open ocean.
+  // Activities — the FULL adventure reel: every kind of tour you can book in
+  // Costa Rica, most exciting first, no two similar scenes back to back.
   activities: [
-    { id: "photo-1537872384762-e785271d14f8", label: "Big-game reel" },
-    { id: "photo-1625183656263-171183307b15", label: "Sport fishing" },
-    { id: "photo-1505142468610-359e7d316be0", label: "Turquoise break" },      // aerial waves
-    { id: "photo-1559599746-8823b38544c6", label: "Golden-hour sail" },        // boat at sunset
-    { id: "photo-1642391326087-b1cff0dd3b6f", label: "Parasail at sunset" },   // parasailing silhouette
-    { id: "photo-1612452816734-05a1ea3da9a9", label: "Jungle waterfall" },     // tall green-forest falls
-    { id: "photo-1519046904884-53103b34b206", label: "Secluded cove" },
+    { id: "photo-1679117730976-cdb5f6b05b88", label: "Zipline the canopy" },   // ziplining
+    { id: "photo-1632904074880-b77f02b6d01e", label: "Parasail the coast" },   // parasailing over ocean
+    { id: "photo-1530866495561-507c9faab2ed", label: "Hit the rapids" },       // white-water rafting
+    { id: "photo-1502680390469-be75c86b636f", label: "Catch a wave" },         // surfing barrel
+    { id: "photo-1729730626717-922a7f8f79d6", label: "Rip the jungle trails" },// ATV / quad riding
+    { id: "photo-1708748978230-510e06b24530", label: "Reel in the big one" },  // sport fishing
+    { id: "photo-1745208746272-8d3b979d5f92", label: "Hike a volcano" },       // Arenal volcano
+    { id: "photo-1544551763-92ab472cad5d", label: "Dive the reef" },           // snorkeling
+    { id: "photo-1568430462989-44163eb1752f", label: "Watch the whales" },     // whale watching
+    { id: "photo-1620658927695-c33df6fb8130", label: "Chase waterfalls" },     // jungle waterfall
   ],
   // Pure fishing set — for any fishing-forward surface.
   fishing: [

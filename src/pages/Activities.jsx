@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Compass, MapPin, Mountain, Star } from "lucide-react";
+import { Compass, MapPin, Mountain, Star, Waves, Wind, Fish, Bike, Mountain as VolcanoIcon, Anchor, Droplets, Sailboat } from "lucide-react";
 import { c, grad } from "../theme.js";
 import { activities } from "../data.js";
 import { Section, Eyebrow, Field, TextInput, Select, Button } from "../components/ui.jsx";
@@ -13,6 +13,31 @@ import { ticoActivityVerdict } from "../intelligence/tico.js";
 
 const CATEGORIES = ["All", ...Array.from(new Set(activities.map((a) => a.category)))];
 const REGIONS = ["All", ...Array.from(new Set(activities.map((a) => a.region)))];
+
+// ── Activity marquee ── a continuously scrolling ribbon of everything you can
+// book, right in the hero. Makes the range feel huge and the page feel alive.
+const MARQUEE = [
+  { icon: Wind, label: "Ziplining" }, { icon: Sailboat, label: "Parasailing" }, { icon: Droplets, label: "White-water rafting" },
+  { icon: Waves, label: "Surf lessons" }, { icon: Bike, label: "ATV jungle tours" }, { icon: Fish, label: "Sport fishing" },
+  { icon: VolcanoIcon, label: "Volcano hikes" }, { icon: Anchor, label: "Catamaran cruises" }, { icon: Waves, label: "Snorkeling" },
+  { icon: Fish, label: "Whale watching" }, { icon: Droplets, label: "Waterfall tours" }, { icon: Wind, label: "Paragliding" },
+];
+function ActivityMarquee() {
+  const row = [...MARQUEE, ...MARQUEE]; // duplicate for a seamless loop
+  return (
+    <div style={{ marginTop: 20, position: "relative", overflow: "hidden", maskImage: "linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)", WebkitMaskImage: "linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)" }}>
+      <style>{`@keyframes actMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+        @media(prefers-reduced-motion:reduce){.act-marquee{animation:none!important}}`}</style>
+      <div className="act-marquee" style={{ display: "inline-flex", gap: 10, whiteSpace: "nowrap", animation: "actMarquee 32s linear infinite" }}>
+        {row.map((m, i) => (
+          <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 7, flexShrink: 0, background: "rgba(11,26,46,.5)", backdropFilter: "blur(8px)", border: `1px solid ${c.line}`, color: "#fff", fontWeight: 700, fontSize: 13, padding: "8px 14px", borderRadius: 999 }}>
+            <m.icon size={14} color={c.teal} />{m.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Toggle({ on, set, label }) {
   return (
@@ -54,8 +79,10 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
 
   return (
     <>
-      <PageHero slides={themedSlides("activities")} eyebrow="Browse activities" title="Every adventure, vetted"
-        sub="Add what you love to your trip. We'll handle the coordination and the deposit math." />
+      <PageHero slides={themedSlides("activities")} height={440} eyebrow="Browse activities" title="Every adventure, vetted"
+        sub="Zipline the canopy, chase the rapids, reel in a marlin, fly the coast — the most thrilling things you can do in Costa Rica, all vetted and one tap to add.">
+        <ActivityMarquee />
+      </PageHero>
 
       {/* Tico's ranked top 5 — his personal order, shown when you're just browsing */}
       {noFilters && (
