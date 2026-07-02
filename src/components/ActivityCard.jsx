@@ -6,7 +6,7 @@ import { activityImage } from "../images.js";
 import { Badge, Button } from "./ui.jsx";
 import { TiltCard, Photo } from "../motion.jsx";
 import { getInsights } from "../intelligence/index.js";
-import { TicoPick, TicoRating, useTicoActivity } from "./Tico.jsx";
+import { TicoPick, TicoRating, TicoAvatar, useTicoActivity } from "./Tico.jsx";
 
 const INSIGHT_ICON = { sparkle: Sparkles, clock: Clock, rain: CloudRain, sun: Sun, trend: TrendingUp, tag: Tag };
 const TONE = {
@@ -59,7 +59,7 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
       <div style={{ padding: 18, display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
           <span style={{ fontSize: 12.5, fontWeight: 700, color: c.teal, letterSpacing: 0.3 }}>{a.category}</span>
-          <span title="Tico's rating"><TicoRating score={tico.score} /></span>
+          <span title={`Tico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span>
         </div>
         <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: c.charcoal, lineHeight: 1.2 }}>{a.title}</h3>
         <div style={{ display: "flex", gap: 14, color: c.stone, fontSize: 13, fontWeight: 600, flexWrap: "wrap" }}>
@@ -84,13 +84,11 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
           </span>
         </div>
 
-        {/* John's take — inside the card, so cards stay one aligned unit */}
-        {note && (
-          <div style={{ display: "flex", gap: 8, marginTop: 4, padding: "10px 12px", background: "rgba(34,211,238,.06)", border: `1px solid rgba(34,211,238,.18)`, borderRadius: 12 }}>
-            <Quote size={14} color={c.teal} style={{ flexShrink: 0, marginTop: 2 }} />
-            <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.45, color: c.charcoal, fontStyle: "italic", opacity: 0.9 }}>{note}</p>
-          </div>
-        )}
+        {/* Tico's take — his in-character reaction, face matching his mood */}
+        <div style={{ display: "flex", gap: 8, marginTop: 4, padding: "10px 12px", background: "rgba(34,211,238,.06)", border: `1px solid rgba(34,211,238,.18)`, borderRadius: 12 }}>
+          <TicoAvatar size={22} glow={false} mood={tico.takeMood} animate={false} />
+          <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.45, color: c.charcoal, fontStyle: "italic", opacity: 0.92 }}>{note || tico.take}</p>
+        </div>
 
         {/* CTA row — one clear primary action + a clean details link */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto", paddingTop: 14 }}>

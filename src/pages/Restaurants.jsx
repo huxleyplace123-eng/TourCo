@@ -24,12 +24,12 @@ function RestaurantCard({ r }) {
       <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
           <span style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{r.cuisine}</span>
-          <span title="Tico's rating"><TicoRating score={tico.score} /></span>
+          <span title={`Tico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span>
         </div>
         <div style={{ fontSize: 17, fontWeight: 800, color: c.charcoal, lineHeight: 1.15 }}>{r.name}</div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, color: c.stone, fontWeight: 600 }}><MapPin size={12} />{r.region}</div>
         <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 13, lineHeight: 1.5, flex: 1 }}>{r.blurb}</p>
-        {tico.take && <div style={{ display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(34,211,238,.06)", border: "1px solid rgba(34,211,238,.18)", borderRadius: 11, padding: "8px 10px", marginTop: 2 }}><TicoAvatar size={18} glow={false} /><span style={{ fontSize: 12, lineHeight: 1.4, color: c.charcoal, fontStyle: "italic" }}>{tico.take}</span></div>}
+        {tico.take && <div style={{ display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(34,211,238,.06)", border: "1px solid rgba(34,211,238,.18)", borderRadius: 11, padding: "8px 10px", marginTop: 2 }}><TicoAvatar size={18} glow={false} mood={tico.takeMood} animate={false} /><span style={{ fontSize: 12, lineHeight: 1.4, color: c.charcoal, fontStyle: "italic" }}>{tico.take}</span></div>}
       </div>
     </TiltCard>
   );
@@ -47,12 +47,12 @@ function BarCard({ b }) {
       <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
           <span style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{b.type}</span>
-          <span title="Tico's rating"><TicoRating score={tico.score} /></span>
+          <span title={`Tico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span>
         </div>
         <div style={{ fontSize: 17, fontWeight: 800, color: c.charcoal, lineHeight: 1.15 }}>{b.name}</div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, color: c.stone, fontWeight: 600 }}><MapPin size={12} />{b.region}</div>
         <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 13, lineHeight: 1.5, flex: 1 }}>{b.blurb}</p>
-        {tico.take && <div style={{ display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(34,211,238,.06)", border: "1px solid rgba(34,211,238,.18)", borderRadius: 11, padding: "8px 10px", marginTop: 2 }}><TicoAvatar size={18} glow={false} /><span style={{ fontSize: 12, lineHeight: 1.4, color: c.charcoal, fontStyle: "italic" }}>{tico.take}</span></div>}
+        {tico.take && <div style={{ display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(34,211,238,.06)", border: "1px solid rgba(34,211,238,.18)", borderRadius: 11, padding: "8px 10px", marginTop: 2 }}><TicoAvatar size={18} glow={false} mood={tico.takeMood} animate={false} /><span style={{ fontSize: 12, lineHeight: 1.4, color: c.charcoal, fontStyle: "italic" }}>{tico.take}</span></div>}
       </div>
     </TiltCard>
   );

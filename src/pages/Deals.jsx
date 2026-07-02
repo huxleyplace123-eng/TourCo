@@ -37,6 +37,7 @@ function CodeChip({ code }) {
 
 // Compact, image-topped deal card — scannable, no wasted space.
 function DealCard({ d }) {
+  const dealTake = ticoDealTake(d);
   return (
     <div style={{ background: c.white, borderRadius: 16, overflow: "hidden", border: `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ position: "relative" }}>
@@ -57,8 +58,8 @@ function DealCard({ d }) {
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: c.stone, fontWeight: 600, marginBottom: 7 }}><MapPin size={11} />{d.where}</div>
         <p style={{ color: c.stone, fontSize: 12.5, lineHeight: 1.45, margin: "0 0 9px", flex: 1 }}>{d.detail}</p>
         <div style={{ display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 10 }}>
-          <TicoAvatar size={16} glow={false} />
-          <span style={{ fontSize: 11.5, lineHeight: 1.35, color: c.charcoal, fontStyle: "italic", opacity: 0.9 }}>{ticoDealTake(d)}</span>
+          <TicoAvatar size={16} glow={false} mood={dealTake.mood} animate={false} />
+          <span style={{ fontSize: 11.5, lineHeight: 1.35, color: c.charcoal, fontStyle: "italic", opacity: 0.9 }}>{dealTake.text}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           {d.code ? <CodeChip code={d.code} /> : <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11.5, color: c.stone, fontWeight: 600 }}><Clock size={11} />{d.expires}</span>}
