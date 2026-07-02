@@ -9,10 +9,10 @@ const SLIDES = heroSlides(1900);
 
 // Time-of-day accent — the glow shifts with the visitor's local hour.
 function timeGrade(hour) {
-  if (hour >= 5 && hour < 8) return { accent: "#FF9E7A", label: "Good morning" };
-  if (hour >= 8 && hour < 16) return { accent: c.teal, label: "Pura vida" };
-  if (hour >= 16 && hour < 19) return { accent: c.gold, label: "Golden hour" };
-  return { accent: "#7DD3FC", label: "Buenas noches" };
+  if (hour >= 5 && hour < 12) return { accent: "#FF9E7A", label: "Good morning" };
+  if (hour >= 12 && hour < 17) return { accent: c.teal, label: "Good afternoon" };
+  if (hour >= 17 && hour < 21) return { accent: c.gold, label: "Good evening" };
+  return { accent: "#7DD3FC", label: "Good evening" };
 }
 
 export function CinematicHero({ go }) {
