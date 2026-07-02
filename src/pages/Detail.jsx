@@ -6,6 +6,7 @@ import { activityImage } from "../images.js";
 import { Section, Button, Badge } from "../components/ui.jsx";
 import { Photo, Reveal } from "../motion.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
+import { trustForActivity, depositTerms } from "../intelligence/trust.js";
 
 function InfoList({ title, icon: Icon, items }) {
   return (
@@ -30,6 +31,8 @@ function InfoList({ title, icon: Icon, items }) {
 export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
   const a = activities.find((x) => x.id === activeId) || activities[0];
   const op = operators.find((o) => o.id === a.operatorId);
+  const receipt = trustForActivity(a.operatorId);
+  const terms = depositTerms(a.price, 1);
   const inTrip = trip.some((t) => t.id === a.id);
   const related = activities.filter((x) => x.category === a.category && x.id !== a.id).slice(0, 3);
   const alsoLike = related.length ? related : activities.filter((x) => x.id !== a.id).slice(0, 3);
@@ -100,34 +103,55 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
                 <span style={{ fontSize: 32, fontWeight: 800, color: c.charcoal }}>{money(a.price)}</span>
                 <span style={{ color: c.stone, fontWeight: 600, marginBottom: 6 }}>/ person</span>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, color: c.emerald, fontWeight: 700, fontSize: 13.5, marginTop: 4 }}>
-                <ShieldCheck size={15} />Only 20% ({money(a.price * 0.2)}) to reserve
+              <div style={{ display: "flex", alignItems: "center", gap: 6, color: c.teal, fontWeight: 700, fontSize: 13.5, marginTop: 4 }}>
+                <ShieldCheck size={15} />{terms.short}
               </div>
               <Button variant={inTrip ? "dark" : "primary"} full size="lg" style={{ marginTop: 18 }} onClick={() => addToTrip(a.id)}>
-                {inTrip ? <><Check size={17} />Added to your trip</> : <><Plus size={17} />Add to my trip</>}
+                {inTrip ? <><Check size={17} />Added to your trip</> : <><Plus size={17} />Reserve for {money(terms.deposit)}</>}
               </Button>
               <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => window.alert("Opening WhatsApp concierge…")}>
                 <MessageCircle size={15} />Ask about this activity
               </Button>
-              <p style={{ textAlign: "center", color: c.stone, fontSize: 12, marginTop: 14, marginBottom: 0 }}>
-                {a.confirm ? "Concierge confirms availability within hours." : "Instant availability — reserve anytime."}
-              </p>
+              {/* crystal-clear 20/80 language — no payment surprises */}
+              <p style={{ color: c.stone, fontSize: 12, lineHeight: 1.5, marginTop: 14, marginBottom: 0 }}>{terms.line}</p>
             </div>
 
-            {/* Operator card */}
+            {/* ── Trust Receipt — proof, not fluff ── */}
             <div style={{ background: c.white, borderRadius: 20, padding: 20, border: "1px solid rgba(255,255,255,.08)" }}>
-              <div style={{ fontSize: 12, color: c.stone, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Operated by</div>
-              <div style={{ fontWeight: 800, color: c.charcoal, fontSize: 17, marginTop: 4 }}>{op?.name}</div>
-              <div style={{ display: "flex", gap: 14, marginTop: 10, flexWrap: "wrap", fontSize: 13, color: c.stone, fontWeight: 600 }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Star size={13} fill={c.gold} color={c.gold} />{op?.rating}</span>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><MapPin size={13} />{op?.region}</span>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Clock size={13} />Replies {op?.responseTime}</span>
-              </div>
-              {op?.insurance && (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12, background: "rgba(47,107,235,.08)", color: c.emerald, padding: "7px 12px", borderRadius: 999, fontWeight: 700, fontSize: 12.5 }}>
-                  <ShieldCheck size={14} />Insured & vetted by TicoWild
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 12, color: c.stone, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Operated by</div>
+                  <div style={{ fontWeight: 800, color: c.charcoal, fontSize: 17, marginTop: 4 }}>{op?.name}</div>
+                  <div style={{ display: "flex", gap: 12, marginTop: 6, flexWrap: "wrap", fontSize: 12.5, color: c.stone, fontWeight: 600 }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Star size={12} fill={c.gold} color={c.gold} />{op?.rating}</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><MapPin size={12} />{op?.region}</span>
+                  </div>
                 </div>
-              )}
+                {/* vetting score dial */}
+                {receipt && (
+                  <div style={{ textAlign: "center", flexShrink: 0 }}>
+                    <div style={{ width: 52, height: 52, borderRadius: 999, background: `conic-gradient(${c.teal} ${receipt.score * 3.6}deg, rgba(255,255,255,.1) 0)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{ width: 42, height: 42, borderRadius: 999, background: c.white, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 15, color: c.charcoal }}>{receipt.score}</div>
+                    </div>
+                    <div style={{ fontSize: 10, color: c.stone, fontWeight: 700, marginTop: 3 }}>VETTED</div>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 14, marginBottom: 12, background: "rgba(34,211,238,.1)", border: "1px solid rgba(34,211,238,.25)", color: c.teal, padding: "6px 12px", borderRadius: 999, fontWeight: 800, fontSize: 11.5, letterSpacing: 0.5 }}>
+                <ShieldCheck size={13} />TICOWILD TRUST RECEIPT
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+                {receipt?.checks.map((ch) => (
+                  <div key={ch.key} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
+                    <Check size={15} color={ch.ok ? c.teal : c.stone} style={{ flexShrink: 0, marginTop: 1, opacity: ch.ok ? 1 : 0.4 }} />
+                    <div>
+                      <div style={{ fontSize: 13.5, fontWeight: 700, color: c.charcoal, lineHeight: 1.25 }}>{ch.label}</div>
+                      <div style={{ fontSize: 12, color: c.stone, lineHeight: 1.35 }}>{ch.detail}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
