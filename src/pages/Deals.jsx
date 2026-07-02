@@ -2,10 +2,10 @@ import React, { useState, useMemo } from "react";
 import { Tag, Clock, MapPin, ShieldCheck, Sparkles, ArrowRight, Ticket, Check, Lock, Copy, Gift, PiggyBank, Sun } from "lucide-react";
 import { c, grad, glass, gradText } from "../theme.js";
 import { deals, DEAL_TAGS, freeThings, moneyTips } from "../places.js";
-import { pageHero } from "../images.js";
+import { pageHero, dealImage } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
-import { Reveal } from "../motion.jsx";
+import { Reveal, Photo } from "../motion.jsx";
 
 const PASS_PERKS = [
   "Every verified promo code, ready to use",
@@ -33,23 +33,31 @@ function CodeChip({ code }) {
   );
 }
 
-function DealCard({ d, featured }) {
+// Compact, image-topped deal card — scannable, no wasted space.
+function DealCard({ d }) {
   return (
-    <div style={{ background: c.white, borderRadius: 18, padding: featured ? 24 : 20, border: featured ? `1.5px solid ${c.gold}` : `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", boxShadow: featured ? "0 0 40px -16px rgba(255,208,0,.5)" : "none" }}>
-      <div aria-hidden style={{ position: "absolute", top: -24, right: -24, width: 100, height: 100, borderRadius: 999, background: featured ? "rgba(255,208,0,.14)" : "rgba(255,208,0,.06)" }} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, position: "relative" }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,208,0,.16)", border: "1px solid rgba(255,208,0,.32)", color: c.gold, padding: "5px 12px", borderRadius: 999, fontSize: 13, fontWeight: 800 }}>
-          <Tag size={12} />{d.save}
-        </span>
-        <span style={{ fontSize: 11.5, color: c.stone, fontWeight: 700 }}>{d.type}</span>
+    <div style={{ background: c.white, borderRadius: 16, overflow: "hidden", border: `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ position: "relative" }}>
+        <Photo src={dealImage(d)} fallback={grad.sunset} alt={d.title} height={112}
+          overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.05) 0%, transparent 40%, rgba(11,26,46,.55) 100%)" }} />}>
+          <span style={{ position: "absolute", top: 9, left: 9, zIndex: 2, display: "inline-flex", alignItems: "center", gap: 4, background: c.gold, color: c.ink, padding: "4px 10px", borderRadius: 999, fontSize: 12, fontWeight: 800, boxShadow: "0 0 16px -4px rgba(255,208,0,.7)" }}>
+            <Tag size={11} />{d.save}
+          </span>
+          {d.price && <span style={{ position: "absolute", bottom: 9, right: 9, zIndex: 2, background: "rgba(11,26,46,.65)", color: "#fff", padding: "3px 9px", borderRadius: 999, fontSize: 12, fontWeight: 800 }}>{d.price}</span>}
+        </Photo>
       </div>
-      <h3 style={{ color: "#fff", fontSize: featured ? 21 : 17.5, fontWeight: 800, margin: "13px 0 4px", position: "relative", lineHeight: 1.2 }}>{d.title}</h3>
-      <div style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, color: c.teal, fontWeight: 600, marginBottom: 8 }}><MapPin size={12} />{d.where}</div>
-      <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.5, margin: "0 0 14px", flex: 1 }}>{d.detail}</p>
-      {d.code && <div style={{ marginBottom: 12 }}><CodeChip code={d.code} /></div>}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 12, borderTop: `1px dashed ${c.line}` }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: c.stone, fontWeight: 600 }}><Clock size={12} />{d.expires}</span>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11.5, color: c.teal, fontWeight: 700 }}><ShieldCheck size={12} />Verified</span>
+      <div style={{ padding: "12px 14px 13px", display: "flex", flexDirection: "column", flex: 1 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 3 }}>
+          <span style={{ fontSize: 11, color: c.teal, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.3 }}>{d.type}</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 10.5, color: c.stone, fontWeight: 700 }}><ShieldCheck size={11} color={c.teal} />Verified</span>
+        </div>
+        <h3 style={{ color: "#fff", fontSize: 15.5, fontWeight: 800, margin: "0 0 3px", lineHeight: 1.2 }}>{d.title}</h3>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: c.stone, fontWeight: 600, marginBottom: 7 }}><MapPin size={11} />{d.where}</div>
+        <p style={{ color: c.stone, fontSize: 12.5, lineHeight: 1.45, margin: "0 0 11px", flex: 1 }}>{d.detail}</p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+          {d.code ? <CodeChip code={d.code} /> : <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11.5, color: c.stone, fontWeight: 600 }}><Clock size={11} />{d.expires}</span>}
+          {d.code && <span style={{ fontSize: 11, color: c.stone, fontWeight: 600, whiteSpace: "nowrap" }}>{d.expires}</span>}
+        </div>
       </div>
     </div>
   );
@@ -75,7 +83,7 @@ export function Deals({ go, trip }) {
               <Sparkles size={15} />Deal of the trip
             </div>
             <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16, marginBottom: 34 }}>
-              <DealCard d={featured} featured />
+              <DealCard d={featured} />
               {/* Pura Vida Pass compact */}
               <div style={{ position: "relative", overflow: "hidden", borderRadius: 20, border: `1px solid ${c.line}`, background: grad.hero, color: "#fff", padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 80% at 85% 15%, rgba(255,208,0,.25), transparent 55%)" }} />
@@ -113,8 +121,8 @@ export function Deals({ go, trip }) {
             }}>{dt.label}</button>
           ))}
         </div>
-        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill,minmax(290px,1fr))" }}>
-          {rest.map((d, i) => <Reveal key={d.id} delay={(i % 3) * 55}><DealCard d={d} /></Reveal>)}
+        <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fill,minmax(230px,1fr))" }}>
+          {rest.map((d, i) => <Reveal key={d.id} delay={(i % 4) * 50}><DealCard d={d} /></Reveal>)}
         </div>
 
         {/* Free & nearly-free */}

@@ -107,6 +107,14 @@ const FOOD = {
   fine: "photo-1424847651672-bf20a4b0982b",        // plated fine dining
   default: "photo-1555396273-367ea4eb4db5",        // general restaurant
 };
+// Deal photos — use the activity-category photo, or a bar/food photo for
+// happy-hour & local-price deals.
+export function dealImage(d, w = 700) {
+  if (d.img && BY_CATEGORY[d.img]) return cdn(BY_CATEGORY[d.img], w);
+  if (d.barTag) return barImage({ tags: [d.barTag] }, w);
+  return cdn(HERO, w);
+}
+
 // Beach photos — vary by vibe.
 const BEACH_IMG = {
   swimming: "photo-1507525428034-b723cf961d3e",
