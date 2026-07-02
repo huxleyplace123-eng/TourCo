@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowRight, Compass, Calendar, Users, Heart, ChevronDown } from "lucide-react";
+import { ArrowRight, Compass, Calendar, Users, Heart, ChevronDown, ShieldCheck, Sparkles, MessageCircle, Star } from "lucide-react";
 import { c, grad, glass, gradText } from "../theme.js";
-import { heroSlides } from "../images.js";
+import { heroSlides, personImage } from "../images.js";
 import { Button, Field } from "./ui.jsx";
 import { Magnetic } from "../motion.jsx";
 
@@ -114,22 +114,53 @@ export function CinematicHero({ go }) {
       </div>
 
       {/* ── Content ── */}
-      <div className="hero-grid" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "96px 20px 120px", display: "grid", gridTemplateColumns: "1fr", gap: 48 }}>
+      <div className="hero-grid" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "88px 20px 116px", display: "grid", gridTemplateColumns: "1fr", gap: 56, alignItems: "center" }}>
         <div style={{ transform: `translateY(${scrollY * -0.08}px)`, opacity: 1 - scrub * 0.6 }}>
-          <span className="rise" style={{ display: "inline-flex", alignItems: "center", gap: 7, ...glass, color: "#fff", fontWeight: 700, fontSize: 12.5, padding: "7px 14px", borderRadius: 999 }}>
+          <span className="rise" style={{ display: "inline-flex", alignItems: "center", gap: 8, ...glass, color: "#fff", fontWeight: 600, fontSize: 12.5, padding: "8px 15px", borderRadius: 999, letterSpacing: 0.2 }}>
             <span style={{ width: 7, height: 7, borderRadius: 999, background: g.accent, boxShadow: `0 0 12px ${g.accent}` }} />
             {g.label} · your local adventure concierge
           </span>
-          <h1 className="rise" style={{ color: "#fff", fontSize: "clamp(42px,7vw,80px)", lineHeight: 0.98, fontWeight: 800, letterSpacing: -2.5, margin: "22px 0 0", animationDelay: ".08s" }}>
-            Costa Rica<br />adventures,<br />
-            <span style={{ ...gradText(`linear-gradient(100deg,${c.teal},${c.gold})`), filter: `drop-shadow(0 0 30px ${g.accent}55)` }}>planned by locals.</span>
+          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,5.6vw,68px)", lineHeight: 1.02, fontWeight: 800, letterSpacing: -2, margin: "24px 0 0", animationDelay: ".08s" }}>
+            Costa Rica adventures,<br />
+            <span style={{ position: "relative", display: "inline-block" }}>
+              <span style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>planned by locals.</span>
+              <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: -6, height: 3, borderRadius: 999, background: `linear-gradient(90deg,${c.teal},${c.gold})`, opacity: 0.5 }} />
+            </span>
           </h1>
-          <p className="rise" style={{ color: "rgba(243,247,255,.8)", fontSize: 19, lineHeight: 1.6, maxWidth: 500, marginTop: 22, animationDelay: ".16s" }}>
+          <p className="rise" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.65, maxWidth: 460, marginTop: 22, animationDelay: ".16s" }}>
             Build a custom itinerary with vetted local tours, transparent pricing, and real human support — without the guesswork.
           </p>
-          <div className="rise" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 30, animationDelay: ".24s" }}>
+
+          {/* refined trust row */}
+          <div className="rise" style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 24, animationDelay: ".2s" }}>
+            {[[ShieldCheck, "Vetted operators"], [Sparkles, "Only 20% to reserve"], [MessageCircle, "Human concierge"]].map(([Icon, t]) => (
+              <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "rgba(243,247,255,.72)", fontSize: 13.5, fontWeight: 600 }}>
+                <Icon size={15} color={c.teal} />{t}
+              </span>
+            ))}
+          </div>
+
+          <div className="rise" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28, animationDelay: ".24s" }}>
             <Magnetic><Button variant="primary" size="lg" onClick={() => go("build")}>Build my adventure plan <ArrowRight size={18} /></Button></Magnetic>
             <Magnetic strength={0.25}><Button variant="glass" size="lg" onClick={() => go("activities")}>Browse activities</Button></Magnetic>
+          </div>
+
+          {/* social proof — avatar stack + rating, balances the card's weight */}
+          <div className="rise" style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 30, animationDelay: ".3s" }}>
+            <div style={{ display: "flex" }}>
+              {["sarah", "delgado", "crew", "emma"].map((who, i) => (
+                <span key={who} style={{ width: 38, height: 38, borderRadius: 999, overflow: "hidden", border: `2px solid ${c.sand}`, marginLeft: i ? -12 : 0, background: grad.ocean, flexShrink: 0 }}>
+                  <img src={personImage(who, 80)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </span>
+              ))}
+            </div>
+            <div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                {[0, 1, 2, 3, 4].map((k) => <Star key={k} size={14} fill={c.gold} color={c.gold} />)}
+                <span style={{ color: "#fff", fontWeight: 800, fontSize: 14, marginLeft: 4 }}>4.9</span>
+              </div>
+              <div style={{ color: "rgba(243,247,255,.65)", fontSize: 13, fontWeight: 500 }}>Loved by 4,200+ travelers</div>
+            </div>
           </div>
         </div>
 
