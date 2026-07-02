@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { MessageCircle, ChevronRight } from "lucide-react";
 import { c, FONT, money, grad } from "./theme.js";
 import { activities } from "./data.js";
@@ -37,7 +37,15 @@ export default function App() {
   const [trip, setTrip] = useState([]); // [{id, pax}]
   const [cartOpen, setCartOpen] = useState(false);
 
-  const go = (p) => { setPage(p); setCartOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const go = (p) => { setPage(p); setCartOpen(false); };
+  // Always land at the top of a newly-opened page. Runs AFTER the new page
+  // renders (useLayoutEffect + instant scroll), so it isn't undone by the
+  // page-enter animation or content reflow — a smooth scroll during a full
+  // page swap was leaving visitors mid/bottom of the page.
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+    if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+  }, [page, activeId]);
   const viewActivity = (id) => { setActiveId(id); go("detail"); };
   const addToTrip = (id) => { setTrip((t) => (t.some((x) => x.id === id) ? t : [...t, { id, pax: 2 }])); setCartOpen(true); };
   const removeFromTrip = (id) => setTrip((t) => t.filter((x) => x.id !== id));
