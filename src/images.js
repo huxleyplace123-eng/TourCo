@@ -59,20 +59,20 @@ export const heroSlides = (w = 1900) => HERO_SLIDES.map((s) => ({ src: cdn(s.id,
 // are DELIBERATELY different photos from HERO_SLIDES / the Meet Tico hero, so no
 // two hero areas share imagery. Fishing is the star of the home + fishing sets.
 const HERO_SETS = {
-  // Homepage / dashboard — the GREATEST HITS of Costa Rica: the single most
-  // jaw-dropping shot from each category, so the hero represents the whole app.
-  // Interleaved (land → water → air → jungle) so every slide feels different.
+  // Homepage / dashboard — a DISTINCT reel from Activities: the living beauty of
+  // Costa Rica (marine life, wildlife, coastline, sky) rather than the same
+  // action shots. Marine life leads — turtles, reef fish, the sea.
   home: [
-    { id: "photo-1745208746272-8d3b979d5f92", label: "Arenal volcano" },       // volcano cone in jungle
-    { id: "photo-1632904074880-b77f02b6d01e", label: "Parasail the coast" },   // parasailing over ocean
-    { id: "photo-1620658927695-c33df6fb8130", label: "Jungle waterfall" },     // waterfall into turquoise pool
-    { id: "photo-1502680390469-be75c86b636f", label: "Surf the Pacific" },     // surfer barrel
-    { id: "photo-1568430462989-44163eb1752f", label: "Whales of Uvita" },      // humpback breach
-    { id: "photo-1679117730976-cdb5f6b05b88", label: "Zip the canopy" },       // ziplining
-    { id: "photo-1519046904884-53103b34b206", label: "Hidden cove" },          // secluded palm cove
-    { id: "photo-1708748978230-510e06b24530", label: "Offshore fishing" },     // sport fishing rods + wake
-    { id: "photo-1544551763-92ab472cad5d", label: "Dive the reef" },           // snorkeling / reef
-    { id: "photo-1505142468610-359e7d316be0", label: "Turquoise break" },      // aerial waves / beach
+    { id: "photo-1437622368342-7a3d73a34c8f", label: "Sea turtles of the Pacific" }, // sea turtle
+    { id: "photo-1745208746272-8d3b979d5f92", label: "Arenal volcano" },        // volcano (shared w/ activities — the icon)
+    { id: "photo-1524704796725-9fc3044a58b2", label: "Reefs full of color" },   // vivid reef fish
+    { id: "photo-1512100356356-de1b84283e18", label: "Island-hop by air" },     // seaplane over turquoise
+    { id: "photo-1552728089-57bdde30beb3", label: "Cloud-forest wildlife" },    // tropical bird / toucan
+    { id: "photo-1468413253725-0d5181091126", label: "Jungle-backed beaches" }, // beach + jungle
+    { id: "photo-1553284965-83fd3e82fa5a", label: "Ride the shoreline" },       // horseback
+    { id: "photo-1591025207163-942350e47db2", label: "Swim with turtles" },     // underwater turtle
+    { id: "photo-1519046904884-53103b34b206", label: "Hidden coves" },          // secluded palm cove
+    { id: "photo-1505142468610-359e7d316be0", label: "Turquoise water" },       // aerial waves
   ],
   // Activities — the FULL adventure reel: every kind of tour you can book in
   // Costa Rica, most exciting first, no two similar scenes back to back.
@@ -117,7 +117,7 @@ const HERO_SETS = {
   ],
   // Local's Guide — exploring: trails, viewpoints, the map, wildlife.
   guide: [
-    { id: "photo-1551632811-561732d1e306", label: "On the trail" },            // backpacker on green trail
+    { id: "photo-1445307806294-bff7f67ff225", label: "Hammock in the jungle" }, // relaxing over a forest lake
     { id: "photo-1440581572325-0bea30075d9d", label: "Into the rainforest" },  // sunlit forest path
     { id: "photo-1488646953014-85cb44e25828", label: "Plot the route" },       // map + camera + pack flatlay
     { id: "photo-1620658927695-c33df6fb8130", label: "Chasing waterfalls" },   // jungle waterfall
