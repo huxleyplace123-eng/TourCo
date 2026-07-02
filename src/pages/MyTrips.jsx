@@ -1,10 +1,11 @@
-import React from "react";
-import { ArrowRight, Compass, MapPin, Clock, Trash2, ShieldCheck, MessageCircle, Calendar } from "lucide-react";
+import React, { useState } from "react";
+import { ArrowRight, Compass, MapPin, Clock, Trash2, ShieldCheck, MessageCircle, Calendar, List, Sparkles } from "lucide-react";
 import { c, grad, money } from "../theme.js";
 import { activities } from "../data.js";
 import { activityImage } from "../images.js";
 import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { Photo, useCountUp } from "../motion.jsx";
+import { TripTimeline, StoryPoster } from "../components/TripStory.jsx";
 
 function EmptyState({ go }) {
   return (
@@ -25,9 +26,16 @@ function EmptyState({ go }) {
 }
 
 export function MyTrips({ go, trip, removeFromTrip }) {
+  const [view, setView] = useState("story"); // 'story' | 'list'
   const chosen = trip.map((t) => ({ ...t, a: activities.find((a) => a.id === t.id) })).filter((x) => x.a);
   const total = chosen.reduce((s, g) => s + g.a.price * g.pax, 0);
   const deposit = useCountUp(Math.round(total * 0.2));
+
+  const ToggleBtn = ({ id, icon: Icon, label }) => (
+    <button onClick={() => setView(id)} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: 999, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 14, background: view === id ? "#fff" : "rgba(255,255,255,.16)", color: view === id ? c.emerald : "#fff", transition: "all .2s" }}>
+      <Icon size={16} />{label}
+    </button>
+  );
 
   return (
     <>
@@ -35,14 +43,36 @@ export function MyTrips({ go, trip, removeFromTrip }) {
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <Eyebrow><span style={{ color: c.gold }}>My Trips</span></Eyebrow>
           <h1 style={{ color: "#fff", fontSize: "clamp(30px,5vw,46px)", fontWeight: 800, letterSpacing: -1, margin: "6px 0 8px" }}>Your Costa Rica plan</h1>
-          <p style={{ color: "rgba(255,255,255,.9)", fontSize: 17 }}>
+          <p style={{ color: "rgba(255,255,255,.9)", fontSize: 17, marginBottom: chosen.length ? 18 : 0 }}>
             {chosen.length ? `${chosen.length} experience${chosen.length !== 1 ? "s" : ""} ready to reserve.` : "Everything you add lands right here."}
           </p>
+          {chosen.length > 0 && (
+            <div style={{ display: "inline-flex", gap: 6, background: "rgba(0,0,0,.14)", padding: 5, borderRadius: 999 }}>
+              <ToggleBtn id="story" icon={Sparkles} label="Story view" />
+              <ToggleBtn id="list" icon={List} label="List view" />
+            </div>
+          )}
         </div>
       </div>
 
       <Section bg={c.sand}>
-        {chosen.length === 0 ? (
+        {chosen.length > 0 && view === "story" ? (
+          <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 30, alignItems: "start" }}>
+            <div>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: c.charcoal, margin: "0 0 20px" }}>Your day-by-day story</h2>
+              <TripTimeline chosen={chosen} />
+              <div style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
+                <Button variant="primary" onClick={() => window.alert("Reservation flow — connect payments here.")}>
+                  <ShieldCheck size={16} />Reserve for {money(total * 0.2)}
+                </Button>
+                <Button variant="ghost" onClick={() => go("activities")}>Add more <ArrowRight size={15} /></Button>
+              </div>
+            </div>
+            <div style={{ position: "sticky", top: 92 }}>
+              <StoryPoster chosen={chosen} total={total} />
+            </div>
+          </div>
+        ) : chosen.length === 0 ? (
           <EmptyState go={go} />
         ) : (
           <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24, alignItems: "start" }}>
