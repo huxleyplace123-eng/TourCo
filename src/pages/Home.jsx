@@ -8,6 +8,7 @@ import { Reveal } from "../motion.jsx";
 import { CinematicHero } from "../components/CinematicHero.jsx";
 import { TicoSectionIntro } from "../components/Tico.jsx";
 import { TicoRanked } from "../components/TicoRanked.jsx";
+import { TodaySection } from "../components/TodaySection.jsx";
 
 export function Home({ go, addToTrip, trip, viewActivity }) {
   const featured = activities.slice(0, 8);
@@ -42,6 +43,9 @@ export function Home({ go, addToTrip, trip, viewActivity }) {
           ))}
         </div>
       </Section>
+
+      {/* ── Today in Costa Rica ── the live daily briefing, folded in as a section ── */}
+      <TodaySection go={go} addToTrip={addToTrip} trip={trip} viewActivity={viewActivity} />
 
       {/* ── Closing CTA ── */}
       <Section bg={c.sand} pad={70}>

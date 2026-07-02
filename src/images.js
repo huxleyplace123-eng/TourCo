@@ -22,7 +22,7 @@ const BY_CATEGORY = {
   Paragliding: "photo-1622396636133-ba43f812bc35", // paraglider over coast
   "Private Transportation": "photo-1502920917128-1aa500764cbd", // road through jungle
   "Adult Group Weekends": "photo-1520250497591-112f2f40a3f4", // friends beach
-  "Honeymoon Experiences": "photo-1518621736915-f3b1c41bfd00", // couple sunset beach
+  "Honeymoon Experiences": "photo-1519741497674-611481863552", // couple, golden-hour, romantic
   "Luxury Private Tours": "photo-1567899378494-47b22a2ae96a", // luxury yacht
 };
 
@@ -56,7 +56,7 @@ const BY_PACKAGE = {
   p1: "photo-1533105079780-92b9be482077", // family / beach
   p2: "photo-1507525428034-b723cf961d3e", // group / boat
   p3: "photo-1544551763-46a013bb70d5",   // fishing / ocean
-  p4: "photo-1518621736915-f3b1c41bfd00", // honeymoon / couple sunset
+  p4: "photo-1519741497674-611481863552", // honeymoon / couple, golden-hour
   p5: "photo-1432405972618-c60b0225b8f9", // rainforest / waterfall
 };
 

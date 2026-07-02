@@ -6,7 +6,6 @@ import { Button } from "./ui.jsx";
 
 const LINKS = [
   ["tico", "Meet Tico"],
-  ["today", "Today"],
   ["activities", "Activities"],
   ["eat", "Eat & Drink"],
   ["map", "Explore Map"],
