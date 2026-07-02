@@ -8,6 +8,7 @@ import { landmarks, LANDMARK_LAYERS } from "../mapPoints.js";
 import { activityImage, restaurantImage, barImage, beachImage, pageHero } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
+import { MapHero } from "../components/MapHero.jsx";
 import { Photo } from "../motion.jsx";
 
 // Real coastal hubs (lat/long) for the tours/eat/bars/beaches clusters.
@@ -85,8 +86,7 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
 
   return (
     <>
-      <PageHero image={pageHero("guide")} eyebrow="Explore the map" title="All of Costa Rica, one map" accentWord="map"
-        sub="Real geography, real coordinates. Tours, beaches, food & nightlife plus national parks, waterfalls, wildlife, airports and towns — every spot exactly where it is." />
+      <MapHero />
 
       <Section bg={c.sand}>
         {/* two rows of layer toggles: experiences + places */}

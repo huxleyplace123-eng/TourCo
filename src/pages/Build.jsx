@@ -3,6 +3,7 @@ import { Sparkles, Compass, Users, Calendar, Car, Mountain, Waves, RotateCcw, Pl
 import { c, grad, glass, money } from "../theme.js";
 import { Section, Button, Field, Select } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
+import { BuildHero } from "../components/BuildHero.jsx";
 import { pageHero } from "../images.js";
 import { SmartPlan } from "../components/SmartPlan.jsx";
 import { buildMyCostaRica } from "../intelligence/index.js";
@@ -79,8 +80,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip }) {
 
   return (
     <>
-      <PageHero image={pageHero("packages")} align="center" eyebrow="Build My Costa Rica" title="Your trip, planned around you" accentWord="you"
-        sub="Tell Tico where you're staying and how you travel — get a personalized, day-by-day plan built from vetted local operators, real logistics, and live season intelligence." />
+      <BuildHero />
 
       <Section bg={c.sand}>
         {!result ? (
