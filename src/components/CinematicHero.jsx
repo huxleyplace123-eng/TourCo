@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight, Compass, Calendar, Users, Heart, ChevronDown, ShieldCheck, Sparkles, MessageCircle, Star } from "lucide-react";
 import { c, grad, glass, gradText } from "../theme.js";
-import { heroSlides, personImage } from "../images.js";
+import { themedSlides, personImage } from "../images.js";
 import { Button, Field } from "./ui.jsx";
 import { Magnetic } from "../motion.jsx";
 
-const SLIDES = heroSlides(1900);
+// Vivid, fishing-forward home backdrop — distinct from the Meet Tico hero.
+const SLIDES = themedSlides("home", 1900);
 
 // Time-of-day accent — the glow shifts with the visitor's local hour.
 function timeGrade(hour) {
@@ -87,14 +88,15 @@ export function CinematicHero({ go }) {
         {SLIDES.map((s, i) => (
           <img key={s.src} src={s.src} alt="" aria-hidden
             style={{ position: "absolute", inset: "-8%", width: "116%", height: "116%", objectFit: "cover",
-              opacity: (i === slide ? 0.6 : 0) * (1 - scrub * 0.55),
+              opacity: (i === slide ? 1 : 0) * (1 - scrub * 0.5),
               transform: `scale(${(i === slide ? 1.02 : 1) + scrub * 0.15})`,
               transition: "opacity 1.6s ease, transform 6s ease" }} />
         ))}
       </div>
-      {/* deep ocean vignette so text pops */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, rgba(11,26,46,.94) 0%, rgba(11,26,46,.7) 45%, rgba(11,26,46,.32) 100%)" }} />
-      <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(11,26,46,.6) 100%)" }} />
+      {/* cinematic wash — dark enough on the left for the copy + plan card, but
+          lets the vivid photo shine through on the right (like the Meet Tico hero) */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, rgba(11,26,46,.9) 0%, rgba(11,26,46,.62) 42%, rgba(11,26,46,.24) 72%, rgba(11,26,46,.12) 100%)" }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 0%, transparent 45%, rgba(11,26,46,.55) 100%)" }} />
       {/* scene label + slide dots */}
       <div style={{ position: "absolute", bottom: 20, right: 24, zIndex: 3, display: "flex", alignItems: "center", gap: 12, opacity: 1 - scrub }}>
         <span key={slide} style={{ ...glass, color: "#fff", padding: "6px 12px", borderRadius: 999, fontSize: 12, fontWeight: 700, animation: "tnRise .6s ease both" }}>{SLIDES[slide].label}</span>

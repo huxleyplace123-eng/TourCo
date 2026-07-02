@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight, MessageCircle, Clock, Users, Check, X, Star, ShieldCheck, Sparkles, MapPin, Plus } from "lucide-react";
 import { c, grad, glass, money, gradText } from "../theme.js";
 import { packages, activities } from "../data.js";
-import { packageImage, activityImage, heroImage } from "../images.js";
+import { packageImage, activityImage, heroImage, themedSlides } from "../images.js";
+
+const PKG_SLIDES = themedSlides("fishing", 1800);
 import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { TiltCard, Photo, Reveal } from "../motion.jsx";
 
@@ -136,14 +138,34 @@ function PackageDrawer({ p, onClose, addToTrip }) {
 export function Packages({ go, addToTrip }) {
   const [open, setOpen] = useState(null);
   const [featured, ...rest] = packages;
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setSlide((s) => (s + 1) % PKG_SLIDES.length), 5000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <>
-      {/* ── Dark cinematic hero ── */}
-      <div style={{ position: "relative", overflow: "hidden", padding: "70px 20px 54px" }}>
-        <img src={heroImage(1800)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.28 }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.6), rgba(11,26,46,.9))" }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 20% 20%, rgba(34,211,238,.2), transparent 55%), radial-gradient(50% 60% at 85% 80%, rgba(255,208,0,.14), transparent 55%)` }} />
+      {/* ── Vivid fishing-forward cinematic hero ── */}
+      <div style={{ position: "relative", overflow: "hidden", padding: "88px 20px 64px", minHeight: 340 }}>
+        {PKG_SLIDES.map((s, i) => (
+          <img key={s.src} src={s.src} alt="" aria-hidden
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
+              opacity: i === slide ? 1 : 0, transition: "opacity 1.6s ease", transform: "scale(1.06)",
+              animation: i === slide ? "tnPkgKen 8s ease-out both" : "none" }} />
+        ))}
+        <style>{`@keyframes tnPkgKen{from{transform:scale(1.02)}to{transform:scale(1.12)}}`}</style>
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.5) 0%, rgba(11,26,46,.34) 42%, rgba(11,26,46,.92) 100%)" }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(50% 60% at 20% 20%, rgba(34,211,238,.22), transparent 55%), radial-gradient(50% 60% at 85% 80%, rgba(255,208,0,.14), transparent 55%)` }} />
+        {/* scene label */}
+        <div style={{ position: "absolute", bottom: 16, right: 20, zIndex: 3, display: "flex", alignItems: "center", gap: 10 }}>
+          <span key={slide} style={{ background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", color: "#fff", padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 700 }}>{PKG_SLIDES[slide].label}</span>
+          <div style={{ display: "flex", gap: 5 }}>
+            {PKG_SLIDES.map((_, i) => (
+              <button key={i} onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`} style={{ width: i === slide ? 18 : 6, height: 6, borderRadius: 999, border: "none", cursor: "pointer", background: i === slide ? c.teal : "rgba(255,255,255,.45)", transition: "all .3s", padding: 0 }} />
+            ))}
+          </div>
+        </div>
         <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
           <Eyebrow><span style={{ color: c.gold }}>Ready-made trips</span></Eyebrow>
           <h1 style={{ color: "#fff", fontSize: "clamp(34px,6vw,60px)", fontWeight: 800, letterSpacing: -2, margin: "6px 0 10px", lineHeight: 1 }}>

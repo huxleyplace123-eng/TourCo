@@ -6,7 +6,7 @@ import { Section, Eyebrow, Field, TextInput, Select, Button } from "../component
 import { ActivityCard } from "../components/ActivityCard.jsx";
 import { Reveal } from "../motion.jsx";
 import { PageHero } from "../components/PageHero.jsx";
-import { pageHero } from "../images.js";
+import { pageHero, themedSlides } from "../images.js";
 import { TicoSectionIntro } from "../components/Tico.jsx";
 import { TicoRanked } from "../components/TicoRanked.jsx";
 import { ticoActivityVerdict } from "../intelligence/tico.js";
@@ -54,7 +54,7 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
 
   return (
     <>
-      <PageHero image={pageHero("activities")} eyebrow="Browse activities" title="Every adventure, vetted"
+      <PageHero slides={themedSlides("activities")} eyebrow="Browse activities" title="Every adventure, vetted"
         sub="Add what you love to your trip. We'll handle the coordination and the deposit math." />
 
       {/* Tico's ranked top 5 — his personal order, shown when you're just browsing */}

@@ -55,6 +55,43 @@ const HERO = HERO_SLIDES[0].id;
 
 export const heroSlides = (w = 1900) => HERO_SLIDES.map((s) => ({ src: cdn(s.id, w), label: s.label }));
 
+// ── Themed hero slide sets ── vivid, cross-fading backdrops per surface. These
+// are DELIBERATELY different photos from HERO_SLIDES / the Meet Tico hero, so no
+// two hero areas share imagery. Fishing is the star of the home + fishing sets.
+const HERO_SETS = {
+  // Homepage / dashboard — an adventure reel led by sport fishing + boats.
+  home: [
+    { id: "photo-1708748978230-510e06b24530", label: "Offshore, rods out" },   // rod rack + boat wake
+    { id: "photo-1537872384762-e785271d14f8", label: "Big-game reel" },        // reel over churning sea
+    { id: "photo-1625183656263-171183307b15", label: "The catch is on" },      // anglers on a boat
+    { id: "photo-1533760881669-80db4d7b341a", label: "Wheels & jungle roads" },// motorcycle ride
+    { id: "photo-1546587348-d12660c30c50", label: "Emerald water" },           // lake / green water
+    { id: "photo-1519046904884-53103b34b206", label: "Hidden cove" },          // secluded palm cove
+  ],
+  // Activities — on-the-water action + open ocean.
+  activities: [
+    { id: "photo-1537872384762-e785271d14f8", label: "Big-game reel" },
+    { id: "photo-1625183656263-171183307b15", label: "Sport fishing" },
+    { id: "photo-1505142468610-359e7d316be0", label: "Turquoise break" },      // aerial waves
+    { id: "photo-1559599746-8823b38544c6", label: "Golden-hour sail" },        // boat at sunset
+    { id: "photo-1533760881669-80db4d7b341a", label: "Coastal ride" },         // motorcycle
+    { id: "photo-1519046904884-53103b34b206", label: "Secluded cove" },
+  ],
+  // Pure fishing set — for any fishing-forward surface.
+  fishing: [
+    { id: "photo-1707314175646-7f40247f36c0", label: "Rod over the blue" },
+    { id: "photo-1537872384762-e785271d14f8", label: "Big-game reel" },
+    { id: "photo-1619054976487-7198b8924922", label: "Reels ready" },          // rack of reels
+    { id: "photo-1625183656263-171183307b15", label: "On the water" },
+    { id: "photo-1515631604561-23e0be68ee06", label: "Fish on!" },             // landing a fish
+    { id: "photo-1708748978230-510e06b24530", label: "Trolling the wake" },
+  ],
+};
+
+// Return a themed slide set as {src,label}[] (falls back to the default heroSlides).
+export const themedSlides = (key, w = 1900) =>
+  (HERO_SETS[key] || HERO_SLIDES).map((s) => ({ src: cdn(s.id, w), label: s.label }));
+
 // Cinematic hero photo per curated package (by package id).
 const BY_PACKAGE = {
   p1: "photo-1533105079780-92b9be482077", // family / beach
