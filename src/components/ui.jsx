@@ -1,5 +1,5 @@
 import React from "react";
-import { c } from "../theme.js";
+import { c, grad, gradText } from "../theme.js";
 
 // ── Button ── (mirrors the original D component: variants + sizes)
 export function Button({ children, variant = "primary", onClick, full, size = "md", style = {}, ...rest }) {
@@ -53,12 +53,20 @@ export function Eyebrow({ children }) {
 }
 
 // ── Section heading block ──
-export function SectionHead({ eyebrow, title, sub, center, light }) {
+// `accent` renders the last word of the title in the brand gradient — the
+// signature typographic touch used across the app.
+export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
+  const renderTitle = () => {
+    if (!accent || light || typeof title !== "string") return title;
+    const words = title.trim().split(" ");
+    const last = words.pop();
+    return (<>{words.join(" ")} <span style={gradText(grad.ocean)}>{last}</span></>);
+  };
   return (
     <div style={{ maxWidth: 720, margin: center ? "0 auto" : 0, textAlign: center ? "center" : "left", marginBottom: 40 }}>
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
       <h2 style={{ fontSize: "clamp(28px,4vw,42px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: -1, color: light ? "#fff" : c.charcoal, margin: 0 }}>
-        {title}
+        {renderTitle()}
       </h2>
       {sub && (
         <p style={{ marginTop: 14, fontSize: 17, lineHeight: 1.6, color: light ? "rgba(255,255,255,.85)" : c.stone }}>

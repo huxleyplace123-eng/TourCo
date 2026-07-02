@@ -48,7 +48,7 @@ export function Home({ go, addToTrip, trip, viewActivity }) {
       {/* ── Featured activities ── */}
       <Section bg={c.sand}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12, marginBottom: 30 }}>
-          <SectionHead eyebrow="Popular right now" title="Hand-picked experiences" />
+          <SectionHead eyebrow="Popular right now" title="Hand-picked experiences" accent />
           <Button variant="ghost" onClick={() => go("activities")}>View all activities <ArrowRight size={16} /></Button>
         </div>
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>

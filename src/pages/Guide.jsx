@@ -27,7 +27,7 @@ export function Guide({ go }) {
       </div>
 
       <Section bg={c.sand}>
-        <SectionHead eyebrow="Explore" title="Pick your corner of the coast" />
+        <SectionHead eyebrow="Explore" title="Pick your corner of the coast" accent />
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
           {regions.map((r, i) => (
             <Reveal key={r.name} delay={(i % 3) * 70}>

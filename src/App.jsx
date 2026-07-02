@@ -49,17 +49,21 @@ export default function App() {
     <div style={{ fontFamily: FONT, background: c.white, color: c.charcoal, minHeight: "100vh" }}>
       <Nav page={page} go={go} tripCount={trip.length} openTrip={() => (trip.length ? go("portal") : setCartOpen(true))} />
 
-      {page === "home" && <Home {...shared} />}
-      {page === "activities" && <Activities {...shared} />}
-      {page === "detail" && <Detail activeId={activeId} {...shared} />}
-      {page === "packages" && <Packages {...shared} />}
-      {page === "build" && <AskJohn {...shared} />}
-      {page === "builder" && <Build {...shared} />}
-      {page === "guide" && <Guide {...shared} />}
-      {page === "why" && <Why {...shared} />}
-      {page === "partner" && <Partner {...shared} />}
-      {page === "portal" && <MyTrips {...shared} />}
-      {page === "john" && <John {...shared} />}
+      {/* keyed wrapper → every page fade-rises in on navigation */}
+      <div key={page + (page === "detail" ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>
+        {page === "home" && <Home {...shared} />}
+        {page === "activities" && <Activities {...shared} />}
+        {page === "detail" && <Detail activeId={activeId} {...shared} />}
+        {page === "packages" && <Packages {...shared} />}
+        {page === "build" && <AskJohn {...shared} />}
+        {page === "builder" && <Build {...shared} />}
+        {page === "guide" && <Guide {...shared} />}
+        {page === "why" && <Why {...shared} />}
+        {page === "partner" && <Partner {...shared} />}
+        {page === "portal" && <MyTrips {...shared} />}
+        {page === "john" && <John {...shared} />}
+      </div>
+      <style>{`@keyframes tnPageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){[style*="tnPageIn"]{animation:none!important}}`}</style>
 
       <Footer go={go} />
 

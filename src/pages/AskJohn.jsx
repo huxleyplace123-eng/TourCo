@@ -6,39 +6,40 @@ import { activityImage } from "../images.js";
 import { Button } from "../components/ui.jsx";
 import { Photo, useCountUp } from "../motion.jsx";
 
-// ── John's brain: a small rules engine. Each step asks a question, and the
-// visitor's answer narrows/scores the activity list. No API needed — it feels
-// alive because the itinerary assembles on the right as you talk. ──
+// ── John's brain: a small rules engine with personality. Each step asks a
+// question; the answer scores every activity AND makes John react like a real
+// local. He also explains WHY he picks each experience for you. No API needed —
+// it feels alive because he reacts and the itinerary assembles as you talk. ──
 
 const SCRIPT = [
   {
     id: "who",
     john: "¡Pura vida! I'm John — I've guided Costa Rica for 15 years. Let's build your trip together. First: who's coming?",
     chips: [
-      { label: "Just us two 💕", value: "couple", match: (a) => a.bestFor?.includes("Couples") },
-      { label: "Family with kids 👨‍👩‍👧", value: "family", match: (a) => a.family },
-      { label: "Group of friends 🍻", value: "group", match: (a) => a.bestFor?.includes("Groups") },
-      { label: "Solo adventure 🎒", value: "solo", match: (a) => a.level !== "High" || a.bestFor?.includes("Adventure") },
+      { label: "Just us two 💕", value: "couple", react: "Ooh, a trip for two — my favorite to plan. I know the most romantic spots on the coast.", match: (a) => a.bestFor?.includes("Couples"), reason: "perfect for couples" },
+      { label: "Family with kids 👨‍👩‍👧", value: "family", react: "Amazing — I've got kids myself. I only pick things that are safe AND genuinely fun for them.", match: (a) => a.family, reason: "safe & kid-approved" },
+      { label: "Group of friends 🍻", value: "group", react: "A crew! This is where Costa Rica really shines. Let's make it a trip they'll talk about for years.", match: (a) => a.bestFor?.includes("Groups"), reason: "built for groups" },
+      { label: "Solo adventure 🎒", value: "solo", react: "Respect — solo travel here is unforgettable. I'll make sure you're never without a friendly local.", match: (a) => a.level !== "High" || a.bestFor?.includes("Adventure"), reason: "great going solo" },
     ],
   },
   {
     id: "vibe",
     john: "Love it. What's the energy you're after?",
     chips: [
-      { label: "Adrenaline 🔥", value: "thrill", match: (a) => a.level === "High" || /ATV|Rafting|Paragl|Zip/.test(a.category) },
-      { label: "Chill & scenic 🌅", value: "chill", match: (a) => a.level === "Easy" },
-      { label: "Wildlife & nature 🦥", value: "nature", match: (a) => /Wildlife|Whale|Snorkel|Waterfall/.test(a.category) },
-      { label: "On the water 🌊", value: "water", match: (a) => /Fishing|Catamaran|Snorkel|Surf|Whale|Rafting/.test(a.category) },
+      { label: "Adrenaline 🔥", value: "thrill", react: "Now we're talking. I've got the good stuff — the tours that get your heart going.", match: (a) => a.level === "High" || /ATV|Rafting|Paragl|Zip/.test(a.category), reason: "pure adrenaline" },
+      { label: "Chill & scenic 🌅", value: "chill", react: "Smart. The best moments here are the slow ones — sunsets, warm water, no rush.", match: (a) => a.level === "Easy", reason: "relaxed & scenic" },
+      { label: "Wildlife & nature 🦥", value: "nature", react: "You picked the real Costa Rica. Sloths, whales, waterfalls — I know exactly where to take you.", match: (a) => /Wildlife|Whale|Snorkel|Waterfall/.test(a.category), reason: "up close with nature" },
+      { label: "On the water 🌊", value: "water", react: "The Pacific is my office. Fishing, sailing, snorkeling — you're going to love it out there.", match: (a) => /Fishing|Catamaran|Snorkel|Surf|Whale|Rafting/.test(a.category), reason: "out on the water" },
     ],
   },
   {
     id: "budget",
     john: "Got it. And what feels right per experience?",
     chips: [
-      { label: "Keep it easy — under $100", value: "low", match: (a) => a.price < 100 },
-      { label: "Mid-range — $100–200", value: "mid", match: (a) => a.price >= 100 && a.price <= 200 },
-      { label: "Treat ourselves 💎", value: "high", match: (a) => a.price > 150 },
-      { label: "Money's no object", value: "any", match: () => true },
+      { label: "Keep it easy — under $100", value: "low", react: "No problem at all — some of my favorite tours are the affordable ones. Value without the tourist markup.", match: (a) => a.price < 100, reason: "great value" },
+      { label: "Mid-range — $100–200", value: "mid", react: "Perfect sweet spot. This is where the quality really steps up.", match: (a) => a.price >= 100 && a.price <= 200, reason: "in your range" },
+      { label: "Treat ourselves 💎", value: "high", react: "You deserve it. Let me show you the premium experiences worth every colón.", match: (a) => a.price > 150, reason: "a real treat" },
+      { label: "Money's no object", value: "any", react: "Then let's do this properly — private, unhurried, the very best I've got.", match: () => true, reason: "top of the line" },
     ],
   },
 ];
@@ -50,6 +51,20 @@ function score(a, answers) {
     if (chosen && chosen.match(a)) s += 3;
   });
   return s;
+}
+
+// John's one-line reason for picking THIS activity for THIS visitor — pulled
+// from whichever of their answers the activity best satisfies.
+function reasonFor(a, answers) {
+  const hits = [];
+  SCRIPT.forEach((step) => {
+    const chosen = step.chips.find((ch) => ch.value === answers[step.id]);
+    if (chosen && chosen.match(a) && chosen.reason) hits.push(chosen.reason);
+  });
+  // Prefer a personalized, answer-based reason; only fall back to rating.
+  if (hits[0]) return hits[0];
+  if (a.rating >= 4.9) return "one of my highest-rated";
+  return "John's local pick";
 }
 
 function TypingDots() {
@@ -99,7 +114,13 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
   const answer = (step_, chip) => {
     setMsgs((m) => [...m, { from: "me", text: chip.label }]);
     setAnswers((a) => ({ ...a, [step_.id]: chip.value }));
-    setStep((s) => s + 1);
+    // John reacts warmly to the answer, then (via the step effect) asks next.
+    setTyping(true);
+    setTimeout(() => {
+      setTyping(false);
+      if (chip.react) setMsgs((m) => [...m, { from: "john", text: chip.react }]);
+      setStep((s) => s + 1);
+    }, 750);
   };
 
   const finish = () => {
@@ -145,7 +166,7 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
 
       <div className="askjohn-grid" style={{ maxWidth: 1180, margin: "0 auto", padding: "20px", display: "grid", gridTemplateColumns: "1fr", gap: 20, alignItems: "start" }}>
         {/* ── Chat column ── */}
-        <div style={{ background: c.sand, borderRadius: 22, border: "1px solid rgba(0,0,0,.06)", display: "flex", flexDirection: "column", height: 560, overflow: "hidden" }}>
+        <div className="askjohn-chat" style={{ background: c.sand, borderRadius: 22, border: "1px solid rgba(0,0,0,.06)", display: "flex", flexDirection: "column", overflow: "hidden" }}>
           <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
             {msgs.map((m, i) => (
               <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-end", flexDirection: m.from === "me" ? "row-reverse" : "row" }}>
@@ -217,6 +238,9 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
                           <div style={{ fontSize: 11, fontWeight: 700, color: c.teal }}>{a.category}</div>
                           <div style={{ fontWeight: 800, color: c.charcoal, fontSize: 13.5, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.title}</div>
                           <div style={{ color: c.stone, fontSize: 12 }}>{money(a.price)} · {a.region}</div>
+                          <div style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 3, fontSize: 11, fontWeight: 700, color: c.gold, background: "rgba(240,164,0,.12)", padding: "2px 7px", borderRadius: 999 }}>
+                            <Sparkles size={10} />{reasonFor(a, answers)}
+                          </div>
                         </div>
                         <button onClick={() => (added ? removeFromTrip(a.id) : addToTrip(a.id))} style={{ width: 34, height: 34, borderRadius: 999, border: "none", cursor: "pointer", flexShrink: 0, background: added ? c.emerald : c.coral, color: added ? "#fff" : c.charcoal, display: "flex", alignItems: "center", justifyContent: "center", animation: "tnPop .3s" }}>
                           {added ? <Check size={16} /> : <Plus size={16} />}
@@ -246,7 +270,13 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
         </div>
       </div>
 
-      <style>{`@media(min-width:900px){.askjohn-grid{grid-template-columns:1fr 380px!important}}`}</style>
+      <style>{`
+        .askjohn-chat{ min-height: 420px; }
+        @media(min-width:900px){
+          .askjohn-grid{ grid-template-columns:1fr 380px!important }
+          .askjohn-chat{ height:560px; min-height:0; }
+        }
+      `}</style>
     </>
   );
 }

@@ -44,3 +44,23 @@ export const gradFor = (cat) =>
 
 // Currency helper.
 export const money = (n) => "$" + Math.round(n).toLocaleString();
+
+// ── Design tokens ── a consistent elevation + radius scale so every surface
+// feels like it belongs to the same product (the thing that reads as "premium").
+export const shadow = {
+  sm: "0 4px 14px -8px rgba(15,30,40,.28)",
+  md: "0 14px 40px -22px rgba(15,30,40,.4)",
+  lg: "0 30px 60px -24px rgba(8,28,58,.5)",
+  xl: "0 50px 90px -34px rgba(8,28,58,.6)",
+  glow: "0 18px 50px -18px rgba(47,107,235,.55)",
+};
+export const radius = { sm: 12, md: 16, lg: 22, xl: 28, pill: 999 };
+
+// Gradient-text style — apply to a heading span for the signature accent.
+export const gradText = (g = grad.hero) => ({
+  background: g,
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  color: "transparent",
+});

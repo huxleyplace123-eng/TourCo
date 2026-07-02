@@ -63,6 +63,9 @@ export function CinematicHero({ go }) {
         @keyframes tnDrift { 0%{ transform: translateX(-4%) } 100%{ transform: translateX(4%) } }
         @keyframes tnShimmer { 0%,100%{ opacity:.5 } 50%{ opacity:.85 } }
         @keyframes tnRise { from{ opacity:0; transform: translateY(24px) } to{ opacity:1; transform: translateY(0) } }
+        @keyframes tnSun { 0%,100%{ transform: scale(1); opacity:.9 } 50%{ transform: scale(1.08); opacity:1 } }
+        @keyframes tnBirds { 0%{ transform: translateX(-10%) translateY(0) } 50%{ transform: translateX(60%) translateY(-14px) } 100%{ transform: translateX(130%) translateY(4px) } }
+        @keyframes tnWave { 0%{ transform: translateX(-1.5%) scaleY(1) } 100%{ transform: translateX(1.5%) scaleY(1.08) } }
         .tn-hero .rise { animation: tnRise .8s cubic-bezier(.2,.7,.2,1) both; }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
       `}</style>
@@ -79,8 +82,31 @@ export function CinematicHero({ go }) {
       <div aria-hidden style={{ position: "absolute", left: "-8%", right: "-8%", top: "38%", height: 180, background: "radial-gradient(60% 100% at 50% 50%, rgba(255,255,255,.16), transparent 70%)", filter: "blur(8px)", animation: "tnDrift 14s ease-in-out infinite alternate", ...layer(1.0) }} />
       {/* light rays / shimmer */}
       <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(115deg, transparent 30%, rgba(255,255,255,.10) 48%, transparent 62%)", animation: "tnShimmer 7s ease-in-out infinite", pointerEvents: "none" }} />
+
+      {/* ── Animated SVG scene: sun, layered undulating waves, drifting birds ── */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", ...layer(0.55) }}>
+        {/* glowing sun */}
+        <div style={{ position: "absolute", right: "16%", top: "16%", width: 120, height: 120, borderRadius: 999, background: `radial-gradient(circle, ${g.accent} 0%, ${g.accent}88 40%, transparent 70%)`, filter: "blur(2px)", animation: "tnSun 6s ease-in-out infinite" }} />
+        {/* drifting birds */}
+        <svg viewBox="0 0 100 20" style={{ position: "absolute", left: "8%", top: "22%", width: 90, opacity: 0.55, color: "#fff", animation: "tnBirds 26s linear infinite" }}>
+          <path d="M4 10 Q7 6 10 10 Q13 6 16 10" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+          <path d="M28 7 Q30 4 32 7 Q34 4 36 7" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+          <path d="M50 12 Q52 9 54 12 Q56 9 58 12" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+        </svg>
+      </div>
+      {/* layered waves at the base */}
+      <div aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 200, pointerEvents: "none" }}>
+        <svg viewBox="0 0 1440 200" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+          <path style={{ animation: "tnWave 12s ease-in-out infinite alternate", transformOrigin: "center" }} fill="rgba(255,255,255,.10)" d="M0,120 C240,80 480,160 720,120 C960,80 1200,160 1440,120 L1440,200 L0,200 Z" />
+          <path style={{ animation: "tnWave 9s ease-in-out infinite alternate-reverse" }} fill="rgba(255,255,255,.14)" d="M0,150 C288,110 576,180 864,150 C1152,120 1296,170 1440,150 L1440,200 L0,200 Z" />
+          <path fill={c.sand} d="M0,178 C360,150 720,196 1080,176 C1260,166 1350,184 1440,178 L1440,200 L0,200 Z" />
+        </svg>
+      </div>
+
+      {/* film grain for texture */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.06, mixBlendMode: "overlay", backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
       {/* bottom fade into page */}
-      <div aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 140, background: `linear-gradient(180deg, transparent, ${c.sand})` }} />
+      <div aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 90, background: `linear-gradient(180deg, transparent, ${c.sand})` }} />
 
       {/* ── Content ── */}
       <div className="hero-grid" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "78px 20px 96px", display: "grid", gridTemplateColumns: "1fr", gap: 48 }}>

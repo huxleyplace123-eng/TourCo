@@ -1,6 +1,6 @@
 import React from "react";
 import { ArrowRight, ShieldCheck, MessageCircle, Sparkles, Heart, DollarSign, MapPin, Star, Quote } from "lucide-react";
-import { c, grad } from "../theme.js";
+import { c, grad, gradText } from "../theme.js";
 import { Section, SectionHead, Eyebrow, Button } from "../components/ui.jsx";
 import { Reveal } from "../motion.jsx";
 
@@ -41,18 +41,20 @@ export function Why({ go }) {
       {/* Stats */}
       <Section bg={c.white} pad={44}>
         <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))" }}>
-          {STATS.map((s) => (
-            <div key={s.l} style={{ textAlign: "center", background: c.sand, borderRadius: 18, padding: "24px 12px" }}>
-              <div style={{ fontSize: 30, fontWeight: 800, color: c.emerald }}>{s.n}</div>
-              <div style={{ color: c.stone, fontWeight: 600, fontSize: 13.5, marginTop: 4 }}>{s.l}</div>
-            </div>
+          {STATS.map((s, i) => (
+            <Reveal key={s.l} delay={i * 90}>
+              <div style={{ textAlign: "center", background: c.sand, borderRadius: 18, padding: "24px 12px" }}>
+                <div style={{ fontSize: 30, fontWeight: 800, ...gradText(grad.ocean) }}>{s.n}</div>
+                <div style={{ color: c.stone, fontWeight: 600, fontSize: 13.5, marginTop: 4 }}>{s.l}</div>
+              </div>
+            </Reveal>
           ))}
         </div>
       </Section>
 
       {/* Pillars */}
       <Section bg={c.sand}>
-        <SectionHead eyebrow="What makes us different" title="Four things we never compromise on" center />
+        <SectionHead eyebrow="What makes us different" title="Four things we never compromise on" center accent />
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>
           {PILLARS.map((p, i) => (
             <Reveal key={p.title} delay={(i % 2) * 80}>
