@@ -1,0 +1,6 @@
+# TicoWild — Dependabot configuration
+# Intentionally registers NO update ecosystems, which disables Dependabot's
+# automatic version-update pull requests. (Those bumped Vite 5 -> 8 and broke
+# the build.) Security-only alerts remain controlled in repo Settings.
+version: 2
+updates: []
