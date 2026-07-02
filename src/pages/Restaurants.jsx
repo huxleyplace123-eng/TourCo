@@ -7,39 +7,52 @@ import { restaurantImage, barImage, pageHero } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { TiltCard, Photo, Reveal } from "../motion.jsx";
+import { TicoAvatar, TicoRating, TicoPick, useTicoSpot } from "../components/Tico.jsx";
 
 const REGIONS = ["All", ...Array.from(new Set([...restaurants, ...bars].map((r) => r.region)))];
 
 function RestaurantCard({ r }) {
+  const tico = useTicoSpot(r);
   return (
     <TiltCard style={{ overflow: "hidden", border: `1px solid ${c.line}`, background: c.white, height: "100%", display: "flex", flexDirection: "column" }} radius={18} max={7}>
       <Photo src={restaurantImage(r)} fallback={grad.sunset} alt={r.name} height={150}
         overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.1) 0%, transparent 40%, rgba(11,26,46,.72) 100%)" }} />}>
-        <span style={{ position: "absolute", top: 10, left: 10, zIndex: 2, ...glass, color: c.gold, padding: "5px 10px", borderRadius: 999, fontSize: 11, fontWeight: 800 }}>{r.best}</span>
+        {tico.isPick ? <span style={{ position: "absolute", top: 10, left: 10, zIndex: 2 }}><TicoPick /></span>
+          : <span style={{ position: "absolute", top: 10, left: 10, zIndex: 2, ...glass, color: c.gold, padding: "5px 10px", borderRadius: 999, fontSize: 11, fontWeight: 800 }}>{r.best}</span>}
         <span style={{ position: "absolute", bottom: 10, right: 10, zIndex: 2, background: "rgba(11,26,46,.6)", color: "#fff", padding: "4px 9px", borderRadius: 999, fontSize: 12, fontWeight: 800 }}>{r.price}</span>
       </Photo>
       <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
-        <div style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{r.cuisine}</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{r.cuisine}</span>
+          <span title="Tico's rating"><TicoRating score={tico.score} /></span>
+        </div>
         <div style={{ fontSize: 17, fontWeight: 800, color: c.charcoal, lineHeight: 1.15 }}>{r.name}</div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, color: c.stone, fontWeight: 600 }}><MapPin size={12} />{r.region}</div>
         <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 13, lineHeight: 1.5, flex: 1 }}>{r.blurb}</p>
+        {tico.take && <div style={{ display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(34,211,238,.06)", border: "1px solid rgba(34,211,238,.18)", borderRadius: 11, padding: "8px 10px", marginTop: 2 }}><TicoAvatar size={18} glow={false} /><span style={{ fontSize: 12, lineHeight: 1.4, color: c.charcoal, fontStyle: "italic" }}>{tico.take}</span></div>}
       </div>
     </TiltCard>
   );
 }
 
 function BarCard({ b }) {
+  const tico = useTicoSpot(b);
   return (
     <TiltCard style={{ overflow: "hidden", border: `1px solid ${c.line}`, background: c.white, height: "100%", display: "flex", flexDirection: "column" }} radius={18} max={7}>
       <Photo src={barImage(b)} fallback={grad.orchid} alt={b.name} height={150}
         overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.1) 0%, transparent 40%, rgba(11,26,46,.72) 100%)" }} />}>
         {b.happy && <span style={{ position: "absolute", top: 10, left: 10, zIndex: 2, background: c.gold, color: c.ink, padding: "5px 10px", borderRadius: 999, fontSize: 11, fontWeight: 800, display: "inline-flex", alignItems: "center", gap: 4 }}><Clock size={11} />{b.happy}</span>}
+        {tico.isPick && <span style={{ position: "absolute", bottom: 10, left: 10, zIndex: 2 }}><TicoPick /></span>}
       </Photo>
       <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
-        <div style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{b.type}</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{b.type}</span>
+          <span title="Tico's rating"><TicoRating score={tico.score} /></span>
+        </div>
         <div style={{ fontSize: 17, fontWeight: 800, color: c.charcoal, lineHeight: 1.15 }}>{b.name}</div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, color: c.stone, fontWeight: 600 }}><MapPin size={12} />{b.region}</div>
         <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 13, lineHeight: 1.5, flex: 1 }}>{b.blurb}</p>
+        {tico.take && <div style={{ display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(34,211,238,.06)", border: "1px solid rgba(34,211,238,.18)", borderRadius: 11, padding: "8px 10px", marginTop: 2 }}><TicoAvatar size={18} glow={false} /><span style={{ fontSize: 12, lineHeight: 1.4, color: c.charcoal, fontStyle: "italic" }}>{tico.take}</span></div>}
       </div>
     </TiltCard>
   );
@@ -105,10 +118,10 @@ export function Restaurants({ go }) {
         {/* concierge nudge */}
         <Reveal>
           <div style={{ marginTop: 30, ...glass, borderRadius: 20, padding: "22px 24px", display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ width: 44, height: 44, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: c.ink, flexShrink: 0 }}>S</div>
+            <TicoAvatar size={44} />
             <div style={{ flex: 1, minWidth: 220 }}>
-              <div style={{ color: "#fff", fontWeight: 800, fontSize: 15.5 }}>Building a trip? Sol pairs dinner to your day.</div>
-              <div style={{ color: c.stone, fontSize: 13.5 }}>Tell Sol your plan and get the best table within minutes of each tour.</div>
+              <div style={{ color: "#fff", fontWeight: 800, fontSize: 15.5 }}>Building a trip? Tico pairs dinner to your day.</div>
+              <div style={{ color: c.stone, fontSize: 13.5 }}>Tell Tico your plan and get the best table within minutes of each tour.</div>
             </div>
             <Button variant="primary" onClick={() => go("build")}>Build my Costa Rica <ArrowRight size={15} /></Button>
           </div>

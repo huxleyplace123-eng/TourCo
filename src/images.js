@@ -15,7 +15,7 @@ const BY_CATEGORY = {
   Snorkeling: "photo-1544551763-92ab472cad5d", // snorkel / reef
   "Surf Lessons": "photo-1502680390469-be75c86b636f", // surfer
   Ziplining: "photo-1622977266039-dbb162254c12", // rainforest canopy
-  "Wildlife Night Tours": "photo-1547721064-da6cfb341d50", // sloth / wildlife
+  "Wildlife Night Tours": "photo-1559253664-ca249d4608c6", // red-eyed tree frog (Costa Rica night-tour icon)
   "Whale & Dolphin Watching": "photo-1568430462989-44163eb1752f", // whale tail
   "White Water Rafting": "photo-1530866495561-507c9faab2ed", // rafting
   "Waterfall Adventures": "photo-1432405972618-c60b0225b8f9", // jungle waterfall
@@ -31,7 +31,7 @@ const BY_REGION = {
   Quepos: "photo-1516815231560-8f41ec531527",
   Uvita: "photo-1552733407-5d5c46c3bb3b",
   Dominical: "photo-1502680390469-be75c86b636f",
-  "Jacó": "photo-1544644181-1484b3fdfc62",
+  "Jacó": "photo-1502680390469-be75c86b636f",
   Tamarindo: "photo-1520942702018-0862200e6873",
   Guanacaste: "photo-1510414842594-a61c69b5ae57",
 };

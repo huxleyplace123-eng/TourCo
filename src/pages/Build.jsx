@@ -80,7 +80,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip }) {
   return (
     <>
       <PageHero image={pageHero("packages")} align="center" eyebrow="Build My Costa Rica" title="Your trip, planned around you" accentWord="you"
-        sub="Tell Sol where you're staying and how you travel — get a personalized, day-by-day plan built from vetted local operators, real logistics, and live season intelligence." />
+        sub="Tell Tico where you're staying and how you travel — get a personalized, day-by-day plan built from vetted local operators, real logistics, and live season intelligence." />
 
       <Section bg={c.sand}>
         {!result ? (
@@ -114,7 +114,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip }) {
                 ]} />
               </Field>
 
-              <Field label="Anything Sol should work around?">
+              <Field label="Anything Tico should work around?">
                 <ChipRow value={buildFlags(form)} onToggle={(v) => {
                   if (v === "avoidLongDrives") set("avoidLongDrives", !form.avoidLongDrives);
                   else if (v === "youngKids") set("youngKids", !form.youngKids);
@@ -129,7 +129,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip }) {
               </Field>
 
               <Button variant="primary" size="lg" full onClick={build} disabled={building}>
-                {building ? <>Sol is building your plan…</> : <><Sparkles size={18} />Build my Costa Rica</>}
+                {building ? <>Tico is building your plan…</> : <><Sparkles size={18} />Build my Costa Rica</>}
               </Button>
               <p style={{ textAlign: "center", color: c.stone, fontSize: 12.5, margin: 0 }}>Free · no signup · powered by TicoWild's local trip brain</p>
             </div>

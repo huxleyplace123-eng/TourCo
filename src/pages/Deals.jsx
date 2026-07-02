@@ -6,6 +6,8 @@ import { pageHero, dealImage } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { Reveal, Photo } from "../motion.jsx";
+import { TicoAvatar } from "../components/Tico.jsx";
+import { ticoDealTake } from "../intelligence/tico.js";
 
 const PASS_PERKS = [
   "Every verified promo code, ready to use",
@@ -53,7 +55,11 @@ function DealCard({ d }) {
         </div>
         <h3 style={{ color: "#fff", fontSize: 15.5, fontWeight: 800, margin: "0 0 3px", lineHeight: 1.2 }}>{d.title}</h3>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: c.stone, fontWeight: 600, marginBottom: 7 }}><MapPin size={11} />{d.where}</div>
-        <p style={{ color: c.stone, fontSize: 12.5, lineHeight: 1.45, margin: "0 0 11px", flex: 1 }}>{d.detail}</p>
+        <p style={{ color: c.stone, fontSize: 12.5, lineHeight: 1.45, margin: "0 0 9px", flex: 1 }}>{d.detail}</p>
+        <div style={{ display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 10 }}>
+          <TicoAvatar size={16} glow={false} />
+          <span style={{ fontSize: 11.5, lineHeight: 1.35, color: c.charcoal, fontStyle: "italic", opacity: 0.9 }}>{ticoDealTake(d)}</span>
+        </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           {d.code ? <CodeChip code={d.code} /> : <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11.5, color: c.stone, fontWeight: 600 }}><Clock size={11} />{d.expires}</span>}
           {d.code && <span style={{ fontSize: 11, color: c.stone, fontWeight: 600, whiteSpace: "nowrap" }}>{d.expires}</span>}
@@ -72,7 +78,7 @@ export function Deals({ go, trip }) {
 
   return (
     <>
-      <PageHero image={pageHero("activities")} eyebrow="Deals, codes & free things" title="Save real money in Costa Rica" accentWord="money"
+      <PageHero image={pageHero("activities")} eyebrow="Deals, codes & free things" title="Real Costa Rica savings" accentWord="savings"
         sub={`${codeCount} verified promo codes, happy hours, free-to-do gems, and local money-saving tips — plus the Pura Vida Pass you unlock the moment you book.`} />
 
       <Section bg={c.sand}>

@@ -6,6 +6,7 @@ import { activityImage } from "../images.js";
 import { Badge, Button } from "./ui.jsx";
 import { TiltCard, Photo } from "../motion.jsx";
 import { getInsights } from "../intelligence/index.js";
+import { TicoPick, TicoRating, useTicoActivity } from "./Tico.jsx";
 
 const INSIGHT_ICON = { sparkle: Sparkles, clock: Clock, rain: CloudRain, sun: Sun, trend: TrendingUp, tag: Tag };
 const TONE = {
@@ -30,6 +31,7 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
   const insight = topInsight(a);
   const Ico = insight ? INSIGHT_ICON[insight.icon] || Sparkles : null;
   const tone = insight ? TONE[insight.tone] || TONE.info : null;
+  const tico = useTicoActivity(a);
   return (
     <TiltCard style={{ background: c.white, overflow: "hidden", border: `1px solid ${c.line}`, display: "flex", flexDirection: "column", height: "100%" }} radius={20}>
       <Photo
@@ -40,7 +42,7 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
         overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.10) 0%, transparent 30%, rgba(11,26,46,.78) 100%)" }} />}
       >
         <div style={{ position: "absolute", top: 12, left: 12, display: "flex", gap: 6, flexWrap: "wrap", zIndex: 2 }}>
-          <Badge icon={ShieldCheck} bg="rgba(11,26,46,.55)" color={c.teal}>Vetted</Badge>
+          {tico.isPick ? <TicoPick /> : <Badge icon={ShieldCheck} bg="rgba(11,26,46,.55)" color={c.teal}>Vetted</Badge>}
           {a.confirm
             ? <Badge bg="rgba(11,26,46,.55)" color="#fff" icon={Clock}>Concierge confirm</Badge>
             : <Badge bg="rgba(34,211,238,.9)" color={c.ink} icon={Check}>Available now</Badge>}
@@ -57,9 +59,7 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
       <div style={{ padding: 18, display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
           <span style={{ fontSize: 12.5, fontWeight: 700, color: c.teal, letterSpacing: 0.3 }}>{a.category}</span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12.5, fontWeight: 700, color: c.charcoal }}>
-            <Star size={13} fill={c.gold} color={c.gold} />{a.rating}
-          </span>
+          <span title="Tico's rating"><TicoRating score={tico.score} /></span>
         </div>
         <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: c.charcoal, lineHeight: 1.2 }}>{a.title}</h3>
         <div style={{ display: "flex", gap: 14, color: c.stone, fontSize: 13, fontWeight: 600, flexWrap: "wrap" }}>

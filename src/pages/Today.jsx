@@ -6,6 +6,7 @@ import { activityImage, heroImage } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
 import { Photo, Reveal, TiltCard } from "../motion.jsx";
 import { todayBriefing } from "../intelligence/index.js";
+import { TicoAvatar } from "../components/Tico.jsx";
 
 const REGIONS = ["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste"];
 
@@ -91,9 +92,9 @@ export function Today({ go, addToTrip, trip, viewActivity }) {
         {t.avoid && (
           <Reveal>
             <div style={{ display: "flex", gap: 11, alignItems: "flex-start", background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.28)", borderRadius: 16, padding: "14px 16px", marginBottom: 24 }}>
-              <AlertTriangle size={18} color={c.gold} style={{ flexShrink: 0, marginTop: 1 }} />
+              <TicoAvatar size={26} glow={false} />
               <div>
-                <div style={{ color: "#fff", fontWeight: 800, fontSize: 13.5, marginBottom: 2 }}>Sol's heads-up for today</div>
+                <div style={{ color: "#fff", fontWeight: 800, fontSize: 13.5, marginBottom: 2, display: "flex", alignItems: "center", gap: 6 }}>Tico's heads-up for today <AlertTriangle size={13} color={c.gold} /></div>
                 <div style={{ color: "rgba(243,247,255,.85)", fontSize: 14, lineHeight: 1.5 }}>{t.avoid}</div>
               </div>
             </div>
@@ -132,7 +133,7 @@ export function Today({ go, addToTrip, trip, viewActivity }) {
             <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 90% at 80% 20%, rgba(34,211,238,.16), transparent 55%)` }} />
             <div style={{ position: "relative" }}>
               <h2 style={{ color: "#fff", fontSize: "clamp(22px,3vw,30px)", fontWeight: 800, letterSpacing: -0.5, margin: 0 }}>Want the whole day planned?</h2>
-              <p style={{ color: "rgba(243,247,255,.8)", fontSize: 15.5, margin: "10px auto 20px", maxWidth: 480 }}>Sol builds a full personalized day-by-day around {region} — drive times, tides, and season handled.</p>
+              <p style={{ color: "rgba(243,247,255,.8)", fontSize: 15.5, margin: "10px auto 20px", maxWidth: 480 }}>Tico builds a full personalized day-by-day around {region} — drive times, tides, and season handled.</p>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Build my Costa Rica <ArrowRight size={18} /></Button>
             </div>
           </div>

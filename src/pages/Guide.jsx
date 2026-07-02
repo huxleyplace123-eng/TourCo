@@ -7,6 +7,33 @@ import { regionImage, pageHero, beachImage } from "../images.js";
 import { Section, SectionHead, Eyebrow, Button } from "../components/ui.jsx";
 import { Photo, Lift, Reveal } from "../motion.jsx";
 import { PageHero } from "../components/PageHero.jsx";
+import { TicoAvatar, TicoRating, TicoPick, useTicoBeach } from "../components/Tico.jsx";
+
+// Beach card — extracted so Tico's rating hook lives at a component boundary.
+function BeachCard({ b }) {
+  const tico = useTicoBeach(b);
+  return (
+    <Lift style={{ overflow: "hidden", border: `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column" }} radius={18}>
+      <Photo src={beachImage(b)} fallback={grad.reef} alt={b.name} height={150}
+        overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 40%, rgba(11,26,46,.75) 100%)" }} />}>
+        {tico.isPick && <span style={{ position: "absolute", top: 12, left: 12, zIndex: 2 }}><TicoPick /></span>}
+        <div style={{ position: "absolute", bottom: 12, left: 14, right: 14, zIndex: 2 }}>
+          <div style={{ color: c.gold, fontSize: 11.5, fontWeight: 800, display: "inline-flex", alignItems: "center", gap: 4 }}><MapPin size={12} />{b.region}</div>
+          <div style={{ color: "#fff", fontSize: 19, fontWeight: 800, letterSpacing: -0.5, lineHeight: 1.1 }}>{b.name}</div>
+        </div>
+      </Photo>
+      <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 8, flex: 1, background: c.white }}>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}><span title="Tico's rating"><TicoRating score={tico.score} /></span></div>
+        <p style={{ margin: 0, color: c.stone, fontSize: 13.5, lineHeight: 1.5, flex: 1 }}>{b.blurb}</p>
+        {tico.take && <div style={{ display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(34,211,238,.06)", border: "1px solid rgba(34,211,238,.18)", borderRadius: 10, padding: "8px 10px" }}><TicoAvatar size={18} glow={false} /><span style={{ fontSize: 12, color: c.charcoal, lineHeight: 1.4, fontStyle: "italic" }}>{tico.take}</span></div>}
+        <div style={{ display: "flex", gap: 8, alignItems: "flex-start", background: "rgba(255,208,0,.08)", border: "1px solid rgba(255,208,0,.2)", borderRadius: 10, padding: "8px 10px" }}>
+          <Sun size={13} color={c.gold} style={{ flexShrink: 0, marginTop: 2 }} />
+          <span style={{ fontSize: 12, color: c.charcoal, lineHeight: 1.4 }}><b style={{ color: c.gold }}>Local tip:</b> {b.tip}</span>
+        </div>
+      </div>
+    </Lift>
+  );
+}
 
 const TIPS = [
   { icon: Sun, title: "Best time to visit", body: "Dry season (Dec–Apr) for sun; green season (May–Nov) for lush jungle, fewer crowds, and lower prices." },
@@ -108,24 +135,7 @@ export function Guide({ go }) {
         </div>
         <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
           {shownBeaches.map((b, i) => (
-            <Reveal key={b.id} delay={(i % 3) * 60}>
-              <Lift style={{ overflow: "hidden", border: `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column" }} radius={18}>
-                <Photo src={beachImage(b)} fallback={grad.reef} alt={b.name} height={150}
-                  overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 40%, rgba(11,26,46,.75) 100%)" }} />}>
-                  <div style={{ position: "absolute", bottom: 12, left: 14, right: 14, zIndex: 2 }}>
-                    <div style={{ color: c.gold, fontSize: 11.5, fontWeight: 800, display: "inline-flex", alignItems: "center", gap: 4 }}><MapPin size={12} />{b.region}</div>
-                    <div style={{ color: "#fff", fontSize: 19, fontWeight: 800, letterSpacing: -0.5, lineHeight: 1.1 }}>{b.name}</div>
-                  </div>
-                </Photo>
-                <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 8, flex: 1, background: c.white }}>
-                  <p style={{ margin: 0, color: c.stone, fontSize: 13.5, lineHeight: 1.5, flex: 1 }}>{b.blurb}</p>
-                  <div style={{ display: "flex", gap: 8, alignItems: "flex-start", background: "rgba(255,208,0,.08)", border: "1px solid rgba(255,208,0,.2)", borderRadius: 10, padding: "8px 10px" }}>
-                    <Sun size={13} color={c.gold} style={{ flexShrink: 0, marginTop: 2 }} />
-                    <span style={{ fontSize: 12, color: c.charcoal, lineHeight: 1.4 }}><b style={{ color: c.gold }}>Local tip:</b> {b.tip}</span>
-                  </div>
-                </div>
-              </Lift>
-            </Reveal>
+            <Reveal key={b.id} delay={(i % 3) * 60}><BeachCard b={b} /></Reveal>
           ))}
         </div>
       </Section>

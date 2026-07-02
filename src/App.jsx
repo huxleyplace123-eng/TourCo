@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from "react";
-import { MessageCircle, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { c, FONT, money, grad } from "./theme.js";
 import { activities } from "./data.js";
 import { Nav } from "./components/Nav.jsx";
@@ -21,6 +21,7 @@ import { Today } from "./pages/Today.jsx";
 import { Restaurants } from "./pages/Restaurants.jsx";
 import { Deals } from "./pages/Deals.jsx";
 import { ExploreMap } from "./pages/ExploreMap.jsx";
+import { TicoDock } from "./components/TicoDock.jsx";
 
 function StickyDeposit({ total, count, onView }) {
   const shown = useCountUp(Math.round(total * 0.2));
@@ -88,10 +89,8 @@ export default function App() {
 
       <Footer go={go} />
 
-      {/* Floating WhatsApp button */}
-      <button onClick={() => window.alert("Opening WhatsApp concierge…")} style={{ position: "fixed", right: 18, bottom: trip.length ? 86 : 18, zIndex: 50, width: 56, height: 56, borderRadius: 999, background: "#25D366", border: "none", cursor: "pointer", boxShadow: "0 12px 30px -8px rgba(37,211,102,.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <MessageCircle size={26} color="#fff" />
-      </button>
+      {/* Tico — the living macaw companion, present on every page */}
+      <TicoDock page={page} go={go} lift={trip.length > 0 && !["portal", "build", "builder"].includes(page)} />
 
       {/* Sticky trip bar */}
       {trip.length > 0 && !["portal", "build", "builder"].includes(page) && <StickyDeposit total={total} count={trip.length} onView={() => go("portal")} />}
