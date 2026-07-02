@@ -158,12 +158,17 @@ export function Deals({ go, trip }) {
         <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
           {freeThings.map((f, i) => (
             <Reveal key={f.id} delay={(i % 3) * 55}>
-              <div style={{ background: c.white, borderRadius: 16, padding: 18, border: `1px solid ${c.line}`, height: "100%" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <h3 style={{ color: "#fff", fontSize: 16, fontWeight: 800, margin: 0 }}>{f.title}</h3>
-                  <span style={{ background: "rgba(55,227,107,.14)", color: "#37E36B", padding: "3px 10px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, whiteSpace: "nowrap" }}>{f.cost}</span>
+              <div style={{ background: c.white, borderRadius: 16, overflow: "hidden", border: `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column" }}>
+                {/* vivid photo top */}
+                <div style={{ position: "relative" }}>
+                  <Photo src={f.photo} fallback={grad.jungle} alt={f.title} height={128}
+                    overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.05) 0%, transparent 45%, rgba(11,26,46,.6) 100%)" }} />} />
+                  <span style={{ position: "absolute", top: 9, right: 9, zIndex: 2, background: "#37E36B", color: c.ink, padding: "3px 10px", borderRadius: 999, fontSize: 11, fontWeight: 800, whiteSpace: "nowrap", boxShadow: "0 0 14px -3px rgba(55,227,107,.8)" }}>{f.cost}</span>
                 </div>
-                <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.5, margin: 0 }}>{f.detail}</p>
+                <div style={{ padding: "13px 15px 15px", display: "flex", flexDirection: "column", flex: 1 }}>
+                  <h3 style={{ color: "#fff", fontSize: 15.5, fontWeight: 800, margin: "0 0 5px", lineHeight: 1.2 }}>{f.title}</h3>
+                  <p style={{ color: c.stone, fontSize: 12.5, lineHeight: 1.5, margin: 0 }}>{f.detail}</p>
+                </div>
               </div>
             </Reveal>
           ))}

@@ -88,12 +88,15 @@ export const DEAL_TAGS = [
 
 // ── FREE & NEARLY-FREE ── huge value most sites never tell you about.
 export const freeThings = [
-  { id: "f1", title: "Every beach is free", detail: "By law, all of Costa Rica's coastline is public — hundreds of km of Pacific & Caribbean beaches, no charge.", cost: "Free" },
-  { id: "f2", title: "Cahuita National Park", detail: "Donation-based entry: 8km of coastal trails with reliable sloth sightings.", cost: "By donation" },
-  { id: "f3", title: "Tarcoles crocodile bridge", detail: "Watch massive wild crocodiles from the bridge — 90 min from San José, totally free.", cost: "Free" },
-  { id: "f4", title: "National parks are a steal", detail: "World-class nature for $0–$20 entry vs. pricey private reserves. Manuel Antonio is the classic.", cost: "$0–$20" },
-  { id: "f5", title: "Sunsets on the Pacific", detail: "Year-round ~5:45pm sunsets over the ocean — the best show in the country costs nothing.", cost: "Free" },
-  { id: "f6", title: "Waterfall swimming holes", detail: "Many jungle waterfalls have free natural pools at the base — ask a local for the quiet ones.", cost: "Free" },
+  { id: "f1", title: "Every beach is free", detail: "By law, all of Costa Rica's coastline is public — hundreds of km of Pacific & Caribbean beaches, no charge.", cost: "Free", photo: IMG("photo-1552733407-5d5c46c3bb3b") },
+  { id: "f2", title: "Cahuita National Park", detail: "Donation-based entry: 8km of coastal jungle trails with reliable sloth, monkey & bird sightings.", cost: "By donation", photo: IMG("photo-1540573133985-87b6da6d54a9") },
+  { id: "f3", title: "Tárcoles crocodile bridge", detail: "Watch massive wild crocodiles sun themselves below the bridge — 90 min from San José, pull over and gawk for free.", cost: "Free", photo: IMG("photo-1605649461784-7d5e4df56c97") },
+  { id: "f4", title: "Free hot springs near Arenal", detail: "Locals soak for free in the warm volcanic river (El Choyín) beside the paid resorts — bring water shoes.", cost: "Free", photo: IMG("photo-1476611317561-60117649dd94") },
+  { id: "f5", title: "Río Celeste's turquoise river", detail: "Public river access outside the park lets you see the surreal blue water and swim the pools for nothing.", cost: "Free", photo: IMG("photo-1439066615861-d1af74d74000") },
+  { id: "f6", title: "Waterfall swimming holes", detail: "Many jungle waterfalls have free natural pools at the base — ask a local (or Tico) for the quiet ones.", cost: "Free", photo: IMG("photo-1620658927695-c33df6fb8130") },
+  { id: "f7", title: "Chase the miradores", detail: "Search Google Maps for 'mirador' — free clifftop and mountain viewpoints all over the country.", cost: "Free", photo: IMG("photo-1469474968028-56623f02e42e") },
+  { id: "f8", title: "Pacific sunsets", detail: "Year-round ~5:45pm sunsets over the ocean — the best show in the country, and it never charges admission.", cost: "Free", photo: IMG("photo-1494548162494-384bba4ab999") },
+  { id: "f9", title: "The weekly feria (farmers market)", detail: "Every town's weekly market: tropical fruit you've never tried, fresh juice and local life for a few colónes.", cost: "Pocket change", photo: IMG("photo-1488459716781-31db52582fe9") },
 ];
 
 // ── MONEY-SAVING TIPS ── practical, real ways to spend less.

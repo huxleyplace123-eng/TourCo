@@ -59,16 +59,19 @@ export const heroSlides = (w = 1900) => HERO_SLIDES.map((s) => ({ src: cdn(s.id,
 // are DELIBERATELY different photos from HERO_SLIDES / the Meet Tico hero, so no
 // two hero areas share imagery. Fishing is the star of the home + fishing sets.
 const HERO_SETS = {
-  // Homepage / dashboard — a full adventure reel, INTERLEAVED so no two similar
-  // scenes sit back to back: fishing → parasail → waterfall → boat → beach.
+  // Homepage / dashboard — the GREATEST HITS of Costa Rica: the single most
+  // jaw-dropping shot from each category, so the hero represents the whole app.
+  // Interleaved (land → water → air → jungle) so every slide feels different.
   home: [
-    { id: "photo-1708748978230-510e06b24530", label: "Offshore, rods out" },   // sport fishing
-    { id: "photo-1632904074880-b77f02b6d01e", label: "Up on the parasail" },   // parasailing over ocean
+    { id: "photo-1745208746272-8d3b979d5f92", label: "Arenal volcano" },       // volcano cone in jungle
+    { id: "photo-1632904074880-b77f02b6d01e", label: "Parasail the coast" },   // parasailing over ocean
     { id: "photo-1620658927695-c33df6fb8130", label: "Jungle waterfall" },     // waterfall into turquoise pool
-    { id: "photo-1537872384762-e785271d14f8", label: "Big-game reel" },        // fishing reel
+    { id: "photo-1502680390469-be75c86b636f", label: "Surf the Pacific" },     // surfer barrel
+    { id: "photo-1568430462989-44163eb1752f", label: "Whales of Uvita" },      // humpback breach
+    { id: "photo-1679117730976-cdb5f6b05b88", label: "Zip the canopy" },       // ziplining
     { id: "photo-1519046904884-53103b34b206", label: "Hidden cove" },          // secluded palm cove
-    { id: "photo-1625183656263-171183307b15", label: "The catch is on" },      // anglers on a boat
-    { id: "photo-1642391326087-b1cff0dd3b6f", label: "Parasail at sunset" },   // parasail silhouette
+    { id: "photo-1708748978230-510e06b24530", label: "Offshore fishing" },     // sport fishing rods + wake
+    { id: "photo-1544551763-92ab472cad5d", label: "Dive the reef" },           // snorkeling / reef
     { id: "photo-1505142468610-359e7d316be0", label: "Turquoise break" },      // aerial waves / beach
   ],
   // Activities — the FULL adventure reel: every kind of tour you can book in
@@ -95,14 +98,14 @@ const HERO_SETS = {
     { id: "photo-1515631604561-23e0be68ee06", label: "Fish on!" },             // landing a fish
     { id: "photo-1708748978230-510e06b24530", label: "Trolling the wake" },
   ],
-  // Eat & Drink — restaurants + bars, people eating, drinking, having fun.
+  // Eat & Drink — beautiful PLACES full of people having fun (wide, not close-up).
   eat: [
-    { id: "photo-1541532713592-79a0317b6b77", label: "Cheers, mae" },          // friends toasting drinks
+    { id: "photo-1764397576374-7ba65a81d821", label: "Sunset on the sand" },   // beachside dining at golden hour
+    { id: "photo-1781195480848-d8344ffc94dc", label: "Beach club buzz" },      // lively beachfront umbrellas + crowd
+    { id: "photo-1528605248644-14dd04022da1", label: "Long-table nights" },    // friends laughing at outdoor dinner
     { id: "photo-1559339352-11d035aa65de", label: "Fresh off the boat" },      // open-air seaside restaurant
-    { id: "photo-1517248135467-4c7edcad34c4", label: "A table for the night" },// warm restaurant interior
-    { id: "photo-1414235077428-338989a2e8c0", label: "Plated & perfect" },     // plated dish, moody
+    { id: "photo-1517457373958-b7bdd4587205", label: "Rooftop after dark" },   // lively rooftop bar crowd
     { id: "photo-1436076863939-06870fe779c2", label: "Sunset toast" },         // beers clinking at sunset
-    { id: "photo-1566417713940-fe7c737a9ef2", label: "After dark" },           // nightlife / bartender
   ],
   // Deals — savings on food + drink + nightlife, vivid and tempting.
   deals: [
