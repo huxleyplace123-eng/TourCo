@@ -18,6 +18,7 @@ import { MyTrips } from "./pages/MyTrips.jsx";
 import { John } from "./pages/John.jsx";
 import { AskJohn } from "./pages/AskJohn.jsx";
 import { Today } from "./pages/Today.jsx";
+import { Restaurants } from "./pages/Restaurants.jsx";
 
 function StickyDeposit({ total, count, onView }) {
   const shown = useCountUp(Math.round(total * 0.2));
@@ -66,6 +67,7 @@ export default function App() {
       <div key={page + (page === "detail" ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>
         {page === "home" && <Home {...shared} />}
         {page === "today" && <Today {...shared} />}
+        {page === "eat" && <Restaurants {...shared} />}
         {page === "activities" && <Activities {...shared} />}
         {page === "detail" && <Detail activeId={activeId} {...shared} />}
         {page === "packages" && <Packages {...shared} />}

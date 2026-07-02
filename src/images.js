@@ -95,3 +95,27 @@ const PAGE_HERO = {
   portal: "photo-1552733407-5d5c46c3bb3b",        // beach
 };
 export const pageHero = (key, w = 1600) => cdn(PAGE_HERO[key] || HERO, w);
+
+// Restaurant photos — chosen by the spot's vibe so cards look distinct.
+const FOOD = {
+  sunset: "photo-1414235077428-338989a2e8c0",     // dim romantic dining
+  seafood: "photo-1559339352-11d035aa65de",        // seafood plate
+  local: "photo-1550966871-3ed3cdb5ed0c",          // rustic local food
+  sushi: "photo-1579584425555-c3ce17fd4351",
+  tacos: "photo-1565299624946-b28f40a0ae38",
+  cafe: "photo-1517248135467-4c7edcad34c4",        // café / breakfast
+  fine: "photo-1424847651672-bf20a4b0982b",        // plated fine dining
+  default: "photo-1555396273-367ea4eb4db5",        // general restaurant
+};
+export function restaurantImage(r, w = 700) {
+  let key = "default";
+  const t = r.tags || [];
+  if (/Sushi/.test(r.cuisine)) key = "sushi";
+  else if (/Taco|Mexican/.test(r.cuisine)) key = "tacos";
+  else if (/Café|Breakfast/.test(r.cuisine)) key = "cafe";
+  else if (t.includes("fine-dining")) key = "fine";
+  else if (t.includes("sunset")) key = "sunset";
+  else if (t.includes("local")) key = "local";
+  else if (/Seafood/.test(r.cuisine)) key = "seafood";
+  return cdn(FOOD[key] || FOOD.default, w);
+}

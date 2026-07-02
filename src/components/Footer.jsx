@@ -29,8 +29,8 @@ export function Footer({ go }) {
             Costa Rica adventures, planned by locals. Vetted tours, transparent pricing, human support.
           </p>
         </div>
-        <Col title="Explore" links={[["activities", "Activities"], ["packages", "Packages"], ["build", "Build My Trip"], ["guide", "Local's Guide"]]} go={go} />
-        <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["portal", "My Trips"]]} go={go} />
+        <Col title="Explore" links={[["today", "Today"], ["activities", "Activities"], ["eat", "Restaurants"], ["packages", "Packages"], ["john", "John Recommends"], ["guide", "Local's Guide"]]} go={go} />
+        <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["build", "Build My Trip"], ["portal", "My Trips"]]} go={go} />
         <div>
           <div style={{ fontWeight: 800, color: "#fff", marginBottom: 12 }}>Support</div>
           <Button variant="gold" size="sm" onClick={() => window.alert("Opening WhatsApp concierge…")}>

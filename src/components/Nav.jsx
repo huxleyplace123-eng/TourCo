@@ -7,8 +7,8 @@ import { Button } from "./ui.jsx";
 const LINKS = [
   ["today", "Today"],
   ["activities", "Activities"],
+  ["eat", "Restaurants"],
   ["packages", "Packages"],
-  ["john", "John Recommends"],
   ["guide", "Local's Guide"],
   ["why", "Why TicoWild"],
   ["portal", "My Trips"],
