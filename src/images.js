@@ -7,6 +7,10 @@
 const cdn = (id, w = 900) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`;
 
+// Generic helper for building an Unsplash CDN url from a raw photo id (used by
+// content that carries its own image id, e.g. Tico's knowledge cards).
+export const cdnImage = (id, w = 800) => cdn(id, w);
+
 // Curated Costa Rica / adventure photos per category.
 const BY_CATEGORY = {
   "Deep Sea Fishing": "photo-1544551763-46a013bb70d5", // boat on open ocean

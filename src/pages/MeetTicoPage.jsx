@@ -3,10 +3,10 @@ import { ArrowRight, Heart, ThumbsDown, Waves, Sun, Bird, ShieldCheck, Cloud, Ma
 import { c, grad, glass } from "../theme.js";
 import { activities } from "../data.js";
 import { Section, Button } from "../components/ui.jsx";
-import { Reveal, useCountUp } from "../motion.jsx";
+import { Reveal, useCountUp, Photo } from "../motion.jsx";
 import { TicoFace } from "../components/TicoFace.jsx";
 import { TicoRanked } from "../components/TicoRanked.jsx";
-import { heroSlides } from "../images.js";
+import { heroSlides, cdnImage } from "../images.js";
 import { LIFE, CREDENTIALS, KNOWLEDGE, LORE } from "../intelligence/ticoPersona.js";
 
 const KICON = { waves: Waves, sun: Sun, bird: Bird, shield: ShieldCheck, cloud: Cloud, map: Map };
@@ -108,18 +108,30 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
           <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>Why travelers trust the bird</div>
           <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>What Tico knows</h2>
         </div>
-        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>
+        <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))" }}>
           {KNOWLEDGE.map((k, i) => {
             const Ico = KICON[k.icon] || Sparkles;
             return (
               <Reveal key={k.title} delay={(i % 3) * 70}>
-                <div style={{ position: "relative", overflow: "hidden", background: c.white, border: `1px solid ${c.line}`, borderRadius: 18, padding: 22, height: "100%" }}>
-                  <div aria-hidden style={{ position: "absolute", top: -30, right: -30, width: 110, height: 110, borderRadius: 999, background: "radial-gradient(circle, rgba(34,211,238,.14), transparent 70%)" }} />
-                  <span style={{ display: "inline-flex", width: 46, height: 46, borderRadius: 13, background: grad.jungle, alignItems: "center", justifyContent: "center", boxShadow: "0 0 22px -6px rgba(34,211,238,.7)" }}>
-                    <Ico size={22} color="#fff" />
-                  </span>
-                  <h3 style={{ margin: "14px 0 6px", color: c.charcoal, fontSize: 17, fontWeight: 800 }}>{k.title}</h3>
-                  <p style={{ margin: 0, color: c.stone, fontSize: 13.5, lineHeight: 1.55, fontStyle: "italic" }}>"{k.line}"</p>
+                <div style={{ position: "relative", overflow: "hidden", background: c.white, border: `1px solid ${c.line}`, borderRadius: 20, height: "100%", display: "flex", flexDirection: "column" }}>
+                  {/* cinematic photo top */}
+                  <div style={{ position: "relative" }}>
+                    <Photo src={cdnImage(k.img, 640)} fallback={grad.jungle} alt={k.title} height={158}
+                      overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.15) 0%, transparent 30%, rgba(11,26,46,.92) 100%)" }} />} />
+                    {/* icon badge */}
+                    <span style={{ position: "absolute", top: 12, left: 12, zIndex: 2, display: "inline-flex", width: 42, height: 42, borderRadius: 12, background: grad.jungle, alignItems: "center", justifyContent: "center", boxShadow: "0 0 22px -6px rgba(34,211,238,.9)", border: "1px solid rgba(255,255,255,.15)" }}>
+                      <Ico size={20} color="#fff" />
+                    </span>
+                    {/* stat chip */}
+                    <span style={{ position: "absolute", top: 14, right: 12, zIndex: 2, background: "rgba(255,208,0,.92)", color: c.ink, fontWeight: 900, fontSize: 11.5, padding: "4px 10px", borderRadius: 999, letterSpacing: 0.2, boxShadow: "0 0 16px -4px rgba(255,208,0,.8)" }}>{k.stat}</span>
+                    {/* title over image */}
+                    <h3 style={{ position: "absolute", bottom: 11, left: 14, right: 14, zIndex: 2, margin: 0, color: "#fff", fontSize: 18.5, fontWeight: 800, letterSpacing: -0.4, lineHeight: 1.1, textShadow: "0 2px 12px rgba(0,0,0,.6)" }}>{k.title}</h3>
+                  </div>
+                  {/* Tico's line */}
+                  <div style={{ padding: "14px 16px 16px", display: "flex", gap: 9, alignItems: "flex-start", flex: 1 }}>
+                    <TicoFace size={24} glow={false} mood="proud" animate={false} />
+                    <p style={{ margin: 0, color: c.charcoal, fontSize: 13.5, lineHeight: 1.55, fontStyle: "italic", opacity: 0.92 }}>"{k.line}"</p>
+                  </div>
                 </div>
               </Reveal>
             );

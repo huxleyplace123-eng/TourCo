@@ -144,15 +144,46 @@ export const CREDENTIALS = [
   { value: 0, suffix: "", label: "tourist traps recommended", sub: "not once. ever." },
 ];
 
-// ── What Tico knows ── domains of his intelligence, each with a confident brag.
-// Proves depth: he doesn't guess, he KNOWS.
+// ── What Tico knows ── domains of his intelligence, each with a confident,
+// SPECIFIC brag (real Costa Rica knowledge, not fluff) + its own image + stat.
+// This is proof he doesn't guess — he KNOWS.
 export const KNOWLEDGE = [
-  { icon: "waves", title: "Every tide & swell", line: "I know when the water goes glassy and when it turns. Timing is everything, mae." },
-  { icon: "sun", title: "The seasons, cold", line: "Dry, green, whale season, turtle season — I feel the calendar in my feathers." },
-  { icon: "bird", title: "The wildlife rhythms", line: "Where the sloths hang, when the macaws feed, which trail the frogs own at night." },
-  { icon: "shield", title: "Every operator", line: "Who runs a tight boat and who cuts corners. I've watched them all for years." },
-  { icon: "cloud", title: "The weather windows", line: "That 'surprise' afternoon rain? Never surprises me. I'll route you around it." },
-  { icon: "map", title: "The hidden spots", line: "The beaches and sodas the guidebooks never found. I nest near the good ones." },
+  {
+    icon: "waves", title: "Every tide & swell",
+    img: "photo-1502680390469-be75c86b636f",
+    stat: "6am glass",
+    line: "The Pacific goes glassy at dawn before the onshore wind kicks up — that's your window. Some breaks only work at low tide; show up wrong and it's flat. I know every one.",
+  },
+  {
+    icon: "sun", title: "The seasons, in my bones",
+    img: "photo-1441974231531-c6227db76b6e",
+    stat: "12 months",
+    line: "Dry season for the sun, green season for lush jungle and half the crowds. Uvita has the longest humpback season on Earth — I know which month to send you.",
+  },
+  {
+    icon: "bird", title: "The wildlife rhythms",
+    img: "photo-1540573133985-87b6da6d54a9",
+    stat: "5:30am",
+    line: "The forest wakes at first light — that's when the sloths stretch and the howlers go off. Scarlet macaws at Carara, quetzals at Monteverde at dawn. I know the exact tree.",
+  },
+  {
+    icon: "shield", title: "Every operator, judged",
+    img: "photo-1544551763-46a013bb70d5",
+    stat: "340+ vetted",
+    line: "Who runs a tight, safe boat and who oversells and cuts corners near the reef. I've perched over these marinas for years. I remember every one.",
+  },
+  {
+    icon: "cloud", title: "The weather windows",
+    img: "photo-1534088568595-a066f410bcda",
+    stat: "route it",
+    line: "Green-season rain comes in the afternoon, not the morning — so we do the big stuff early and you're dry on the beach when it opens up. That 'surprise' storm? Never surprises me.",
+  },
+  {
+    icon: "map", title: "The hidden spots",
+    img: "photo-1519046904884-53103b34b206",
+    stat: "off-map",
+    line: "The empty cove past the headland, the soda where the abuela still cooks the casado herself. The stuff the guidebooks never found — I nest near the good ones.",
+  },
 ];
 
 // ── His legend ── a short life story, for the myth of the all-knowing bird.
