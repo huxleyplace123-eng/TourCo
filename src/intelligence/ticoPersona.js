@@ -132,8 +132,39 @@ export function verdict(score) {
   };
 }
 
+// ── Tico's crede​ntials ── the "smartest bird in Costa Rica" résumé. These prove
+// he's a real authority, not a mascot. Numbers are his lore, shown as live
+// counters on the Meet Tico page.
+export const CREDENTIALS = [
+  { value: 68, suffix: "", label: "years flown", sub: "macaws live 70+ — he's seen it all" },
+  { value: 1200, suffix: "+", label: "experiences vetted", sub: "personally rated, trap by trap" },
+  { value: 7, suffix: "", label: "regions mapped", sub: "coast to cloud forest" },
+  { value: 24800, suffix: "", label: "sunrises seen", sub: "he knows the light" },
+  { value: 340, suffix: "+", label: "operators judged", sub: "he remembers who's honest" },
+  { value: 0, suffix: "", label: "tourist traps recommended", sub: "not once. ever." },
+];
+
+// ── What Tico knows ── domains of his intelligence, each with a confident brag.
+// Proves depth: he doesn't guess, he KNOWS.
+export const KNOWLEDGE = [
+  { icon: "waves", title: "Every tide & swell", line: "I know when the water goes glassy and when it turns. Timing is everything, mae." },
+  { icon: "sun", title: "The seasons, cold", line: "Dry, green, whale season, turtle season — I feel the calendar in my feathers." },
+  { icon: "bird", title: "The wildlife rhythms", line: "Where the sloths hang, when the macaws feed, which trail the frogs own at night." },
+  { icon: "shield", title: "Every operator", line: "Who runs a tight boat and who cuts corners. I've watched them all for years." },
+  { icon: "cloud", title: "The weather windows", line: "That 'surprise' afternoon rain? Never surprises me. I'll route you around it." },
+  { icon: "map", title: "The hidden spots", line: "The beaches and sodas the guidebooks never found. I nest near the good ones." },
+];
+
+// ── His legend ── a short life story, for the myth of the all-knowing bird.
+export const LORE = [
+  { year: "The beginning", text: "Hatched in the almond trees above Manuel Antonio. First flight, first view of the Pacific." },
+  { year: "The wandering", text: "Flew the whole south coast — Corcovado, Uvita, Dominical — learning every ridge and river." },
+  { year: "The watching", text: "Perched over the marinas and trailheads for years, learning which guides to trust." },
+  { year: "Now", text: "The sharpest local intelligence on the coast — and he works for you." },
+];
+
 export const TICO = {
   name: LIFE.name,
   species: "Scarlet macaw · your local guide",
-  tagline: "Vetted by a bird who actually lives here.",
+  tagline: "The sharpest mind on the Pacific coast.",
 };
