@@ -16,12 +16,12 @@ function Stepper({ step }) {
         return (
           <React.Fragment key={label}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 30, height: 30, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, background: done ? c.emerald : active ? c.charcoal : "rgba(0,0,0,.1)", color: done || active ? "#fff" : c.stone }}>
+              <span style={{ width: 30, height: 30, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, background: done ? c.emerald : active ? c.charcoal : "rgba(255,255,255,.12)", color: done || active ? "#fff" : c.stone }}>
                 {done ? <Check size={15} /> : i + 1}
               </span>
               <span style={{ fontWeight: 700, fontSize: 14, color: active || done ? c.charcoal : c.stone }}>{label}</span>
             </div>
-            {i < STEPS.length - 1 && <span style={{ width: 26, height: 2, background: "rgba(0,0,0,.12)" }} />}
+            {i < STEPS.length - 1 && <span style={{ width: 26, height: 2, background: "rgba(255,255,255,.12)" }} />}
           </React.Fragment>
         );
       })}
@@ -65,7 +65,7 @@ export function Build({ go, trip, addToTrip, viewActivity }) {
 
           {/* STEP 1 — basics */}
           {step === 0 && (
-            <div style={{ background: "#fff", borderRadius: 22, padding: 28, border: "1px solid rgba(0,0,0,.06)" }}>
+            <div style={{ background: c.white, borderRadius: 22, padding: 28, border: "1px solid rgba(255,255,255,.08)" }}>
               <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 800, color: c.charcoal }}>Tell us the basics</h2>
               <p style={{ color: c.stone, margin: "0 0 22px" }}>Your concierge uses this to tailor every suggestion.</p>
               <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
@@ -94,7 +94,7 @@ export function Build({ go, trip, addToTrip, viewActivity }) {
                 {suggested.map((a) => {
                   const added = trip.some((t) => t.id === a.id);
                   return (
-                    <div key={a.id} style={{ background: "#fff", borderRadius: 16, overflow: "hidden", border: added ? `2px solid ${c.emerald}` : "1px solid rgba(0,0,0,.06)" }}>
+                    <div key={a.id} style={{ background: c.white, borderRadius: 16, overflow: "hidden", border: added ? `2px solid ${c.emerald}` : "1px solid rgba(255,255,255,.08)" }}>
                       <Photo src={activityImage(a)} fallback={grad.ocean} alt={a.title} height={110} />
                       <div style={{ padding: 14 }}>
                         <div style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{a.category}</div>
@@ -122,7 +122,7 @@ export function Build({ go, trip, addToTrip, viewActivity }) {
           {/* STEP 3 — review */}
           {step === 2 && (
             <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 22, alignItems: "start" }}>
-              <div style={{ background: "#fff", borderRadius: 22, padding: 24, border: "1px solid rgba(0,0,0,.06)" }}>
+              <div style={{ background: c.white, borderRadius: 22, padding: 24, border: "1px solid rgba(255,255,255,.08)" }}>
                 <h2 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 800, color: c.charcoal }}>Your adventure plan</h2>
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap", color: c.stone, fontSize: 13.5, fontWeight: 600, margin: "6px 0 18px" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><MapPin size={14} />{plan.dest}</span>
@@ -156,11 +156,11 @@ export function Build({ go, trip, addToTrip, viewActivity }) {
                 )}
               </div>
 
-              <div style={{ position: "sticky", top: 92, background: "#fff", borderRadius: 22, padding: 24, border: "1px solid rgba(0,0,0,.06)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
+              <div style={{ position: "sticky", top: 92, background: c.white, borderRadius: 22, padding: 24, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", color: c.stone, fontSize: 14, marginBottom: 8 }}>
                   <span>Trip total</span><span style={{ fontWeight: 700, color: c.charcoal }}>{money(total)}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 12, borderTop: "1px dashed rgba(0,0,0,.12)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 12, borderTop: "1px dashed rgba(255,255,255,.12)" }}>
                   <span style={{ fontWeight: 800, color: c.charcoal }}>Due today (20%)</span>
                   <span style={{ fontWeight: 800, fontSize: 24, color: c.emerald }}>{money(deposit)}</span>
                 </div>

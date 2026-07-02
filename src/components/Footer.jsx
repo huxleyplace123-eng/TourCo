@@ -21,7 +21,7 @@ function Col({ title, links, go }) {
 
 export function Footer({ go }) {
   return (
-    <footer style={{ background: c.jungle, color: "rgba(255,255,255,.8)", padding: "50px 20px 30px" }}>
+    <footer style={{ background: c.canvas2, borderTop: `1px solid ${c.line}`, color: "rgba(243,247,255,.7)", padding: "50px 20px 30px" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 30 }}>
         <div>
           <div style={{ marginBottom: 12 }}><Logo dark fontSize={19} mark={32} /></div>

@@ -60,7 +60,7 @@ export function Lift({ children, style = {}, radius = 22, glow = true, ...rest }
         position: style.position || "relative",
         borderRadius: radius,
         transform: hover ? "translateY(-6px)" : "translateY(0)",
-        boxShadow: hover ? "0 30px 60px -24px rgba(8,28,58,.55)" : "0 14px 40px -22px rgba(15,30,40,.4)",
+        boxShadow: hover ? "0 40px 80px -30px rgba(0,0,0,.85), 0 0 0 1px rgba(34,211,238,.25)" : "0 20px 50px -28px rgba(0,0,0,.75)",
         transition: "transform .28s cubic-bezier(.2,.7,.2,1), box-shadow .28s ease",
       }}
       {...rest}
@@ -71,12 +71,56 @@ export function Lift({ children, style = {}, radius = 22, glow = true, ...rest }
           style={{
             position: "absolute", inset: 0, borderRadius: radius, pointerEvents: "none", zIndex: 3,
             opacity: hover ? 1 : 0, transition: "opacity .3s ease",
-            background: `radial-gradient(240px circle at ${pos.x}% ${pos.y}%, rgba(255,255,255,.28), transparent 60%)`,
-            mixBlendMode: "soft-light",
+            background: `radial-gradient(240px circle at ${pos.x}% ${pos.y}%, rgba(34,211,238,.22), transparent 60%)`,
           }}
         />
       )}
       {children}
+    </div>
+  );
+}
+
+// ── TiltCard ── the signature interaction: real 3D perspective. The card
+// rotates toward the cursor, a glare sweeps across the surface, and a neon edge
+// lights up on hover. Wrap any card that should feel physical.
+export function TiltCard({ children, style = {}, radius = 22, max = 10, glareColor = "rgba(34,211,238,.35)", ...rest }) {
+  const ref = useRef(null);
+  const [t, setT] = useState({ rx: 0, ry: 0, gx: 50, gy: 50, active: false });
+  const onMove = (e) => {
+    const el = ref.current; if (!el) return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    setT({ rx: (0.5 - py) * max * 2, ry: (px - 0.5) * max * 2, gx: px * 100, gy: py * 100, active: true });
+  };
+  const reset = () => setT((s) => ({ ...s, rx: 0, ry: 0, active: false }));
+  return (
+    <div style={{ perspective: 900 }}>
+      <div
+        ref={ref}
+        onMouseMove={onMove}
+        onMouseLeave={reset}
+        style={{
+          ...style,
+          position: style.position || "relative",
+          borderRadius: radius,
+          transformStyle: "preserve-3d",
+          transform: `rotateX(${t.rx}deg) rotateY(${t.ry}deg) translateZ(0) scale(${t.active ? 1.02 : 1})`,
+          transition: t.active ? "transform .08s linear, box-shadow .3s" : "transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .3s",
+          boxShadow: t.active
+            ? "0 50px 90px -34px rgba(0,0,0,.9), 0 0 0 1px rgba(34,211,238,.4), 0 0 40px -8px rgba(34,211,238,.35)"
+            : "0 22px 55px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06)",
+        }}
+        {...rest}
+      >
+        {children}
+        {/* glare sweep */}
+        <div aria-hidden style={{
+          position: "absolute", inset: 0, borderRadius: radius, pointerEvents: "none", zIndex: 6,
+          opacity: t.active ? 1 : 0, transition: "opacity .3s",
+          background: `radial-gradient(300px circle at ${t.gx}% ${t.gy}%, ${glareColor}, transparent 55%)`,
+        }} />
+      </div>
     </div>
   );
 }

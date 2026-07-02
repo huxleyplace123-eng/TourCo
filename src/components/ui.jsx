@@ -12,12 +12,12 @@ export function Button({ children, variant = "primary", onClick, full, size = "m
     fontSize: size === "lg" ? 17 : size === "sm" ? 14 : 15.5,
   };
   const variants = {
-    primary: { background: c.coral, color: c.charcoal, boxShadow: "0 10px 24px -8px rgba(255,208,0,.55)" },
-    dark: { background: c.emerald, color: "#fff", boxShadow: "0 10px 24px -10px rgba(47,107,235,.7)" },
-    light: { background: c.white, color: c.emerald, boxShadow: "0 6px 18px -8px rgba(0,0,0,.25)" },
-    ghost: { background: "transparent", color: c.emerald, border: `1.5px solid ${c.emerald}` },
-    glass: { background: "rgba(255,255,255,.16)", color: "#fff", border: "1.5px solid rgba(255,255,255,.4)", backdropFilter: "blur(8px)" },
-    gold: { background: c.gold, color: c.charcoal, boxShadow: "0 10px 24px -10px rgba(240,164,0,.8)" },
+    primary: { background: c.gold, color: c.ink, boxShadow: "0 0 0 1px rgba(255,194,75,.4), 0 12px 34px -10px rgba(255,194,75,.6)" },
+    dark: { background: `linear-gradient(135deg,${c.teal},${c.emerald})`, color: c.ink, boxShadow: "0 0 0 1px rgba(34,211,238,.4), 0 12px 34px -12px rgba(34,211,238,.7)" },
+    light: { background: "rgba(255,255,255,.08)", color: c.charcoal, border: `1px solid ${c.line}` },
+    ghost: { background: "rgba(255,255,255,.04)", color: c.charcoal, border: `1.5px solid rgba(255,255,255,.18)` },
+    glass: { background: "rgba(255,255,255,.08)", color: "#fff", border: "1.5px solid rgba(255,255,255,.28)", backdropFilter: "blur(10px)" },
+    gold: { background: c.gold, color: c.ink, boxShadow: "0 0 0 1px rgba(255,194,75,.4), 0 12px 34px -10px rgba(255,194,75,.6)" },
   };
   return (
     <button
@@ -34,7 +34,7 @@ export function Button({ children, variant = "primary", onClick, full, size = "m
 }
 
 // ── Badge ── (pill with optional icon)
-export function Badge({ children, bg = "rgba(255,255,255,.85)", color = c.emerald, icon: Icon }) {
+export function Badge({ children, bg = "rgba(5,7,15,.55)", color = c.teal, icon: Icon }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: bg, color, fontWeight: 700, fontSize: 12, padding: "5px 11px", borderRadius: 999, lineHeight: 1 }}>
       {Icon && <Icon size={13} />}
@@ -97,8 +97,8 @@ export function Field({ label, children }) {
 }
 
 const inputBase = {
-  width: "100%", border: "1.5px solid rgba(0,0,0,.12)", borderRadius: 12, padding: "11px 12px 11px 38px",
-  fontSize: 14.5, color: c.charcoal, background: "#fff", outline: "none", boxSizing: "border-box",
+  width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 12px 11px 38px",
+  fontSize: 14.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", boxSizing: "border-box",
 };
 
 export function TextInput({ value, onChange, placeholder, icon: Icon, type = "text" }) {

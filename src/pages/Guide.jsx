@@ -47,11 +47,11 @@ export function Guide({ go }) {
         </div>
       </Section>
 
-      <Section bg={c.white}>
+      <Section bg={c.sand}>
         <SectionHead eyebrow="Insider tips" title="Know before you go" center />
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
           {TIPS.map((t) => (
-            <div key={t.title} style={{ background: c.sand, borderRadius: 18, padding: 24 }}>
+            <div key={t.title} style={{ background: c.surface2, borderRadius: 18, padding: 24 }}>
               <span style={{ width: 44, height: 44, borderRadius: 12, background: grad.jungle, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                 <t.icon size={21} color="#fff" />
               </span>

@@ -69,7 +69,7 @@ function reasonFor(a, answers) {
 
 function TypingDots() {
   return (
-    <div style={{ display: "inline-flex", gap: 4, padding: "12px 16px", background: "#fff", borderRadius: "16px 16px 16px 4px", boxShadow: "0 4px 14px -8px rgba(0,0,0,.25)" }}>
+    <div style={{ display: "inline-flex", gap: 4, padding: "12px 16px", background: c.surface2, border: `1px solid ${c.line}`, borderRadius: "16px 16px 16px 4px" }}>
       {[0, 1, 2].map((i) => (
         <span key={i} style={{ width: 7, height: 7, borderRadius: 999, background: c.stone, animation: `tnBlink 1.2s ${i * 0.18}s infinite` }} />
       ))}
@@ -166,17 +166,19 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
 
       <div className="askjohn-grid" style={{ maxWidth: 1180, margin: "0 auto", padding: "20px", display: "grid", gridTemplateColumns: "1fr", gap: 20, alignItems: "start" }}>
         {/* ── Chat column ── */}
-        <div className="askjohn-chat" style={{ background: c.sand, borderRadius: 22, border: "1px solid rgba(0,0,0,.06)", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div className="askjohn-chat" style={{ background: c.surface2, borderRadius: 22, border: "1px solid rgba(255,255,255,.08)", display: "flex", flexDirection: "column", overflow: "hidden" }}>
           <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
             {msgs.map((m, i) => (
               <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-end", flexDirection: m.from === "me" ? "row-reverse" : "row" }}>
                 {m.from === "john" && <JohnAvatar size={32} />}
                 <div style={{
                   maxWidth: "78%", padding: "12px 16px", fontSize: 15, lineHeight: 1.5,
-                  background: m.from === "me" ? c.emerald : "#fff",
-                  color: m.from === "me" ? "#fff" : c.charcoal,
+                  background: m.from === "me" ? `linear-gradient(135deg,${c.teal},${c.emerald})` : c.surface2,
+                  color: m.from === "me" ? c.ink : c.charcoal,
+                  fontWeight: m.from === "me" ? 700 : 500,
+                  border: m.from === "me" ? "none" : `1px solid ${c.line}`,
                   borderRadius: m.from === "me" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                  boxShadow: "0 4px 14px -8px rgba(0,0,0,.25)",
+                  boxShadow: "0 6px 18px -10px rgba(0,0,0,.6)",
                 }}>{m.text}</div>
               </div>
             ))}
@@ -188,7 +190,7 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
           </div>
 
           {/* Quick-reply chips */}
-          <div style={{ padding: 16, borderTop: "1px solid rgba(0,0,0,.06)", background: "#fff", minHeight: 72, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+          <div style={{ padding: 16, borderTop: "1px solid rgba(255,255,255,.08)", background: c.white, minHeight: 72, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
             {current && !typing && current.chips.map((ch) => (
               <button key={ch.value} onClick={() => answer(current, ch)} style={{ background: "rgba(47,107,235,.08)", color: c.emerald, border: `1.5px solid rgba(47,107,235,.3)`, borderRadius: 999, padding: "10px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "background .15s" }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(47,107,235,.16)")}
@@ -207,7 +209,7 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
 
         {/* ── Live itinerary column ── */}
         <div style={{ position: "sticky", top: 92 }}>
-          <div style={{ background: "#fff", borderRadius: 22, border: "1px solid rgba(0,0,0,.06)", overflow: "hidden", boxShadow: "0 24px 60px -34px rgba(0,0,0,.4)" }}>
+          <div style={{ background: c.white, borderRadius: 22, border: "1px solid rgba(255,255,255,.08)", overflow: "hidden", boxShadow: "0 24px 60px -34px rgba(0,0,0,.4)" }}>
             <div style={{ background: grad.hero, padding: "18px 20px", color: "#fff" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <Compass size={18} color={c.gold} />
@@ -253,7 +255,7 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
             </div>
 
             {/* deposit footer */}
-            <div style={{ padding: 18, borderTop: "1px solid rgba(0,0,0,.06)", background: c.sand }}>
+            <div style={{ padding: 18, borderTop: "1px solid rgba(255,255,255,.08)", background: c.sand }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
                 <span style={{ fontWeight: 700, color: c.charcoal, fontSize: 14 }}>Deposit today (20%)</span>
                 <span style={{ fontWeight: 800, fontSize: 22, color: c.emerald }}>{money(deposit)}</span>

@@ -16,7 +16,7 @@ const LINKS = [
 export function Nav({ page, go, tripCount, openTrip }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ position: "sticky", top: 0, zIndex: 60, background: "rgba(255,253,248,.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(0,0,0,.06)" }}>
+    <div style={{ position: "sticky", top: 0, zIndex: 60, background: "rgba(5,7,15,.72)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: `1px solid ${c.line}` }}>
       <div style={{ maxWidth: 1180, margin: "0 auto", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <button onClick={() => go("home")} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}>
           <Logo fontSize={20} mark={34} />
@@ -29,7 +29,7 @@ export function Nav({ page, go, tripCount, openTrip }) {
           ))}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={openTrip} style={{ position: "relative", background: "#fff", border: "1px solid rgba(0,0,0,.1)", cursor: "pointer", width: 40, height: 40, borderRadius: 999, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <button onClick={openTrip} style={{ position: "relative", background: "rgba(255,255,255,.06)", border: `1px solid ${c.line}`, cursor: "pointer", width: 40, height: 40, borderRadius: 999, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Compass size={18} color={c.emerald} />
             {tripCount > 0 && (
               <span style={{ position: "absolute", top: -4, right: -4, background: c.coral, color: c.charcoal, fontSize: 11, fontWeight: 800, minWidth: 18, height: 18, borderRadius: 999, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 3px" }}>
@@ -46,7 +46,7 @@ export function Nav({ page, go, tripCount, openTrip }) {
         </div>
       </div>
       {open && (
-        <div style={{ borderTop: "1px solid rgba(0,0,0,.06)", padding: 12, display: "flex", flexDirection: "column", gap: 2, background: c.white }}>
+        <div style={{ borderTop: `1px solid ${c.line}`, padding: 12, display: "flex", flexDirection: "column", gap: 2, background: "rgba(5,7,15,.96)", backdropFilter: "blur(16px)" }}>
           {LINKS.map(([id, label]) => (
             <button key={id} onClick={() => { go(id); setOpen(false); }} style={{ background: page === id ? "rgba(47,107,235,.08)" : "none", border: "none", cursor: "pointer", padding: "12px 14px", borderRadius: 12, fontWeight: 700, fontSize: 15.5, color: page === id ? c.emerald : c.charcoal, textAlign: "left" }}>
               {label}

@@ -7,7 +7,7 @@ import { Lift } from "../motion.jsx";
 // Package card — gradient header banner + inclusions list.
 export function PackageCard({ p, onView }) {
   return (
-    <Lift style={{ background: "#fff", overflow: "hidden", border: "1px solid rgba(0,0,0,.04)", display: "flex", flexDirection: "column" }}>
+    <Lift style={{ background: c.white, overflow: "hidden", border: "1px solid rgba(255,255,255,.08)", display: "flex", flexDirection: "column" }}>
       <div style={{ background: grad[p.gradKey] || grad.ocean, padding: "22px 20px", color: "#fff", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 85% 15%, rgba(255,255,255,.25), transparent 45%)" }} />
         <div style={{ position: "relative" }}>

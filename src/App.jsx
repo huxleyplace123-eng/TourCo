@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MessageCircle, ChevronRight } from "lucide-react";
-import { c, FONT, money } from "./theme.js";
+import { c, FONT, money, grad } from "./theme.js";
 import { activities } from "./data.js";
 import { Nav } from "./components/Nav.jsx";
 import { Footer } from "./components/Footer.jsx";
@@ -46,7 +46,11 @@ export default function App() {
   const shared = { go, addToTrip, trip, viewActivity, removeFromTrip };
 
   return (
-    <div style={{ fontFamily: FONT, background: c.white, color: c.charcoal, minHeight: "100vh" }}>
+    <div style={{ fontFamily: FONT, background: c.sand, color: c.charcoal, minHeight: "100vh", position: "relative" }}>
+      {/* app-wide aurora wash + drifting glow */}
+      <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 0, background: grad.aurora, pointerEvents: "none", animation: "tnAurora 24s ease-in-out infinite alternate" }} />
+      <style>{`@keyframes tnAurora{0%{opacity:.75;transform:translateY(0)}100%{opacity:1;transform:translateY(-14px)}}`}</style>
+      <div style={{ position: "relative", zIndex: 1 }}>
       <Nav page={page} go={go} tripCount={trip.length} openTrip={() => (trip.length ? go("portal") : setCartOpen(true))} />
 
       {/* keyed wrapper → every page fade-rises in on navigation */}
@@ -78,7 +82,7 @@ export default function App() {
       {/* Quick "added to trip" toast/modal */}
       {cartOpen && (
         <div onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(10,46,143,.5)", zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 20 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 22, padding: 24, maxWidth: 420, width: "100%", marginBottom: 20 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 22, padding: 24, maxWidth: 420, width: "100%", marginBottom: 20, boxShadow: "0 40px 90px -30px rgba(0,0,0,.9)" }}>
             <h3 style={{ margin: "0 0 4px", color: c.charcoal, fontSize: 20, fontWeight: 800 }}>Added to your trip 🎉</h3>
             <p style={{ color: c.stone, fontSize: 14.5, margin: "0 0 16px" }}>
               You have <b style={{ color: c.charcoal }}>{trip.length}</b> experience{trip.length !== 1 ? "s" : ""}. Deposit today: <b style={{ color: c.emerald }}>{money(total * 0.2)}</b>
@@ -90,6 +94,7 @@ export default function App() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

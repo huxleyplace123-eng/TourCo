@@ -39,11 +39,11 @@ export function Why({ go }) {
       </div>
 
       {/* Stats */}
-      <Section bg={c.white} pad={44}>
+      <Section bg={c.sand} pad={44}>
         <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))" }}>
           {STATS.map((s, i) => (
             <Reveal key={s.l} delay={i * 90}>
-              <div style={{ textAlign: "center", background: c.sand, borderRadius: 18, padding: "24px 12px" }}>
+              <div style={{ textAlign: "center", background: c.surface2, borderRadius: 18, padding: "24px 12px" }}>
                 <div style={{ fontSize: 30, fontWeight: 800, ...gradText(grad.ocean) }}>{s.n}</div>
                 <div style={{ color: c.stone, fontWeight: 600, fontSize: 13.5, marginTop: 4 }}>{s.l}</div>
               </div>
@@ -58,7 +58,7 @@ export function Why({ go }) {
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>
           {PILLARS.map((p, i) => (
             <Reveal key={p.title} delay={(i % 2) * 80}>
-              <div style={{ background: "#fff", borderRadius: 20, padding: 26, height: "100%", border: "1px solid rgba(0,0,0,.05)" }}>
+              <div style={{ background: c.white, borderRadius: 20, padding: 26, height: "100%", border: "1px solid rgba(255,255,255,.08)" }}>
                 <span style={{ width: 48, height: 48, borderRadius: 14, background: grad.jungle, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                   <p.icon size={23} color="#fff" />
                 </span>
@@ -71,11 +71,11 @@ export function Why({ go }) {
       </Section>
 
       {/* Reviews */}
-      <Section bg={c.white}>
+      <Section bg={c.sand}>
         <SectionHead eyebrow="Traveler stories" title="Trips we're proud of" center />
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>
           {REVIEWS.map((r) => (
-            <div key={r.name} style={{ background: c.sand, borderRadius: 20, padding: 24, display: "flex", flexDirection: "column" }}>
+            <div key={r.name} style={{ background: c.surface2, borderRadius: 20, padding: 24, display: "flex", flexDirection: "column" }}>
               <Quote size={24} color={c.teal} />
               <p style={{ fontSize: 15.5, lineHeight: 1.6, color: c.charcoal, margin: "12px 0 18px", flex: 1 }}>"{r.body}"</p>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

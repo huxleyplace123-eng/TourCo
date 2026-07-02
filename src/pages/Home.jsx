@@ -18,7 +18,7 @@ function TrustBar({ light }) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
       {TRUST.map((t) => (
-        <div key={t.label} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: light ? "rgba(255,255,255,.13)" : "#fff", border: light ? "1px solid rgba(255,255,255,.26)" : "1px solid rgba(0,0,0,.06)", color: light ? "#fff" : c.emerald, padding: "9px 15px", borderRadius: 999, fontWeight: 700, fontSize: 13.5, whiteSpace: "nowrap" }}>
+        <div key={t.label} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: light ? "rgba(255,255,255,.13)" : "#fff", border: light ? "1px solid rgba(255,255,255,.26)" : "1px solid rgba(255,255,255,.08)", color: light ? "#fff" : c.emerald, padding: "9px 15px", borderRadius: 999, fontWeight: 700, fontSize: 13.5, whiteSpace: "nowrap" }}>
           <t.icon size={16} />{t.label}
         </div>
       ))}
@@ -38,7 +38,7 @@ export function Home({ go, addToTrip, trip, viewActivity }) {
       <Section bg={c.sand} pad={0}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", paddingBottom: 8 }}>
           {TRUST.map((t) => (
-            <div key={t.label} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#fff", border: "1px solid rgba(0,0,0,.06)", color: c.emerald, padding: "9px 15px", borderRadius: 999, fontWeight: 700, fontSize: 13.5, whiteSpace: "nowrap", boxShadow: "0 6px 18px -12px rgba(0,0,0,.3)" }}>
+            <div key={t.label} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: c.white, border: "1px solid rgba(255,255,255,.08)", color: c.emerald, padding: "9px 15px", borderRadius: 999, fontWeight: 700, fontSize: 13.5, whiteSpace: "nowrap", boxShadow: "0 6px 18px -12px rgba(0,0,0,.3)" }}>
               <t.icon size={16} />{t.label}
             </div>
           ))}
@@ -61,7 +61,7 @@ export function Home({ go, addToTrip, trip, viewActivity }) {
       </Section>
 
       {/* ── Closing CTA ── */}
-      <Section bg={c.white} pad={70}>
+      <Section bg={c.sand} pad={70}>
         <div style={{ position: "relative", borderRadius: 30, overflow: "hidden", background: grad.hero, padding: "60px 28px", textAlign: "center" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 20% 20%, rgba(255,208,0,.35), transparent 50%)" }} />
           <div style={{ position: "relative" }}>

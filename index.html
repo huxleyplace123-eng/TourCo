@@ -3,18 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0A2E8F" />
+    <meta name="theme-color" content="#05070F" />
     <title>TripNest — Costa Rica Adventure Concierge</title>
     <meta name="description" content="Costa Rica adventures, planned by locals. Vetted tours, transparent pricing, human support, and John's local recommendations." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
-      html, body { margin: 0; padding: 0; background: #EEF4FF; -webkit-text-size-adjust: 100%; font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+      html, body { margin: 0; padding: 0; background: #05070F; color: #F3F7FF; -webkit-text-size-adjust: 100%; font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
       * { box-sizing: border-box; }
       #root { min-height: 100vh; }
-      .tn-loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#0A2E8F,#2F6BEB 60%,#22D3EE); color: #fff; font-weight: 800; letter-spacing: -0.5px; font-size: 22px; }
-      .tn-loading span { color: #FFD000; }
+      ::selection { background: rgba(34,211,238,.3); color: #fff; }
+      /* dark, slim scrollbar */
+      ::-webkit-scrollbar { width: 10px; height: 10px; }
+      ::-webkit-scrollbar-track { background: #05070F; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(34,211,238,.4); }
+      .tn-loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #05070F; color: #fff; font-weight: 800; letter-spacing: -0.5px; font-size: 22px; }
+      .tn-loading span { color: #22D3EE; }
       select option { color: #0B1A2E; }
       /* Desktop layout switches (from the original build). */
       @media (min-width: 980px) {

@@ -14,7 +14,7 @@ function Toggle({ on, set, label }) {
     <button onClick={() => set(!on)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
       <span style={{ fontWeight: 600, fontSize: 14, color: c.charcoal }}>{label}</span>
       <span style={{ width: 42, height: 24, borderRadius: 999, background: on ? c.emerald : "rgba(0,0,0,.18)", position: "relative", transition: "background .2s" }}>
-        <span style={{ position: "absolute", top: 3, left: on ? 21 : 3, width: 18, height: 18, borderRadius: 999, background: "#fff", transition: "left .2s" }} />
+        <span style={{ position: "absolute", top: 3, left: on ? 21 : 3, width: 18, height: 18, borderRadius: 999, background: c.white, transition: "left .2s" }} />
       </span>
     </button>
   );
@@ -58,7 +58,7 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
 
       <Section bg={c.sand} pad={36}>
         <div className="filters-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24 }}>
-          <div style={{ background: "#fff", borderRadius: 20, padding: 20, border: "1px solid rgba(0,0,0,.06)", height: "fit-content" }}>
+          <div style={{ background: c.white, borderRadius: 20, padding: 20, border: "1px solid rgba(255,255,255,.08)", height: "fit-content" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
               <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 16 }}>Filters</span>
               <button onClick={reset} style={{ background: "none", border: "none", color: c.stone, fontWeight: 700, fontSize: 13, cursor: "pointer" }}>Reset</button>
@@ -79,7 +79,7 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
               {list.length} experience{list.length !== 1 ? "s" : ""}
             </div>
             {list.length === 0 ? (
-              <div style={{ background: "#fff", borderRadius: 20, padding: 50, textAlign: "center", color: c.stone }}>
+              <div style={{ background: c.white, borderRadius: 20, padding: 50, textAlign: "center", color: c.stone }}>
                 <Compass size={42} color={c.teal} style={{ opacity: .5 }} />
                 <p style={{ fontWeight: 700, color: c.charcoal, marginTop: 12 }}>No matches — let's widen the search</p>
                 <Button variant="ghost" onClick={reset} style={{ marginTop: 8 }}>Clear filters</Button>

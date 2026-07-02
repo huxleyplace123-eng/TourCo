@@ -9,7 +9,7 @@ import { TripTimeline, StoryPoster } from "../components/TripStory.jsx";
 
 function EmptyState({ go }) {
   return (
-    <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center", background: "#fff", borderRadius: 24, padding: "50px 30px", border: "1px solid rgba(0,0,0,.06)" }}>
+    <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center", background: c.white, borderRadius: 24, padding: "50px 30px", border: "1px solid rgba(255,255,255,.08)" }}>
       <span style={{ width: 66, height: 66, borderRadius: 999, background: grad.hero, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
         <Compass size={32} color="#fff" />
       </span>
@@ -78,7 +78,7 @@ export function MyTrips({ go, trip, removeFromTrip }) {
           <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24, alignItems: "start" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {chosen.map(({ a, pax, id }) => (
-                <div key={id} style={{ background: "#fff", borderRadius: 18, overflow: "hidden", border: "1px solid rgba(0,0,0,.06)", display: "flex", flexWrap: "wrap" }}>
+                <div key={id} style={{ background: c.white, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,.08)", display: "flex", flexWrap: "wrap" }}>
                   <div style={{ width: 140, minWidth: 140, flex: "0 0 140px" }}>
                     <Photo src={activityImage(a)} fallback={grad.ocean} alt={a.title} height={130} zoom={false} />
                   </div>
@@ -104,12 +104,12 @@ export function MyTrips({ go, trip, removeFromTrip }) {
             </div>
 
             {/* Summary */}
-            <div style={{ position: "sticky", top: 92, background: "#fff", borderRadius: 22, padding: 24, border: "1px solid rgba(0,0,0,.06)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
+            <div style={{ position: "sticky", top: 92, background: c.white, borderRadius: 22, padding: 24, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
               <h3 style={{ margin: "0 0 16px", fontSize: 18, fontWeight: 800, color: c.charcoal }}>Trip summary</h3>
               <div style={{ display: "flex", justifyContent: "space-between", color: c.stone, fontSize: 14, marginBottom: 8 }}>
                 <span>{chosen.length} experiences</span><span style={{ fontWeight: 700, color: c.charcoal }}>{money(total)}</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 12, borderTop: "1px dashed rgba(0,0,0,.12)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 12, borderTop: "1px dashed rgba(255,255,255,.12)" }}>
                 <span style={{ fontWeight: 800, color: c.charcoal }}>Due today (20%)</span>
                 <span style={{ fontWeight: 800, fontSize: 24, color: c.emerald }}>{money(deposit)}</span>
               </div>

@@ -33,7 +33,7 @@ export function Partner({ go }) {
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))" }}>
           {PERKS.map((p, i) => (
             <Reveal key={p.title} delay={(i % 3) * 70}>
-              <div style={{ background: "#fff", borderRadius: 20, padding: 26, height: "100%", border: "1px solid rgba(0,0,0,.05)" }}>
+              <div style={{ background: c.white, borderRadius: 20, padding: 26, height: "100%", border: "1px solid rgba(255,255,255,.08)" }}>
                 <span style={{ width: 48, height: 48, borderRadius: 14, background: grad.sunset, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                   <p.icon size={23} color={c.charcoal} />
                 </span>
@@ -45,7 +45,7 @@ export function Partner({ go }) {
         </div>
       </Section>
 
-      <Section bg={c.white}>
+      <Section bg={c.sand}>
         <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 30, alignItems: "start" }}>
           <div>
             <SectionHead eyebrow="What we look for" title="Are we a fit?" />
@@ -65,7 +65,7 @@ export function Partner({ go }) {
           </div>
 
           {/* Apply form */}
-          <div style={{ background: c.sand, borderRadius: 22, padding: 28, border: "1px solid rgba(0,0,0,.05)" }}>
+          <div style={{ background: c.surface2, borderRadius: 22, padding: 28, border: "1px solid rgba(255,255,255,.08)" }}>
             {sent ? (
               <div style={{ textAlign: "center", padding: "30px 10px" }}>
                 <span style={{ width: 60, height: 60, borderRadius: 999, background: grad.jungle, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>

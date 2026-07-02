@@ -30,7 +30,7 @@ export function Packages({ go }) {
         </div>
       </Section>
 
-      <Section bg={c.white} pad={70}>
+      <Section bg={c.sand} pad={70}>
         <div style={{ position: "relative", borderRadius: 30, overflow: "hidden", background: grad.hero, padding: "56px 28px", textAlign: "center" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 80% 20%, rgba(255,208,0,.35), transparent 50%)" }} />
           <div style={{ position: "relative" }}>

@@ -9,7 +9,7 @@ import { ActivityCard } from "../components/ActivityCard.jsx";
 
 function InfoList({ title, icon: Icon, items }) {
   return (
-    <div style={{ background: "#fff", borderRadius: 18, padding: 22, border: "1px solid rgba(0,0,0,.06)" }}>
+    <div style={{ background: c.white, borderRadius: 18, padding: 22, border: "1px solid rgba(255,255,255,.08)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 14 }}>
         <span style={{ width: 34, height: 34, borderRadius: 10, background: "rgba(47,107,235,.1)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           <Icon size={17} color={c.emerald} />
@@ -65,7 +65,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
       <Section bg={c.sand}>
         <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 26, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-            <div style={{ background: "#fff", borderRadius: 18, padding: 24, border: "1px solid rgba(0,0,0,.06)" }}>
+            <div style={{ background: c.white, borderRadius: 18, padding: 24, border: "1px solid rgba(255,255,255,.08)" }}>
               <h2 style={{ margin: "0 0 10px", fontSize: 20, fontWeight: 800, color: c.charcoal }}>About this experience</h2>
               <p style={{ color: c.stone, fontSize: 16, lineHeight: 1.7, margin: 0 }}>{a.desc}</p>
             </div>
@@ -95,7 +95,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
 
           {/* Book panel */}
           <div style={{ position: "sticky", top: 92, display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ background: "#fff", borderRadius: 20, padding: 24, border: "1px solid rgba(0,0,0,.06)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
+            <div style={{ background: c.white, borderRadius: 20, padding: 24, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
                 <span style={{ fontSize: 32, fontWeight: 800, color: c.charcoal }}>{money(a.price)}</span>
                 <span style={{ color: c.stone, fontWeight: 600, marginBottom: 6 }}>/ person</span>
@@ -115,7 +115,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
             </div>
 
             {/* Operator card */}
-            <div style={{ background: "#fff", borderRadius: 20, padding: 20, border: "1px solid rgba(0,0,0,.06)" }}>
+            <div style={{ background: c.white, borderRadius: 20, padding: 20, border: "1px solid rgba(255,255,255,.08)" }}>
               <div style={{ fontSize: 12, color: c.stone, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Operated by</div>
               <div style={{ fontWeight: 800, color: c.charcoal, fontSize: 17, marginTop: 4 }}>{op?.name}</div>
               <div style={{ display: "flex", gap: 14, marginTop: 10, flexWrap: "wrap", fontSize: 13, color: c.stone, fontWeight: 600 }}>

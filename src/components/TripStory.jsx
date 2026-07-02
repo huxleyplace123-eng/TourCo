@@ -27,7 +27,7 @@ export function TripTimeline({ chosen }) {
                 {!last && <div style={{ flex: 1, width: 3, background: "linear-gradient(180deg, rgba(47,107,235,.5), rgba(34,211,238,.2))", marginTop: 4, minHeight: 40, borderRadius: 999 }} />}
               </div>
               {/* card */}
-              <div style={{ flex: 1, background: "#fff", borderRadius: 18, overflow: "hidden", border: "1px solid rgba(0,0,0,.06)", display: "flex", flexWrap: "wrap", boxShadow: "0 14px 40px -28px rgba(0,0,0,.4)" }}>
+              <div style={{ flex: 1, background: c.white, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,.08)", display: "flex", flexWrap: "wrap", boxShadow: "0 14px 40px -28px rgba(0,0,0,.4)" }}>
                 <div style={{ width: 130, minWidth: 130, flex: "0 0 130px" }}>
                   <Photo src={activityImage(a)} fallback={grad.ocean} alt={a.title} height={116} />
                 </div>

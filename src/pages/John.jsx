@@ -45,7 +45,7 @@ export function John({ go, addToTrip, trip, viewActivity }) {
               <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
                 <ActivityCard a={a} onAdd={addToTrip} onView={viewActivity} inTrip={trip.some((t) => t.id === a.id)} />
                 {NOTES[a.id] && (
-                  <div style={{ background: "#fff", borderRadius: "0 0 16px 16px", marginTop: -12, padding: "18px 16px 14px", border: "1px solid rgba(0,0,0,.05)", borderTop: "none", display: "flex", gap: 10 }}>
+                  <div style={{ background: c.white, borderRadius: "0 0 16px 16px", marginTop: -12, padding: "18px 16px 14px", border: "1px solid rgba(255,255,255,.08)", borderTop: "none", display: "flex", gap: 10 }}>
                     <Quote size={16} color={c.teal} style={{ flexShrink: 0, marginTop: 2 }} />
                     <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, color: c.stone, fontStyle: "italic" }}>{NOTES[a.id]}</p>
                   </div>
@@ -56,7 +56,7 @@ export function John({ go, addToTrip, trip, viewActivity }) {
         </div>
       </Section>
 
-      <Section bg={c.white} pad={60}>
+      <Section bg={c.sand} pad={60}>
         <div style={{ position: "relative", borderRadius: 30, overflow: "hidden", background: grad.hero, padding: "52px 28px", textAlign: "center" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 80% 30%, rgba(34,211,238,.4), transparent 50%)" }} />
           <div style={{ position: "relative" }}>
