@@ -214,7 +214,7 @@ export function Why({ go }) {
                 <button onClick={() => pick(active - 1)} aria-label="Previous" style={navBtn}><ChevronLeft size={18} /></button>
                 <div style={{ display: "flex", gap: 7 }}>
                   {REVIEWS.map((_, k) => (
-                    <button key={k} onClick={() => pick(k)} aria-label={`Story ${k + 1}`} style={{ width: k === active ? 24 : 8, height: 8, borderRadius: 999, border: "none", cursor: "pointer", background: k === active ? c.teal : "rgba(255,255,255,.25)", transition: "all .3s" }} />
+                    <button key={k} className="tn-dot" onClick={() => pick(k)} aria-label={`Story ${k + 1}`} style={{ width: k === active ? 24 : 8, height: 8, borderRadius: 999, border: "none", cursor: "pointer", background: k === active ? c.teal : "rgba(255,255,255,.25)", transition: "all .3s", padding: 0 }} />
                   ))}
                 </div>
                 <button onClick={() => pick(active + 1)} aria-label="Next" style={navBtn}><ChevronRight size={18} /></button>

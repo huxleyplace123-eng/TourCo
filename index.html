@@ -22,6 +22,18 @@
       .tn-loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #04122E; color: #fff; font-weight: 800; letter-spacing: -0.5px; font-size: 22px; }
       .tn-loading span { color: #22D3EE; }
       select option { color: #0B1A2E; }
+
+      /* ── Touch targets: on coarse/touch pointers, guarantee ≥44px tap size ──
+         Applies app-wide so small buttons/inputs are never fiddly on a phone.
+         `.tn-dot` (pagination dots) opts out so they stay small but keep a
+         padded, invisible 44px hit area via their own styles. */
+      @media (pointer: coarse), (max-width: 820px) {
+        button:not(.tn-dot), a[role="button"], select, input:not([type="range"]) {
+          min-height: 44px;
+        }
+        button { touch-action: manipulation; }
+      }
+
       /* Desktop layout switches (from the original build). */
       @media (min-width: 980px) {
         .hero-grid { grid-template-columns: 1fr 440px !important; }

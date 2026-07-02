@@ -93,8 +93,8 @@ export function CinematicHero({ go }) {
         <span key={slide} style={{ ...glass, color: "#fff", padding: "6px 12px", borderRadius: 999, fontSize: 12, fontWeight: 700, animation: "tnRise .6s ease both" }}>{SLIDES[slide].label}</span>
         <div style={{ display: "flex", gap: 6 }}>
           {SLIDES.map((_, i) => (
-            <button key={i} onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`}
-              style={{ width: i === slide ? 20 : 7, height: 7, borderRadius: 999, border: "none", cursor: "pointer", background: i === slide ? c.teal : "rgba(255,255,255,.4)", transition: "all .3s" }} />
+            <button key={i} className="tn-dot" onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`}
+              style={{ width: i === slide ? 20 : 7, height: 7, borderRadius: 999, border: "none", cursor: "pointer", background: i === slide ? c.teal : "rgba(255,255,255,.4)", transition: "all .3s", padding: 0 }} />
           ))}
         </div>
       </div>
