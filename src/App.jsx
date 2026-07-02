@@ -5,8 +5,17 @@ import { activities } from "./data.js";
 import { Nav } from "./components/Nav.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { Button } from "./components/ui.jsx";
-import { Home } from "./pages/Home.jsx";
 import { useCountUp } from "./motion.jsx";
+import { Home } from "./pages/Home.jsx";
+import { Activities } from "./pages/Activities.jsx";
+import { Detail } from "./pages/Detail.jsx";
+import { Packages } from "./pages/Packages.jsx";
+import { Build } from "./pages/Build.jsx";
+import { Guide } from "./pages/Guide.jsx";
+import { Why } from "./pages/Why.jsx";
+import { Partner } from "./pages/Partner.jsx";
+import { MyTrips } from "./pages/MyTrips.jsx";
+import { John } from "./pages/John.jsx";
 
 function StickyDeposit({ total, count, onView }) {
   const shown = useCountUp(Math.round(total * 0.2));
@@ -21,20 +30,6 @@ function StickyDeposit({ total, count, onView }) {
   );
 }
 
-// Pages not yet rebuilt render a friendly placeholder so the nav always works.
-function Placeholder({ title, go }) {
-  return (
-    <div style={{ maxWidth: 720, margin: "0 auto", padding: "80px 20px", textAlign: "center" }}>
-      <h1 style={{ fontSize: "clamp(26px,4vw,40px)", fontWeight: 800, color: c.charcoal }}>{title}</h1>
-      <p style={{ color: c.stone, fontSize: 17, lineHeight: 1.6 }}>
-        This page is being rebuilt into the new editable project. The Home page is live —
-        the rest are coming next.
-      </p>
-      <Button variant="dark" onClick={() => go("home")}>Back to home</Button>
-    </div>
-  );
-}
-
 export default function App() {
   const [page, setPage] = useState("home");
   const [activeId, setActiveId] = useState(null);
@@ -44,19 +39,25 @@ export default function App() {
   const go = (p) => { setPage(p); setCartOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
   const viewActivity = (id) => { setActiveId(id); go("detail"); };
   const addToTrip = (id) => { setTrip((t) => (t.some((x) => x.id === id) ? t : [...t, { id, pax: 2 }])); setCartOpen(true); };
+  const removeFromTrip = (id) => setTrip((t) => t.filter((x) => x.id !== id));
   const total = trip.reduce((s, g) => s + (activities.find((a) => a.id === g.id)?.price || 0) * g.pax, 0);
 
-  const shared = { go, addToTrip, trip, viewActivity };
+  const shared = { go, addToTrip, trip, viewActivity, removeFromTrip };
 
   return (
     <div style={{ fontFamily: FONT, background: c.white, color: c.charcoal, minHeight: "100vh" }}>
-      <Nav page={page} go={go} tripCount={trip.length} openTrip={() => setCartOpen(true)} />
+      <Nav page={page} go={go} tripCount={trip.length} openTrip={() => (trip.length ? go("portal") : setCartOpen(true))} />
 
       {page === "home" && <Home {...shared} />}
-      {page !== "home" && page !== "detail" && (
-        <Placeholder title={titleFor(page)} go={go} />
-      )}
-      {page === "detail" && <Placeholder title="Activity detail" go={go} />}
+      {page === "activities" && <Activities {...shared} />}
+      {page === "detail" && <Detail activeId={activeId} {...shared} />}
+      {page === "packages" && <Packages {...shared} />}
+      {page === "build" && <Build {...shared} />}
+      {page === "guide" && <Guide {...shared} />}
+      {page === "why" && <Why {...shared} />}
+      {page === "partner" && <Partner {...shared} />}
+      {page === "portal" && <MyTrips {...shared} />}
+      {page === "john" && <John {...shared} />}
 
       <Footer go={go} />
 
@@ -66,25 +67,23 @@ export default function App() {
       </button>
 
       {/* Sticky trip bar */}
-      {trip.length > 0 && <StickyDeposit total={total} count={trip.length} onView={() => setCartOpen(true)} />}
+      {trip.length > 0 && page !== "portal" && page !== "build" && <StickyDeposit total={total} count={trip.length} onView={() => go("portal")} />}
 
+      {/* Quick "added to trip" toast/modal */}
       {cartOpen && (
-        <div onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(10,46,143,.5)", zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: 24, maxWidth: 380, width: "100%" }}>
-            <h3 style={{ margin: 0, color: c.charcoal }}>Your trip ({trip.length})</h3>
-            <p style={{ color: c.stone, fontSize: 14 }}>Full cart is being rebuilt next. Deposit today: <b style={{ color: c.emerald }}>{money(total * 0.2)}</b></p>
-            <Button variant="ghost" full onClick={() => setCartOpen(false)}>Close</Button>
+        <div onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(10,46,143,.5)", zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 20 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 22, padding: 24, maxWidth: 420, width: "100%", marginBottom: 20 }}>
+            <h3 style={{ margin: "0 0 4px", color: c.charcoal, fontSize: 20, fontWeight: 800 }}>Added to your trip 🎉</h3>
+            <p style={{ color: c.stone, fontSize: 14.5, margin: "0 0 16px" }}>
+              You have <b style={{ color: c.charcoal }}>{trip.length}</b> experience{trip.length !== 1 ? "s" : ""}. Deposit today: <b style={{ color: c.emerald }}>{money(total * 0.2)}</b>
+            </p>
+            <div style={{ display: "flex", gap: 10 }}>
+              <Button variant="primary" full onClick={() => go("portal")}>View my trip <ChevronRight size={16} /></Button>
+              <Button variant="ghost" onClick={() => setCartOpen(false)}>Keep browsing</Button>
+            </div>
           </div>
         </div>
       )}
     </div>
   );
-}
-
-function titleFor(p) {
-  return {
-    activities: "Activities", packages: "Packages", john: "John Recommends",
-    guide: "Local's Guide", why: "Why TripNest", portal: "My Trips",
-    build: "Build my trip", partner: "Partner with us",
-  }[p] || "TripNest";
 }
