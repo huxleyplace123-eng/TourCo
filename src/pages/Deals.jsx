@@ -82,17 +82,32 @@ export function Deals({ go, trip }) {
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, color: c.gold, fontWeight: 800, fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
               <Sparkles size={15} />Deal of the trip
             </div>
-            <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16, marginBottom: 34 }}>
-              <DealCard d={featured} />
-              {/* Pura Vida Pass compact */}
+            <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16, marginBottom: 34, alignItems: "stretch" }}>
+              {/* featured wide card: image left, content right */}
+              <div style={{ display: "flex", flexDirection: "column", borderRadius: 20, overflow: "hidden", border: `1.5px solid ${c.gold}`, background: c.white, boxShadow: "0 0 44px -18px rgba(255,208,0,.55)" }}>
+                <div className="feat-split" style={{ display: "grid", gridTemplateColumns: "1fr", flex: 1 }}>
+                  <div style={{ position: "relative", minHeight: 150 }}>
+                    <Photo src={dealImage(featured)} fallback={grad.hero} alt={featured.title} height={"100%"} zoom={false} style={{ height: "100%", minHeight: 150 }}
+                      overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 40%, rgba(11,26,46,.5) 100%)" }} />} />
+                    <span style={{ position: "absolute", top: 12, left: 12, zIndex: 2, display: "inline-flex", alignItems: "center", gap: 5, background: c.gold, color: c.ink, padding: "5px 12px", borderRadius: 999, fontSize: 13, fontWeight: 800 }}><Tag size={12} />{featured.save}</span>
+                  </div>
+                  <div style={{ padding: "18px 20px 20px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                    <span style={{ fontSize: 11, color: c.teal, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.5 }}>{featured.type} · biggest saver</span>
+                    <h3 style={{ color: "#fff", fontSize: 21, fontWeight: 800, margin: "6px 0 6px", lineHeight: 1.15 }}>{featured.title}</h3>
+                    <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.5, margin: "0 0 14px" }}>{featured.detail}</p>
+                    <div><CodeChip code={featured.code} /></div>
+                  </div>
+                </div>
+              </div>
+              {/* Pura Vida Pass */}
               <div style={{ position: "relative", overflow: "hidden", borderRadius: 20, border: `1px solid ${c.line}`, background: grad.hero, color: "#fff", padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 80% at 85% 15%, rgba(255,208,0,.25), transparent 55%)" }} />
                 <div style={{ position: "relative" }}>
                   <div style={{ display: "inline-flex", alignItems: "center", gap: 6, ...glass, color: "#fff", padding: "5px 11px", borderRadius: 999, fontSize: 11, fontWeight: 800, letterSpacing: 0.5, marginBottom: 12 }}>
                     <Ticket size={13} />PURA VIDA PASS {unlocked ? "· ACTIVE" : "· LOCKED"} {unlocked ? <Check size={12} color="#37E36B" /> : <Lock size={11} />}
                   </div>
-                  <h3 style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5, margin: "0 0 8px" }}>Book once. Unlock it all.</h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
+                  <h3 style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5, margin: "0 0 10px" }}>Book once. Unlock it all.</h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 18 }}>
                     {PASS_PERKS.slice(0, 3).map((p) => (
                       <div key={p} style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 13.5, color: "rgba(255,255,255,.9)" }}><Check size={14} color={c.gold} style={{ flexShrink: 0, marginTop: 2 }} />{p}</div>
                     ))}
@@ -170,7 +185,12 @@ export function Deals({ go, trip }) {
         </div>
       </Section>
 
-      <style>{`@media(min-width:820px){.two-col{grid-template-columns:1.5fr 1fr!important}}`}</style>
+      <style>{`
+        @media(min-width:820px){
+          .two-col{grid-template-columns:1.5fr 1fr!important}
+          .feat-split{grid-template-columns:0.9fr 1.1fr!important}
+        }
+      `}</style>
     </>
   );
 }
