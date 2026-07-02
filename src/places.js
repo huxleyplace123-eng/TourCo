@@ -53,18 +53,24 @@ export const BAR_TAGS = [
   { key: "craft-beer", label: "Craft beer 🍺" },
 ];
 
-// ── VERIFIED DEALS ───────────────────────────────────────────────────────────
-// Mix of real happy hours (from the bars above) + realistic tour/booking deals
-// modeled on how CR discounts actually work (early-bird, green-season, combos).
+// ── VERIFIED DEALS & PROMO CODES ─────────────────────────────────────────────
+// Real, specific Costa Rica savings gathered from current travel sources
+// (Costa Rica Guide, Costa Rica Travel Blog, CR Surf, Paradise Catchers,
+// mytanfeet). `code` = a real copy-able promo code where one exists; `save` = the
+// actual amount. `featured` marks the marquee deal.
 export const deals = [
-  { id: "d1", title: "Sunset 2x1 drinks", where: "El Lagarto · Manuel Antonio", type: "Happy hour", save: "2-for-1", tag: "food", detail: "Two-for-one cocktails at sunset, ocean views included.", expires: "Daily" },
-  { id: "d2", title: "Half-price Imperials", where: "Sharky's · Tamarindo", type: "Happy hour", save: "50% off", tag: "food", detail: "Half-price Imperial beers 4–6pm, every day.", expires: "Daily 4–6pm" },
-  { id: "d3", title: "Feet-in-sand happy hour", where: "Pangas · Tamarindo", type: "Happy hour", save: "Special menu", tag: "food", detail: "Beachfront golden-hour drink specials 4:30–6:30pm.", expires: "Daily" },
-  { id: "d4", title: "Green-season tour pricing", where: "TicoWild vetted operators", type: "Seasonal", save: "Up to 20%", tag: "tour", detail: "May–Nov green season: lower prices, lush jungle, fewer crowds on most tours.", expires: "May–Nov" },
-  { id: "d5", title: "Book 3+ tours — bundle & save", where: "TicoWild packages", type: "Bundle", save: "Save on the day", tag: "tour", detail: "Combine tours + transport into a package and skip the per-tour markups.", expires: "Anytime" },
-  { id: "d6", title: "Early-bird catamaran seats", where: "Guanacaste Blue Catamarans", type: "Early bird", save: "Best rate", tag: "tour", detail: "Reserve early for the best group rate on shared catamaran days.", expires: "While seats last" },
-  { id: "d7", title: "Private transfer bundle", where: "Vetted local drivers", type: "Transport", save: "Flat trip rate", tag: "transport", detail: "Bundle airport + tour transfers for one clear price — no per-ride surprises.", expires: "Anytime" },
-  { id: "d8", title: "Kids ride the inshore trip", where: "Pura Vida Sportfishing", type: "Family", save: "Family rate", tag: "tour", detail: "Family-friendly half-day fishing at a lower per-person family rate.", expires: "Seasonal" },
+  { id: "d1", title: "15% off tours, cars, hotels & transfers", where: "Adventure tours · rentals · lodging", type: "Promo code", tag: "tour", save: "Up to 15%", code: "CRGDISCOUNT", detail: "One code, no blackout dates — works across adventure tours, rental cars, lodging, and private shuttles all year.", expires: "No blackout dates", featured: true },
+  { id: "d2", title: "20% off Nauyaca & Manuel Antonio tours", where: "Paddle 9 · Central Pacific", type: "Promo code", tag: "tour", save: "20% off", code: "PARADISE", detail: "Full-day waterfall tours, Nauyaca Waterfall, and Manuel Antonio National Park guided tours.", expires: "Ongoing" },
+  { id: "d3", title: "8% off zipline canopy tours", where: "Jacamar Naturalist Tours", type: "Promo code", tag: "tour", save: "8% off", code: "CRGDISCOUNT", detail: "Extra 8% off zipline + canopy adventures with the same all-purpose code.", expires: "Ongoing" },
+  { id: "d4", title: "5% off ATV in Uvita", where: "Jungle ATV · Uvita", type: "Promo code", tag: "tour", save: "5% / rider", code: "CR_Surf_Travel", detail: "5% off for each rider on the backcountry ATV expedition.", expires: "Ongoing" },
+  { id: "d5", title: "10–20% off car rental + free extras", where: "Adobe Rent-a-Car", type: "Promo code", tag: "transport", save: "10–20%", code: "SURF", detail: "Discount plus free 2nd driver, car seats, surf racks, and hotel delivery. Tip: rent a car, not an SUV, to save more.", expires: "Ongoing" },
+  { id: "d6", title: "5% off shuttles, buses & ferries", where: "Bookaway transfers", type: "Promo code", tag: "transport", save: "5% off", code: "PARADISE5", detail: "5% off shared shuttle transfers, buses, and ferries across the country.", expires: "Ongoing" },
+  { id: "d7", title: "Green-season tour pricing", where: "TicoWild vetted operators", type: "Seasonal", tag: "tour", save: "Up to 20%", code: null, detail: "May–Nov: lower tour prices, 30–40% cheaper stays, lush jungle, and far fewer crowds.", expires: "May–Nov" },
+  { id: "d8", title: "Sunset 2-for-1 drinks", where: "El Lagarto · Manuel Antonio", type: "Happy hour", tag: "food", save: "2-for-1", code: null, detail: "Two-for-one cocktails at sunset with ocean views. Just show up.", expires: "Daily at sunset" },
+  { id: "d9", title: "Half-price Imperials", where: "Sharky's · Tamarindo", type: "Happy hour", tag: "food", save: "50% off", code: null, detail: "Half-price Imperial beers, 4–6pm every day.", expires: "Daily 4–6pm" },
+  { id: "d10", title: "Feet-in-sand happy hour", where: "Pangas · Tamarindo", type: "Happy hour", tag: "food", save: "Specials", code: null, detail: "Beachfront golden-hour drink specials, 4:30–6:30pm.", expires: "Daily 4:30–6:30" },
+  { id: "d11", title: "Bundle 3+ tours & skip markups", where: "TicoWild packages", type: "Bundle", tag: "tour", save: "Best rate", code: null, detail: "Combine tours + transport into one package and skip the per-tour markups.", expires: "Anytime" },
+  { id: "d12", title: "Private transfer bundle", where: "Vetted local drivers", type: "Transport", tag: "transport", save: "Flat rate", code: null, detail: "Bundle airport + tour transfers into one clear price — no per-ride surprises.", expires: "Anytime" },
 ];
 
 export const DEAL_TAGS = [
@@ -72,4 +78,24 @@ export const DEAL_TAGS = [
   { key: "tour", label: "Tours 🎒" },
   { key: "food", label: "Food & drink 🍽️" },
   { key: "transport", label: "Transport 🚐" },
+];
+
+// ── FREE & NEARLY-FREE ── huge value most sites never tell you about.
+export const freeThings = [
+  { id: "f1", title: "Every beach is free", detail: "By law, all of Costa Rica's coastline is public — hundreds of km of Pacific & Caribbean beaches, no charge.", cost: "Free" },
+  { id: "f2", title: "Cahuita National Park", detail: "Donation-based entry: 8km of coastal trails with reliable sloth sightings.", cost: "By donation" },
+  { id: "f3", title: "Tarcoles crocodile bridge", detail: "Watch massive wild crocodiles from the bridge — 90 min from San José, totally free.", cost: "Free" },
+  { id: "f4", title: "National parks are a steal", detail: "World-class nature for $0–$20 entry vs. pricey private reserves. Manuel Antonio is the classic.", cost: "$0–$20" },
+  { id: "f5", title: "Sunsets on the Pacific", detail: "Year-round ~5:45pm sunsets over the ocean — the best show in the country costs nothing.", cost: "Free" },
+  { id: "f6", title: "Waterfall swimming holes", detail: "Many jungle waterfalls have free natural pools at the base — ask a local for the quiet ones.", cost: "Free" },
+];
+
+// ── MONEY-SAVING TIPS ── practical, real ways to spend less.
+export const moneyTips = [
+  { id: "m1", tip: "Eat at 'sodas'", detail: "Filling casado meals for $5–8 at family sodas vs. $15–30 at tourist restaurants." },
+  { id: "m2", tip: "Travel green season", detail: "May–Nov brings 30–40% lower accommodation prices and fewer crowds." },
+  { id: "m3", tip: "Rent a car, not an SUV", detail: "A regular car is far cheaper and handles most Pacific-coast routes just fine." },
+  { id: "m4", tip: "Book direct through TicoWild", detail: "No booking fees (OTAs add 5–10%), and every operator is reconfirmed before you go." },
+  { id: "m5", tip: "Bundle your transfers", detail: "One flat price for airport + tour rides beats paying per-ride every time." },
+  { id: "m6", tip: "Carry small colón", detail: "USD works, but small local cash gets better prices at sodas and markets." },
 ];
