@@ -16,6 +16,7 @@ import { Why } from "./pages/Why.jsx";
 import { Partner } from "./pages/Partner.jsx";
 import { MyTrips } from "./pages/MyTrips.jsx";
 import { John } from "./pages/John.jsx";
+import { AskJohn } from "./pages/AskJohn.jsx";
 
 function StickyDeposit({ total, count, onView }) {
   const shown = useCountUp(Math.round(total * 0.2));
@@ -52,7 +53,8 @@ export default function App() {
       {page === "activities" && <Activities {...shared} />}
       {page === "detail" && <Detail activeId={activeId} {...shared} />}
       {page === "packages" && <Packages {...shared} />}
-      {page === "build" && <Build {...shared} />}
+      {page === "build" && <AskJohn {...shared} />}
+      {page === "builder" && <Build {...shared} />}
       {page === "guide" && <Guide {...shared} />}
       {page === "why" && <Why {...shared} />}
       {page === "partner" && <Partner {...shared} />}
@@ -67,7 +69,7 @@ export default function App() {
       </button>
 
       {/* Sticky trip bar */}
-      {trip.length > 0 && page !== "portal" && page !== "build" && <StickyDeposit total={total} count={trip.length} onView={() => go("portal")} />}
+      {trip.length > 0 && !["portal", "build", "builder"].includes(page) && <StickyDeposit total={total} count={trip.length} onView={() => go("portal")} />}
 
       {/* Quick "added to trip" toast/modal */}
       {cartOpen && (

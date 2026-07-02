@@ -1,18 +1,29 @@
 import React, { useEffect, useRef, useState } from "react";
 
 // ── Reveal ── fades + rises a block into view on scroll (IntersectionObserver).
+// Bulletproof: anything already in (or near) the viewport at mount reveals
+// immediately, so a full-height page never shows a blank void on first paint.
 export function Reveal({ children, delay = 0, y = 24, style = {} }) {
   const ref = useRef(null);
   const [shown, setShown] = useState(false);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // If it's already on screen at mount, reveal right away (no waiting on scroll).
+    const r = el.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    if (r.top < vh * 0.92 && r.bottom > 0) {
+      setShown(true);
+      return;
+    }
     const io = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) { setShown(true); io.unobserve(el); } },
-      { threshold: 0.12 }
+      { threshold: 0, rootMargin: "0px 0px -8% 0px" }
     );
     io.observe(el);
-    return () => io.disconnect();
+    // Safety net: never let content stay invisible longer than ~1.2s.
+    const t = setTimeout(() => setShown(true), 1200);
+    return () => { io.disconnect(); clearTimeout(t); };
   }, []);
   return (
     <div
@@ -29,21 +40,63 @@ export function Reveal({ children, delay = 0, y = 24, style = {} }) {
   );
 }
 
-// ── Lift ── card hover: lift + soften shadow. Wrap any card.
-export function Lift({ children, style = {}, radius = 22, ...rest }) {
+// ── Lift ── card hover: lift + soften shadow + a soft spotlight that follows
+// the cursor across the card. Wrap any card.
+export function Lift({ children, style = {}, radius = 22, glow = true, ...rest }) {
   const [hover, setHover] = useState(false);
+  const [pos, setPos] = useState({ x: 50, y: 50 });
+  const onMove = (e) => {
+    if (!glow) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    setPos({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+  };
   return (
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onMouseMove={onMove}
       style={{
         ...style,
+        position: style.position || "relative",
         borderRadius: radius,
         transform: hover ? "translateY(-6px)" : "translateY(0)",
         boxShadow: hover ? "0 30px 60px -24px rgba(8,28,58,.55)" : "0 14px 40px -22px rgba(15,30,40,.4)",
         transition: "transform .28s cubic-bezier(.2,.7,.2,1), box-shadow .28s ease",
       }}
       {...rest}
+    >
+      {glow && (
+        <div
+          aria-hidden
+          style={{
+            position: "absolute", inset: 0, borderRadius: radius, pointerEvents: "none", zIndex: 3,
+            opacity: hover ? 1 : 0, transition: "opacity .3s ease",
+            background: `radial-gradient(240px circle at ${pos.x}% ${pos.y}%, rgba(255,255,255,.28), transparent 60%)`,
+            mixBlendMode: "soft-light",
+          }}
+        />
+      )}
+      {children}
+    </div>
+  );
+}
+
+// ── Magnetic ── wraps a button/CTA so it gently pulls toward the cursor.
+export function Magnetic({ children, strength = 0.35, style = {} }) {
+  const ref = useRef(null);
+  const [t, setT] = useState({ x: 0, y: 0 });
+  const onMove = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setT({ x: (e.clientX - (r.left + r.width / 2)) * strength, y: (e.clientY - (r.top + r.height / 2)) * strength });
+  };
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={() => setT({ x: 0, y: 0 })}
+      style={{ display: "inline-block", transform: `translate(${t.x}px, ${t.y}px)`, transition: t.x === 0 && t.y === 0 ? "transform .35s cubic-bezier(.2,.7,.2,1)" : "transform .08s linear", ...style }}
     >
       {children}
     </div>
