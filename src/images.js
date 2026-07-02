@@ -48,7 +48,26 @@ const BY_PACKAGE = {
   p5: "photo-1432405972618-c60b0225b8f9", // rainforest / waterfall
 };
 
+// People — founder + traveler portraits (Unsplash face crops).
+const PEOPLE = {
+  john: "photo-1500648767791-00dcc994a43e",   // friendly guide portrait
+  sarah: "photo-1544005313-94ddf0286df2",       // woman
+  delgado: "photo-1502823403499-6ccfcf4fb453",  // man
+  crew: "photo-1517841905240-472988babdf9",     // young man
+  emma: "photo-1438761681033-6461ffad8d80",     // woman 2
+};
+
+// Story scene photos for the Why page (paired with each pillar).
+const WHY_SCENES = {
+  vetted: "photo-1506929562872-bb421503ef21",   // beach guide / coast
+  pricing: "photo-1454165804606-c3d57bc86b40",  // clean / trust
+  concierge: "photo-1521737604893-d14cc237f11d", // people / support
+  personal: "photo-1533105079780-92b9be482077", // family joy
+};
+
 export const activityImage = (a, w) => cdn(BY_CATEGORY[a.category] || "photo-1518259102261-b40117eabbc9", w);
 export const regionImage = (name, w) => cdn(BY_REGION[name] || "photo-1518259102261-b40117eabbc9", w);
 export const packageImage = (id, w = 1000) => cdn(BY_PACKAGE[id] || HERO, w);
+export const personImage = (key, w = 200) => cdn(PEOPLE[key] || PEOPLE.john, w);
+export const sceneImage = (key, w = 900) => cdn(WHY_SCENES[key] || HERO, w);
 export const heroImage = (w = 1600) => cdn(HERO, w);

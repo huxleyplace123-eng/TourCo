@@ -169,8 +169,36 @@ export function useCountUp(value, ms = 700) {
   return n;
 }
 
+// ── CountUpNumber ── counts from 0 → value the first time it scrolls into view.
+// Accepts a numeric `value` plus optional `prefix`/`suffix` (e.g. "$", "+", "★").
+export function CountUpNumber({ value, prefix = "", suffix = "", decimals = 0, ms = 1400, style = {} }) {
+  const ref = useRef(null);
+  const [n, setN] = useState(0);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting && !started) setStarted(true); }, { threshold: 0.4 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [started]);
+  useEffect(() => {
+    if (!started) return;
+    let raf, start;
+    const tick = (t) => {
+      if (!start) start = t;
+      const p = Math.min(1, (t - start) / ms);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setN(value * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [started, value, ms]);
+  return <span ref={ref} style={style}>{prefix}{n.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}{suffix}</span>;
+}
+
 // ── Photo ── image with gradient fallback + optional hover zoom.
-export function Photo({ src, fallback, alt = "", height = 168, zoom = true, children, overlay }) {
+export function Photo({ src, fallback, alt = "", height = 168, zoom = true, children, overlay, style = {} }) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const [hover, setHover] = useState(false);
@@ -178,7 +206,7 @@ export function Photo({ src, fallback, alt = "", height = 168, zoom = true, chil
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{ position: "relative", height, overflow: "hidden", background: fallback }}
+      style={{ position: "relative", height, overflow: "hidden", background: fallback, ...style }}
     >
       {!failed && (
         <img
