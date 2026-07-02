@@ -136,7 +136,7 @@ export function Deals({ go, trip }) {
             }}>{dt.label}</button>
           ))}
         </div>
-        <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fill,minmax(230px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(230px,1fr))" }}>
           {rest.map((d, i) => <Reveal key={d.id} delay={(i % 4) * 50}><DealCard d={d} /></Reveal>)}
         </div>
 
@@ -148,7 +148,7 @@ export function Deals({ go, trip }) {
             <div style={{ color: c.stone, fontSize: 13 }}>The best value in Costa Rica — that nobody advertises.</div>
           </div>
         </div>
-        <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
           {freeThings.map((f, i) => (
             <Reveal key={f.id} delay={(i % 3) * 55}>
               <div style={{ background: c.white, borderRadius: 16, padding: 18, border: `1px solid ${c.line}`, height: "100%" }}>
@@ -170,7 +170,7 @@ export function Deals({ go, trip }) {
             <div style={{ color: c.stone, fontSize: 13 }}>How Ticos actually stretch a trip.</div>
           </div>
         </div>
-        <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
           {moneyTips.map((m, i) => (
             <Reveal key={m.id} delay={(i % 3) * 55}>
               <div style={{ background: c.surface2, borderRadius: 16, padding: 18, height: "100%", display: "flex", gap: 12 }}>

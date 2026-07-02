@@ -97,7 +97,7 @@ export function Restaurants({ go }) {
             <Button variant="ghost" onClick={() => { setRegion("All"); setCollection("all"); }}>Clear filters</Button>
           </div>
         ) : (
-          <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
+          <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
             {list.map((r, i) => <Reveal key={r.id} delay={(i % 3) * 60}>{mode === "eat" ? <RestaurantCard r={r} /> : <BarCard b={r} />}</Reveal>)}
           </div>
         )}

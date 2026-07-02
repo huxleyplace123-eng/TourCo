@@ -77,7 +77,7 @@ export function Guide({ go }) {
 
       <Section bg={c.sand}>
         <SectionHead eyebrow="Explore" title="Pick your corner of the coast" accent />
-        <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
           {regions.map((r, i) => (
             <Reveal key={r.name} delay={(i % 3) * 70}>
               <Lift style={{ overflow: "hidden", cursor: "pointer" }} onClick={() => go("activities")}>
@@ -106,7 +106,7 @@ export function Guide({ go }) {
             <BeachChip key={t.key} on={beachTag === t.key} onClick={() => setBeachTag(t.key)}>{t.label}</BeachChip>
           ))}
         </div>
-        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
           {shownBeaches.map((b, i) => (
             <Reveal key={b.id} delay={(i % 3) * 60}>
               <Lift style={{ overflow: "hidden", border: `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column" }} radius={18}>
@@ -132,7 +132,7 @@ export function Guide({ go }) {
 
       <Section bg={c.sand}>
         <SectionHead eyebrow="Insider tips" title="Know before you go" center />
-        <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
           {TIPS.map((t) => (
             <div key={t.title} style={{ background: c.surface2, borderRadius: 18, padding: 24 }}>
               <span style={{ width: 44, height: 44, borderRadius: 12, background: grad.jungle, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
@@ -149,7 +149,7 @@ export function Guide({ go }) {
       <Section bg={c.sand} pad={40}>
         <SectionHead eyebrow="The Local's Playbook" title="What locals wish you knew" center accent
           sub="Straight talk from the ground — the stuff that saves your trip." />
-        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
           {PLAYBOOK.map((p, i) => (
             <Reveal key={p.title} delay={(i % 3) * 70}>
               <div style={{ background: c.white, borderRadius: 18, padding: 22, border: `1px solid ${c.line}`, height: "100%" }}>

@@ -100,7 +100,7 @@ export function Why({ go }) {
 
       {/* ── LIVE STATS ── */}
       <Section bg={c.sand} pad={56}>
-        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))" }}>
           {STATS.map((s, i) => (
             <Reveal key={s.label} delay={i * 90}>
               <div style={{ textAlign: "center", ...glass, borderRadius: 20, padding: "30px 14px" }}>
@@ -226,7 +226,7 @@ export function Why({ go }) {
 
       {/* ── TRUST WALL ── */}
       <Section bg={c.sand} pad={40}>
-        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))" }}>
+        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))" }}>
           {[
             { icon: ShieldCheck, t: "Every operator insured & vetted", s: "We verify licenses and insurance on the ground — not just on paper." },
             { icon: Lock, t: "Secure 20% deposits", s: "Reserve with confidence. Your payment is protected and fully transparent." },
