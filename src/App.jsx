@@ -6,6 +6,20 @@ import { Nav } from "./components/Nav.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { Button } from "./components/ui.jsx";
 import { Home } from "./pages/Home.jsx";
+import { useCountUp } from "./motion.jsx";
+
+function StickyDeposit({ total, count, onView }) {
+  const shown = useCountUp(Math.round(total * 0.2));
+  return (
+    <div style={{ position: "fixed", left: 12, right: 12, bottom: 12, zIndex: 55, background: c.emerald, borderRadius: 18, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 16px 40px -14px rgba(47,107,235,.7)" }}>
+      <div style={{ color: "#fff" }}>
+        <div style={{ fontSize: 12, opacity: .85 }}>{count} activit{count === 1 ? "y" : "ies"} · 20% deposit</div>
+        <div style={{ fontWeight: 800, fontSize: 17 }}>{money(shown)} <span style={{ fontSize: 12, opacity: .8, fontWeight: 600 }}>today</span></div>
+      </div>
+      <Button variant="gold" size="sm" onClick={onView}>View trip <ChevronRight size={15} /></Button>
+    </div>
+  );
+}
 
 // Pages not yet rebuilt render a friendly placeholder so the nav always works.
 function Placeholder({ title, go }) {
@@ -52,15 +66,7 @@ export default function App() {
       </button>
 
       {/* Sticky trip bar */}
-      {trip.length > 0 && (
-        <div style={{ position: "fixed", left: 12, right: 12, bottom: 12, zIndex: 55, background: c.emerald, borderRadius: 18, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 16px 40px -14px rgba(47,107,235,.7)" }}>
-          <div style={{ color: "#fff" }}>
-            <div style={{ fontSize: 12, opacity: .85 }}>{trip.length} activit{trip.length === 1 ? "y" : "ies"} · 20% deposit</div>
-            <div style={{ fontWeight: 800, fontSize: 17 }}>{money(total * 0.2)} <span style={{ fontSize: 12, opacity: .8, fontWeight: 600 }}>today</span></div>
-          </div>
-          <Button variant="gold" size="sm" onClick={() => setCartOpen(true)}>View trip <ChevronRight size={15} /></Button>
-        </div>
-      )}
+      {trip.length > 0 && <StickyDeposit total={total} count={trip.length} onView={() => setCartOpen(true)} />}
 
       {cartOpen && (
         <div onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(10,46,143,.5)", zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>

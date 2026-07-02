@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { ArrowRight, ShieldCheck, MessageCircle, Sparkles, Map, Compass, Calendar, Users, Heart, ChevronDown, Star } from "lucide-react";
 import { c, grad } from "../theme.js";
 import { activities } from "../data.js";
+import { heroImage } from "../images.js";
 import { Button, Section, SectionHead, Eyebrow, Field } from "../components/ui.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
+import { Reveal } from "../motion.jsx";
 
 const TRUST = [
   { icon: ShieldCheck, label: "Vetted operators" },
@@ -44,7 +46,15 @@ export function Home({ go, addToTrip, trip, viewActivity }) {
   return (
     <>
       {/* ── HERO ── */}
+      <style>{`
+        @keyframes tnFloat { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-10px) } }
+        @keyframes tnKen { 0%{ transform: scale(1.08) translate(0,0) } 100%{ transform: scale(1.18) translate(-2%, -2%) } }
+      `}</style>
       <div style={{ position: "relative", background: grad.hero, overflow: "hidden" }}>
+        {/* Cinematic photo layer — real Costa Rica scene, slow Ken-Burns drift, gradient stays as the tint. */}
+        <img src={heroImage()} alt="" aria-hidden="true"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.42, animation: "tnKen 24s ease-in-out infinite alternate" }} />
+        <div style={{ position: "absolute", inset: 0, background: grad.hero, opacity: 0.72 }} />
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 12% 20%, rgba(34,211,238,.5), transparent 45%), radial-gradient(circle at 88% 80%, rgba(255,208,0,.32), transparent 45%)" }} />
         <div className="hero-grid" style={{ position: "relative", maxWidth: 1180, margin: "0 auto", padding: "84px 20px 90px", display: "grid", gridTemplateColumns: "1fr", gap: 48 }}>
           <div>
@@ -65,7 +75,7 @@ export function Home({ go, addToTrip, trip, viewActivity }) {
           </div>
 
           {/* Plan card */}
-          <div style={{ background: "rgba(255,253,248,.97)", borderRadius: 26, padding: 24, boxShadow: "0 40px 80px -30px rgba(0,0,0,.55)", backdropFilter: "blur(8px)", alignSelf: "start" }}>
+          <div style={{ background: "rgba(255,253,248,.97)", borderRadius: 26, padding: 24, boxShadow: "0 40px 80px -30px rgba(0,0,0,.55)", backdropFilter: "blur(8px)", alignSelf: "start", animation: "tnFloat 7s ease-in-out infinite" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
               <Compass size={20} color={c.teal} />
               <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 18 }}>Start your trip plan</span>
@@ -107,8 +117,10 @@ export function Home({ go, addToTrip, trip, viewActivity }) {
           <Button variant="ghost" onClick={() => go("activities")}>View all activities <ArrowRight size={16} /></Button>
         </div>
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
-          {featured.map((a) => (
-            <ActivityCard key={a.id} a={a} onAdd={addToTrip} onView={viewActivity} inTrip={trip.some((t) => t.id === a.id)} />
+          {featured.map((a, i) => (
+            <Reveal key={a.id} delay={(i % 4) * 80}>
+              <ActivityCard a={a} onAdd={addToTrip} onView={viewActivity} inTrip={trip.some((t) => t.id === a.id)} />
+            </Reveal>
           ))}
         </div>
       </Section>
