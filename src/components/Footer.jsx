@@ -10,8 +10,8 @@ function Col({ title, links, go }) {
     <div>
       <div style={{ fontWeight: 800, color: "#fff", marginBottom: 12 }}>{title}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {links.map(([id, label]) => (
-          <button key={id} onClick={() => go(id)} style={{ background: "none", border: "none", color: "rgba(255,255,255,.8)", cursor: "pointer", textAlign: "left", fontSize: 14, padding: 0 }}>
+        {links.map(([id, label, action]) => (
+          <button key={id} onClick={() => (action ? action() : go(id))} style={{ background: "none", border: "none", color: "rgba(255,255,255,.8)", cursor: "pointer", textAlign: "left", fontSize: 14, padding: 0 }}>
             {label}
           </button>
         ))}
@@ -34,7 +34,7 @@ export function Footer({ go }) {
           </p>
         </div>
         <Col title="Explore" links={[["tico", "Meet Tico"], ["activities", "Activities"], ["eat", "Eat & Drink"], ["deals", "Deals"], ["packages", "Packages"], ["john", "John Recommends"], ["guide", "Local's Guide & Beaches"]]} go={go} />
-        <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["build", "Build My Trip"], ["portal", "My Trips"]]} go={go} />
+        <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["build", "Build My Trip"], ["portal", "My Trips"], ["operator-agreement", "Operator agreement", () => setAgreement(true)]]} go={go} />
         <div>
           <div style={{ fontWeight: 800, color: "#fff", marginBottom: 12 }}>Support</div>
           <Button variant="gold" size="sm" onClick={() => window.alert("Opening WhatsApp concierge…")}>
@@ -46,14 +46,7 @@ export function Footer({ go }) {
 
       <div style={{ maxWidth: 1180, margin: "30px auto 0", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.12)", fontSize: 13, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
         <span>© 2026 TicoWild. A booking & coordination platform — not the tour operator.</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-          <button onClick={() => setAgreement(true)} style={{ background: "none", border: "none", color: "rgba(243,247,255,.7)", cursor: "pointer", fontSize: 13, padding: 0, transition: "color .15s" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = c.teal)}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(243,247,255,.7)")}>
-            Operator agreement
-          </button>
-          <span>Pura vida 🌿</span>
-        </div>
+        <span>Pura vida 🌿</span>
       </div>
     </footer>
   );
