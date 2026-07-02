@@ -67,7 +67,7 @@ const HERO_SETS = {
     { id: "photo-1745208746272-8d3b979d5f92", label: "Arenal volcano" },        // volcano (shared w/ activities — the icon)
     { id: "photo-1524704796725-9fc3044a58b2", label: "Reefs full of color" },   // vivid reef fish
     { id: "photo-1512100356356-de1b84283e18", label: "Island-hop by air" },     // seaplane over turquoise
-    { id: "photo-1552728089-57bdde30beb3", label: "Cloud-forest wildlife" },    // tropical bird / toucan
+    { id: "photo-1444464666168-49d633b86797", label: "Cloud-forest wildlife" },    // tropical bird on a branch (wide, not a feather close-up)
     { id: "photo-1468413253725-0d5181091126", label: "Jungle-backed beaches" }, // beach + jungle
     { id: "photo-1553284965-83fd3e82fa5a", label: "Ride the shoreline" },       // horseback
     { id: "photo-1591025207163-942350e47db2", label: "Swim with turtles" },     // underwater turtle
