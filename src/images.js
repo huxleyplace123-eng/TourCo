@@ -39,6 +39,16 @@ const BY_REGION = {
 // Cinematic hero — jungle-meets-coast aerial.
 const HERO = "photo-1518259102261-b40117eabbc9";
 
+// Cinematic hero photo per curated package (by package id).
+const BY_PACKAGE = {
+  p1: "photo-1533105079780-92b9be482077", // family / beach
+  p2: "photo-1507525428034-b723cf961d3e", // group / boat
+  p3: "photo-1544551763-46a013bb70d5",   // fishing / ocean
+  p4: "photo-1518621736915-f3b1c41bfd00", // honeymoon / couple sunset
+  p5: "photo-1432405972618-c60b0225b8f9", // rainforest / waterfall
+};
+
 export const activityImage = (a, w) => cdn(BY_CATEGORY[a.category] || "photo-1518259102261-b40117eabbc9", w);
 export const regionImage = (name, w) => cdn(BY_REGION[name] || "photo-1518259102261-b40117eabbc9", w);
+export const packageImage = (id, w = 1000) => cdn(BY_PACKAGE[id] || HERO, w);
 export const heroImage = (w = 1600) => cdn(HERO, w);
