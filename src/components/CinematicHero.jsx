@@ -73,6 +73,13 @@ export function CinematicHero({ go }) {
         @keyframes tnBorder { 0%{ background-position: 0% 50% } 100%{ background-position: 200% 50% } }
         .tn-hero .rise { animation: tnRise .9s cubic-bezier(.2,.7,.2,1) both; }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
+        /* ── Mobile hero polish ── hide the desktop sun/bird blob (ugly behind
+           text), tighten top spacing, and let the photo show through more. */
+        @media (max-width: 820px){
+          .tn-hero { min-height: auto !important; }
+          .tn-hero-scene { display: none !important; }
+          .tn-hero-content { padding: 40px 20px 70px !important; gap: 26px !important; }
+        }
       `}</style>
 
       {/* ── Cinematic carousel, full-bleed, cross-fading + scroll-scrubbed ── */}
@@ -103,8 +110,9 @@ export function CinematicHero({ go }) {
       {/* light rays */}
       <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(115deg, transparent 35%, rgba(255,255,255,.06) 50%, transparent 65%)", animation: "tnShimmer 8s ease-in-out infinite", pointerEvents: "none" }} />
 
-      {/* animated scene: sun, birds */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", ...layer(0.6) }}>
+      {/* animated scene: sun, birds — desktop only (the sun blob is ugly behind
+          mobile text, so it's hidden under 820px via .tn-hero-scene) */}
+      <div className="tn-hero-scene" aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", ...layer(0.6) }}>
         <div style={{ position: "absolute", right: "14%", top: "14%", width: 130, height: 130, borderRadius: 999, background: `radial-gradient(circle, ${g.accent} 0%, ${g.accent}66 40%, transparent 70%)`, filter: "blur(3px)", animation: "tnSun 6s ease-in-out infinite" }} />
         <svg viewBox="0 0 100 20" style={{ position: "absolute", left: "6%", top: "20%", width: 90, opacity: 0.5, color: "#fff", animation: "tnBirds 28s linear infinite" }}>
           <path d="M4 10 Q7 6 10 10 Q13 6 16 10" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
@@ -114,7 +122,7 @@ export function CinematicHero({ go }) {
       </div>
 
       {/* ── Content ── */}
-      <div className="hero-grid" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "88px 20px 116px", display: "grid", gridTemplateColumns: "1fr", gap: 56, alignItems: "center" }}>
+      <div className="hero-grid tn-hero-content" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "88px 20px 116px", display: "grid", gridTemplateColumns: "1fr", gap: 56, alignItems: "center" }}>
         <div style={{ transform: `translateY(${scrollY * -0.08}px)`, opacity: 1 - scrub * 0.6 }}>
           <span className="rise" style={{ display: "inline-flex", alignItems: "center", gap: 8, ...glass, color: "#fff", fontWeight: 600, fontSize: 12.5, padding: "8px 15px", borderRadius: 999, letterSpacing: 0.2 }}>
             <span style={{ width: 7, height: 7, borderRadius: 999, background: g.accent, boxShadow: `0 0 12px ${g.accent}` }} />

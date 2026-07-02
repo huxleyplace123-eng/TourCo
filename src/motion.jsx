@@ -198,10 +198,28 @@ export function CountUpNumber({ value, prefix = "", suffix = "", decimals = 0, m
 }
 
 // ── Photo ── image with gradient fallback + optional hover zoom.
+// Robust load handling: an image that is ALREADY cached (very common on mobile
+// / Safari) may finish loading before React attaches onLoad, so onLoad never
+// fires and the image would stay stuck at opacity:0 (invisible). We detect
+// `img.complete` on mount via a ref callback AND keep a safety timer, so a card
+// photo can never get stuck hidden on a phone.
 export function Photo({ src, fallback, alt = "", height = 168, zoom = true, children, overlay, style = {} }) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const [hover, setHover] = useState(false);
+
+  // ref callback: if the <img> is already complete when it mounts, show it now.
+  const imgRef = (node) => {
+    if (node && node.complete && node.naturalWidth > 0) setLoaded(true);
+  };
+
+  useEffect(() => {
+    setLoaded(false); setFailed(false);
+    // safety net — never leave a photo invisible longer than ~1.5s
+    const t = setTimeout(() => setLoaded(true), 1500);
+    return () => clearTimeout(t);
+  }, [src]);
+
   return (
     <div
       onMouseEnter={() => setHover(true)}
@@ -210,9 +228,9 @@ export function Photo({ src, fallback, alt = "", height = 168, zoom = true, chil
     >
       {!failed && (
         <img
+          ref={imgRef}
           src={src}
           alt={alt}
-          loading="lazy"
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
           style={{
