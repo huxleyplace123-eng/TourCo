@@ -4,6 +4,7 @@ import { c } from "../theme.js";
 import { Logo } from "./Logo.jsx";
 import { Button } from "./ui.jsx";
 import { OperatorAgreement } from "./OperatorAgreement.jsx";
+import { LegalModal } from "./LegalModal.jsx";
 
 function Col({ title, links, go }) {
   return (
@@ -22,9 +23,11 @@ function Col({ title, links, go }) {
 
 export function Footer({ go }) {
   const [agreement, setAgreement] = useState(false);
+  const [legal, setLegal] = useState(null); // "terms" | "privacy" | null
   return (
     <footer style={{ background: c.canvas2, borderTop: `1px solid ${c.line}`, color: "rgba(243,247,255,.7)", padding: "50px 20px 30px" }}>
       {agreement && <OperatorAgreement onClose={() => setAgreement(false)} />}
+      {legal && <LegalModal kind={legal} onClose={() => setLegal(null)} />}
 
       <div style={{ maxWidth: 1180, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 30 }}>
         <div>
@@ -44,10 +47,18 @@ export function Footer({ go }) {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1180, margin: "30px auto 0", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.12)", fontSize: 13, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-        <span>© 2026 TicoWild. A booking & coordination platform — not the tour operator.</span>
+      <div style={{ maxWidth: 1180, margin: "30px auto 0", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.12)", fontSize: 13, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
+          <span>© 2026 TicoWild</span>
+          <button onClick={() => setLegal("terms")} style={legalLink}
+            onMouseEnter={(e) => (e.currentTarget.style.color = c.teal)} onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(243,247,255,.7)")}>Terms</button>
+          <button onClick={() => setLegal("privacy")} style={legalLink}
+            onMouseEnter={(e) => (e.currentTarget.style.color = c.teal)} onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(243,247,255,.7)")}>Privacy Policy</button>
+        </div>
         <span>Pura vida 🌿</span>
       </div>
     </footer>
   );
 }
+
+const legalLink = { background: "none", border: "none", color: "rgba(243,247,255,.7)", cursor: "pointer", fontSize: 13, padding: 0, transition: "color .15s" };
