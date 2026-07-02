@@ -8,9 +8,9 @@ const LINKS = [
   ["today", "Today"],
   ["activities", "Activities"],
   ["eat", "Eat & Drink"],
+  ["map", "Explore Map"],
   ["deals", "Deals"],
   ["guide", "Local's Guide"],
-  ["packages", "Packages"],
   ["portal", "My Trips"],
 ];
 

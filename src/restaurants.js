@@ -6,7 +6,7 @@
 
 export const restaurants = [
   // ── Manuel Antonio / Quepos ──
-  { id: "r1", name: "Ronny's Place", region: "Manuel Antonio", cuisine: "Grill · Costa Rican", price: "$$", tags: ["sunset", "view", "romantic", "groups"], blurb: "Open-air peninsula spot with arguably the best sunset view in Manuel Antonio. Grilled specialties, fun 'Pura Vida' vibe. Reserve for sunset (~5:30pm).", best: "Sunset dinner" },
+  { id: "r1", name: "Ronny's Place", region: "Manuel Antonio", cuisine: "Grill · Costa Rican", price: "$$", tags: ["sunset", "view", "romantic", "groups"], photo: "https://ronnysplace.com/wp-content/uploads/2024/09/Ronnysplace2167.jpg", blurb: "Open-air peninsula spot with arguably the best sunset view in Manuel Antonio. Grilled specialties, fun 'Pura Vida' vibe. Reserve for sunset (~5:30pm).", best: "Sunset dinner" },
   { id: "r2", name: "El Avión", region: "Manuel Antonio", cuisine: "Bar · International", price: "$$", tags: ["sunset", "view", "groups", "iconic"], blurb: "Built in and around a real C-123 cargo plane, high above the coast. Wide menu, killer Pacific sunsets, unforgettable setting.", best: "Drinks & a view" },
   { id: "r3", name: "Agua Azul Café", region: "Manuel Antonio", cuisine: "Seafood · International", price: "$$", tags: ["view", "romantic", "lunch", "seafood"], blurb: "Perched above the rainforest with sweeping ocean views. Relaxed but elevated — great for a casual lunch or a romantic dinner. Reserve an ocean-view table.", best: "Romantic dinner" },
   { id: "r4", name: "Oceano Seafood", region: "Manuel Antonio", cuisine: "Seafood", price: "$$", tags: ["seafood", "local", "no-frills"], blurb: "Local institution — no-frills room, incredibly fresh seafood. The mixed seafood platter is the move.", best: "Fresh seafood" },

@@ -20,6 +20,7 @@ import { AskJohn } from "./pages/AskJohn.jsx";
 import { Today } from "./pages/Today.jsx";
 import { Restaurants } from "./pages/Restaurants.jsx";
 import { Deals } from "./pages/Deals.jsx";
+import { ExploreMap } from "./pages/ExploreMap.jsx";
 
 function StickyDeposit({ total, count, onView }) {
   const shown = useCountUp(Math.round(total * 0.2));
@@ -70,6 +71,7 @@ export default function App() {
         {page === "today" && <Today {...shared} />}
         {page === "eat" && <Restaurants {...shared} />}
         {page === "deals" && <Deals {...shared} />}
+        {page === "map" && <ExploreMap {...shared} />}
         {page === "activities" && <Activities {...shared} />}
         {page === "detail" && <Detail activeId={activeId} {...shared} />}
         {page === "packages" && <Packages {...shared} />}

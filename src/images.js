@@ -136,6 +136,7 @@ export function barImage(bar, w = 700) {
 }
 
 export function restaurantImage(r, w = 700) {
+  if (r.photo) return r.photo; // real venue photo (Photo component falls back to gradient on error)
   let key = "default";
   const t = r.tags || [];
   if (/Sushi/.test(r.cuisine)) key = "sushi";
