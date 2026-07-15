@@ -86,13 +86,51 @@ export function CinematicHero({ go, onStartPlan }) {
         @keyframes tnWave { 0%{ transform: translateX(-1.5%) scaleY(1) } 100%{ transform: translateX(1.5%) scaleY(1.1) } }
         @keyframes tnBorder { 0%{ background-position: 0% 50% } 100%{ background-position: 200% 50% } }
         .tn-hero .rise { animation: tnRise .9s cubic-bezier(.2,.7,.2,1) both; }
+        .tn-hero .hero-grid { grid-template-columns: 1fr !important; }
+        .tn-hero-content { max-width: 1280px !important; }
+        .tn-hero-content > * { min-width: 0; }
+        .tn-hero-copy { max-width: 780px; }
+        .tn-hero-plan { width: 100%; max-width: 680px; box-sizing: border-box; }
+        .tn-hero-plan-grid,
+        .tn-hero-plan-grid > * { min-width: 0; }
+        .tn-hero-title-line { display: block; }
+        .tn-hero-accent-line {
+          position: relative;
+          display: block;
+          width: fit-content;
+          max-width: 100%;
+          margin-top: 4px;
+          padding-bottom: 11px;
+        }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
-        /* ── Mobile hero polish ── hide the desktop sun/bird blob (ugly behind
-           text), tighten top spacing, and let the photo show through more. */
+        @media (min-width: 980px){
+          .tn-hero .hero-grid { grid-template-columns: minmax(0,1fr) 400px !important; }
+          .tn-hero-content { padding: 100px 28px 128px !important; gap: clamp(48px,4.5vw,68px) !important; }
+        }
+        @media (min-width: 821px) and (max-width: 979px){
+          .tn-hero-content { padding: 72px 28px 104px !important; gap: 44px !important; }
+        }
+        /* ── Mobile hero polish ── hide the desktop sun/bird blob, preserve
+           readable line lengths, and give the stacked layout room to breathe. */
         @media (max-width: 820px){
           .tn-hero { min-height: auto !important; }
           .tn-hero-scene { display: none !important; }
-          .tn-hero-content { padding: 40px 20px 70px !important; gap: 26px !important; }
+          .tn-hero-content { padding: 60px clamp(24px,5vw,40px) 96px !important; gap: 36px !important; }
+        }
+        @media (max-width: 520px){
+          .tn-hero-content { padding: 48px 24px 84px !important; gap: 32px !important; }
+          .tn-hero .tn-h1 {
+            font-size: clamp(34px,9vw,36px) !important;
+            line-height: 1.1 !important;
+            letter-spacing: -1.2px !important;
+          }
+          .tn-hero .tn-h1 + p { font-size: 16.5px !important; margin-top: 28px !important; }
+          .tn-hero-plan-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
+        }
+        @media (max-width: 360px){
+          .tn-hero-actions > div,
+          .tn-hero-actions button { width: 100%; box-sizing: border-box; }
+          .tn-hero-actions button { padding-inline: 18px !important; font-size: 16px !important; }
         }
       `}</style>
 
@@ -141,19 +179,19 @@ export function CinematicHero({ go, onStartPlan }) {
 
       {/* ── Content ── */}
       <div className="hero-grid tn-hero-content" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "88px 20px 116px", display: "grid", gridTemplateColumns: "1fr", gap: 56, alignItems: "center" }}>
-        <div style={{ transform: `translateY(${scrollY * -0.08}px)`, opacity: 1 - scrub * 0.6 }}>
+        <div className="tn-hero-copy" style={{ transform: `translateY(${scrollY * -0.08}px)`, opacity: 1 - scrub * 0.6 }}>
           <span className="rise" style={{ display: "inline-flex", alignItems: "center", gap: 8, ...glass, color: "#fff", fontWeight: 600, fontSize: 12.5, padding: "8px 15px", borderRadius: 999, letterSpacing: 0.2 }}>
             <span style={{ width: 7, height: 7, borderRadius: 999, background: g.accent, boxShadow: `0 0 12px ${g.accent}` }} />
             {g.label} · curated Costa Rica, without the guesswork
           </span>
-          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,5.6vw,68px)", lineHeight: 1.02, fontWeight: 800, letterSpacing: -2, margin: "24px 0 0", animationDelay: ".08s", textWrap: "balance" }}>
-            We don't list <span className="tn-title-keep">every tour.</span><br />
-            <span style={{ position: "relative", display: "inline-block" }}>
+          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,4.2vw,62px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: "clamp(-1.8px,-.13vw,-1.1px)", margin: "28px 0 0", animationDelay: ".08s", textWrap: "balance" }}>
+            <span className="tn-hero-title-line">We don't list <span className="tn-title-keep">every tour.</span></span>
+            <span className="tn-hero-accent-line">
               <span style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>We find the <span className="tn-title-keep">right one.</span></span>
-              <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: -6, height: 3, borderRadius: 999, background: `linear-gradient(90deg,${c.teal},${c.gold})`, opacity: 0.5 }} />
+              <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 3, borderRadius: 999, background: `linear-gradient(90deg,${c.teal},${c.gold})`, opacity: 0.5 }} />
             </span>
           </h1>
-          <p className="rise" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.65, maxWidth: 460, marginTop: 22, animationDelay: ".16s" }}>
+          <p className="rise" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
             Tell us how you want Costa Rica to feel. We pair your trip with hand-selected local experiences, fair pricing, and a real person in your corner.
           </p>
 
@@ -166,7 +204,7 @@ export function CinematicHero({ go, onStartPlan }) {
             ))}
           </div>
 
-          <div className="rise" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28, animationDelay: ".24s" }}>
+          <div className="rise tn-hero-actions" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28, animationDelay: ".24s" }}>
             <Magnetic><Button variant="primary" size="lg" onClick={() => go("build")}>Build my adventure plan <ArrowRight size={18} /></Button></Magnetic>
             <Magnetic strength={0.25}><Button variant="glass" size="lg" onClick={() => go("activities")}>Browse activities</Button></Magnetic>
           </div>
@@ -191,7 +229,7 @@ export function CinematicHero({ go, onStartPlan }) {
         </div>
 
         {/* Plan card — glass */}
-        <div className="rise" style={{ ...glass, background: "rgba(14,21,38,.72)", borderRadius: 26, padding: 24, boxShadow: "0 50px 100px -34px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.08)", alignSelf: "start", animation: "tnFloat 7s ease-in-out infinite", animationDelay: ".3s", transform: `translate(${mouse.x * -10}px, ${mouse.y * -8}px)` }}>
+        <div className="rise tn-hero-plan" style={{ ...glass, background: "rgba(14,21,38,.72)", borderRadius: 26, padding: 24, boxShadow: "0 50px 100px -34px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.08)", alignSelf: "start", animation: "tnFloat 7s ease-in-out infinite", animationDelay: ".3s", transform: `translate(${mouse.x * -10}px, ${mouse.y * -8}px)` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
             <Compass size={20} color={c.teal} />
             <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 18 }}>Start your trip plan</span>
@@ -202,7 +240,7 @@ export function CinematicHero({ go, onStartPlan }) {
               {["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Multiple stops", "Not sure yet"].map((o) => <option key={o}>{o}</option>)}
             </select>)}
           </Field>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="tn-hero-plan-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Field label="Arrival">
               <div style={{ position: "relative" }}>
                 <Calendar size={16} color={c.stone} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
@@ -216,7 +254,7 @@ export function CinematicHero({ go, onStartPlan }) {
               </div>
             </Field>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="tn-hero-plan-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Field label="Group size">
               {wrap(Users, <select value={plan.group} onChange={(e) => setPlan({ ...plan, group: e.target.value })} style={selectStyle}>
                 {["1", "2", "3–4", "5–8", "9+"].map((o) => <option key={o}>{o}</option>)}
