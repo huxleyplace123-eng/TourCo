@@ -61,7 +61,7 @@ const PLAYBOOK = [
   { icon: ShieldAlert, title: "Stay smart & safe", points: [
     "Petty theft is the main risk — never leave anything visible in a car, even locked.",
     "Thieves can jam key-fob signals — always double-check the doors actually locked.",
-    "Skip crowded public buses (pickpockets); use licensed taxis or vetted drivers.",
+    "Skip crowded public buses (pickpockets); use registered taxis or reputable transfer services.",
     "Flat tire or breakdown? Don't stop in lonely spots — call your rental or dial 911.",
   ] },
   { icon: CloudRain, title: "Weather rhythm", points: [
@@ -95,12 +95,12 @@ function BeachChip({ on, onClick, children }) {
   );
 }
 
-export function Guide({ go }) {
+export function Guide({ go, embedded = false }) {
   const [beachTag, setBeachTag] = useState("all");
   const shownBeaches = useMemo(() => beaches.filter((b) => beachTag === "all" || b.tags.includes(beachTag)), [beachTag]);
   return (
     <>
-      <GuideHero go={go} />
+      {!embedded && <GuideHero go={go} />}
 
       <Section bg={c.sand}>
         <SectionHead eyebrow="Explore" title="Pick your corner of the coast" accent />

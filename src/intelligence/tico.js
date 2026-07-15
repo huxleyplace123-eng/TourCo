@@ -109,7 +109,7 @@ export function ticoBeachTake(b) {
 export function ticoDealTake(d) {
   const lines = [
     "This one's the real deal — I'd grab it before it's gone.",
-    "Verified savings, no catch. Stack it and thank me later.",
+    "A useful listed saving—confirm the details before you count it into the trip.",
     "Locals use this code too. That's how you know it's good.",
     "Small effort, real money saved. Easy yes, mae.",
   ];
@@ -126,15 +126,15 @@ export function ticoSectionIntro(kind, ctx = {}) {
     topPicks:   { title: "Rico's Top Picks right now", mood: "proud",
       line: "I ranked these myself — best experiences on the coast this season. #1 is where I'd take you first." },
     activities: { title: "What I'd actually do", mood: "happy",
-      line: `Everything here is vetted and rated by me. The 🦜 picks are the ones I'd book for my own flock${region}.` },
+      line: `Everything published here comes from an approved partner, then I rank it for fit. The 🦜 picks are the ones I'd book for my own flock${region}.` },
     eat:        { title: "Where I'd eat & drink", mood: "cheeky",
       line: "Skip the tourist traps — these are the honest kitchens and the best sunset seats. My picks are marked." },
     beaches:    { title: "The beaches I'd send you to", mood: "chill",
       line: "Some for surf, some for snorkel, some the locals keep quiet. I ranked the sand for you." },
     packages:   { title: "Trips I'd take myself", mood: "excited",
       line: "Pre-built and road-tested. Open one and I'll tailor the days around you." },
-    deals:      { title: "Real savings, bird-approved", mood: "proud",
-      line: "I'd never send my flock to a rip-off. These codes are the real thing." },
+    deals:      { title: "Savings worth checking", mood: "proud",
+      line: "Use the listed timing and redemption details, then confirm the offer before you go." },
   };
   return map[kind] || map.topPicks;
 }
