@@ -14,20 +14,27 @@ export const cdnImage = (id, w = 800) => cdn(id, w);
 // Curated Costa Rica / adventure photos per category.
 const BY_CATEGORY = {
   "Deep Sea Fishing": "photo-1544551763-46a013bb70d5", // boat on open ocean
-  "ATV Tours": "photo-1558980664-10e7170b5df9", // atv / off-road
+  "ATV Tours": "photo-1729730626717-922a7f8f79d6", // quad riding / off-road
   "Catamaran Cruises": "photo-1507525428034-b723cf961d3e", // sailing / turquoise sea
   Snorkeling: "photo-1544551763-92ab472cad5d", // snorkel / reef
   "Surf Lessons": "photo-1502680390469-be75c86b636f", // surfer
-  Ziplining: "photo-1622977266039-dbb162254c12", // rainforest canopy
+  Ziplining: "photo-1679117730976-cdb5f6b05b88", // ziplining through the canopy
   "Wildlife Night Tours": "photo-1559253664-ca249d4608c6", // red-eyed tree frog (Costa Rica night-tour icon)
   "Whale & Dolphin Watching": "photo-1568430462989-44163eb1752f", // whale tail
   "White Water Rafting": "photo-1530866495561-507c9faab2ed", // rafting
   "Waterfall Adventures": "photo-1432405972618-c60b0225b8f9", // jungle waterfall
-  Paragliding: "photo-1622396636133-ba43f812bc35", // paraglider over coast
+  Paragliding: "photo-1632904074880-b77f02b6d01e", // canopy flight over the coast
   "Private Transportation": "photo-1687360433502-736ce8f3c07d", // private vehicle beside a Costa Rica palm-lined road
   "Adult Group Weekends": "photo-1520250497591-112f2f40a3f4", // friends beach
   "Honeymoon Experiences": "photo-1519741497674-611481863552", // couple, golden-hour, romantic
   "Luxury Private Tours": "photo-1567899378494-47b22a2ae96a", // luxury yacht
+};
+
+// Activity-specific shots prevent distinct experiences in the same category
+// from looking duplicated. Fishing gets unmistakable sportfishing imagery.
+const BY_ACTIVITY = {
+  a1: "photo-1541742481667-6a8cc8d402a3", // offshore rods at golden hour
+  a2: "photo-1576724877421-b674b019f932", // fishing boat underway with rods set
 };
 
 const BY_REGION = {
@@ -156,7 +163,7 @@ const WHY_SCENES = {
   personal: "photo-1533105079780-92b9be482077", // family joy
 };
 
-export const activityImage = (a, w) => cdn(BY_CATEGORY[a.category] || "photo-1518259102261-b40117eabbc9", w);
+export const activityImage = (a, w) => cdn(BY_ACTIVITY[a.id] || BY_CATEGORY[a.category] || "photo-1518259102261-b40117eabbc9", w);
 export const regionImage = (name, w) => cdn(BY_REGION[name] || "photo-1518259102261-b40117eabbc9", w);
 export const packageImage = (id, w = 1000) => cdn(BY_PACKAGE[id] || HERO, w);
 export const personImage = (key, w = 200) => cdn(PEOPLE[key] || PEOPLE.john, w);
