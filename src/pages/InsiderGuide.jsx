@@ -112,8 +112,9 @@ export function InsiderGuide({ go, trip = [] }) {
         <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "84px 20px 100px" }}>
           <div style={{ maxWidth: 720 }}>
             <Eyebrow><span style={{ color: c.gold }}>TicoWild Insider Guide</span></Eyebrow>
-            <h1 style={{ color: "#fff", fontSize: "clamp(42px,7vw,78px)", lineHeight: .98, letterSpacing: -2.5, margin: "14px 0 0", fontWeight: 800 }}>
-              Eat, explore, and save<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>like somebody tipped you off.</span>
+            <h1 style={{ color: "#fff", fontSize: "clamp(42px,7vw,78px)", lineHeight: .98, letterSpacing: -2.5, margin: "14px 0 0", fontWeight: 800, textWrap: "balance" }}>
+              <span className="tn-title-keep">Eat, explore,</span>{" "}<span className="tn-title-keep">and save</span><br />
+              <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}><span className="tn-title-keep">like somebody</span>{" "}<span className="tn-title-keep">tipped you off.</span></span>
             </h1>
             <p style={{ color: "rgba(243,247,255,.82)", maxWidth: 640, fontSize: 18, lineHeight: 1.65, margin: "24px 0 0" }}>
               Restaurants, drinks, beaches, local playbooks, deals, and nearly-free adventures—organized into one guide without throwing away the depth you already had.
