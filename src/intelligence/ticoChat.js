@@ -58,7 +58,7 @@ const INTENTS = [
   },
   {
     keys: ["free", "cheap", "budget", "save", "deal", "discount", "money"],
-    answer: "Tons is free: every beach, Tárcoles crocodile bridge, free hot springs by Arenal, Río Celeste, miradores, sunsets. Plus verified promo codes and happy hours. I'd never send my flock to a rip-off.",
+    answer: "Tons is free: every beach, Tárcoles crocodile bridge, free hot springs by Arenal, Río Celeste, miradores, sunsets. The Insider Guide also keeps listed promo codes and happy hours together—confirm the offer details before you go.",
     action: { label: "See deals & free things", page: "deals" },
   },
   {

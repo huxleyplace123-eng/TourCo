@@ -58,7 +58,7 @@ function BarCard({ b }) {
   );
 }
 
-export function Restaurants({ go }) {
+export function Restaurants({ go, embedded = false }) {
   const [mode, setMode] = useState("eat"); // 'eat' | 'drink'
   const [region, setRegion] = useState("All");
   const [collection, setCollection] = useState("all");
@@ -70,12 +70,14 @@ export function Restaurants({ go }) {
     (collection === "all" || r.tags.includes(collection))
   ), [mode, region, collection, source]);
 
-  const switchMode = (m) => { setMode(m); setCollection("all"); };
+  const switchMode = (m) => { setMode(m); setCollection("all"); setRegion("All"); };
 
   return (
     <>
-      <PageHero slides={themedSlides("eat")} eyebrow="Where to eat & drink" title="Dining & nightlife, in context"
-        sub="Not a directory — the right spot for the moment. Best after a tour, best for sunset, best local sodas, best happy hours. All local-tested." />
+      {!embedded && (
+        <PageHero slides={themedSlides("eat")} eyebrow="Where to eat & drink" title="Dining & nightlife, in context"
+          sub="Not a directory — the right spot for the moment. Best after a tour, best for sunset, best local sodas, and best happy hours." />
+      )}
 
       <Section bg={c.sand}>
         <TicoSectionIntro kind="eat" />

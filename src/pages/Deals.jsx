@@ -10,10 +10,10 @@ import { TicoAvatar } from "../components/Tico.jsx";
 import { ticoDealTake } from "../intelligence/tico.js";
 
 const PASS_PERKS = [
-  "Every verified promo code, ready to use",
+  "Every listed promo code in one place",
   "Green-season & bundle tour savings",
   "Private-transfer flat rates (no surprises)",
-  "Hidden Local's Guide — beaches, sodas, safe rides",
+  "Route-aware local guide for your trip",
   "Experiences from approved partners only",
 ];
 
@@ -52,7 +52,7 @@ function DealCard({ d }) {
       <div style={{ padding: "12px 14px 13px", display: "flex", flexDirection: "column", flex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 3 }}>
           <span style={{ fontSize: 11, color: c.teal, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.3 }}>{d.type}</span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 10.5, color: c.stone, fontWeight: 700 }}><ShieldCheck size={11} color={c.teal} />Verified</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 10.5, color: c.stone, fontWeight: 700 }}><Tag size={11} color={c.teal} />Listed offer</span>
         </div>
         <h3 style={{ color: "#fff", fontSize: 15.5, fontWeight: 800, margin: "0 0 3px", lineHeight: 1.2 }}>{d.title}</h3>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: c.stone, fontWeight: 600, marginBottom: 7 }}><MapPin size={11} />{d.where}</div>
@@ -70,7 +70,7 @@ function DealCard({ d }) {
   );
 }
 
-export function Deals({ go, trip }) {
+export function Deals({ go, trip, embedded = false }) {
   const [tag, setTag] = useState("all");
   const featured = deals.find((d) => d.featured);
   const rest = useMemo(() => deals.filter((d) => !d.featured && (tag === "all" || d.tag === tag)), [tag]);
@@ -79,8 +79,10 @@ export function Deals({ go, trip }) {
 
   return (
     <>
-      <PageHero slides={themedSlides("deals")} eyebrow="Deals, codes & free things" title="Real Costa Rica savings" accentWord="savings"
-        sub={`${codeCount} verified promo codes, happy hours, free-to-do gems, and local money-saving tips — plus the Pura Vida Pass you unlock the moment you book.`} />
+      {!embedded && (
+        <PageHero slides={themedSlides("deals")} eyebrow="Deals, codes & free things" title="Real Costa Rica savings" accentWord="savings"
+          sub={`${codeCount} listed promo codes, happy hours, free-to-do gems, and local money-saving tips — plus the Pura Vida Pass you unlock the moment you book.`} />
+      )}
 
       <Section bg={c.sand}>
         {/* featured deal */}
@@ -126,11 +128,11 @@ export function Deals({ go, trip }) {
           </Reveal>
         )}
 
-        {/* verified deals + codes */}
+        {/* listed deals + codes */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
-          <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 800, margin: 0 }}>Verified deals & promo codes</h2>
+          <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 800, margin: 0 }}>Deals & promo codes</h2>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(34,211,238,.1)", border: "1px solid rgba(34,211,238,.25)", color: c.teal, padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 800 }}>
-            <ShieldCheck size={13} />CHECKED BY TICOWILD
+            <ShieldCheck size={13} />CONFIRM DETAILS BEFORE REDEMPTION
           </span>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 22 }}>
@@ -148,7 +150,7 @@ export function Deals({ go, trip }) {
         </div>
 
         {/* Free & nearly-free */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "40px 0 16px" }}>
+        <div id={embedded ? "insider-free" : undefined} style={{ display: "flex", alignItems: "center", gap: 10, margin: "40px 0 16px", scrollMarginTop: 126 }}>
           <span style={{ width: 40, height: 40, borderRadius: 11, background: "rgba(55,227,107,.14)", border: "1px solid rgba(55,227,107,.3)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Gift size={19} color="#37E36B" /></span>
           <div>
             <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 800, margin: 0 }}>Free & nearly-free</h2>
