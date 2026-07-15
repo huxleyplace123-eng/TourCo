@@ -87,10 +87,10 @@ export function Section({ children, bg, pad = 52, id }) {
 }
 
 // ── Form field label ──
-export function Field({ label, children }) {
+export function Field({ label, children, htmlFor }) {
   return (
     <div style={{ marginBottom: 12 }}>
-      <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: c.charcoal, marginBottom: 6 }}>{label}</label>
+      <label htmlFor={htmlFor} style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: c.charcoal, marginBottom: 6 }}>{label}</label>
       {children}
     </div>
   );
@@ -101,20 +101,30 @@ const inputBase = {
   fontSize: 14.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", boxSizing: "border-box",
 };
 
-export function TextInput({ value, onChange, placeholder, icon: Icon, type = "text" }) {
+const focusControl = (event) => {
+  event.currentTarget.style.borderColor = c.teal;
+  event.currentTarget.style.boxShadow = "0 0 0 3px rgba(34,211,238,.2)";
+};
+
+const blurControl = (event) => {
+  event.currentTarget.style.borderColor = c.line;
+  event.currentTarget.style.boxShadow = "none";
+};
+
+export function TextInput({ value, onChange, placeholder, icon: Icon, type = "text", id }) {
   return (
     <div style={{ position: "relative" }}>
       {Icon && <Icon size={16} color={c.stone} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />}
-      <input type={type} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} style={inputBase} />
+      <input id={id} type={type} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} onFocus={focusControl} onBlur={blurControl} style={inputBase} />
     </div>
   );
 }
 
-export function Select({ value, onChange, options, icon: Icon }) {
+export function Select({ value, onChange, options, icon: Icon, id }) {
   return (
     <div style={{ position: "relative" }}>
       {Icon && <Icon size={16} color={c.stone} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />}
-      <select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inputBase, appearance: "none", paddingRight: 34, cursor: "pointer" }}>
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} onFocus={focusControl} onBlur={blurControl} style={{ ...inputBase, appearance: "none", paddingRight: 34, cursor: "pointer" }}>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
     </div>

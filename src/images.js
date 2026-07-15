@@ -24,7 +24,7 @@ const BY_CATEGORY = {
   "White Water Rafting": "photo-1530866495561-507c9faab2ed", // rafting
   "Waterfall Adventures": "photo-1432405972618-c60b0225b8f9", // jungle waterfall
   Paragliding: "photo-1622396636133-ba43f812bc35", // paraglider over coast
-  "Private Transportation": "photo-1502920917128-1aa500764cbd", // road through jungle
+  "Private Transportation": "photo-1687360433502-736ce8f3c07d", // private vehicle beside a Costa Rica palm-lined road
   "Adult Group Weekends": "photo-1520250497591-112f2f40a3f4", // friends beach
   "Honeymoon Experiences": "photo-1519741497674-611481863552", // couple, golden-hour, romantic
   "Luxury Private Tours": "photo-1567899378494-47b22a2ae96a", // luxury yacht
