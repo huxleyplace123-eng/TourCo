@@ -113,7 +113,7 @@ function PackageDrawer({ p, onClose, addToTrip }) {
 
           {/* trust row */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
-            {[["Vetted operators", ShieldCheck], ["Only 20% to reserve", Sparkles], ["Concierge coordinated", MessageCircle]].map(([t, Icon]) => (
+            {[["Approved partners", ShieldCheck], ["Only 20% to reserve", Sparkles], ["Concierge coordinated", MessageCircle]].map(([t, Icon]) => (
               <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(34,211,238,.08)", border: "1px solid rgba(34,211,238,.2)", color: c.teal, padding: "7px 12px", borderRadius: 999, fontWeight: 700, fontSize: 12.5 }}><Icon size={14} />{t}</span>
             ))}
           </div>

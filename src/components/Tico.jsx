@@ -19,7 +19,7 @@ export function TicoAvatar({ size = 34, glow = true, mood = "happy", animate = t
 export function TicoPick({ style = {} }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "linear-gradient(135deg,#FFD000,#FFDE4D)", color: c.ink, padding: "4px 10px 4px 6px", borderRadius: 999, fontSize: 11, fontWeight: 800, boxShadow: "0 0 16px -3px rgba(255,208,0,.8)", ...style }}>
-      <TicoFace size={16} glow={false} mood="proud" animate={false} /> Tico's Pick
+      <TicoFace size={16} glow={false} mood="proud" animate={false} /> Rico's Pick
     </span>
   );
 }
@@ -58,7 +58,7 @@ export function TicoSectionIntro({ kind, region, style = {} }) {
       <div style={{ minWidth: 0 }}>
         <h2 style={{ margin: 0, fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, color: "#fff", letterSpacing: -0.4, lineHeight: 1.1 }}>{title}</h2>
         <p style={{ margin: "5px 0 0", fontSize: 14, lineHeight: 1.5, color: c.stone, maxWidth: 620 }}>
-          <b style={{ color: c.teal }}>Tico:</b> <span style={{ fontStyle: "italic" }}>"{line}"</span>
+          <b style={{ color: c.teal }}>Rico:</b> <span style={{ fontStyle: "italic" }}>"{line}"</span>
         </p>
       </div>
     </div>

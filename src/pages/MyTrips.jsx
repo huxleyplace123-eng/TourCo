@@ -12,9 +12,9 @@ import { TicoFace } from "../components/TicoFace.jsx";
 
 // How the trip works — three simple, reassuring steps.
 const STEPS = [
-  { icon: PlusCircle, title: "1 · Add what you love", body: "Tap 'Add to trip' on any activity, or let Tico build a day-by-day. No account, no commitment — it just gathers here." },
-  { icon: Route, title: "2 · We shape the days", body: "Tico orders everything around drive times, tides and season, so your trip flows instead of zig-zagging the coast." },
-  { icon: CalendarCheck, title: "3 · Reserve for 20%", body: "Lock it in with a 20% deposit; pay the rest to the vetted operator on the day. Every booking is reconfirmed before you go." },
+  { icon: PlusCircle, title: "1 · Add what you love", body: "Tap 'Add to trip' on any activity, or let Rico build a day-by-day. No account, no commitment — it just gathers here." },
+  { icon: Route, title: "2 · We shape the days", body: "Rico orders everything around drive times, tides and season, so your trip flows instead of zig-zagging the coast." },
+  { icon: CalendarCheck, title: "3 · Reserve for 20%", body: "Lock it in with a 20% deposit; pay the rest to the approved operator on the day. TicoWild coordinates confirmation before you go." },
 ];
 
 // What a great Costa Rica trip actually looks like — descriptive, not a list of
@@ -53,7 +53,7 @@ function EmptyState({ go }) {
           <TicoFace size={42} mood="happy" />
           <div>
             <h2 style={{ margin: 0, color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.4 }}>What a great Costa Rica day feels like</h2>
-            <p style={{ margin: "3px 0 0", color: c.stone, fontSize: 14 }}><b style={{ color: c.teal }}>Tico:</b> <span style={{ fontStyle: "italic" }}>"Don't over-schedule. The best days have a rhythm — go hard early, then let the coast slow you down."</span></p>
+            <p style={{ margin: "3px 0 0", color: c.stone, fontSize: 14 }}><b style={{ color: c.teal }}>Rico:</b> <span style={{ fontStyle: "italic" }}>"Don't over-schedule. The best days have a rhythm — go hard early, then let the coast slow you down."</span></p>
           </div>
         </div>
       </Reveal>

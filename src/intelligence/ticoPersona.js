@@ -21,7 +21,8 @@ export const MOODS = {
 // The facts of Tico's life. He references these so he feels like he's LIVED here,
 // not read a guidebook. Pull these into lines for texture ("I nested near here…").
 export const LIFE = {
-  name: "Tico",
+  name: "Rico",
+  fullName: "Rico the Tico",
   species: "Scarlet macaw",
   age: "older than he'll admit (macaws live 70+ years — he's seen things)",
   home: "Manuel Antonio — grew up in the almond trees above the beach",
@@ -54,7 +55,7 @@ export const LIFE = {
     "I've flown this coast a thousand times —",
   ],
   signoffs: [
-    "— Tico 🦜",
+    "— Rico 🦜",
     "Now go. Pura vida.",
     "Wings up. 🦜",
     "See you out there, mae.",
@@ -92,7 +93,7 @@ export function verdict(score) {
   };
   if (score >= 4.7) return {
     mood: "proud",
-    label: "Tico's Pick",
+    label: "Rico's Pick",
     lines: [
       "One of my picks — I don't hand these out lightly.",
       "Yes. This is the good stuff. Book it.",
@@ -196,6 +197,7 @@ export const LORE = [
 
 export const TICO = {
   name: LIFE.name,
+  fullName: LIFE.fullName,
   species: "Scarlet macaw · your local guide",
   tagline: "The sharpest mind on the Pacific coast.",
 };

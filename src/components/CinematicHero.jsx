@@ -16,8 +16,8 @@ function timeGrade(hour) {
   return { accent: "#7DD3FC", label: "Good evening" };
 }
 
-export function CinematicHero({ go }) {
-  const [plan, setPlan] = useState({ dest: "Manuel Antonio", dates: "", group: "2", type: "Couple / Honeymoon" });
+export function CinematicHero({ go, onStartPlan }) {
+  const [plan, setPlan] = useState({ dest: "Manuel Antonio", arrival: "", departure: "", group: "2", type: "Couple / Honeymoon" });
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
   const [hour, setHour] = useState(12);
@@ -46,6 +46,19 @@ export function CinematicHero({ go }) {
   });
   // Scroll-scrub: image scales up + fades as you scroll past the hero.
   const scrub = Math.min(1, scrollY / 700);
+
+  const beginPlan = () => {
+    if (onStartPlan) onStartPlan(plan);
+    else go("build");
+  };
+
+  const setArrival = (arrival) => {
+    setPlan((current) => ({
+      ...current,
+      arrival,
+      departure: current.departure && current.departure <= arrival ? "" : current.departure,
+    }));
+  };
 
   const selectStyle = { width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 12px 11px 38px", fontSize: 14.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", appearance: "none", paddingRight: 34, cursor: "pointer" };
   const wrap = (icon, node) => (
@@ -131,22 +144,22 @@ export function CinematicHero({ go }) {
         <div style={{ transform: `translateY(${scrollY * -0.08}px)`, opacity: 1 - scrub * 0.6 }}>
           <span className="rise" style={{ display: "inline-flex", alignItems: "center", gap: 8, ...glass, color: "#fff", fontWeight: 600, fontSize: 12.5, padding: "8px 15px", borderRadius: 999, letterSpacing: 0.2 }}>
             <span style={{ width: 7, height: 7, borderRadius: 999, background: g.accent, boxShadow: `0 0 12px ${g.accent}` }} />
-            {g.label} · your local adventure concierge
+            {g.label} · curated Costa Rica, without the guesswork
           </span>
           <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,5.6vw,68px)", lineHeight: 1.02, fontWeight: 800, letterSpacing: -2, margin: "24px 0 0", animationDelay: ".08s" }}>
-            Costa Rica adventures,<br />
+            We don't list every tour.<br />
             <span style={{ position: "relative", display: "inline-block" }}>
-              <span style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>planned by locals.</span>
+              <span style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>We find the right one.</span>
               <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: -6, height: 3, borderRadius: 999, background: `linear-gradient(90deg,${c.teal},${c.gold})`, opacity: 0.5 }} />
             </span>
           </h1>
           <p className="rise" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.65, maxWidth: 460, marginTop: 22, animationDelay: ".16s" }}>
-            Build a custom itinerary with vetted local tours, transparent pricing, and real human support — without the guesswork.
+            Tell us how you want Costa Rica to feel. We pair your trip with hand-selected local experiences, fair pricing, and a real person in your corner.
           </p>
 
           {/* refined trust row */}
           <div className="rise" style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 24, animationDelay: ".2s" }}>
-            {[[ShieldCheck, "Vetted operators"], [Sparkles, "Only 20% to reserve"], [MessageCircle, "Human concierge"]].map(([Icon, t]) => (
+            {[[ShieldCheck, "Approved local partners"], [Sparkles, "Curated, never crowded"], [MessageCircle, "Human concierge"]].map(([Icon, t]) => (
               <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "rgba(243,247,255,.72)", fontSize: 13.5, fontWeight: 600 }}>
                 <Icon size={15} color={c.teal} />{t}
               </span>
@@ -186,28 +199,36 @@ export function CinematicHero({ go }) {
           <p style={{ color: c.stone, fontSize: 13.5, margin: "0 0 16px" }}>Tell us the basics — your concierge takes it from there.</p>
           <Field label="Destination">
             {wrap(Compass, <select value={plan.dest} onChange={(e) => setPlan({ ...plan, dest: e.target.value })} style={selectStyle}>
-              {["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Not sure yet"].map((o) => <option key={o}>{o}</option>)}
+              {["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Multiple stops", "Not sure yet"].map((o) => <option key={o}>{o}</option>)}
             </select>)}
           </Field>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Field label="Travel dates">
+            <Field label="Arrival">
               <div style={{ position: "relative" }}>
                 <Calendar size={16} color={c.stone} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
-                <input placeholder="e.g. Jul 12–19" value={plan.dates} onChange={(e) => setPlan({ ...plan, dates: e.target.value })} style={{ width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 12px 11px 38px", fontSize: 14.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", boxSizing: "border-box" }} />
+                <input type="date" aria-label="Arrival date" value={plan.arrival} onChange={(e) => setArrival(e.target.value)} style={{ width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 10px 11px 38px", fontSize: 13.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", boxSizing: "border-box", colorScheme: "dark" }} />
               </div>
             </Field>
+            <Field label="Departure">
+              <div style={{ position: "relative" }}>
+                <Calendar size={16} color={c.stone} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
+                <input type="date" aria-label="Departure date" min={plan.arrival || undefined} value={plan.departure} onChange={(e) => setPlan({ ...plan, departure: e.target.value })} style={{ width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 10px 11px 38px", fontSize: 13.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", boxSizing: "border-box", colorScheme: "dark" }} />
+              </div>
+            </Field>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Field label="Group size">
               {wrap(Users, <select value={plan.group} onChange={(e) => setPlan({ ...plan, group: e.target.value })} style={selectStyle}>
                 {["1", "2", "3–4", "5–8", "9+"].map((o) => <option key={o}>{o}</option>)}
               </select>)}
             </Field>
+            <Field label="Trip type">
+              {wrap(Heart, <select value={plan.type} onChange={(e) => setPlan({ ...plan, type: e.target.value })} style={selectStyle}>
+                {["Family", "Couple / Honeymoon", "Adult group weekend", "Fishing trip", "Adventure", "Luxury group"].map((o) => <option key={o}>{o}</option>)}
+              </select>)}
+            </Field>
           </div>
-          <Field label="Trip type">
-            {wrap(Heart, <select value={plan.type} onChange={(e) => setPlan({ ...plan, type: e.target.value })} style={selectStyle}>
-              {["Family", "Couple / Honeymoon", "Adult group weekend", "Fishing trip", "Adventure", "Luxury group"].map((o) => <option key={o}>{o}</option>)}
-            </select>)}
-          </Field>
-          <Button variant="dark" full size="lg" onClick={() => go("build")} style={{ marginTop: 8 }}>Start planning <ArrowRight size={18} /></Button>
+          <Button variant="dark" full size="lg" onClick={beginPlan} style={{ marginTop: 8 }}>Start planning <ArrowRight size={18} /></Button>
           <p style={{ textAlign: "center", color: c.stone, fontSize: 12, marginTop: 12 }}>Free to plan · Only 20% to reserve · No spam</p>
         </div>
       </div>

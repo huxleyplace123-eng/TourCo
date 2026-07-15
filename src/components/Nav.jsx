@@ -5,12 +5,11 @@ import { Logo } from "./Logo.jsx";
 import { Button } from "./ui.jsx";
 
 const LINKS = [
-  ["tico", "Meet Tico"],
+  ["tico", "Meet Rico"],
   ["activities", "Activities"],
-  ["eat", "Eat & Drink"],
+  ["insider", "Insider Guide"],
   ["map", "Explore Map"],
   ["deals", "Deals"],
-  ["guide", "Local's Guide"],
   ["portal", "My Trips"],
 ];
 

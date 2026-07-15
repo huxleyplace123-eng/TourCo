@@ -14,7 +14,7 @@ const PASS_PERKS = [
   "Green-season & bundle tour savings",
   "Private-transfer flat rates (no surprises)",
   "Hidden Local's Guide — beaches, sodas, safe rides",
-  "Every operator reconfirmed before you go",
+  "Experiences from approved partners only",
 ];
 
 // Copy-to-clipboard promo code chip

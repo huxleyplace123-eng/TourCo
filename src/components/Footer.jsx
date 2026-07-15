@@ -36,7 +36,7 @@ export function Footer({ go }) {
             Costa Rica adventures, planned by locals. Vetted tours, transparent pricing, human support.
           </p>
         </div>
-        <Col title="Explore" links={[["tico", "Meet Tico"], ["activities", "Activities"], ["eat", "Eat & Drink"], ["deals", "Deals"], ["packages", "Packages"], ["john", "John Recommends"], ["guide", "Local's Guide & Beaches"]]} go={go} />
+        <Col title="Explore" links={[["tico", "Meet Rico"], ["activities", "Activities"], ["insider", "Insider Guide"], ["deals", "Deals"], ["packages", "Packages"], ["john", "John Recommends"]]} go={go} />
         <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["build", "Build My Trip"], ["portal", "My Trips"], ["operator-agreement", "Operator agreement", () => setAgreement(true)]]} go={go} />
         <div>
           <div style={{ fontWeight: 800, color: "#fff", marginBottom: 12 }}>Support</div>

@@ -11,17 +11,17 @@ import { Activities } from "./pages/Activities.jsx";
 import { Detail } from "./pages/Detail.jsx";
 import { Packages } from "./pages/Packages.jsx";
 import { Build } from "./pages/Build.jsx";
-import { Guide } from "./pages/Guide.jsx";
 import { Why } from "./pages/Why.jsx";
 import { Partner } from "./pages/Partner.jsx";
 import { MyTrips } from "./pages/MyTrips.jsx";
 import { John } from "./pages/John.jsx";
 import { AskJohn } from "./pages/AskJohn.jsx";
-import { Restaurants } from "./pages/Restaurants.jsx";
 import { Deals } from "./pages/Deals.jsx";
 import { ExploreMap } from "./pages/ExploreMap.jsx";
 import { MeetTicoPage } from "./pages/MeetTicoPage.jsx";
 import { TicoDock } from "./components/TicoDock.jsx";
+import { InsiderGuide } from "./pages/InsiderGuide.jsx";
+import { SoundscapeControl } from "./components/SoundscapeControl.jsx";
 
 function StickyDeposit({ total, count, onView }) {
   const shown = useCountUp(Math.round(total * 0.2));
@@ -41,6 +41,7 @@ export default function App() {
   const [activeId, setActiveId] = useState(null);
   const [trip, setTrip] = useState([]); // [{id, pax}]
   const [cartOpen, setCartOpen] = useState(false);
+  const [plannerDraft, setPlannerDraft] = useState(null);
 
   const go = (p) => { setPage(p); setCartOpen(false); };
   // Always land at the top of a newly-opened page. Runs AFTER the new page
@@ -52,11 +53,13 @@ export default function App() {
     if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
   }, [page, activeId]);
   const viewActivity = (id) => { setActiveId(id); go("detail"); };
+  const startPlan = (draft = null) => { setPlannerDraft(draft); go("build"); };
+  const consumePlannerDraft = () => setPlannerDraft(null);
   const addToTrip = (id) => { setTrip((t) => (t.some((x) => x.id === id) ? t : [...t, { id, pax: 2 }])); setCartOpen(true); };
   const removeFromTrip = (id) => setTrip((t) => t.filter((x) => x.id !== id));
   const total = trip.reduce((s, g) => s + (activities.find((a) => a.id === g.id)?.price || 0) * g.pax, 0);
 
-  const shared = { go, addToTrip, trip, viewActivity, removeFromTrip };
+  const shared = { go, addToTrip, trip, viewActivity, removeFromTrip, startPlan, consumePlannerDraft };
 
   return (
     <div style={{ fontFamily: FONT, background: c.sand, color: c.charcoal, minHeight: "100vh", position: "relative" }}>
@@ -69,17 +72,16 @@ export default function App() {
       {/* keyed wrapper → every page fade-rises in on navigation */}
       <div key={page + (page === "detail" ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>
         {(page === "home" || page === "today") && <Home {...shared} />}
-        {page === "eat" && <Restaurants {...shared} />}
+        {(page === "eat" || page === "guide" || page === "insider") && <InsiderGuide {...shared} />}
         {page === "deals" && <Deals {...shared} />}
         {page === "map" && <ExploreMap {...shared} />}
         {page === "tico" && <MeetTicoPage {...shared} />}
         {page === "activities" && <Activities {...shared} />}
         {page === "detail" && <Detail activeId={activeId} {...shared} />}
         {page === "packages" && <Packages {...shared} />}
-        {page === "build" && <Build {...shared} />}
+        {page === "build" && <Build {...shared} initialPlan={plannerDraft} />}
         {page === "ask" && <AskJohn {...shared} />}
-        {page === "builder" && <Build {...shared} />}
-        {page === "guide" && <Guide {...shared} />}
+        {page === "builder" && <Build {...shared} initialPlan={plannerDraft} />}
         {page === "why" && <Why {...shared} />}
         {page === "partner" && <Partner {...shared} />}
         {page === "portal" && <MyTrips {...shared} />}
@@ -91,6 +93,7 @@ export default function App() {
 
       {/* Tico — the living macaw companion, present on every page */}
       <TicoDock page={page} go={go} trip={trip} lift={trip.length > 0 && !["portal", "build", "builder"].includes(page)} />
+      {(page === "home" || page === "today") && <SoundscapeControl lift={trip.length > 0} />}
 
       {/* Sticky trip bar */}
       {trip.length > 0 && !["portal", "build", "builder"].includes(page) && <StickyDeposit total={total} count={trip.length} onView={() => go("portal")} />}

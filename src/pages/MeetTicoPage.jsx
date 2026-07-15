@@ -71,13 +71,13 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
           {/* His billing */}
           <div style={{ order: 1 }} className="tico-hero-copy">
             <div style={{ display: "inline-flex", alignItems: "center", gap: 7, ...glass, color: c.gold, padding: "6px 13px", borderRadius: 999, fontSize: 12, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 16, animation: "ticoRise .5s .05s both" }}>
-              <Sparkles size={14} /> Your local intelligence
+              <Sparkles size={14} /> Meet Rico the Tico · your local intelligence
             </div>
             <h1 style={{ color: "#fff", fontSize: "clamp(38px,6vw,68px)", fontWeight: 900, letterSpacing: -2, lineHeight: 0.98, margin: 0, animation: "ticoRise .5s .12s both" }}>
               The smartest bird<br />in <span style={{ color: c.gold }}>Costa Rica.</span>
             </h1>
             <p style={{ color: "rgba(243,247,255,.9)", fontSize: "clamp(16px,2vw,18px)", lineHeight: 1.55, margin: "18px 0 0", maxWidth: 520, animation: "ticoRise .5s .2s both" }}>
-              I'm Tico — a scarlet macaw who's flown every metre of this coast. I don't guess. I <b style={{ color: "#fff" }}>know</b> — the tides, the seasons, the wildlife, every honest guide. Now that mind works for you.
+              I'm Rico the Tico — a scarlet macaw who's flown every metre of this coast. I don't guess. I <b style={{ color: "#fff" }}>know</b> — the tides, the seasons, the wildlife, every honest guide. Now that mind works for you.
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 24, animation: "ticoRise .5s .28s both" }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Plan with me <ArrowRight size={18} /></Button>
@@ -106,7 +106,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
       <Section bg={c.sand}>
         <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 32px" }}>
           <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>Why travelers trust the bird</div>
-          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>What Tico knows</h2>
+          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>What Rico knows</h2>
         </div>
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))" }}>
           {KNOWLEDGE.map((k, i) => {
@@ -153,7 +153,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
             <div style={{ display: "grid", gap: 10 }}>
               {[
                 { mood: "excited", label: "A perch-topper", range: "4.9–5.0", body: "This is a 10. I'd fly across the country for it.", bar: "100%", col: c.gold },
-                { mood: "proud", label: "Tico's Pick", range: "4.7+", body: "Yes. This is the good stuff. Book it.", bar: "88%", col: c.teal },
+                { mood: "proud", label: "Rico's Pick", range: "4.7+", body: "Yes. This is the good stuff. Book it.", bar: "88%", col: c.teal },
                 { mood: "happy", label: "Really solid", range: "4.4+", body: "You'll be glad you did it. No notes.", bar: "70%", col: c.blue },
                 { mood: "chill", label: "Worth it if it fits", range: "4.0+", body: "Good, not life-changing. Do it if it fits the day.", bar: "52%", col: c.blue },
                 { mood: "unimpressed", label: "Only if you're curious", range: "<4.0", body: "Eh. I've got better for you, honestly.", bar: "32%", col: c.stone },
@@ -219,7 +219,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
       {/* ══ HIS LEGEND ══ the myth, briefly ══ */}
       <Section bg={c.sand} pad={30}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          <h2 style={{ color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.5, margin: "0 0 20px", textAlign: "center" }}>The legend of Tico</h2>
+          <h2 style={{ color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.5, margin: "0 0 20px", textAlign: "center" }}>The legend of Rico the Tico</h2>
           <div style={{ position: "relative", paddingLeft: 26 }}>
             <div aria-hidden style={{ position: "absolute", left: 7, top: 6, bottom: 6, width: 2, background: `linear-gradient(${c.teal},${c.blue})`, opacity: 0.4 }} />
             {LORE.map((l, i) => (
@@ -241,7 +241,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
           <TicoFace size={44} mood="excited" />
           <div>
             <h2 style={{ margin: 0, color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.4 }}>My all-time favorites</h2>
-            <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 14 }}><b style={{ color: c.teal }}>Tico:</b> <span style={{ fontStyle: "italic" }}>"If you only did my top few, you'd still go home happy. Ranked, most-loved first."</span></p>
+            <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 14 }}><b style={{ color: c.teal }}>Rico:</b> <span style={{ fontStyle: "italic" }}>"If you only did my top few, you'd still go home happy. Ranked, most-loved first."</span></p>
           </div>
         </div>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>

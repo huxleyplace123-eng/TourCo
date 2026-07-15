@@ -4,16 +4,17 @@ import { c, grad, glass, gradText } from "../theme.js";
 import { heroImage, personImage, sceneImage } from "../images.js";
 import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { Reveal, Photo, CountUpNumber, Magnetic, TiltCard } from "../motion.jsx";
+import { operators, regions } from "../data.js";
 
 const STATS = [
-  { value: 4200, suffix: "+", label: "Adventures booked" },
-  { value: 4.9, decimals: 1, suffix: "★", label: "Average operator rating" },
-  { value: 50, suffix: "+", label: "Vetted local operators" },
-  { value: 98, suffix: "%", label: "Would travel with us again" },
+  { value: 20, suffix: "%", label: "Reservation deposit" },
+  { value: operators.length, suffix: "", label: "Approved partner records" },
+  { value: regions.length, suffix: "", label: "Regions mapped" },
+  { value: 1, suffix: "", label: "Human concierge" },
 ];
 
 const PILLARS = [
-  { icon: ShieldCheck, key: "vetted", tag: "Safety first", title: "Only vetted operators", body: "Every tour partner is insured, licensed, and personally checked by our team on the ground. If we wouldn't send our own family, they're not on the platform — period.", points: ["Insurance verified", "Licensed & permitted", "Vetted on-site"] },
+  { icon: ShieldCheck, key: "vetted", tag: "Selective by design", title: "Only approved partners", body: "The catalog fails closed: an operator or experience without explicit publication approval stays off the site. Fewer choices means the choices shown can be supported properly.", points: ["Approval required", "Unapproved listings hidden", "Partner record attached"] },
   { icon: DollarSign, key: "pricing", tag: "No surprises", title: "Transparent pricing", body: "See real per-person prices upfront. Reserve for just 20%, settle the rest closer to your trip. No inflated tourist markups, no hidden fees, no games — ever.", points: ["Prices shown upfront", "Only 20% to reserve", "Zero hidden fees"] },
   { icon: MessageCircle, key: "concierge", tag: "Real humans", title: "A local in your corner", body: "Message John and the team on WhatsApp anytime. We coordinate every pickup, timing, and change so your days actually flow — no apps, no call centers, just locals who care.", points: ["WhatsApp, day or night", "Under 2-hour replies", "Every detail handled"] },
   { icon: Heart, key: "personal", tag: "Made for you", title: "Built for your kind of trip", body: "Honeymoon, family week, fishing crew, or an adult group weekend — your plan adapts to exactly who you're traveling with. No two TicoWild trips are ever the same.", points: ["Tailored to your group", "Paced to your style", "Yours to tweak anytime"] },
@@ -228,7 +229,7 @@ export function Why({ go }) {
       <Section bg={c.sand} pad={40}>
         <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))" }}>
           {[
-            { icon: ShieldCheck, t: "Every operator insured & vetted", s: "We verify licenses and insurance on the ground — not just on paper." },
+            { icon: ShieldCheck, t: "Only approved partners are published", s: "Missing or incomplete publication approval keeps a listing off the site." },
             { icon: Lock, t: "Secure 20% deposits", s: "Reserve with confidence. Your payment is protected and fully transparent." },
             { icon: Award, t: "4.9★ from real travelers", s: "Thousands of adventures, rated by the people who actually took them." },
             { icon: Phone, t: "A human, not a call center", s: "Message a real local on WhatsApp — usually answered in under 2 hours." },

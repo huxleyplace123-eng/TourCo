@@ -10,9 +10,10 @@ const TIME_WORD = { morning: "Morning", afternoon: "Afternoon", evening: "Evenin
 
 // The intelligent, optimized day-by-day — powered by the planner engine.
 // Shows the reasoning ("why this order") so travelers trust the machine.
-export function SmartPlan({ chosen, pax = 2, budget, monthIdx }) {
+export function SmartPlan({ chosen, pax = 2, budget, monthIdx, planOverride = null }) {
   const ids = chosen.map((x) => (x.a ? x.a.id : x.id));
-  const plan = useMemo(() => buildPlan(ids, { pax, budget, monthIdx, maxPerDay: 2 }), [ids.join(","), pax, budget, monthIdx]);
+  const computedPlan = useMemo(() => buildPlan(ids, { pax, budget, monthIdx, maxPerDay: 2 }), [ids.join(","), pax, budget, monthIdx]);
+  const plan = planOverride || computedPlan;
 
   return (
     <div>
