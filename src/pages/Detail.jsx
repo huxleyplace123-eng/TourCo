@@ -30,7 +30,18 @@ function InfoList({ title, icon: Icon, items }) {
 }
 
 export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
-  const a = activities.find((x) => x.id === activeId) || activities[0];
+  const a = activeId ? activities.find((x) => x.id === activeId) : activities[0];
+  if (!a) {
+    return (
+      <Section bg={c.sand} pad={80}>
+        <div style={{ maxWidth: 620, margin: "0 auto", textAlign: "center" }}>
+          <h1 style={{ color: c.charcoal, marginBottom: 10 }}>Experience unavailable</h1>
+          <p style={{ color: c.stone }}>This experience is not currently approved for publication.</p>
+          <Button variant="primary" onClick={() => go("activities")}>Browse approved experiences</Button>
+        </div>
+      </Section>
+    );
+  }
   const op = operators.find((o) => o.id === a.operatorId);
   const receipt = trustForActivity(a.operatorId);
   const terms = depositTerms(a.price, 1);
@@ -50,7 +61,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
           </button>
           <div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-              <Badge icon={ShieldCheck} bg="rgba(255,255,255,.92)">Vetted operator</Badge>
+              <Badge icon={ShieldCheck} bg="rgba(255,255,255,.92)">Approved partner</Badge>
               {a.family && <Badge bg="rgba(255,255,255,.92)" color={c.blue}>Family-friendly</Badge>}
               {a.private && <Badge bg="rgba(255,255,255,.92)" color={c.orchid}>Private available</Badge>}
             </div>
@@ -88,7 +99,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
                     <span style={{ fontWeight: 800, fontSize: 15 }}>John's local take</span>
                   </div>
                   <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.65, color: "rgba(255,255,255,.92)" }}>
-                    {`"${a.bestFor?.[0] || "Everyone"} love this one — I only work with ${op?.name}, who reply in ${op?.responseTime}. Book the morning slot for the best conditions, and let me handle the pickup timing so it fits the rest of your day."`}
+                    {`"${a.bestFor?.[0] || "Everyone"} love this one — this experience is offered by ${op?.name}, whose listed response time is ${op?.responseTime}. Book the morning slot for the best conditions, and let me handle the pickup timing so it fits the rest of your day."`}
                   </p>
                 </div>
               </div>
@@ -120,7 +131,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
               <p style={{ color: c.stone, fontSize: 12, lineHeight: 1.5, marginTop: 14, marginBottom: 0 }}>{terms.line}</p>
             </div>
 
-            {/* ── Trust Receipt — proof, not fluff ── */}
+            {/* Operator record: show only evidence explicitly stored in data. */}
             <div style={{ background: c.white, borderRadius: 20, padding: 20, border: "1px solid rgba(255,255,255,.08)" }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                 <div>
@@ -131,19 +142,15 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><MapPin size={12} />{op?.region}</span>
                   </div>
                 </div>
-                {/* vetting score dial */}
                 {receipt && (
-                  <div style={{ textAlign: "center", flexShrink: 0 }}>
-                    <div style={{ width: 52, height: 52, borderRadius: 999, background: `conic-gradient(${c.teal} ${receipt.score * 3.6}deg, rgba(255,255,255,.1) 0)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <div style={{ width: 42, height: 42, borderRadius: 999, background: c.white, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 15, color: c.charcoal }}>{receipt.score}</div>
-                    </div>
-                    <div style={{ fontSize: 10, color: c.stone, fontWeight: 700, marginTop: 3 }}>VETTED</div>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, flexShrink: 0, background: "rgba(34,211,238,.1)", border: "1px solid rgba(34,211,238,.25)", color: c.teal, padding: "7px 11px", borderRadius: 999, fontWeight: 800, fontSize: 11.5 }}>
+                    <ShieldCheck size={14} />APPROVED
                   </div>
                 )}
               </div>
 
               <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 14, marginBottom: 12, background: "rgba(34,211,238,.1)", border: "1px solid rgba(34,211,238,.25)", color: c.teal, padding: "6px 12px", borderRadius: 999, fontWeight: 800, fontSize: 11.5, letterSpacing: 0.5 }}>
-                <ShieldCheck size={13} />TICOWILD TRUST RECEIPT
+                <ShieldCheck size={13} />TICOWILD OPERATOR RECORD
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
                 {receipt?.checks.map((ch) => (

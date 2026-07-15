@@ -24,7 +24,7 @@ function BeachCard({ b }) {
         </div>
       </Photo>
       <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 8, flex: 1, background: c.white }}>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}><span title={`Tico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span></div>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}><span title={`Rico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span></div>
         <p style={{ margin: 0, color: c.stone, fontSize: 13.5, lineHeight: 1.5, flex: 1 }}>{b.blurb}</p>
         {tico.take && <div style={{ display: "flex", gap: 7, alignItems: "flex-start", background: "rgba(34,211,238,.06)", border: "1px solid rgba(34,211,238,.18)", borderRadius: 10, padding: "8px 10px" }}><TicoAvatar size={18} glow={false} mood={tico.takeMood} animate={false} /><span style={{ fontSize: 12, color: c.charcoal, lineHeight: 1.4, fontStyle: "italic" }}>{tico.take}</span></div>}
         <div style={{ display: "flex", gap: 8, alignItems: "flex-start", background: "rgba(255,208,0,.08)", border: "1px solid rgba(255,208,0,.2)", borderRadius: 10, padding: "8px 10px" }}>

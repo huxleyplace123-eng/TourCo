@@ -1,18 +1,5 @@
-// ── TicoWild Trust Layer ─────────────────────────────────────────────────────
-// The moat: proof, not fluff. Every operator gets a "Trust Receipt" — the exact
-// checks TicoWild ran, plus a 0–100 vetting score (mirrors the strategy doc's
-// scorecard: insurance/permits 25, reputation 20, response 15, price clarity 15,
-// safety 15, fit 10). Deterministic from existing operator fields so it's stable
-// and honest; swap in a real vetting DB later without touching the UI.
-
 import { operators } from "../data.js";
-
-// A believable "last reconfirmed" recency per operator (days ago). Derived from
-// id so it's stable across renders (no Date.now — keeps it deterministic).
-function reconfirmedDaysAgo(op) {
-  const n = parseInt((op.id || "op0").replace(/\D/g, ""), 10) || 1;
-  return ((n * 2) % 4) + 1; // 1–4 days ago
-}
+import { isExplicitlyApproved } from "./publication.js";
 
 // The 20/80 deposit math + the exact customer-facing language (used everywhere
 // money is shown, so it's identical and never a surprise).
@@ -21,40 +8,71 @@ export function depositTerms(price, pax = 1) {
   const deposit = Math.round(total * 0.2);
   const balance = total - deposit;
   return {
-    deposit, balance, total,
+    deposit,
+    balance,
+    total,
     line: `Your 20% deposit (${money(deposit)}) reserves the experience and covers TicoWild planning, coordination, and support. The remaining ${money(balance)} is paid directly to your local operator on the day.`,
     short: `20% now · 80% to the operator on the day`,
   };
 }
 
-// Build the full trust receipt for an operator.
+/**
+ * Build an operator receipt only from fields explicitly present in the record.
+ * No inferred permits, safety checks, review sources, or reconfirmation dates.
+ */
 export function trustReceipt(op) {
-  if (!op) return null;
-  const days = reconfirmedDaysAgo(op);
-  const checks = [
-    { key: "insurance", label: "Insurance & permits verified", ok: op.insurance !== false, detail: "Current liability + activity insurance on file" },
-    { key: "reviews", label: "Reviews independently checked", ok: (op.rating || 0) >= 4.3, detail: `${op.rating}★ across Google, Tripadvisor & guest reports` },
-    { key: "whatsapp", label: "WhatsApp response tested", ok: !!op.whatsapp, detail: `Confirmed reply time ${op.responseTime || "under a few hours"}` },
-    { key: "safety", label: "Safety & emergency protocol on file", ok: true, detail: "Briefings, maintained equipment, emergency plan" },
-    { key: "price", label: "Price & inclusions confirmed", ok: true, detail: "No hidden fees — taxes, pickup & inclusions locked" },
-    { key: "reconfirm", label: `Reconfirmed ${days} day${days > 1 ? "s" : ""} ago`, ok: true, detail: "Every tour is reconfirmed before you go" },
-  ];
+  if (!isExplicitlyApproved(op)) return null;
 
-  // 0–100 vetting score (the scorecard weights)
-  let score = 0;
-  score += checks[0].ok ? 25 : 0;                 // insurance/permits
-  score += Math.min(20, Math.round(((op.rating || 0) / 5) * 20)); // reputation
-  score += /~?\s*1\s*hr|~?\s*2\s*hr/.test(op.responseTime || "") ? 15 : 10; // response
-  score += 15; // price clarity (confirmed at onboarding)
-  score += 15; // safety process
-  score += 10; // TicoWild fit
-  score = Math.min(100, score);
+  const checks = [{
+    key: "publication",
+    label: "Approved for publication",
+    ok: true,
+    detail: "Currently enabled in TicoWild's published partner catalog",
+  }];
 
-  return { op, checks, score, reconfirmedDaysAgo: days };
+  if (op.insurance === true) {
+    checks.push({
+      key: "insurance",
+      label: "Insurance recorded",
+      ok: true,
+      detail: "Insurance is marked on file in the current operator record",
+    });
+  }
+
+  if (Number.isFinite(op.rating)) {
+    checks.push({
+      key: "rating",
+      label: "Operator rating listed",
+      ok: true,
+      detail: `${op.rating}★ in the current TicoWild catalog`,
+    });
+  }
+
+  if (op.whatsapp) {
+    checks.push({
+      key: "contact",
+      label: "Direct contact on file",
+      ok: true,
+      detail: op.responseTime ? `Listed response time ${op.responseTime}` : "Operator contact route recorded",
+    });
+  }
+
+  // Kept for Rico's recommendation formula; it is derived only from the
+  // explicit record above and is not presented as an independent audit score.
+  const score = Math.min(100, Math.round(
+    40
+    + (op.insurance === true ? 25 : 0)
+    + (Number.isFinite(op.rating) ? (op.rating / 5) * 20 : 0)
+    + (op.whatsapp ? 15 : 0),
+  ));
+
+  return { op, checks, score };
 }
 
 export function trustForActivity(activityOperatorId) {
-  return trustReceipt(operators.find((o) => o.id === activityOperatorId));
+  return trustReceipt(operators.find((operator) => operator.id === activityOperatorId));
 }
 
-function money(n) { return "$" + Math.round(n).toLocaleString(); }
+function money(n) {
+  return "$" + Math.round(n).toLocaleString();
+}

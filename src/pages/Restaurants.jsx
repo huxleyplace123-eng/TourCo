@@ -24,7 +24,7 @@ function RestaurantCard({ r }) {
       <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
           <span style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{r.cuisine}</span>
-          <span title={`Tico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span>
+          <span title={`Rico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span>
         </div>
         <div style={{ fontSize: 17, fontWeight: 800, color: c.charcoal, lineHeight: 1.15 }}>{r.name}</div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, color: c.stone, fontWeight: 600 }}><MapPin size={12} />{r.region}</div>
@@ -47,7 +47,7 @@ function BarCard({ b }) {
       <div style={{ padding: 15, display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
           <span style={{ fontSize: 11.5, fontWeight: 700, color: c.teal }}>{b.type}</span>
-          <span title={`Tico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span>
+          <span title={`Rico says: ${tico.label}`}><TicoRating score={tico.score} mood={tico.mood} /></span>
         </div>
         <div style={{ fontSize: 17, fontWeight: 800, color: c.charcoal, lineHeight: 1.15 }}>{b.name}</div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, color: c.stone, fontWeight: 600 }}><MapPin size={12} />{b.region}</div>
@@ -121,8 +121,8 @@ export function Restaurants({ go }) {
           <div style={{ marginTop: 30, ...glass, borderRadius: 20, padding: "22px 24px", display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
             <TicoAvatar size={44} />
             <div style={{ flex: 1, minWidth: 220 }}>
-              <div style={{ color: "#fff", fontWeight: 800, fontSize: 15.5 }}>Building a trip? Tico pairs dinner to your day.</div>
-              <div style={{ color: c.stone, fontSize: 13.5 }}>Tell Tico your plan and get the best table within minutes of each tour.</div>
+              <div style={{ color: "#fff", fontWeight: 800, fontSize: 15.5 }}>Building a trip? Rico pairs dinner to your day.</div>
+              <div style={{ color: c.stone, fontSize: 13.5 }}>Tell Rico your plan and get the best table within minutes of each tour.</div>
             </div>
             <Button variant="primary" onClick={() => go("build")}>Build my Costa Rica <ArrowRight size={15} /></Button>
           </div>

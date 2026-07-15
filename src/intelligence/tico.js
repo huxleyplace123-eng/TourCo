@@ -101,7 +101,7 @@ export function ticoBeachTake(b) {
     "Sand between your toes, no rush — that's the assignment.",
     "One of my favorite stretches of coast. Stay for sunset.",
     "Get here early and it's practically yours.",
-    `I nested near a beach like this once. ${LIFE.name === "Tico" ? "Good memories." : ""}`.trim(),
+    "I nested near a beach like this once. Good memories.",
   ];
   return { text: seededPick(lines, b.id), mood: "chill" };
 }
@@ -123,7 +123,7 @@ export function ticoDealTake(d) {
 export function ticoSectionIntro(kind, ctx = {}) {
   const region = ctx.region ? ` in ${ctx.region}` : "";
   const map = {
-    topPicks:   { title: "Tico's Top Picks right now", mood: "proud",
+    topPicks:   { title: "Rico's Top Picks right now", mood: "proud",
       line: "I ranked these myself — best experiences on the coast this season. #1 is where I'd take you first." },
     activities: { title: "What I'd actually do", mood: "happy",
       line: `Everything here is vetted and rated by me. The 🦜 picks are the ones I'd book for my own flock${region}.` },
@@ -141,7 +141,7 @@ export function ticoSectionIntro(kind, ctx = {}) {
 
 export function ticoPageLine(page) {
   const lines = {
-    home:      { text: "¡Hola! I'm Tico. I've flown this whole coast — tell me your vibe and I'll plan it.", mood: "happy" },
+    home:      { text: "¡Hola! I'm Rico the Tico. I've flown this whole coast — tell me your vibe and I'll plan it.", mood: "happy" },
     today:     { text: "Here's what's actually good today. I read the sky and the tides so you don't have to.", mood: "chill" },
     activities:{ text: "See the 🦜 picks? Those are MINE. I don't hand them out lightly — trust the bird.", mood: "proud" },
     eat:       { text: "Hungry? I know every honest kitchen on this coast. Skip the tourist traps — I'll point you right.", mood: "cheeky" },
@@ -153,6 +153,10 @@ export function ticoPageLine(page) {
     portal:    { text: "Ooh, your trip's shaping up nicely. Want me to fine-tune the days?", mood: "excited" },
     detail:    { text: "Good eye. Here's my honest take and exactly when to go.", mood: "happy" },
     john:      { text: "These are my hand-picks — the ones I'd book for my own flock.", mood: "proud" },
+    tico:      { text: "I'm Rico the Tico — your local macaw, honest trip planner, and sharpest set of eyes on the coast.", mood: "proud" },
+    why:       { text: "Want the short version? TicoWild pairs local knowledge with operators it can stand behind.", mood: "proud" },
+    partner:   { text: "Great local operators make great trips. Tell the team what you do best.", mood: "happy" },
+    ask:       { text: "John knows the coast from the ground; I know it from the sky. Between us, you're covered.", mood: "cheeky" },
   };
-  return lines[page] || { text: "I'm Tico — your local macaw. Ask me anything.", mood: "happy" };
+  return lines[page] || { text: "I'm Rico — your local macaw. Ask me anything.", mood: "happy" };
 }

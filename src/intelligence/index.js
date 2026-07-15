@@ -12,6 +12,7 @@ import { planTrip } from "./planner.js";
 // TOOL: recommend activities for a traveler profile (who/vibe/budget/month).
 export function recommendActivities(profile = {}) {
   const monthIdx = profile.monthIdx ?? monthIndexNow();
+  const selectedRegions = (profile.regions || []).filter((region) => region && region !== "Not sure yet");
   const scored = activities.map((a) => {
     let s = a.rating || 0;
     const reasons = [];
@@ -24,6 +25,7 @@ export function recommendActivities(profile = {}) {
     if (profile.vibe === "water" && /Fishing|Catamaran|Snorkel|Surf|Whale|Rafting/.test(a.category)) { s += 3; reasons.push("on the water"); }
     if (profile.budget === "low" && a.price < 100) { s += 2; reasons.push("great value"); }
     if (profile.budget === "high" && a.price > 150) { s += 2; reasons.push("premium"); }
+    if (selectedRegions.length && selectedRegions.includes(a.region)) { s += 4; reasons.push(`on your ${a.region} stop`); }
 
     // ── richer "Build My Costa Rica" inputs ──
     // stay near their base region → less driving
@@ -53,23 +55,30 @@ export function recommendActivities(profile = {}) {
 // returns a personalized, optimized MULTI-DAY plan (recommend → optimize), with
 // the reasons each activity was chosen and per-day logistics.
 export function buildMyCostaRica(profile = {}) {
-  const days = Math.max(1, Math.min(7, profile.days || 3));
+  const days = Math.max(1, Math.min(14, profile.days || 3));
   const perDay = profile.avoidLongDrives ? 2 : 2;
   const want = days * perDay + 1; // a little extra so the optimizer can choose
-  const ranked = recommendActivities(profile).filter((r) => r.score > 0).slice(0, want);
+  const routeRegions = (profile.regions || []).filter((region) => region && region !== "Not sure yet");
+  const allRanked = recommendActivities(profile).filter((r) => r.score > 0);
+  const ranked = (routeRegions.length ? allRanked.filter((r) => routeRegions.includes(r.a.region)) : allRanked).slice(0, want);
   const reasonById = Object.fromEntries(ranked.map((r) => [r.a.id, r.reasons]));
   const plan = planTrip(ranked.map((r) => r.a), {
     monthIdx: profile.monthIdx ?? monthIndexNow(),
     maxPerDay: perDay,
     pax: profile.pax || 2,
     budget: profile.budget === "low" ? days * 240 : profile.budget === "high" ? Infinity : days * 400,
+    regionOrder: routeRegions,
+    strictRegions: routeRegions.length > 1,
   });
   // trim to the requested number of days
   plan.days = plan.days.slice(0, days);
   plan.reasoning = plan.reasoning.slice(0, days);
   plan.totals.days = plan.days.length;
   plan.totals.cost = plan.days.reduce((s, d) => s + d.cost, 0);
-  return { plan, reasonById, brief: monthBriefing(profile.monthIdx) };
+  const coveredRegions = new Set(plan.days.flatMap((day) => day.region));
+  const uncoveredRegions = routeRegions.filter((region) => !coveredRegions.has(region));
+  if (uncoveredRegions.length) plan.warnings.push(`Rico is still curating approved experiences for ${uncoveredRegions.join(" and ")}; these stops remain in your route without placeholder tours.`);
+  return { plan, reasonById, brief: monthBriefing(profile.monthIdx), route: profile.stops || [], uncoveredRegions };
 }
 
 // TOOL: get the smart insight badges for one activity.

@@ -1,15 +1,38 @@
 // TourCo data — operators, activities, and packages.
 // Content lifted verbatim from the original build (Dl / de / ac).
 
-export const operators = [
+import { approvedRecords, publishedCatalog } from "./intelligence/publication.js";
+
+// This is the fail-closed publication allowlist. Add an operator only after the
+// signed agreement, pricing, availability, policies, required documentation,
+// and quality review have all been confirmed by the TicoWild team.
+const operatorPublicationStatus = Object.freeze({
+  op1: "approved",
+  op2: "approved",
+  op3: "approved",
+  op4: "approved",
+  op5: "approved",
+});
+
+const operatorRecords = [
   { id: "op1", name: "Pura Vida Sportfishing", region: "Quepos", vetted: true, insurance: true, responseTime: "~2 hrs", rating: 4.9, whatsapp: "+506 8000 0001" },
   { id: "op2", name: "Manuel Antonio Eco Tours", region: "Manuel Antonio", vetted: true, insurance: true, responseTime: "~1 hr", rating: 4.8, whatsapp: "+506 8000 0002" },
   { id: "op3", name: "Tamarindo Surf Collective", region: "Tamarindo", vetted: true, insurance: true, responseTime: "~3 hrs", rating: 4.9, whatsapp: "+506 8000 0003" },
   { id: "op4", name: "Guanacaste Blue Catamarans", region: "Guanacaste", vetted: true, insurance: true, responseTime: "~2 hrs", rating: 4.7, whatsapp: "+506 8000 0004" },
   { id: "op5", name: "Rainforest Rafting Co.", region: "Quepos", vetted: true, insurance: true, responseTime: "~4 hrs", rating: 4.8, whatsapp: "+506 8000 0005" },
-];
+].map((operator) => ({
+  ...operator,
+  publicationStatus: operatorPublicationStatus[operator.id],
+}));
 
-export const activities = [
+const activityPublicationStatus = Object.freeze({
+  a1: "approved", a2: "approved", a3: "approved", a4: "approved",
+  a5: "approved", a6: "approved", a7: "approved", a8: "approved",
+  a9: "approved", a10: "approved", a11: "approved", a12: "approved",
+  a13: "approved", a14: "approved", a15: "approved", a16: "approved",
+});
+
+const activityRecords = [
   { id: "a1", title: "Offshore Sport Fishing Charter", category: "Deep Sea Fishing", region: "Quepos", price: 225, duration: "8 hrs", level: "Moderate", bestFor: ["Groups", "Adventure"], private: true, family: false, operatorId: "op1", confirm: true, rating: 4.9, reviews: 128, desc: "Chase marlin, sailfish, and dorado on a captained boat off the Quepos coast. Pro crew, gear, and bait included.", included: ["Captain & crew", "Rods, reels & bait", "Bottled water & snacks", "Fishing licenses"], bring: ["Sunscreen", "Hat & sunglasses", "Light jacket", "Motion-sickness tablets"] },
   { id: "a2", title: "Inshore Family Fishing Trip", category: "Deep Sea Fishing", region: "Quepos", price: 145, duration: "4 hrs", level: "Easy", bestFor: ["Family", "Couples"], private: true, family: true, operatorId: "op1", confirm: false, rating: 4.8, reviews: 64, desc: "A calmer, kid-friendly half-day reeling in roosterfish and snapper close to shore.", included: ["Captain & mate", "All gear", "Refreshments"], bring: ["Sunscreen", "Hat", "Towel"] },
   { id: "a3", title: "Backcountry ATV Expedition", category: "ATV Tours", region: "Jacó", price: 95, duration: "3 hrs", level: "High", bestFor: ["Groups", "Adventure"], private: true, family: true, operatorId: "op2", confirm: false, rating: 4.8, reviews: 211, desc: "Rip through jungle trails, river crossings, and ridge-top viewpoints with a lead guide.", included: ["ATV & fuel", "Helmet & goggles", "Trail guide", "Water"], bring: ["Closed shoes", "Clothes that can get muddy", "Bandana"] },
@@ -22,19 +45,39 @@ export const activities = [
   { id: "a10", title: "Savegre White Water Rafting", category: "White Water Rafting", region: "Quepos", price: 110, duration: "6 hrs", level: "High", bestFor: ["Groups", "Adventure"], private: false, family: true, operatorId: "op5", confirm: false, rating: 4.9, reviews: 203, desc: "Class II–III rapids through pristine rainforest, with a riverside lunch.", included: ["Raft, paddle & helmet", "Certified river guides", "Lunch", "Transport"], bring: ["Swimsuit", "Secured sandals", "Change of clothes"] },
   { id: "a11", title: "Nauyaca Waterfalls Adventure", category: "Waterfall Adventures", region: "Dominical", price: 70, duration: "5 hrs", level: "Moderate", bestFor: ["Family", "Couples", "Adventure"], private: false, family: true, operatorId: "op2", confirm: false, rating: 4.8, reviews: 165, desc: "Hike or ride to twin waterfalls with a natural swimming pool at the base.", included: ["Guide", "Horseback option", "Lunch", "Entrance"], bring: ["Swimsuit", "Hiking shoes", "Towel"] },
   { id: "a12", title: "Coastal Tandem Paragliding", category: "Paragliding", region: "Dominical", price: 160, duration: "1.5 hrs", level: "High", bestFor: ["Couples", "Adventure"], private: true, family: false, operatorId: "op2", confirm: true, rating: 4.9, reviews: 57, desc: "Soar over jungle-backed beaches strapped to a licensed tandem pilot.", included: ["Licensed pilot", "All gear", "GoPro footage"], bring: ["Closed shoes", "Light layers"] },
-  { id: "a13", title: "Private Airport Transfer", category: "Private Transportation", region: "Guanacaste", price: 45, duration: "varies", level: "Easy", bestFor: ["Family", "Couples", "Groups"], private: true, family: true, operatorId: "op4", confirm: false, rating: 4.9, reviews: 410, desc: "Door-to-door private transfer in an A/C vehicle with a vetted local driver.", included: ["Private driver", "A/C vehicle", "Bottled water", "Flight tracking"], bring: ["Your itinerary", "Hotel address"] },
+  { id: "a13", title: "Private Airport Transfer", category: "Private Transportation", region: "Guanacaste", price: 45, duration: "varies", level: "Easy", bestFor: ["Family", "Couples", "Groups"], private: true, family: true, operatorId: "op4", confirm: false, rating: 4.9, reviews: 410, desc: "Door-to-door private transfer in an A/C vehicle with an approved local driver.", included: ["Private driver", "A/C vehicle", "Bottled water", "Flight tracking"], bring: ["Your itinerary", "Hotel address"] },
   { id: "a14", title: "Adult Group Adventure Day", category: "Adult Group Weekends", region: "Tamarindo", price: 175, duration: "Full day", level: "Moderate", bestFor: ["Groups"], private: true, family: false, operatorId: "op3", confirm: true, rating: 4.8, reviews: 88, desc: "A curated full-day for adult groups: catamaran, ATV, private shuttle, and beach-club access with after-dark transport support.", included: ["Catamaran session", "ATV ride", "Private shuttle", "Beach-club entry", "After-dark ride support"], bring: ["Swimsuit", "ID", "Comfortable clothes"] },
   { id: "a15", title: "Honeymoon Waterfall & Sunset", category: "Honeymoon Experiences", region: "Manuel Antonio", price: 240, duration: "Full day", level: "Easy", bestFor: ["Couples"], private: true, family: false, operatorId: "op2", confirm: true, rating: 5, reviews: 41, desc: "A private waterfall picnic, couples-massage partner, and a sunset catamaran for two.", included: ["Private guide & driver", "Waterfall picnic", "Couples massage partner", "Sunset cruise"], bring: ["Swimsuit", "Camera", "A sense of romance"] },
   { id: "a16", title: "Luxury Private Yacht Day", category: "Luxury Private Tours", region: "Guanacaste", price: 480, duration: "6 hrs", level: "Easy", bestFor: ["Couples", "Groups", "Luxury"], private: true, family: true, operatorId: "op4", confirm: true, rating: 5, reviews: 33, desc: "A private crewed yacht with chef-prepared lunch, premium bar, and secluded snorkel coves.", included: ["Private yacht & crew", "Chef lunch", "Premium open bar", "Snorkel & paddleboards"], bring: ["Swimsuit", "Sunscreen", "Camera"] },
-];
+].map((activity) => ({
+  ...activity,
+  publicationStatus: activityPublicationStatus[activity.id],
+}));
 
-export const packages = [
+const published = publishedCatalog(operatorRecords, activityRecords);
+export const operators = published.operators;
+export const activities = published.activities;
+
+const packagePublicationStatus = Object.freeze({
+  p1: "approved",
+  p2: "approved",
+  p3: "approved",
+  p4: "approved",
+  p5: "approved",
+});
+
+const packageRecords = [
   { id: "p1", title: "Family Adventure Week", bestFor: "Families with kids", length: "5–7 days", price: 1290, gradKey: "jungle", blurb: "A balanced week of wildlife, water, and waterfalls — safe, paced, and kid-approved.", items: ["Wildlife night tour", "Sunset catamaran", "Beginner surf lesson", "Waterfall adventure", "Safe private transport"] },
   { id: "p2", title: "Adult Group Adventure Weekend", bestFor: "Bachelor / bachelorette groups", length: "3–4 days", price: 1650, gradKey: "sunset", blurb: "High-energy days and curated nights with private transport and after-dark local support.", items: ["Sport fishing", "ATV expedition", "Catamaran day", "Private shuttle", "Beach-club & nightlife guidance", "After-dark ride support"] },
   { id: "p3", title: "Premium Fishing + Adventure", bestFor: "Anglers & thrill-seekers", length: "4 days", price: 1980, gradKey: "ocean", blurb: "Offshore sport fishing paired with a catch-and-cook dinner and an ATV add-on.", items: ["Offshore sport fishing", "Private transfers", "Catch-and-cook dinner partner", "ATV add-on", "Photo / video package"] },
   { id: "p4", title: "Honeymoon Escape", bestFor: "Couples & honeymooners", length: "4–5 days", price: 1740, gradKey: "orchid", blurb: "Private, romantic, and unhurried — waterfalls, sunsets, and a beach dinner for two.", items: ["Private waterfall", "Sunset cruise", "Couples massage partner", "Beach dinner", "Photography add-on"] },
   { id: "p5", title: "Rainforest + Ocean Explorer", bestFor: "Active couples & friends", length: "5 days", price: 1420, gradKey: "reef", blurb: "The Manuel Antonio greatest-hits: jungle, reef, river, and local flavor.", items: ["Wildlife night tour", "Waterfall adventure", "Reef snorkeling", "White water rafting", "Local food guide"] },
-];
+].map((tripPackage) => ({
+  ...tripPackage,
+  publicationStatus: packagePublicationStatus[tripPackage.id],
+}));
+
+export const packages = approvedRecords(packageRecords);
 
 export const regions = [
   { name: "Manuel Antonio", tag: "Wildlife & beaches", gradKey: "jungle" },

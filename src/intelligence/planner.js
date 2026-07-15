@@ -10,7 +10,8 @@ import { activityContext, driveHours, climateFor, monthIndexNow, REGION_ORDER } 
 const TIME_RANK = { morning: 0, afternoon: 1, evening: 2 };
 
 // Score how well two activities sit on the SAME day (higher = better together).
-function sameDayFit(a, b) {
+function sameDayFit(a, b, strictRegions = false) {
+  if (strictRegions && a.region !== b.region) return -Infinity;
   const ca = activityContext(a), cb = activityContext(b);
   let s = 0;
   if (a.region === b.region) s += 3;                 // same place = no transfer
@@ -29,12 +30,15 @@ export function planTrip(items, opts = {}) {
   const maxPerDay = opts.maxPerDay ?? 2;
   const budget = opts.budget ?? Infinity;
   const pax = opts.pax ?? 2;
+  const regionOrder = opts.regionOrder?.length ? opts.regionOrder : REGION_ORDER;
+  const strictRegions = opts.strictRegions === true;
 
   if (acts.length === 0) return { days: [], reasoning: [], totals: { activities: 0, cost: 0, drive: 0 }, warnings: [] };
 
   // sort anchors: region-clustered (coast order) then energy desc then rating
   const pool = [...acts].sort((x, y) => {
-    const rx = REGION_ORDER.indexOf(x.region), ry = REGION_ORDER.indexOf(y.region);
+    const rawX = regionOrder.indexOf(x.region), rawY = regionOrder.indexOf(y.region);
+    const rx = rawX < 0 ? regionOrder.length : rawX, ry = rawY < 0 ? regionOrder.length : rawY;
     if (rx !== ry) return rx - ry;
     const ex = activityContext(x).energy, ey = activityContext(y).energy;
     if (ex !== ey) return ey - ex;
@@ -56,7 +60,7 @@ export function planTrip(items, opts = {}) {
       for (const cand of pool) {
         if (used.has(cand.id)) continue;
         // total fit against every item already on the day
-        const score = day.reduce((acc, d) => acc + sameDayFit(d, cand), 0);
+        const score = day.reduce((acc, d) => acc + sameDayFit(d, cand, strictRegions), 0);
         if (score > bestScore) { bestScore = score; best = cand; }
       }
       if (best && bestScore > -1) { day.push(best); used.add(best.id); }

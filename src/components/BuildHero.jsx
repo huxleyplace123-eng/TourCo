@@ -57,12 +57,12 @@ export function BuildHero() {
             Watch your trip<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>build itself.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.85)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "bhRise .6s .2s both" }}>
-            Tell Tico your vibe and dates. He assembles a day-by-day plan from vetted local operators — drive times, tides, and season all handled.
+            Tell Rico your vibe and dates. He assembles a day-by-day plan from approved local partners — drive times, tides, and season all handled.
           </p>
           {/* Tico "planning" status line */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 9, marginTop: 20, background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", border: `1px solid ${c.line}`, padding: "8px 13px", borderRadius: 999, animation: "bhRise .6s .28s both" }}>
             <TicoFace size={24} glow={false} mood="excited" animate={false} />
-            <span style={{ color: "#fff", fontSize: 13, fontWeight: 700 }}>Tico is planning your days</span>
+            <span style={{ color: "#fff", fontSize: 13, fontWeight: 700 }}>Rico is planning your days</span>
             <span style={{ display: "inline-flex", gap: 3 }}>
               {[0, 1, 2].map((i) => <span key={i} style={{ width: 5, height: 5, borderRadius: 999, background: c.teal, animation: `bhDot 1.4s ease-in-out ${i * 0.2}s infinite` }} />)}
             </span>
@@ -100,7 +100,7 @@ export function BuildHero() {
               <span style={{ display: "inline-flex", gap: 3 }}>
                 {[0, 1, 2].map((i) => <span key={i} style={{ width: 5, height: 5, borderRadius: 999, background: c.gold, animation: `bhDot 1.4s ease-in-out ${i * 0.2}s infinite` }} />)}
               </span>
-              …and Tico keeps tailoring it to you
+              …and Rico keeps tailoring it to you
             </div>
           )}
         </div>

@@ -10,19 +10,19 @@ import { TicoSectionIntro } from "../components/Tico.jsx";
 import { TicoRanked } from "../components/TicoRanked.jsx";
 import { TodaySection } from "../components/TodaySection.jsx";
 
-export function Home({ go, addToTrip, trip, viewActivity }) {
+export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
   const featured = activities.slice(0, 8);
 
   return (
     <>
       {/* ── Living cinematic hero ── */}
-      <CinematicHero go={go} />
+      <CinematicHero go={go} onStartPlan={startPlan} />
 
       {/* ── Tico's Top Picks ── his personal ranking, front and center ── */}
       <Section bg={c.sand}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
           <TicoSectionIntro kind="topPicks" />
-          <Button variant="ghost" onClick={() => go("activities")}>See all Tico rates <ArrowRight size={16} /></Button>
+          <Button variant="ghost" onClick={() => go("activities")}>See all Rico rates <ArrowRight size={16} /></Button>
         </div>
         <Reveal>
           <TicoRanked items={activities} limit={5} onView={viewActivity} onAdd={addToTrip} trip={trip} />

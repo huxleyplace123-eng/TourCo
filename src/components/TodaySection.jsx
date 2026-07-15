@@ -66,7 +66,7 @@ export function TodaySection({ go, addToTrip, trip, viewActivity }) {
           </div>
           <h2 style={{ margin: 0, fontSize: "clamp(22px,3.4vw,30px)", fontWeight: 800, color: "#fff", letterSpacing: -0.6, lineHeight: 1.1 }}>{t.greeting} — here's what's good today</h2>
           <p style={{ margin: "5px 0 0", fontSize: 14, lineHeight: 1.5, color: c.stone, maxWidth: 620 }}>
-            <b style={{ color: c.teal }}>Tico:</b> <span style={{ fontStyle: "italic" }}>"I read the weather, the tides, and where you are — then I tell you the one thing to do right now."</span>
+            <b style={{ color: c.teal }}>Rico:</b> <span style={{ fontStyle: "italic" }}>"I read the weather, the tides, and where you are — then I tell you the one thing to do right now."</span>
           </p>
         </div>
       </div>
@@ -94,7 +94,7 @@ export function TodaySection({ go, addToTrip, trip, viewActivity }) {
           <div style={{ display: "flex", gap: 11, alignItems: "flex-start", background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.28)", borderRadius: 16, padding: "14px 16px", marginBottom: 24 }}>
             <TicoAvatar size={26} glow={false} mood="thinking" animate={false} />
             <div>
-              <div style={{ color: "#fff", fontWeight: 800, fontSize: 13.5, marginBottom: 2, display: "flex", alignItems: "center", gap: 6 }}>Tico's heads-up for today <AlertTriangle size={13} color={c.gold} /></div>
+              <div style={{ color: "#fff", fontWeight: 800, fontSize: 13.5, marginBottom: 2, display: "flex", alignItems: "center", gap: 6 }}>Rico's heads-up for today <AlertTriangle size={13} color={c.gold} /></div>
               <div style={{ color: "rgba(243,247,255,.85)", fontSize: 14, lineHeight: 1.5 }}>{t.avoid}</div>
             </div>
           </div>

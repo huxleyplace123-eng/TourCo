@@ -47,7 +47,7 @@ export function TicoFace({ size = 44, mood = "happy", glow = true, animate = tru
   const eyeRy = p.eyeR * (1 - lidClosed); // squish vertically as lid closes
 
   return (
-    <svg width={size} height={size} viewBox="80 64 108 108" role="img" aria-label={`Tico (${mood})`}
+    <svg width={size} height={size} viewBox="80 64 108 108" role="img" aria-label={`Rico (${mood})`}
       style={{ flexShrink: 0, filter: glow ? "drop-shadow(0 3px 10px rgba(34,211,238,.4))" : "none",
                transformOrigin: "center", animation: animate ? "ticoSway 5.5s ease-in-out infinite" : "none" }}>
       <defs>
@@ -57,7 +57,7 @@ export function TicoFace({ size = 44, mood = "happy", glow = true, animate = tru
       <style>{`
         @keyframes ticoSway { 0%,100%{ transform: rotate(-1.5deg) } 50%{ transform: rotate(1.5deg) } }
         @keyframes ticoSparkle { 0%,100%{ opacity:.2; transform: scale(.7) } 50%{ opacity:1; transform: scale(1) } }
-        @media(prefers-reduced-motion:reduce){ svg[aria-label^="Tico"]{ animation:none!important } }
+        @media(prefers-reduced-motion:reduce){ svg[aria-label^="Rico"]{ animation:none!important } }
       `}</style>
 
       <rect x="80" y="64" width="108" height="108" rx="30" fill={`url(#${uid}G)`} />

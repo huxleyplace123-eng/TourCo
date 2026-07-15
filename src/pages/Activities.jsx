@@ -71,7 +71,7 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
   if (sort === "Price: low") list = [...list].sort((a, b) => a.price - b.price);
   if (sort === "Price: high") list = [...list].sort((a, b) => b.price - a.price);
   if (sort === "Top rated") list = [...list].sort((a, b) => b.rating - a.rating);
-  if (sort === "Tico's ranking") list = [...list].sort((a, b) => ticoActivityVerdict(b).score - ticoActivityVerdict(a).score);
+  if (sort === "Rico's ranking") list = [...list].sort((a, b) => ticoActivityVerdict(b).score - ticoActivityVerdict(a).score);
 
   const noFilters = q === "" && cat === "All" && region === "All" && level === "All" && !familyOnly && !privateOnly;
 
@@ -79,8 +79,8 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
 
   return (
     <>
-      <PageHero slides={themedSlides("activities")} height={440} eyebrow="Browse activities" title="Every adventure, vetted"
-        sub="Zipline the canopy, chase the rapids, reel in a marlin, fly the coast — the most thrilling things you can do in Costa Rica, all vetted and one tap to add.">
+      <PageHero slides={themedSlides("activities")} height={440} eyebrow="Browse activities" title="Every adventure, approved"
+        sub="Zipline the canopy, chase the rapids, reel in a marlin, fly the coast — standout Costa Rica experiences offered only by approved TicoWild partners.">
         <ActivityMarquee />
       </PageHero>
 
@@ -103,7 +103,7 @@ export function Activities({ go, addToTrip, trip, viewActivity }) {
             <Field label="Category"><Select value={cat} onChange={setCat} options={CATEGORIES} icon={Compass} /></Field>
             <Field label="Region"><Select value={region} onChange={setRegion} options={REGIONS} icon={MapPin} /></Field>
             <Field label="Adventure level"><Select value={level} onChange={setLevel} options={["All", "Easy", "Moderate", "High"]} icon={Mountain} /></Field>
-            <Field label="Sort by"><Select value={sort} onChange={setSort} options={["Featured", "Tico's ranking", "Price: low", "Price: high", "Top rated"]} icon={Star} /></Field>
+            <Field label="Sort by"><Select value={sort} onChange={setSort} options={["Featured", "Rico's ranking", "Price: low", "Price: high", "Top rated"]} icon={Star} /></Field>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 6 }}>
               <Toggle on={familyOnly} set={setFamilyOnly} label="Family-friendly" />
               <Toggle on={privateOnly} set={setPrivateOnly} label="Private available" />
