@@ -146,10 +146,10 @@ export function CinematicHero({ go, onStartPlan }) {
             <span style={{ width: 7, height: 7, borderRadius: 999, background: g.accent, boxShadow: `0 0 12px ${g.accent}` }} />
             {g.label} · curated Costa Rica, without the guesswork
           </span>
-          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,5.6vw,68px)", lineHeight: 1.02, fontWeight: 800, letterSpacing: -2, margin: "24px 0 0", animationDelay: ".08s" }}>
-            We don't list every tour.<br />
+          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,5.6vw,68px)", lineHeight: 1.02, fontWeight: 800, letterSpacing: -2, margin: "24px 0 0", animationDelay: ".08s", textWrap: "balance" }}>
+            We don't list <span className="tn-title-keep">every tour.</span><br />
             <span style={{ position: "relative", display: "inline-block" }}>
-              <span style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>We find the right one.</span>
+              <span style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>We find the <span className="tn-title-keep">right one.</span></span>
               <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: -6, height: 3, borderRadius: 999, background: `linear-gradient(90deg,${c.teal},${c.gold})`, opacity: 0.5 }} />
             </span>
           </h1>
