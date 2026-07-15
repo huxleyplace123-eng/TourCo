@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   ArrowRight,
-  Car,
   ChevronDown,
   Compass,
   Fish,
@@ -28,11 +27,11 @@ const COLLECTIONS = [
     number: "01",
     title: "Ocean & Coast",
     kicker: "Saltwater days",
-    body: "Fishing, surf, sailing, snorkeling, and marine life—curated around the Pacific.",
+    body: "Surf, sailing, snorkeling, and marine life—curated around the Pacific.",
     icon: Waves,
     accent: c.teal,
     heroId: "a4",
-    activityIds: new Set(["a1", "a2", "a4", "a5", "a6", "a9"]),
+    activityIds: new Set(["a4", "a5", "a6", "a9"]),
   },
   {
     id: "jungle-thrills",
@@ -57,21 +56,23 @@ const COLLECTIONS = [
     activityIds: new Set(["a14", "a15", "a16"]),
   },
   {
-    id: "arrival-transfer",
+    id: "fishing",
     number: "04",
-    title: "Transfers & Arrival",
-    kicker: "Land easy",
-    body: "Approved private transport that turns airport arrival into the first calm part of the trip.",
-    icon: Car,
+    title: "Fishing",
+    kicker: "Go where the bite is",
+    body: "Offshore sportfishing and relaxed inshore trips with approved local captains.",
+    icon: Fish,
     accent: c.blue,
-    heroId: "a13",
-    activityIds: new Set(["a13"]),
+    heroId: "a1",
+    activityIds: new Set(["a1", "a2"]),
   },
 ];
 
-const ACTIVITY_BY_ID = new Map(activities.map((activity) => [activity.id, activity]));
-const EXACT_CATEGORIES = ["All", ...Array.from(new Set(activities.map((activity) => activity.category)))];
-const REGIONS = ["All", ...Array.from(new Set(activities.map((activity) => activity.region)))];
+const CATALOG_ACTIVITY_IDS = new Set(COLLECTIONS.flatMap((collection) => [...collection.activityIds]));
+const CATALOG_ACTIVITIES = activities.filter((activity) => CATALOG_ACTIVITY_IDS.has(activity.id));
+const ACTIVITY_BY_ID = new Map(CATALOG_ACTIVITIES.map((activity) => [activity.id, activity]));
+const EXACT_CATEGORIES = ["All", ...Array.from(new Set(CATALOG_ACTIVITIES.map((activity) => activity.category)))];
+const REGIONS = ["All", ...Array.from(new Set(CATALOG_ACTIVITIES.map((activity) => activity.region)))];
 
 const MARQUEE = [
   [Fish, "Deep-sea fishing"],
@@ -201,7 +202,7 @@ export function Activities({ addToTrip, trip, viewActivity }) {
   };
 
   const filtered = sortActivities(
-    activities.filter((activity) =>
+    CATALOG_ACTIVITIES.filter((activity) =>
       (q === "" || `${activity.title} ${activity.category} ${activity.region}`.toLowerCase().includes(q.toLowerCase())) &&
       (category === "All" || activity.category === category) &&
       (region === "All" || activity.region === region) &&
@@ -213,7 +214,6 @@ export function Activities({ addToTrip, trip, viewActivity }) {
   );
 
   const grouped = COLLECTIONS
-    .filter((item) => collection === "all" || item.id === collection)
     .map((item) => ({ ...item, items: filtered.filter((activity) => item.activityIds.has(activity.id)) }))
     .filter((item) => item.items.length > 0);
   const visibleCount = grouped.reduce((total, item) => total + item.items.length, 0);
@@ -291,7 +291,6 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         ) : grouped.map((item) => {
           const Icon = item.icon;
           const ricoPick = [...item.items].sort((a, b) => ticoActivityVerdict(b).score - ticoActivityVerdict(a).score)[0];
-          const supporting = item.items.filter((activity) => activity.id !== ricoPick.id);
           return (
             <section
               key={item.id}
@@ -307,29 +306,18 @@ export function Activities({ addToTrip, trip, viewActivity }) {
                   <p>{item.body}</p>
                 </div>
               </div>
-              <div className={`activity-collection-layout${supporting.length === 0 ? " activity-collection-layout-single" : ""}`}>
-                <ActivityBrowseCard
-                  a={ricoPick}
-                  featured
-                  collectionAccent={item.accent}
-                  onAdd={addToTrip}
-                  onView={viewActivity}
-                  inTrip={trip.some((tripItem) => tripItem.id === ricoPick.id)}
-                />
-                {supporting.length > 0 ? (
-                  <div className="activity-supporting-grid">
-                    {supporting.map((activity) => (
-                      <ActivityBrowseCard
-                        key={activity.id}
-                        a={activity}
-                        collectionAccent={item.accent}
-                        onAdd={addToTrip}
-                        onView={viewActivity}
-                        inTrip={trip.some((tripItem) => tripItem.id === activity.id)}
-                      />
-                    ))}
-                  </div>
-                ) : null}
+              <div className="activity-card-grid">
+                {item.items.map((activity) => (
+                  <ActivityBrowseCard
+                    key={activity.id}
+                    a={activity}
+                    ricoPick={activity.id === ricoPick.id}
+                    collectionAccent={item.accent}
+                    onAdd={addToTrip}
+                    onView={viewActivity}
+                    inTrip={trip.some((tripItem) => tripItem.id === activity.id)}
+                  />
+                ))}
               </div>
             </section>
           );
@@ -344,9 +332,8 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-mosaic-heading{max-width:780px;margin-bottom:30px}
         .activity-mosaic-heading h2{color:#fff;font-size:clamp(30px,4.4vw,52px);line-height:1.04;letter-spacing:-1.5px;margin:8px 0 0;text-wrap:balance}
         .activity-mosaic-heading p{color:${c.stone};font-size:16px;line-height:1.65;margin:14px 0 0;max-width:680px}
-        .activity-worlds{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:292px;gap:16px}
+        .activity-worlds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:320px;gap:20px}
         .activity-world-card{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:26px;padding:0;cursor:pointer;text-align:left;background:${c.white};color:#fff;isolation:isolate;box-shadow:0 28px 70px -34px rgba(0,0,0,.85);transition:transform .3s cubic-bezier(.2,.75,.2,1),border-color .3s ease,box-shadow .3s ease}
-        .activity-world-card:nth-child(1),.activity-world-card:nth-child(4){grid-column:span 7}.activity-world-card:nth-child(2),.activity-world-card:nth-child(3){grid-column:span 5}
         .activity-world-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.75,.2,1)}
         .activity-world-wash{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,12,28,.12),rgba(5,15,33,.35) 38%,rgba(5,15,33,.96));z-index:1}
         .activity-world-card:after{content:"";position:absolute;inset:auto -12% -58% 25%;height:82%;background:radial-gradient(circle,var(--collection-accent),transparent 66%);opacity:.2;filter:blur(18px);z-index:1}
@@ -366,9 +353,10 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-collection-pills{display:flex;align-items:center;gap:7px;overflow-x:auto;scrollbar-width:none;flex:1}.activity-collection-pills::-webkit-scrollbar{display:none}
         .activity-collection-pills button,.activity-filter-trigger{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;border:1px solid ${c.line};border-radius:999px;background:rgba(255,255,255,.045);color:#fff;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;transition:background .2s ease,border-color .2s ease,color .2s ease}
         .activity-collection-pills button[aria-pressed="true"]{background:rgba(34,211,238,.13);border-color:rgba(34,211,238,.48);color:${c.teal}}
-        .activity-filter-trigger{display:none;border-color:rgba(255,208,0,.28);color:${c.gold}}
+        .activity-filter-trigger{display:inline-flex;border-color:rgba(255,208,0,.28);color:${c.gold}}
         .activity-filter-trigger svg{transition:transform .2s ease}
-        .activity-filter-panel{max-width:1240px;margin:0 auto;padding:3px 20px 13px;display:grid;gap:10px}
+        .activity-filter-panel{max-width:1240px;margin:0 auto;padding:3px 20px 13px;display:none;gap:10px}
+        .activity-filter-panel[data-open="true"]{display:grid}
         .activity-filter-fields{display:grid;grid-template-columns:minmax(220px,1.35fr) repeat(4,minmax(145px,1fr));gap:10px}.activity-filter-fields>div{margin-bottom:0!important}
         .activity-filter-options{display:flex;align-items:center;gap:18px;min-height:30px}
         .activity-toggle{display:inline-flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-weight:750;font-size:12.5px;padding:2px;cursor:pointer}
@@ -385,15 +373,12 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-collection-eyebrow{color:var(--collection-accent);font-size:11.5px;text-transform:uppercase;letter-spacing:1.05px;font-weight:900}
         .activity-collection-heading h2{color:#fff;font-size:clamp(29px,4vw,46px);line-height:1.03;letter-spacing:-1.3px;margin:6px 0 0;text-wrap:balance}
         .activity-collection-heading p{color:${c.stone};font-size:15px;line-height:1.6;margin:9px 0 0;max-width:660px}
-        .activity-collection-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:20px;align-items:start}
-        .activity-collection-layout>.tn-activity-browse-card{position:sticky;top:250px;height:auto}
-        .activity-collection-layout-single{grid-template-columns:minmax(0,760px)}
-        .activity-supporting-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+        .activity-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
         .activity-empty{max-width:720px;margin:64px auto 10px;padding:62px 28px;text-align:center;border:1px solid ${c.line};border-radius:28px;background:rgba(255,255,255,.035)}
         .activity-empty h2{color:#fff;font-size:28px;margin:14px 0 0}.activity-empty p{color:${c.stone};line-height:1.6;margin:10px auto 22px;max-width:480px}
-        @media(max-width:1100px){.activity-filter-fields{grid-template-columns:repeat(3,minmax(0,1fr))}.activity-collection-layout{grid-template-columns:1fr}.activity-collection-layout>.tn-activity-browse-card{position:relative;top:auto}.activity-supporting-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-        @media(max-width:900px){.activity-worlds{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:285px}.activity-world-card:nth-child(n){grid-column:span 1}.activity-filter-trigger{display:inline-flex}.activity-filter-panel{display:none}.activity-filter-panel[data-open="true"]{display:grid}.activity-filter-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-filter-options{flex-wrap:wrap}.activity-reset{margin-left:0}.activity-supporting-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-        @media(max-width:620px){.activity-worlds{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 8px;scrollbar-width:none}.activity-worlds::-webkit-scrollbar{display:none}.activity-world-card{flex:0 0 84vw;min-height:330px;scroll-snap-align:start}.activity-world-copy strong{font-size:28px}.activity-discovery-inner{padding-inline:14px}.activity-filter-panel{padding:4px 14px 14px}.activity-filter-fields{grid-template-columns:1fr}.activity-filter-options{align-items:flex-start;flex-direction:column;gap:10px}.activity-collection-section{padding:60px 20px 8px;scroll-margin-top:138px;contain-intrinsic-size:0 1100px}.activity-collection-heading{grid-template-columns:50px minmax(0,1fr);gap:14px}.activity-collection-mark{width:48px;height:48px;border-radius:15px}.activity-supporting-grid{grid-template-columns:1fr}.activity-results-summary{align-items:flex-start;flex-direction:column;gap:5px;padding-top:14px}.activity-mosaic-heading{margin-bottom:24px}}
+        @media(max-width:1100px){.activity-filter-fields{grid-template-columns:repeat(3,minmax(0,1fr))}.activity-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:900px){.activity-worlds{grid-auto-rows:300px}.activity-filter-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-filter-options{flex-wrap:wrap}.activity-reset{margin-left:0}}
+        @media(max-width:620px){.activity-worlds{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 8px;scrollbar-width:none}.activity-worlds::-webkit-scrollbar{display:none}.activity-world-card{flex:0 0 84vw;min-height:330px;scroll-snap-align:start}.activity-world-copy strong{font-size:28px}.activity-discovery-inner{padding-inline:14px}.activity-filter-panel{padding:4px 14px 14px}.activity-filter-fields{grid-template-columns:1fr}.activity-filter-options{align-items:flex-start;flex-direction:column;gap:10px}.activity-collection-section{padding:60px 20px 8px;scroll-margin-top:138px;contain-intrinsic-size:0 1100px}.activity-collection-heading{grid-template-columns:50px minmax(0,1fr);gap:14px}.activity-collection-mark{width:48px;height:48px;border-radius:15px}.activity-card-grid{grid-template-columns:1fr}.activity-results-summary{align-items:flex-start;flex-direction:column;gap:5px;padding-top:14px}.activity-mosaic-heading{margin-bottom:24px}}
         @media(prefers-reduced-motion:reduce){.activity-marquee-row{animation:none}.activity-world-card,.activity-world-card img{transition:none!important}}
       `}</style>
     </>

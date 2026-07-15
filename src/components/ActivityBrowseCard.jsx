@@ -52,6 +52,11 @@ const CARD_STYLES = `
     box-shadow: 0 36px 85px -42px rgba(0, 0, 0, .96);
   }
 
+  .tn-activity-browse-card.is-rico-pick {
+    border-color: color-mix(in srgb, var(--activity-accent) 48%, transparent);
+    box-shadow: 0 30px 80px -40px color-mix(in srgb, var(--activity-accent) 45%, #000);
+  }
+
   .tn-activity-browse-card__media {
     position: relative;
     min-height: 224px;
@@ -126,6 +131,25 @@ const CARD_STYLES = `
     font-size: 18px;
     font-weight: 850;
     line-height: 1;
+  }
+
+  .tn-activity-browse-card__top-pick {
+    position: absolute;
+    left: 16px;
+    bottom: 15px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    color: #071323;
+    background: var(--activity-accent);
+    border-radius: 999px;
+    box-shadow: 0 10px 28px -12px var(--activity-accent);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
   }
 
   .tn-activity-browse-card__price small {
@@ -365,6 +389,11 @@ const CARD_STYLES = `
       bottom: 12px;
     }
 
+    .tn-activity-browse-card__top-pick {
+      left: 12px;
+      bottom: 12px;
+    }
+
     .tn-activity-browse-card__body,
     .tn-activity-browse-card.is-featured .tn-activity-browse-card__body {
       padding: 19px;
@@ -404,6 +433,7 @@ export function ActivityBrowseCard({
   onView,
   inTrip,
   featured = false,
+  ricoPick = false,
   collectionAccent,
 }) {
   if (!a) return null;
@@ -418,7 +448,7 @@ export function ActivityBrowseCard({
 
   return (
       <article
-        className={`tn-activity-browse-card${featured ? " is-featured" : ""}`}
+        className={`tn-activity-browse-card${featured ? " is-featured" : ""}${ricoPick ? " is-rico-pick" : ""}`}
         style={{ "--activity-accent": accent }}
       >
         <div className="tn-activity-browse-card__media">
@@ -460,6 +490,11 @@ export function ActivityBrowseCard({
           <div className="tn-activity-browse-card__price" aria-label={`${money(a.price)} per person`}>
             {money(a.price)} <small>/ person</small>
           </div>
+          {ricoPick ? (
+            <div className="tn-activity-browse-card__top-pick">
+              <Sparkles size={12} aria-hidden="true" />Rico's top pick
+            </div>
+          ) : null}
         </div>
 
         <div className="tn-activity-browse-card__body">
