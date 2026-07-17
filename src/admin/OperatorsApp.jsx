@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle, BadgeCheck, ExternalLink, Globe, Mail, MessageCircle, Phone,
-  Plus, Search, X, ChevronDown, ChevronUp, Star,
+  Plus, Search, X, ChevronDown, ChevronUp, Star, Eye, Send,
 } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import { addDaysIso, daysFromToday, fmtDate, normPhone, todayIso } from "./store.js";
@@ -14,6 +14,8 @@ import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType, tempRank,
 } from "./crm-shared.js";
 import { TempBadge, TempPicker, TypeBadge, TypeSelect, OperatorContacts, CRM_CSS } from "./crm-ui.jsx";
+import { loadPortal, addMessage } from "./portal-store.js";
+import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 
 const inputBase = {
@@ -85,6 +87,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [sortDir, setSortDir] = useState("asc");
   const [selectedId, setSelectedId] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
+  const [portalOpId, setPortalOpId] = useState(null);
 
   useEffect(() => saveOverlay(overlay), [overlay]);
 
@@ -331,7 +334,11 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
       </div>
 
       {selected && (
-        <OperatorDrawer op={selected} patch={patch} addNote={addNote} setStage={setStage} logTouch={logTouch} onClose={() => setSelectedId(null)} />
+        <OperatorDrawer op={selected} patch={patch} addNote={addNote} setStage={setStage} logTouch={logTouch}
+          onPreviewPortal={() => setPortalOpId(selected.id)} onClose={() => setSelectedId(null)} />
+      )}
+      {portalOpId && (
+        <OperatorPortal op={operators.find((o) => o.id === portalOpId)} onExit={() => setPortalOpId(null)} />
       )}
       {showAdd && (
         <AddOperatorModal
@@ -613,8 +620,69 @@ function ToursView({ categories, regions, onOpenOperator }) {
   );
 }
 
+// ── Team ↔ operator messages (team side of the same thread the operator sees
+// in their portal). Shared via portal-store. ─────────────────────────────────
+function TeamMessages({ op }) {
+  const [messages, setMessages] = useState([]);
+  const [draft, setDraft] = useState("");
+  useEffect(() => { setMessages(loadPortal(op.id).messages); }, [op.id]);
+  const send = () => {
+    const t = draft.trim();
+    if (!t) return;
+    setMessages(addMessage(op.id, "team", t));
+    setDraft("");
+  };
+  const opLabel = { fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 5 };
+  return (
+    <div>
+      <div style={{ ...opLabel, display: "flex", alignItems: "center", gap: 6 }}>
+        <MessageCircle size={13} /> Messages with {op.name}
+      </div>
+      <div style={{ borderRadius: radius.md, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.03)", padding: 10, display: "grid", gap: 8, maxHeight: 220, overflowY: "auto" }}>
+        {messages.length ? messages.map((m) => {
+          const team = m.from === "team";
+          return (
+            <div key={m.id} style={{ display: "flex", justifyContent: team ? "flex-end" : "flex-start" }}>
+              <div style={{ maxWidth: "82%", padding: "8px 11px", borderRadius: 12, fontSize: 13, lineHeight: 1.4,
+                background: team ? c.teal : "rgba(255,255,255,.06)", color: team ? c.ink : c.charcoal, border: team ? "none" : `1px solid ${c.line}` }}>
+                <div style={{ fontSize: 10, fontWeight: 800, opacity: .7, marginBottom: 2 }}>{team ? "You (TicoWild)" : op.name}</div>
+                {m.text}
+              </div>
+            </div>
+          );
+        }) : <div style={{ color: c.stone, fontSize: 12.5, textAlign: "center", padding: "14px 0" }}>No messages yet. Send the first — it appears in their portal.</div>}
+      </div>
+      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+        <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") send(); }}
+          placeholder={`Message ${op.name}…`} style={inputBase} />
+        <button onClick={send} style={{ padding: "0 14px", borderRadius: radius.sm, border: "none", background: c.teal, color: c.ink, fontWeight: 800, cursor: "pointer", display: "inline-flex", alignItems: "center" }}><Send size={15} /></button>
+      </div>
+    </div>
+  );
+}
+
+// Agreement status (read from the portal store the operator signs against), so
+// the team sees signed/completed exactly as the operator does.
+function AgreementStatus({ op }) {
+  const [agreement, setAgreement] = useState({ status: "Not sent" });
+  useEffect(() => { setAgreement(loadPortal(op.id).agreement || { status: "Not sent" }); }, [op.id]);
+  const signed = agreement.status === "Signed";
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 13px", borderRadius: radius.md,
+      border: `1px solid ${signed ? "rgba(52,211,153,.4)" : c.line}`, background: signed ? "rgba(52,211,153,.08)" : "rgba(255,255,255,.03)" }}>
+      <BadgeCheck size={18} color={signed ? "#34D399" : c.stone} />
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 12.5, fontWeight: 800 }}>Partner agreement</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: signed ? "#34D399" : c.stone }}>
+          {signed ? `✓ Signed & completed by ${agreement.signedName} on ${fmtDate(agreement.signedAt)}` : "Not signed yet"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Operator drawer ───────────────────────────────────────────────────────────
-function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onClose }) {
+function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPortal, onClose }) {
   const [noteDraft, setNoteDraft] = useState("");
   const tours = useMemo(() => TOUR_SEED.filter((t) => t.operatorId === op.id), [op.id]);
   const prog = checklistProgress(op.checklist);
@@ -668,9 +736,19 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onClose }) {
               <Globe size={15} /> Site
             </a>
           </div>
+          <button onClick={onPreviewPortal}
+            style={{ marginTop: 10, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "11px", borderRadius: radius.sm, border: `1px solid ${c.teal}`, background: "rgba(34,211,238,.1)", color: c.teal, fontFamily: FONT, fontSize: 13.5, fontWeight: 800, cursor: "pointer" }}>
+            <Eye size={16} /> Preview partner portal
+          </button>
         </div>
 
         <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px", display: "grid", gap: 16 }}>
+          {/* agreement status (signed in their portal) */}
+          <AgreementStatus op={op} />
+
+          {/* team ↔ operator messages */}
+          <TeamMessages op={op} />
+
           {/* priority + type */}
           <div style={{ display: "grid", gap: 10, padding: 12, borderRadius: radius.md, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.03)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>

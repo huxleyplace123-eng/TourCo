@@ -66,7 +66,7 @@ function SignaturePad({ onChange }) {
   );
 }
 
-export function OperatorAgreement({ onClose }) {
+export function OperatorAgreement({ onClose, onSigned }) {
   const [form, setForm] = useState(Object.fromEntries(FIELDS.map((f) => [f.key, ""])));
   const [sig, setSig] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -110,6 +110,9 @@ ${secs}
       `%0D%0ASigned: ${today}%0D%0A%0D%0A(The signed agreement file has been downloaded — please attach it to this email before sending.)`;
     window.location.href = `mailto:${TICOWILD_EMAIL}?subject=${encodeURIComponent("Signed Operator Agreement — " + (form.legalName || ""))}&body=${body}`;
     setDone(true);
+    // Let a host (the operator portal) record that it's signed, so both the
+    // operator and the TicoWild CRM see completion.
+    onSigned?.({ signerName: form.signerName, legalName: form.legalName });
   };
 
   return (
