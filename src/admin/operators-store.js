@@ -5,6 +5,7 @@
 // redeploy with fresher spreadsheet data never wipes working state.
 
 import { OPERATOR_SEED } from "./operators-data.js";
+import { CONTACTS_SEED } from "./operators-contacts.js";
 import { inferOperatorType, OPERATOR_TYPES, TEMPERATURES } from "./crm-shared.js";
 import { parseCsvText } from "./store.js";
 
