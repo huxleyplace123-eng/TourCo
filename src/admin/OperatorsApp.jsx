@@ -289,7 +289,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
         </div>
 
         {/* ── Filters ── */}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 14 }}>
+        <div className="crm-filterbar" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 14 }}>
           <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
             <option value="">All types</option>
             {OPERATOR_TYPES.map((t) => <option key={t.key} value={t.key}>{t.emoji}  {t.label}</option>)}
@@ -324,7 +324,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
               <X size={13} /> Clear
             </button>
           )}
-          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: radius.pill, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
+          <span className="crm-filtercount" style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: radius.pill, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
             <span style={{ color: c.teal }}>{filtered.length}</span>
             {anyFilter ? <span style={{ color: c.stone, fontWeight: 600 }}>of {operators.length} operators</span> : <span style={{ color: c.stone, fontWeight: 600 }}>operators</span>}
           </span>
@@ -482,13 +482,11 @@ function Directory({ operators, sortKey, sortDir, onSort, onOpen, onStage, onLog
                 <StageChip stage={op.stage} small />
                 <span style={{ color: c.gold, fontWeight: 700, fontSize: 12.5 }}>{pct(op.takeRate)}</span>
                 <span style={{ fontSize: 12, fontWeight: 700, color: prog.done === prog.total ? "#34D399" : c.stone }}>✓ {prog.done}/{prog.total}</span>
+                {daysFromToday(op.nextFollowUp) !== null && <FollowUpCell iso={op.nextFollowUp} />}
               </div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                <FollowUpCell iso={op.nextFollowUp} />
+                <TempPicker size="sm" value={op.temperature} onChange={(t) => onTemp(op.id, t)} />
                 <ContactButtons op={op} onLog={onLog} size={16} />
-              </div>
-              <div onClick={(e) => e.stopPropagation()} style={{ display: "flex", justifyContent: "center", paddingTop: 2 }}>
-                <TempPicker value={op.temperature} onChange={(t) => onTemp(op.id, t)} />
               </div>
             </div>
           );

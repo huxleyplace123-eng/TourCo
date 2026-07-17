@@ -423,7 +423,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         </div>
 
         {/* ── Filters ── */}
-        <div className="crm-filters">
+        <div className="crm-filters crm-filterbar">
           <Filter size={14} style={{ color: c.stone }} />
           <select value={tempFilter} onChange={(e) => setTempFilter(e.target.value)} style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
             <option value="">All heat</option>
@@ -462,7 +462,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
               <X size={13} /> Clear
             </button>
           )}
-          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 999, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
+          <span className="crm-filtercount" style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 999, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
             <span style={{ color: c.teal }}>{filtered.length}</span>
             {filtersOn ? <span style={{ color: c.stone, fontWeight: 600 }}>of {customers.length} customers</span> : <span style={{ color: c.stone, fontWeight: 600 }}>customers</span>}
           </span>
