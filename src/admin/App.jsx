@@ -11,7 +11,7 @@ import {
   saveColumnPrefs, saveCustomers, toCsv, todayIso,
 } from "./store.js";
 import { TEMPERATURES, TEMPERATURE_META, tempRank } from "./crm-shared.js";
-import { TempBadge, TempPicker, CRM_CSS } from "./crm-ui.jsx";
+import { TempBadge, TempPicker, CustomerContacts, CRM_CSS } from "./crm-ui.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -96,34 +96,9 @@ function FollowUpCell({ iso }) {
   return <span style={{ color: col, fontWeight: 700, fontSize: 13, whiteSpace: "nowrap" }}>{label}</span>;
 }
 
-function QuickActions({ cust, onLog, size = 15 }) {
-  const btn = {
-    display: "inline-flex", alignItems: "center", justifyContent: "center",
-    width: 34, height: 34, borderRadius: 10, border: `1px solid ${c.line}`,
-    background: "rgba(255,255,255,.05)", color: c.stone, cursor: "pointer", textDecoration: "none",
-  };
-  const phone = normPhone(cust.phone);
-  return (
-    <span style={{ display: "inline-flex", gap: 6 }} onClick={(e) => e.stopPropagation()}>
-      {phone && (
-        <a href={`https://wa.me/${phone}`} target="_blank" rel="noreferrer" title="WhatsApp"
-          style={{ ...btn, color: "#25D366" }} onClick={() => onLog(cust.id, "whatsapp")}>
-          <MessageCircle size={size} />
-        </a>
-      )}
-      {cust.email && (
-        <a href={`mailto:${cust.email}`} title="Email" style={btn} onClick={() => onLog(cust.id, "email")}>
-          <Mail size={size} />
-        </a>
-      )}
-      {phone && (
-        <a href={`tel:${cust.phone}`} title="Call" style={btn} onClick={() => onLog(cust.id, "call")}>
-          <Phone size={size} />
-        </a>
-      )}
-    </span>
-  );
-}
+// Thin alias — the aligned contact rail lives in crm-ui so both workspaces
+// share identical, column-aligned contact buttons.
+const QuickActions = CustomerContacts;
 
 // ── Column model for the table ────────────────────────────────────────────────
 const ALL_COLUMNS = [
@@ -259,7 +234,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     const all = followUpBuckets(customers);
     const open = customers.filter((x) => ["New", "Contacted", "Planning", "Quote sent"].includes(x.stage));
     const booked = customers.filter((x) => x.stage === "Booked");
-    const hot = customers.filter((x) => (x.temperature === "Fire" || x.temperature === "Hot") && ACTIVE_STAGES.includes(x.stage));
+    const hot = customers.filter((x) => x.temperature === "Hot" && ACTIVE_STAGES.includes(x.stage));
     return {
       active: open.length,
       hot: hot.length,
@@ -415,7 +390,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         <div className="crm-stats">
           {[
             { label: "Open leads", value: stats.active, icon: <Users size={15} />, col: c.teal },
-            { label: "🔥 Hot & fire", value: stats.hot, icon: null, col: stats.hot ? "#FB7185" : c.stone, onClick: () => { setView("table"); setTempFilter("Fire"); } },
+            { label: "🔥 Hot leads", value: stats.hot, icon: null, col: stats.hot ? "#FB7042" : c.stone, onClick: () => { setView("table"); setTempFilter("Hot"); } },
             { label: "Overdue follow-ups", value: stats.overdue, icon: <CalendarClock size={15} />, col: stats.overdue ? "#F87171" : c.stone, onClick: () => setView("followups") },
             { label: "Open pipeline", value: `$${stats.pipeline.toLocaleString()}`, icon: null, col: c.gold },
             { label: `Booked (${stats.bookedCount})`, value: `$${stats.bookedValue.toLocaleString()}`, icon: null, col: "#34D399" },
@@ -472,8 +447,9 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
               <X size={13} /> Clear
             </button>
           )}
-          <span style={{ color: c.stone, fontSize: 12.5, marginLeft: "auto" }}>
-            {filtered.length} of {customers.length}
+          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 999, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
+            <span style={{ color: c.teal }}>{filtered.length}</span>
+            {filtersOn ? <span style={{ color: c.stone, fontWeight: 600 }}>of {customers.length} customers</span> : <span style={{ color: c.stone, fontWeight: 600 }}>customers</span>}
           </span>
         </div>
 
@@ -554,8 +530,8 @@ function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onSta
     switch (key) {
       case "name":
         return (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-            <div style={{ minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 220, justifyContent: "space-between" }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis" }}>{cust.name}</div>
               <div style={{ color: c.stone, fontSize: 11.5 }}>{cust.country || cust.email || cust.phone}</div>
             </div>
@@ -822,7 +798,7 @@ function Drawer({ cust, customers, update, addNote, setStage, logContact, onDele
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
             <span style={{ fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".05em" }}>Heat</span>
-            <TempPicker value={cust.temperature} onChange={(t) => update(cust.id, { temperature: t })} />
+            <TempPicker labels value={cust.temperature} onChange={(t) => update(cust.id, { temperature: t })} />
           </div>
           {dupes.length > 0 && (
             <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 7, padding: "7px 10px", borderRadius: radius.sm, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.35)", color: c.gold, fontSize: 12.5, fontWeight: 600 }}>
@@ -988,7 +964,7 @@ function AddModal({ customers, onClose, onSave, onOpenExisting }) {
             </Field>
             <Field label="Next follow-up"><input type="date" value={rec.nextFollowUp} onChange={set("nextFollowUp")} style={inputBase} /></Field>
             <Field label="Lead heat" span2>
-              <TempPicker value={rec.temperature} onChange={(t) => setRec((r) => ({ ...r, temperature: t }))} />
+              <TempPicker labels value={rec.temperature} onChange={(t) => setRec((r) => ({ ...r, temperature: t }))} />
             </Field>
             <Field label="Tags" span2><TagsEditor tags={rec.tags} onChange={(tags) => setRec((r) => ({ ...r, tags }))} /></Field>
             <Field label="First note" span2>

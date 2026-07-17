@@ -13,7 +13,7 @@ import {
 import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType, tempRank,
 } from "./crm-shared.js";
-import { TempBadge, TempPicker, TypeBadge, TypeSelect, CRM_CSS } from "./crm-ui.jsx";
+import { TempBadge, TempPicker, TypeBadge, TypeSelect, OperatorContacts, CRM_CSS } from "./crm-ui.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 
 const inputBase = {
@@ -60,39 +60,8 @@ function StageSelect({ value, onChange, compact }) {
   );
 }
 
-function ContactButtons({ op, onLog, size = 15 }) {
-  const btn = {
-    display: "inline-flex", alignItems: "center", justifyContent: "center",
-    width: 34, height: 34, borderRadius: 10, border: `1px solid ${c.line}`,
-    background: "rgba(255,255,255,.05)", color: c.stone, cursor: "pointer", textDecoration: "none",
-  };
-  const wa = normPhone(op.whatsapp || "");
-  return (
-    <span style={{ display: "inline-flex", gap: 6 }} onClick={(e) => e.stopPropagation()}>
-      {wa && (
-        <a href={`https://wa.me/${wa}`} target="_blank" rel="noreferrer" title="WhatsApp"
-          style={{ ...btn, color: "#25D366" }} onClick={() => onLog(op.id, "WhatsApp opened")}>
-          <MessageCircle size={size} />
-        </a>
-      )}
-      {op.email && (
-        <a href={`mailto:${op.email}`} title={op.email} style={btn} onClick={() => onLog(op.id, "Email opened")}>
-          <Mail size={size} />
-        </a>
-      )}
-      {op.phone && (
-        <a href={`tel:${op.phone}`} title={op.phone} style={btn} onClick={() => onLog(op.id, "Call started")}>
-          <Phone size={size} />
-        </a>
-      )}
-      {op.website && (
-        <a href={op.website} target="_blank" rel="noreferrer" title="Website" style={btn}>
-          <Globe size={size} />
-        </a>
-      )}
-    </span>
-  );
-}
+// Aligned contact rail (fixed slots) shared with the customer workspace.
+const ContactButtons = OperatorContacts;
 
 function FollowUpCell({ iso }) {
   const d = daysFromToday(iso);
@@ -112,6 +81,8 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [stageFilter, setStageFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [tempFilter, setTempFilter] = useState("");
+  const [sortKey, setSortKey] = useState("smart");
+  const [sortDir, setSortDir] = useState("asc");
   const [selectedId, setSelectedId] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
 
@@ -145,7 +116,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const regions = useMemo(() => [...new Set(operators.flatMap((o) => o.regions.split(",").map((r) => r.trim()).filter(Boolean)))].sort(), [operators]);
   const categories = useMemo(() => [...new Set(TOUR_SEED.map((t) => t.category).filter(Boolean))].sort(), []);
 
-  const filtered = useMemo(() => {
+  const matched = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = operators;
     if (q) {
@@ -158,15 +129,45 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
     if (stageFilter) list = list.filter((o) => o.stage === stageFilter);
     if (typeFilter) list = list.filter((o) => (o.type || "tours") === typeFilter);
     if (tempFilter) list = list.filter((o) => o.temperature === tempFilter);
-    // Hottest first, then preferred partners, then by name — the list always
-    // leads with who to act on.
-    return [...list].sort((a, b) => {
-      const t = tempRank(b.temperature) - tempRank(a.temperature);
-      if (t) return t;
-      if (!!b.preferred !== !!a.preferred) return b.preferred ? 1 : -1;
-      return String(a.name).localeCompare(String(b.name));
-    });
+    return list;
   }, [operators, query, regionFilter, categoryFilter, stageFilter, typeFilter, tempFilter]);
+
+  // Default "smart" sort leads with who to act on (hottest → preferred → name);
+  // any explicit column/dropdown sort overrides it. `onSort` toggles direction.
+  const filtered = useMemo(() => {
+    const list = [...matched];
+    if (sortKey === "smart") {
+      return list.sort((a, b) => {
+        const t = tempRank(b.temperature) - tempRank(a.temperature);
+        if (t) return t;
+        if (!!b.preferred !== !!a.preferred) return b.preferred ? 1 : -1;
+        return String(a.name).localeCompare(String(b.name));
+      });
+    }
+    const val = (o) => {
+      switch (sortKey) {
+        case "name": return String(o.name).toLowerCase();
+        case "fee": return o.takeRate ?? -1;
+        case "stage": return PARTNER_STAGES.indexOf(o.stage);
+        case "type": return o.type || "";
+        case "heat": return tempRank(o.temperature);
+        case "followup": return o.nextFollowUp || "9999";
+        case "checklist": return checklistProgress(o.checklist).done;
+        default: return String(o.name).toLowerCase();
+      }
+    };
+    list.sort((a, b) => {
+      const va = val(a), vb = val(b);
+      const r = va < vb ? -1 : va > vb ? 1 : String(a.name).localeCompare(String(b.name));
+      return sortDir === "asc" ? r : -r;
+    });
+    return list;
+  }, [matched, sortKey, sortDir]);
+
+  const onSort = (key) => {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else { setSortKey(key); setSortDir(key === "fee" || key === "heat" || key === "checklist" ? "desc" : "asc"); }
+  };
 
   const anyFilter = query || stageFilter || regionFilter || categoryFilter || typeFilter || tempFilter;
   const clearFilters = () => { setQuery(""); setStageFilter(""); setRegionFilter(""); setCategoryFilter(""); setTypeFilter(""); setTempFilter(""); };
@@ -179,7 +180,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   }, [operators]);
 
   const hot = useMemo(
-    () => operators.filter((o) => (o.temperature === "Fire" || o.temperature === "Hot") && o.stage !== "Passed"),
+    () => operators.filter((o) => o.temperature === "Hot" && o.stage !== "Passed"),
     [operators],
   );
   const stats = useMemo(() => ({
@@ -248,7 +249,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
         <div className="ops-stats">
           {[
             { label: "Operators", value: stats.total, col: c.teal, onClick: clearFilters },
-            { label: "🔥 Hot & fire", value: stats.hot, col: stats.hot ? "#FB7185" : c.stone, onClick: () => { clearFilters(); setView("directory"); setTempFilter("Fire"); } },
+            { label: "🔥 Hot leads", value: stats.hot, col: stats.hot ? "#FB7042" : c.stone, onClick: () => { clearFilters(); setView("directory"); setTempFilter("Hot"); } },
             { label: "In motion", value: stats.inMotion, col: c.blue },
             { label: "Active partners", value: stats.active, col: "#34D399", onClick: () => { clearFilters(); setStageFilter("Active partner"); } },
             { label: "Outreach due", value: stats.due, col: stats.due ? "#F87171" : c.stone },
@@ -284,12 +285,24 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
             <option value="">All categories</option>
             {categories.map((x) => <option key={x} value={x}>{x}</option>)}
           </select>
+          <select value={`${sortKey}:${sortDir}`} onChange={(e) => { const [k, d] = e.target.value.split(":"); setSortKey(k); setSortDir(d); }}
+            style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
+            <option value="smart:asc">Sort: hottest first</option>
+            <option value="name:asc">Sort: name A → Z</option>
+            <option value="name:desc">Sort: name Z → A</option>
+            <option value="fee:desc">Sort: referral fee (high → low)</option>
+            <option value="stage:asc">Sort: stage</option>
+            <option value="followup:asc">Sort: follow-up date</option>
+          </select>
           {anyFilter && (
             <button onClick={clearFilters} style={{ ...headerBtn, padding: "7px 11px", color: c.teal }}>
               <X size={13} /> Clear
             </button>
           )}
-          <span style={{ color: c.stone, fontSize: 12.5, marginLeft: "auto" }}>{filtered.length} of {operators.length}</span>
+          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: radius.pill, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
+            <span style={{ color: c.teal }}>{filtered.length}</span>
+            {anyFilter ? <span style={{ color: c.stone, fontWeight: 600 }}>of {operators.length} operators</span> : <span style={{ color: c.stone, fontWeight: 600 }}>operators</span>}
+          </span>
         </div>
 
         {view === "directory" && (
@@ -310,7 +323,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
                 </div>
               </div>
             )}
-            <Directory operators={filtered} onOpen={setSelectedId} onStage={setStage} onLog={logTouch} onTemp={setTemp} onPreferred={togglePreferred} />
+            <Directory operators={filtered} sortKey={sortKey} sortDir={sortDir} onSort={onSort} onOpen={setSelectedId} onStage={setStage} onLog={logTouch} onTemp={setTemp} onPreferred={togglePreferred} />
           </>
         )}
         {view === "pipeline" && <OpsPipeline operators={filtered} onOpen={setSelectedId} onStage={setStage} />}
@@ -344,11 +357,24 @@ function StarButton({ on, onClick }) {
   );
 }
 
-function Directory({ operators, onOpen, onStage, onLog, onTemp, onPreferred }) {
+function Directory({ operators, sortKey, sortDir, onSort, onOpen, onStage, onLog, onTemp, onPreferred }) {
   if (!operators.length) {
     return <div style={{ padding: 40, textAlign: "center", color: c.stone, background: c.white, borderRadius: radius.md, border: `1px solid ${c.line}` }}>No operators match these filters.</div>;
   }
   const cell = { padding: "10px 12px", fontSize: 13.5, verticalAlign: "middle", borderBottom: `1px solid ${c.line}`, whiteSpace: "nowrap", textAlign: "left" };
+  // key: sort key (null = not sortable). Click a header to sort by it.
+  const headers = [
+    { label: "", key: null },
+    { label: "Operator", key: "name" },
+    { label: "Type", key: "type" },
+    { label: "Heat", key: "heat" },
+    { label: "Stage", key: "stage" },
+    { label: "Follow-up", key: "followup" },
+    { label: "Regions", key: null },
+    { label: "Referral fee", key: "fee" },
+    { label: "Checklist", key: "checklist" },
+    { label: "Verified", key: null },
+  ];
   return (
     <>
       {/* Desktop */}
@@ -356,9 +382,16 @@ function Directory({ operators, onOpen, onStage, onLog, onTemp, onPreferred }) {
         <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 1040 }}>
           <thead style={{ position: "sticky", top: 0, zIndex: 2, background: c.canvas2 }}>
             <tr>
-              {["", "Operator", "Type", "Heat", "Stage", "Follow-up", "Regions", "Take rate", "Checklist", "Verified"].map((h, i) => (
-                <th key={i} style={{ ...cell, fontSize: 11.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".05em", color: c.stone }}>{h}</th>
-              ))}
+              {headers.map((h, i) => {
+                const active = h.key && sortKey === h.key;
+                return (
+                  <th key={i} onClick={h.key ? () => onSort(h.key) : undefined}
+                    style={{ ...cell, fontSize: 11.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".05em", userSelect: "none",
+                      cursor: h.key ? "pointer" : "default", color: active ? c.teal : c.stone }}>
+                    {h.label}{active ? (sortDir === "asc" ? " ↑" : " ↓") : ""}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -368,9 +401,9 @@ function Directory({ operators, onOpen, onStage, onLog, onTemp, onPreferred }) {
                 <tr key={op.id} className="ops-row" onClick={() => onOpen(op.id)} style={{ cursor: "pointer" }}>
                   <td style={{ ...cell, paddingRight: 0 }}><StarButton on={op.preferred} onClick={() => onPreferred(op.id)} /></td>
                   <td style={cell}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div>
-                        <div style={{ fontWeight: 700 }}>{op.name}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 250, justifyContent: "space-between" }}>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis" }}>{op.name}</div>
                         <div style={{ color: c.stone, fontSize: 11.5 }}>{op.regions || op.contactType || (op.custom ? "Added manually" : "")}</div>
                       </div>
                       <ContactButtons op={op} onLog={onLog} size={14} />
@@ -607,7 +640,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onClose }) {
           </div>
           <div style={{ color: c.stone, fontSize: 12.5, marginTop: 3 }}>
             {op.regions || "—"} · {op.tourCount} priced tour{op.tourCount === 1 ? "" : "s"} ·{" "}
-            <span style={{ color: c.gold, fontWeight: 700 }}>{pct(op.takeRate)} target</span>
+            <span style={{ color: c.gold, fontWeight: 700 }}>{pct(op.takeRate)} referral fee</span>
             {op.verification && (
               <span style={{ marginLeft: 8, color: "#34D399", fontWeight: 700 }}>
                 <BadgeCheck size={12} style={{ verticalAlign: -2 }} /> {op.verification}
@@ -643,7 +676,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onClose }) {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
               <div>
                 <div style={label}>Lead heat</div>
-                <TempPicker value={op.temperature} onChange={(t) => patch(op.id, { temperature: t })} />
+                <TempPicker labels value={op.temperature} onChange={(t) => patch(op.id, { temperature: t })} />
               </div>
               <button
                 onClick={() => patch(op.id, { preferred: !op.preferred })}
@@ -696,7 +729,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onClose }) {
                 Last touch: <b style={{ color: op.lastContacted ? c.charcoal : "#F87171" }}>{op.lastContacted ? fmtDate(op.lastContacted) : "never"}</b>
               </div>
               <div style={{ marginTop: 8 }}>
-                <div style={label}>Agreed take rate</div>
+                <div style={label}>Agreed referral fee</div>
                 <input
                   value={op.takeRate === null || op.takeRate === undefined ? "" : Math.round(op.takeRate * 100)}
                   onChange={(e) => { const n = Number(e.target.value); patch(op.id, { takeRate: Number.isFinite(n) && e.target.value !== "" ? n / 100 : null }); }}
@@ -790,7 +823,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onClose }) {
 
 // ── Add operator ──────────────────────────────────────────────────────────────
 function AddOperatorModal({ onClose, onSave }) {
-  const [f, setF] = useState({ name: "", type: "tours", temperature: "Warm", regions: "", categories: "", phone: "", whatsapp: "", email: "", website: "" });
+  const [f, setF] = useState({ name: "", type: "tours", temperature: "", regions: "", categories: "", phone: "", whatsapp: "", email: "", website: "" });
   const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }));
   const canSave = f.name.trim().length > 0;
   const label = { fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 5 };
@@ -808,7 +841,7 @@ function AddOperatorModal({ onClose, onSave }) {
             <label><div style={label}>Vendor type</div><TypeSelect value={f.type} onChange={(t) => setF((x) => ({ ...x, type: t }))} /></label>
             <label style={{ gridColumn: "1 / -1" }}>
               <div style={label}>Lead heat</div>
-              <TempPicker value={f.temperature} onChange={(t) => setF((x) => ({ ...x, temperature: t }))} />
+              <TempPicker labels value={f.temperature} onChange={(t) => setF((x) => ({ ...x, temperature: t }))} />
             </label>
             <label><div style={label}>Regions</div><input value={f.regions} onChange={set("regions")} style={inputBase} placeholder="Guanacaste, Arenal…" /></label>
             <label><div style={label}>Categories</div><input value={f.categories} onChange={set("categories")} style={inputBase} placeholder="Zipline, Rafting" /></label>
