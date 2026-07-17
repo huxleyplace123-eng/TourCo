@@ -10,6 +10,7 @@ import {
   importCsv, loadColumnPrefs, loadCustomers, moneyNum, normPhone, sampleCustomers,
   saveColumnPrefs, saveCustomers, toCsv, todayIso,
 } from "./store.js";
+import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TicoWild CRM — one screen, three views (Table · Pipeline · Follow-ups),
@@ -158,7 +159,7 @@ const sortVal = (cust, key) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-export default function App() {
+export default function App({ workspace, onWorkspace, onSignOut }) {
   const [customers, setCustomers] = useState(() => loadCustomers());
   const [view, setView] = useState("table");
   const [query, setQuery] = useState("");
@@ -328,6 +329,7 @@ export default function App() {
             Tico<span style={{ color: c.gold }}>Wild</span>
             <span style={{ color: c.stone, fontWeight: 700, fontSize: 15, marginLeft: 8 }}>CRM</span>
           </div>
+          <WorkspaceSwitch workspace={workspace} onWorkspace={onWorkspace} />
 
           <div style={{ position: "relative", flex: "1 1 220px", maxWidth: 420 }}>
             <Search size={15} style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: c.stone }} />
@@ -378,6 +380,9 @@ export default function App() {
               boxShadow: shadow.glowGold,
             }}>
             <Plus size={16} strokeWidth={3} /> Add customer
+          </button>
+          <button onClick={onSignOut} style={{ ...headerBtn, color: c.stone }} title="Sign out">
+            Sign out
           </button>
         </div>
 
