@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle, BadgeCheck, ExternalLink, Globe, Mail, MessageCircle, Phone,
-  Plus, Search, X, ChevronDown, ChevronUp, Star, Eye, Send,
+  Plus, Search, X, ChevronDown, ChevronUp, Star, Eye, Send, Upload,
 } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import { addDaysIso, daysFromToday, fmtDate, normPhone, todayIso } from "./store.js";
 import { CATEGORY_BENCHMARKS, TOUR_SEED } from "./operators-data.js";
 import {
   OUTREACH_CHECKLIST, PARTNER_STAGES, PARTNER_STAGE_COLORS,
-  checklistProgress, loadOperatorOverlay, mergedOperators, patchOperator, pct, saveOverlay,
+  checklistProgress, importOperatorsCsv, loadOperatorOverlay, mergedOperators, patchOperator, pct, saveOverlay,
 } from "./operators-store.js";
 import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType, tempRank,
@@ -88,6 +88,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [selectedId, setSelectedId] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [portalOpId, setPortalOpId] = useState(null);
+  const fileRef = useRef(null);
 
   useEffect(() => saveOverlay(overlay), [overlay]);
 
@@ -114,6 +115,23 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const togglePreferred = (id) => {
     const op = operators.find((x) => x.id === id);
     patch(id, { preferred: !op?.preferred });
+  };
+
+  const onImportFile = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const { entries, imported, skippedDuplicates, badRows } = importOperatorsCsv(String(reader.result), operators);
+      if (imported) setOverlay((ov) => ({ ...ov, ...entries }));
+      window.alert(
+        `Imported ${imported} operator${imported === 1 ? "" : "s"}.` +
+        (skippedDuplicates ? ` Skipped ${skippedDuplicates} duplicate${skippedDuplicates === 1 ? "" : "s"} (same name or phone).` : "") +
+        (badRows ? ` ${badRows} row${badRows === 1 ? "" : "s"} had no company name and were skipped.` : ""),
+      );
+    };
+    reader.readAsText(file);
   };
 
   const regions = useMemo(() => [...new Set(operators.flatMap((o) => o.regions.split(",").map((r) => r.trim()).filter(Boolean)))].sort(), [operators]);
@@ -242,6 +260,10 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
             ))}
           </div>
           <div style={{ flex: 1 }} className="ops-hide-mobile" />
+          <button onClick={() => fileRef.current?.click()} style={headerBtn} title="Import operators from CSV">
+            <Upload size={15} /> <span className="ops-hide-mobile">Import</span>
+          </button>
+          <input ref={fileRef} type="file" accept=".csv,text/csv" onChange={onImportFile} style={{ display: "none" }} />
           <button onClick={() => setShowAdd(true)} style={{ ...headerBtn, background: c.gold, borderColor: c.gold, color: c.ink, fontWeight: 800, boxShadow: shadow.glowGold }}>
             <Plus size={16} strokeWidth={3} /> Add operator
           </button>

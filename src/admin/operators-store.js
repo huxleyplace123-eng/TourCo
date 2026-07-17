@@ -5,7 +5,8 @@
 // redeploy with fresher spreadsheet data never wipes working state.
 
 import { OPERATOR_SEED } from "./operators-data.js";
-import { inferOperatorType } from "./crm-shared.js";
+import { inferOperatorType, OPERATOR_TYPES, TEMPERATURES } from "./crm-shared.js";
+import { parseCsvText } from "./store.js";
 
 const OVERLAY_KEY = "ticowild_crm_operators_v1";
 
@@ -142,3 +143,99 @@ export function checklistProgress(checklist) {
 }
 
 export const pct = (v) => (v === null || v === undefined ? "—" : `${Math.round(v * 100)}%`);
+
+// ── CSV import ────────────────────────────────────────────────────────────────
+// Take a CSV (ours or a loose export), fuzzy-match its headers to operator
+// fields, and produce overlay entries (custom operators). Dedupes against the
+// existing merged list by company name OR phone/WhatsApp. Mirrors the customer
+// importer in store.js.
+const squash = (s) => String(s).toLowerCase().replace(/[^a-z]/g, "");
+const digits = (p) => String(p || "").replace(/\D/g, "");
+const normName = (n) => String(n || "").trim().toLowerCase();
+
+const OP_ALIASES = {
+  name: ["name", "operator", "operatorseller", "company", "companyname", "business", "businessname", "seller"],
+  type: ["type", "vendortype", "operatortype", "kind"],
+  regions: ["region", "regions", "area", "zone"],
+  destinations: ["destination", "destinations", "base", "town", "city", "location"],
+  categories: ["categories", "category", "categorymix", "activities", "activity", "services", "tours", "toursoffered"],
+  phone: ["phone", "primaryphone", "telephone", "tel", "phonenumber", "primaryphone"],
+  whatsapp: ["whatsapp", "wa", "mobile", "cell", "cellphone"],
+  email: ["email", "primaryemail", "mail", "emailaddress", "contactemail"],
+  website: ["website", "site", "url", "web", "homepage"],
+  takeRate: ["referralfee", "takerate", "fee", "commission", "targettakerate", "feepercent", "feepct", "targetrate"],
+  temperature: ["heat", "temperature", "temp", "priority", "leadheat"],
+  owner: ["owner", "assignedto", "assignee", "rep", "accountowner"],
+  notes: ["notes", "note", "comments", "remarks", "commercial", "pricingask"],
+};
+
+const opTypeFromText = (v) => {
+  const s = squash(v);
+  if (!s) return "tours";
+  const hit = OPERATOR_TYPES.find((t) => t.key === s || squash(t.label) === s || squash(t.label).startsWith(s) || s.includes(t.key));
+  if (hit) return hit.key;
+  // fall back to inferring from the free text (e.g. "hotel", "shuttle")
+  return inferOperatorType([v]);
+};
+
+const opHeatFromText = (v) => {
+  const s = squash(v);
+  const hit = TEMPERATURES.find((t) => squash(t) === s);
+  return hit || "";
+};
+
+const parseRate = (v) => {
+  if (!v) return null;
+  const n = parseFloat(String(v).replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(n)) return null;
+  return n > 1 ? n / 100 : n; // "18" or "18%" → 0.18; "0.18" → 0.18
+};
+
+export function importOperatorsCsv(text, existing) {
+  const rows = parseCsvText(text);
+  if (rows.length < 2) return { entries: {}, imported: 0, skippedDuplicates: 0, badRows: 0 };
+  const header = rows[0].map(squash);
+  const colFor = {};
+  for (const [key, names] of Object.entries(OP_ALIASES)) {
+    const idx = header.findIndex((h) => names.includes(h));
+    if (idx >= 0) colFor[key] = idx;
+  }
+  if (colFor.name === undefined) return { entries: {}, imported: 0, skippedDuplicates: 0, badRows: rows.length - 1 };
+
+  const seenNames = new Set(existing.map((o) => normName(o.name)).filter(Boolean));
+  const seenPhones = new Set(existing.flatMap((o) => [digits(o.phone), digits(o.whatsapp)]).filter(Boolean));
+
+  const entries = {};
+  let imported = 0, skippedDuplicates = 0, badRows = 0;
+  for (const raw of rows.slice(1)) {
+    const get = (k) => (colFor[k] === undefined ? "" : String(raw[colFor[k]] ?? "").trim());
+    const name = get("name");
+    if (!name) { badRows++; continue; }
+    const phoneD = digits(get("phone")) || digits(get("whatsapp"));
+    if (seenNames.has(normName(name)) || (phoneD && seenPhones.has(phoneD))) { skippedDuplicates++; continue; }
+
+    const notesText = get("notes");
+    entries[`custom-imp-${Math.random().toString(36).slice(2, 9)}`] = {
+      custom: true,
+      name,
+      type: opTypeFromText(get("type")),
+      regions: get("regions"),
+      destinations: get("destinations"),
+      categories: get("categories") ? get("categories").split(/[;,/]/).map((s) => s.trim()).filter(Boolean) : [],
+      phone: get("phone"),
+      whatsapp: get("whatsapp"),
+      email: get("email"),
+      website: get("website"),
+      takeRate: parseRate(get("takeRate")),
+      temperature: opHeatFromText(get("temperature")),
+      owner: get("owner"),
+      stage: "Not contacted",
+      notes: notesText ? [{ id: `n_${Math.random().toString(36).slice(2, 9)}`, at: new Date().toISOString(), text: notesText }] : [],
+      checklist: {},
+    };
+    seenNames.add(normName(name));
+    if (phoneD) seenPhones.add(phoneD);
+    imported++;
+  }
+  return { entries, imported, skippedDuplicates, badRows };
+}
