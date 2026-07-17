@@ -197,9 +197,13 @@ export const CRM_CSS = `
     .crm-mob { display: grid; gap: 10px; }
     .crm-hide-mobile, .ops-hide-mobile { display: none !important; }
     .crm-grid2, .ops-grid2 { grid-template-columns: 1fr !important; }
-    .crm-stats, .ops-stats { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(46%, 1fr);
-      overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 4px; }
-    .crm-stats > *, .ops-stats > * { scroll-snap-align: start; }
+    /* stat tiles: a clean 2-up grid (all visible, aligned) — not a scroll strip */
+    .crm-stats, .ops-stats { grid-template-columns: 1fr 1fr; }
+    /* filters: uniform 2-up dropdowns so the row reads clean and lined up */
+    .crm-filterbar { gap: 8px; }
+    .crm-filterbar > svg { display: none; }
+    .crm-filterbar > select { flex: 1 1 calc(50% - 4px); width: auto !important; min-width: 0; }
+    .crm-filtercount { margin-left: 0 !important; width: 100%; justify-content: flex-end; }
     .crm-drawer, .ops-drawer { width: 100vw !important; }
     button, select, input { min-height: 44px; }
     .crm-toolgrow { flex: 1 1 100% !important; max-width: none !important; order: 5; }

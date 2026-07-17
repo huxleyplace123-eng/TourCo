@@ -24,6 +24,18 @@ const money = (v) => {
   return n ? `$${n.toLocaleString()}` : "—";
 };
 
+// "3d ago" / "2mo ago" — a compact relative age for the Added column.
+const ageLabel = (iso) => {
+  const d = daysFromToday(iso);
+  if (d === null) return "";
+  const a = Math.max(0, -d);
+  if (a === 0) return "Today";
+  if (a === 1) return "Yesterday";
+  if (a < 30) return `${a}d ago`;
+  if (a < 365) return `${Math.round(a / 30)}mo ago`;
+  return `${Math.round(a / 365)}y ago`;
+};
+
 const inputBase = {
   width: "100%",
   background: "rgba(255,255,255,.06)",
@@ -102,6 +114,7 @@ const QuickActions = CustomerContacts;
 
 // ── Column model for the table ────────────────────────────────────────────────
 const ALL_COLUMNS = [
+  { key: "dateAdded", label: "Added", always: true },
   { key: "name", label: "Customer", always: true },
   { key: "temperature", label: "Heat" },
   { key: "stage", label: "Stage" },
@@ -121,10 +134,11 @@ const ALL_COLUMNS = [
   { key: "source", label: "Source" },
   { key: "payment", label: "Payment" },
 ];
-const DEFAULT_COLUMNS = ["name", "temperature", "stage", "nextFollowUp", "travel", "travelers", "tripValue", "assignee", "lastContacted"];
+const DEFAULT_COLUMNS = ["dateAdded", "name", "temperature", "stage", "nextFollowUp", "travel", "travelers", "tripValue", "assignee", "lastContacted"];
 
 const sortVal = (cust, key) => {
   switch (key) {
+    case "dateAdded": return cust.createdAt || "";
     case "name": return String(cust.name).toLowerCase();
     case "temperature": return -tempRank(cust.temperature);
     case "stage": return STAGES.indexOf(cust.stage);
@@ -367,7 +381,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
             background: c.white, display: "flex", flexWrap: "wrap", gap: 8,
           }}>
             {ALL_COLUMNS.map((col) => {
-              const on = columns.includes(col.key);
+              const on = col.always || columns.includes(col.key);
               return (
                 <button key={col.key}
                   disabled={col.always}
@@ -409,7 +423,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         </div>
 
         {/* ── Filters ── */}
-        <div className="crm-filters">
+        <div className="crm-filters crm-filterbar">
           <Filter size={14} style={{ color: c.stone }} />
           <select value={tempFilter} onChange={(e) => setTempFilter(e.target.value)} style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
             <option value="">All heat</option>
@@ -434,6 +448,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           <select value={`${sortKey}:${sortDir}`} onChange={(e) => { const [k, d] = e.target.value.split(":"); setSortKey(k); setSortDir(d); }}
             style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
             <option value="nextFollowUp:asc">Sort: next follow-up</option>
+            <option value="dateAdded:desc">Sort: newest added</option>
             <option value="temperature:asc">Sort: heat (hottest)</option>
             <option value="travel:asc">Sort: travel date</option>
             <option value="tripValue:desc">Sort: value (high→low)</option>
@@ -447,7 +462,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
               <X size={13} /> Clear
             </button>
           )}
-          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 999, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
+          <span className="crm-filtercount" style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 999, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
             <span style={{ color: c.teal }}>{filtered.length}</span>
             {filtersOn ? <span style={{ color: c.stone, fontWeight: 600 }}>of {customers.length} customers</span> : <span style={{ color: c.stone, fontWeight: 600 }}>customers</span>}
           </span>
@@ -524,10 +539,19 @@ function EmptyState({ onAdd, onImport }) {
 
 // ── Table view ────────────────────────────────────────────────────────────────
 function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onStage, onLog, onTemp }) {
-  const cols = ALL_COLUMNS.filter((col) => columns.includes(col.key));
+  // `always` columns render regardless of saved prefs, so "Added" + "Customer"
+  // are always the first two, lined up.
+  const cols = ALL_COLUMNS.filter((col) => col.always || columns.includes(col.key));
   const cellStyle = { padding: "10px 12px", fontSize: 13.5, verticalAlign: "middle", borderBottom: `1px solid ${c.line}`, whiteSpace: "nowrap" };
   const render = (cust, key) => {
     switch (key) {
+      case "dateAdded":
+        return (
+          <div style={{ lineHeight: 1.2 }}>
+            <div style={{ fontWeight: 700, fontSize: 13, color: c.charcoal }}>{cust.createdAt ? fmtDate(cust.createdAt) : "—"}</div>
+            {cust.createdAt && <div style={{ color: c.stone, fontSize: 11, fontWeight: 600 }}>{ageLabel(cust.createdAt)}</div>}
+          </div>
+        );
       case "name":
         return (
           <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 220, justifyContent: "space-between" }}>
@@ -595,6 +619,7 @@ function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onSta
                 <div className="crm-mcard-sub">
                   {cust.travelStart ? `${fmtDate(cust.travelStart)}` : "no dates"}{cust.travelers ? ` · ${cust.travelers} pax` : ""}{cust.country ? ` · ${cust.country}` : ""}
                 </div>
+                {cust.createdAt && <div className="crm-mcard-sub" style={{ opacity: .8 }}>Added {fmtDate(cust.createdAt)}</div>}
               </div>
               <TempBadge temperature={cust.temperature} small />
             </div>
