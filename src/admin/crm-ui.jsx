@@ -194,7 +194,7 @@ export const CRM_CSS = `
 
   @media (max-width: 820px) {
     .crm-desk { display: none; }
-    .crm-mob { display: block; }
+    .crm-mob { display: grid; gap: 10px; }
     .crm-hide-mobile, .ops-hide-mobile { display: none !important; }
     .crm-grid2, .ops-grid2 { grid-template-columns: 1fr !important; }
     .crm-stats, .ops-stats { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(46%, 1fr);
