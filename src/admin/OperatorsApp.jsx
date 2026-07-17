@@ -13,7 +13,7 @@ import {
 import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType, tempRank,
 } from "./crm-shared.js";
-import { TempBadge, TempPicker, TypeBadge, TypeSelect, CRM_CSS } from "./crm-ui.jsx";
+import { TempBadge, TempPicker, TypeBadge, TypeSelect, OperatorContacts, CRM_CSS } from "./crm-ui.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 
 const inputBase = {
@@ -60,39 +60,8 @@ function StageSelect({ value, onChange, compact }) {
   );
 }
 
-function ContactButtons({ op, onLog, size = 15 }) {
-  const btn = {
-    display: "inline-flex", alignItems: "center", justifyContent: "center",
-    width: 34, height: 34, borderRadius: 10, border: `1px solid ${c.line}`,
-    background: "rgba(255,255,255,.05)", color: c.stone, cursor: "pointer", textDecoration: "none",
-  };
-  const wa = normPhone(op.whatsapp || "");
-  return (
-    <span style={{ display: "inline-flex", gap: 6 }} onClick={(e) => e.stopPropagation()}>
-      {wa && (
-        <a href={`https://wa.me/${wa}`} target="_blank" rel="noreferrer" title="WhatsApp"
-          style={{ ...btn, color: "#25D366" }} onClick={() => onLog(op.id, "WhatsApp opened")}>
-          <MessageCircle size={size} />
-        </a>
-      )}
-      {op.email && (
-        <a href={`mailto:${op.email}`} title={op.email} style={btn} onClick={() => onLog(op.id, "Email opened")}>
-          <Mail size={size} />
-        </a>
-      )}
-      {op.phone && (
-        <a href={`tel:${op.phone}`} title={op.phone} style={btn} onClick={() => onLog(op.id, "Call started")}>
-          <Phone size={size} />
-        </a>
-      )}
-      {op.website && (
-        <a href={op.website} target="_blank" rel="noreferrer" title="Website" style={btn}>
-          <Globe size={size} />
-        </a>
-      )}
-    </span>
-  );
-}
+// Aligned contact rail (fixed slots) shared with the customer workspace.
+const ContactButtons = OperatorContacts;
 
 function FollowUpCell({ iso }) {
   const d = daysFromToday(iso);
@@ -179,7 +148,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   }, [operators]);
 
   const hot = useMemo(
-    () => operators.filter((o) => (o.temperature === "Fire" || o.temperature === "Hot") && o.stage !== "Passed"),
+    () => operators.filter((o) => o.temperature === "Hot" && o.stage !== "Passed"),
     [operators],
   );
   const stats = useMemo(() => ({
@@ -248,7 +217,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
         <div className="ops-stats">
           {[
             { label: "Operators", value: stats.total, col: c.teal, onClick: clearFilters },
-            { label: "🔥 Hot & fire", value: stats.hot, col: stats.hot ? "#FB7185" : c.stone, onClick: () => { clearFilters(); setView("directory"); setTempFilter("Fire"); } },
+            { label: "🔥 Hot leads", value: stats.hot, col: stats.hot ? "#FB7042" : c.stone, onClick: () => { clearFilters(); setView("directory"); setTempFilter("Hot"); } },
             { label: "In motion", value: stats.inMotion, col: c.blue },
             { label: "Active partners", value: stats.active, col: "#34D399", onClick: () => { clearFilters(); setStageFilter("Active partner"); } },
             { label: "Outreach due", value: stats.due, col: stats.due ? "#F87171" : c.stone },
@@ -368,9 +337,9 @@ function Directory({ operators, onOpen, onStage, onLog, onTemp, onPreferred }) {
                 <tr key={op.id} className="ops-row" onClick={() => onOpen(op.id)} style={{ cursor: "pointer" }}>
                   <td style={{ ...cell, paddingRight: 0 }}><StarButton on={op.preferred} onClick={() => onPreferred(op.id)} /></td>
                   <td style={cell}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div>
-                        <div style={{ fontWeight: 700 }}>{op.name}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 250, justifyContent: "space-between" }}>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis" }}>{op.name}</div>
                         <div style={{ color: c.stone, fontSize: 11.5 }}>{op.regions || op.contactType || (op.custom ? "Added manually" : "")}</div>
                       </div>
                       <ContactButtons op={op} onLog={onLog} size={14} />
@@ -643,7 +612,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onClose }) {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
               <div>
                 <div style={label}>Lead heat</div>
-                <TempPicker value={op.temperature} onChange={(t) => patch(op.id, { temperature: t })} />
+                <TempPicker labels value={op.temperature} onChange={(t) => patch(op.id, { temperature: t })} />
               </div>
               <button
                 onClick={() => patch(op.id, { preferred: !op.preferred })}
@@ -790,7 +759,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onClose }) {
 
 // ── Add operator ──────────────────────────────────────────────────────────────
 function AddOperatorModal({ onClose, onSave }) {
-  const [f, setF] = useState({ name: "", type: "tours", temperature: "Warm", regions: "", categories: "", phone: "", whatsapp: "", email: "", website: "" });
+  const [f, setF] = useState({ name: "", type: "tours", temperature: "", regions: "", categories: "", phone: "", whatsapp: "", email: "", website: "" });
   const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }));
   const canSave = f.name.trim().length > 0;
   const label = { fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 5 };
@@ -808,7 +777,7 @@ function AddOperatorModal({ onClose, onSave }) {
             <label><div style={label}>Vendor type</div><TypeSelect value={f.type} onChange={(t) => setF((x) => ({ ...x, type: t }))} /></label>
             <label style={{ gridColumn: "1 / -1" }}>
               <div style={label}>Lead heat</div>
-              <TempPicker value={f.temperature} onChange={(t) => setF((x) => ({ ...x, temperature: t }))} />
+              <TempPicker labels value={f.temperature} onChange={(t) => setF((x) => ({ ...x, temperature: t }))} />
             </label>
             <label><div style={label}>Regions</div><input value={f.regions} onChange={set("regions")} style={inputBase} placeholder="Guanacaste, Arenal…" /></label>
             <label><div style={label}>Categories</div><input value={f.categories} onChange={set("categories")} style={inputBase} placeholder="Zipline, Rafting" /></label>

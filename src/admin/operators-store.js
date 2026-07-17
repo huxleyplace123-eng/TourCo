@@ -76,7 +76,7 @@ export function mergedOperators(overlay) {
     return {
       ...seed,
       stage: ov.stage ?? normalizeSeedStage(seed.seedStage),
-      temperature: ov.temperature ?? "Warm",
+      temperature: ov.temperature ?? "",
       type: ov.type ?? inferOperatorType(seed.categories),
       owner: ov.owner ?? "",
       preferred: ov.preferred ?? false,
@@ -117,7 +117,7 @@ export function mergedOperators(overlay) {
       seedStage: "Not contacted",
       outreachNotes: "",
       stage: ov.stage ?? "Not contacted",
-      temperature: ov.temperature ?? "Warm",
+      temperature: ov.temperature ?? "",
       owner: ov.owner ?? "",
       preferred: ov.preferred ?? false,
       nextFollowUp: ov.nextFollowUp ?? "",

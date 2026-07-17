@@ -4,20 +4,23 @@
 // and the two app views.
 
 // ── Lead temperature ──────────────────────────────────────────────────────────
-// A priority/heat axis that is INDEPENDENT of pipeline stage: a lead can be
-// "In talks" and still be 🔥 Fire. Ordered cold → hot so we can sort by it.
-export const TEMPERATURES = ["Cold", "Warm", "Hot", "Fire"];
+// A simple priority axis, INDEPENDENT of pipeline stage: a lead can be "In
+// talks" and still be Hot. Three states — Cold · Medium · Hot — and a real
+// UNSET default ("" — no heat picked yet), so a fresh record shows nothing
+// until someone taps a heat. Ordered cold → hot for sorting.
+export const TEMPERATURES = ["Cold", "Medium", "Hot"];
 
 export const TEMPERATURE_META = {
-  Cold: { emoji: "🧊", color: "#7FA6E8", label: "Cold" },
-  Warm: { emoji: "🌤️", color: "#22D3EE", label: "Warm" },
-  Hot:  { emoji: "🔥", color: "#FFD000", label: "Hot" },
-  Fire: { emoji: "🚀", color: "#FB7185", label: "Fire" },
+  Cold:   { emoji: "❄️", color: "#38BDF8", label: "Cold" },
+  Medium: { emoji: "⚡", color: "#FBBF24", label: "Medium" },
+  Hot:    { emoji: "🔥", color: "#FB7042", label: "Hot" },
 };
 
+// Sort key: Hot(3) > Medium(2) > Cold(1) > unset(0), so unset sinks to the
+// bottom of a hottest-first sort.
 export const tempRank = (t) => {
   const i = TEMPERATURES.indexOf(t);
-  return i === -1 ? -1 : i;
+  return i === -1 ? 0 : i + 1;
 };
 
 // ── Operator / vendor type ────────────────────────────────────────────────────
