@@ -447,8 +447,9 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
               <X size={13} /> Clear
             </button>
           )}
-          <span style={{ color: c.stone, fontSize: 12.5, marginLeft: "auto" }}>
-            {filtered.length} of {customers.length}
+          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 999, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.04)", color: c.charcoal, fontSize: 12.5, fontWeight: 700 }}>
+            <span style={{ color: c.teal }}>{filtered.length}</span>
+            {filtersOn ? <span style={{ color: c.stone, fontWeight: 600 }}>of {customers.length} customers</span> : <span style={{ color: c.stone, fontWeight: 600 }}>customers</span>}
           </span>
         </div>
 
