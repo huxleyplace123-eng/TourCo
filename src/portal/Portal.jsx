@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import QRCode from "qrcode";
 import {
   CalendarDays, MessageCircle, User, MapPin, Clock, Check, Hourglass, Send, LogOut, Backpack, ShieldCheck,
+  QrCode, X, LifeBuoy, ChevronRight,
 } from "lucide-react";
 import { c, FONT, radius, shadow, grad } from "../theme.js";
 import {
@@ -58,6 +60,52 @@ export default function Portal({ email, onSignOut }) {
         {tab === "messages" && <MessagesTab />}
         {tab === "account" && <AccountTab email={email} />}
       </div>
+
+      {tab !== "messages" && (
+        <button onClick={() => setTab("messages")} title="Chat with your concierge"
+          style={{ position: "fixed", right: 18, bottom: 18, zIndex: 40, display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 16px", borderRadius: 999, border: "none", background: c.gold, color: c.ink,
+            fontFamily: FONT, fontSize: 14, fontWeight: 800, cursor: "pointer", boxShadow: shadow.glowGold }}>
+          <LifeBuoy size={17} /> Need help?
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ── Voucher ── QR + details a guest shows their guide on arrival ──────────────
+function Voucher({ booking, trip, onClose }) {
+  const [qr, setQr] = useState("");
+  useEffect(() => {
+    const payload = `ticowild:voucher:${booking.id}`;
+    QRCode.toDataURL(payload, { margin: 1, width: 320, color: { dark: "#0B1A2E", light: "#ffffff" } }).then(setQr).catch(() => {});
+  }, [booking.id]);
+  return (
+    <div onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(4,10,20,.7)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 18 }}>
+      <div className="pt-card" style={{ width: "min(360px,100%)", background: c.canvas2, overflow: "hidden" }}>
+        <div style={{ display: "flex", alignItems: "center", padding: "14px 18px", borderBottom: `1px solid ${c.line}` }}>
+          <div style={{ flex: 1, fontWeight: 800, fontSize: 15, display: "inline-flex", alignItems: "center", gap: 8 }}><QrCode size={17} color={c.gold} /> Your voucher</div>
+          <button onClick={onClose} aria-label="Close" style={{ all: "unset", cursor: "pointer", color: c.stone, display: "flex", padding: 4 }}><X size={20} /></button>
+        </div>
+        <div style={{ padding: "20px", textAlign: "center" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#34D399", fontWeight: 800, fontSize: 13, marginBottom: 14 }}><Check size={15} /> Confirmed</div>
+          <div style={{ background: "#fff", borderRadius: 16, padding: 14, display: "inline-block" }}>
+            {qr ? <img src={qr} alt="voucher QR" style={{ width: 200, height: 200, display: "block" }} /> : <div style={{ width: 200, height: 200 }} />}
+          </div>
+          <div style={{ fontWeight: 800, fontSize: 17, marginTop: 16 }}>{booking.name}</div>
+          <div style={{ color: c.stone, fontSize: 13.5, marginTop: 2 }}>{booking.operator}</div>
+          <div style={{ display: "grid", gap: 4, marginTop: 14, textAlign: "left", fontSize: 13.5 }}>
+            <div><b>When</b> · {fmt(booking.date)}, {booking.time}</div>
+            <div><b>Meet</b> · {booking.meet}</div>
+            <div><b>Guests</b> · {trip?.travelers || 2}</div>
+            <div style={{ color: c.stone }}><b style={{ color: c.charcoal }}>Bring</b> · {booking.bring}</div>
+          </div>
+          <div style={{ marginTop: 16, padding: "9px 12px", borderRadius: radius.sm, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.3)", color: c.gold, fontSize: 12.5, fontWeight: 700 }}>
+            Show this QR to your guide on arrival. Works offline.
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -74,6 +122,7 @@ function StatusBadge({ status }) {
 }
 
 function TripTab({ trip }) {
+  const [voucher, setVoucher] = useState(null);
   if (!trip) return <div style={{ padding: 40, textAlign: "center", color: c.stone }}>Loading your trip…</div>;
   const until = daysUntil(trip.start);
   const stageIdx = tripStages.indexOf(trip.status === "Confirmed" ? "Confirmed" : trip.status);
@@ -111,30 +160,39 @@ function TripTab({ trip }) {
           {trip.days.map((day) => (
             <div key={day.date}>
               <div style={{ fontWeight: 800, fontSize: 13.5, margin: "4px 2px 8px", color: c.blue }}>{fmt(day.date)}</div>
-              {day.items.map((it) => (
-                <div key={it.id} className="pt-card" style={{ overflow: "hidden", marginBottom: 10 }}>
-                  <div style={{ position: "relative", height: 130 }}>
-                    <img src={activityPhoto(it.photo, 800)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(11,26,46,.9), transparent 60%)" }} />
-                    <div style={{ position: "absolute", left: 14, bottom: 12, right: 14, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
-                      <div>
-                        <div style={{ color: "#fff", fontWeight: 800, fontSize: 16 }}>{it.name}</div>
-                        <div style={{ color: "rgba(255,255,255,.85)", fontSize: 12.5 }}>{it.operator}</div>
+              {day.items.map((it) => {
+                const confirmed = it.status === "Confirmed";
+                return (
+                  <div key={it.id} className="pt-card" onClick={() => confirmed && setVoucher({ ...it, date: day.date })}
+                    style={{ overflow: "hidden", marginBottom: 10, cursor: confirmed ? "pointer" : "default" }}>
+                    <div style={{ position: "relative", height: 130 }}>
+                      <img src={activityPhoto(it.photo, 800)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(11,26,46,.9), transparent 60%)" }} />
+                      <div style={{ position: "absolute", left: 14, bottom: 12, right: 14, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
+                        <div>
+                          <div style={{ color: "#fff", fontWeight: 800, fontSize: 16 }}>{it.name}</div>
+                          <div style={{ color: "rgba(255,255,255,.85)", fontSize: 12.5 }}>{it.operator}</div>
+                        </div>
+                        <StatusBadge status={it.status} />
                       </div>
-                      <StatusBadge status={it.status} />
+                    </div>
+                    <div style={{ padding: "12px 15px", display: "grid", gap: 8 }}>
+                      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", fontSize: 13 }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: c.charcoal, fontWeight: 700 }}><Clock size={14} color={c.teal} /> {it.time}</span>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: c.stone }}><MapPin size={14} color={c.teal} /> {it.meet}</span>
+                      </div>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, color: c.stone, fontSize: 12.5 }}>
+                        <Backpack size={14} color={c.gold} /> Bring: {it.bring}
+                      </div>
+                      <div style={{ marginTop: 2, paddingTop: 9, borderTop: `1px solid ${c.line}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        {confirmed
+                          ? <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: c.gold, fontWeight: 800, fontSize: 13 }}><QrCode size={15} /> View voucher <ChevronRight size={14} /></span>
+                          : <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: c.stone, fontWeight: 700, fontSize: 12.5 }}><Hourglass size={13} /> TicoWild is confirming this with the operator</span>}
+                      </div>
                     </div>
                   </div>
-                  <div style={{ padding: "12px 15px", display: "grid", gap: 8 }}>
-                    <div style={{ display: "flex", gap: 16, flexWrap: "wrap", fontSize: 13 }}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: c.charcoal, fontWeight: 700 }}><Clock size={14} color={c.teal} /> {it.time}</span>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: c.stone }}><MapPin size={14} color={c.teal} /> {it.meet}</span>
-                    </div>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 7, color: c.stone, fontSize: 12.5 }}>
-                      <Backpack size={14} color={c.gold} /> Bring: {it.bring}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ))}
         </div>
@@ -151,6 +209,8 @@ function TripTab({ trip }) {
       <div style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center", color: c.stone, fontSize: 12.5 }}>
         <ShieldCheck size={15} color="#34D399" /> Vetted local operators · TicoWild coordinates every confirmation
       </div>
+
+      {voucher && <Voucher booking={voucher} trip={trip} onClose={() => setVoucher(null)} />}
     </div>
   );
 }
