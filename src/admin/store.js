@@ -72,7 +72,7 @@ export function blankCustomer() {
     budget: "",
     source: "",
     stage: "New",
-    temperature: "Warm",
+    temperature: "",
     assignee: "",
     nextFollowUp: "",
     lastContacted: "",
@@ -329,7 +329,7 @@ export function importCsv(text, existing) {
     }
     if (!STAGES.includes(rec.stage)) rec.stage = "New";
     if (!PAYMENT_STATUSES.includes(rec.payment)) rec.payment = "No payment";
-    if (!TEMPERATURES.includes(rec.temperature)) rec.temperature = "Warm";
+    if (!TEMPERATURES.includes(rec.temperature)) rec.temperature = "";
     const tags = get("tags");
     if (tags) rec.tags = tags.split(/[;,]/).map((t) => t.trim()).filter(Boolean);
     const notesText = get("notesText");

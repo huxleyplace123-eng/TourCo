@@ -1,13 +1,52 @@
 // Shared CRM UI atoms + the responsive stylesheet, so the customer and
 // operator workspaces render temperature, type and mobile cards identically.
+import { MessageCircle, Mail, Phone, Globe } from "lucide-react";
 import { c, FONT, radius } from "../theme.js";
+import { normPhone } from "./store.js";
 import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType,
 } from "./crm-shared.js";
 
-// ── Lead-temperature badge ────────────────────────────────────────────────────
+// ── Contact rail ── one fixed slot per channel so the icons always line up into
+// a straight vertical column across rows; a missing channel shows a dimmed,
+// non-clickable slot instead of collapsing and shifting everything.
+function Slot({ href, title, color, on, onClick, children }) {
+  if (!on) return <span className="crm-contact-slot is-off" aria-hidden="true">{children}</span>;
+  return (
+    <a href={href} title={title} target={href?.startsWith("http") ? "_blank" : undefined} rel="noreferrer"
+      className="crm-contact-slot" style={{ color }} onClick={(e) => { e.stopPropagation(); onClick?.(); }}>
+      {children}
+    </a>
+  );
+}
+
+export function CustomerContacts({ cust, onLog, size = 15 }) {
+  const phone = normPhone(cust.phone);
+  return (
+    <span className="crm-contacts" onClick={(e) => e.stopPropagation()}>
+      <Slot on={!!phone} href={`https://wa.me/${phone}`} title="WhatsApp" color="#25D366" onClick={() => onLog(cust.id, "whatsapp")}><MessageCircle size={size} /></Slot>
+      <Slot on={!!cust.email} href={`mailto:${cust.email}`} title="Email" color={c.stone} onClick={() => onLog(cust.id, "email")}><Mail size={size} /></Slot>
+      <Slot on={!!phone} href={`tel:${cust.phone}`} title="Call" color={c.stone} onClick={() => onLog(cust.id, "call")}><Phone size={size} /></Slot>
+    </span>
+  );
+}
+
+export function OperatorContacts({ op, onLog, size = 15 }) {
+  const wa = normPhone(op.whatsapp || "");
+  return (
+    <span className="crm-contacts" onClick={(e) => e.stopPropagation()}>
+      <Slot on={!!wa} href={`https://wa.me/${wa}`} title="WhatsApp" color="#25D366" onClick={() => onLog(op.id, "WhatsApp opened")}><MessageCircle size={size} /></Slot>
+      <Slot on={!!op.email} href={`mailto:${op.email}`} title={op.email} color={c.stone} onClick={() => onLog(op.id, "Email opened")}><Mail size={size} /></Slot>
+      <Slot on={!!op.phone} href={`tel:${op.phone}`} title={op.phone} color={c.stone} onClick={() => onLog(op.id, "Call started")}><Phone size={size} /></Slot>
+      <Slot on={!!op.website} href={op.website} title="Website" color={c.stone}><Globe size={size} /></Slot>
+    </span>
+  );
+}
+
+// ── Lead-temperature badge ── renders nothing when unset (blank by default). ──
 export function TempBadge({ temperature, small, showLabel = true }) {
-  const t = TEMPERATURE_META[temperature] || TEMPERATURE_META.Warm;
+  const t = TEMPERATURE_META[temperature];
+  if (!t) return null;
   return (
     <span
       title={`${t.emoji} ${t.label} lead`}
@@ -24,14 +63,18 @@ export function TempBadge({ temperature, small, showLabel = true }) {
   );
 }
 
-// ── Temperature picker ── four one-tap toggles (cold → fire). Fast to set on a
-// row or in a drawer; the active heat glows in its color.
-export function TempPicker({ value, onChange, size = "md" }) {
-  const dim = size === "sm" ? 26 : 30;
+// ── Temperature picker ── a simple Cold · Medium · Hot segmented control.
+// Blank by default; tap a heat to set it (it lights up in its color and, for
+// Hot, flickers like a flame); tap the active one again to clear back to none.
+export function TempPicker({ value, onChange, size = "md", labels = false }) {
+  const h = size === "sm" ? 28 : 32;
   return (
     <span
       onClick={(e) => e.stopPropagation()}
-      style={{ display: "inline-flex", gap: 4, background: "rgba(255,255,255,.05)", border: `1px solid ${c.line}`, borderRadius: 999, padding: 3 }}
+      style={{
+        display: "inline-flex", gap: 3, background: "rgba(0,0,0,.18)",
+        border: `1px solid ${c.line}`, borderRadius: 999, padding: 3, width: "fit-content",
+      }}
     >
       {TEMPERATURES.map((t) => {
         const meta = TEMPERATURE_META[t];
@@ -39,20 +82,24 @@ export function TempPicker({ value, onChange, size = "md" }) {
         return (
           <button
             key={t}
-            onClick={() => onChange(on ? "Warm" : t)}
-            title={`${meta.emoji} ${meta.label}`}
-            aria-label={`Set ${meta.label}`}
+            onClick={() => onChange(on ? "" : t)}
+            title={on ? `${meta.label} — tap to clear` : `Set ${meta.label}`}
+            aria-label={on ? `Clear ${meta.label}` : `Set ${meta.label}`}
+            aria-pressed={on}
             style={{
-              width: dim, height: dim, borderRadius: 999, border: "none", cursor: "pointer",
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-              fontSize: size === "sm" ? 13 : 15, lineHeight: 1,
+              height: h, minWidth: h, padding: labels ? "0 12px" : 0, borderRadius: 999, border: "none", cursor: "pointer",
+              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 5,
+              fontFamily: FONT, fontSize: size === "sm" ? 13.5 : 15.5, fontWeight: 800, lineHeight: 1,
+              color: on ? "#0B1A2E" : meta.color,
               background: on ? meta.color : "transparent",
-              boxShadow: on ? `0 0 0 1px ${meta.color}, 0 6px 16px -6px ${meta.color}` : "none",
-              filter: on ? "none" : "grayscale(.5) opacity(.6)",
-              transition: "all .12s ease",
+              boxShadow: on ? `0 0 0 1px ${meta.color}, 0 8px 20px -8px ${meta.color}` : "none",
+              opacity: on ? 1 : 0.5,
+              transition: "all .13s ease",
+              animation: on && t === "Hot" ? "crmFlame 1.4s ease-in-out infinite" : "none",
             }}
           >
-            {meta.emoji}
+            <span style={{ fontSize: size === "sm" ? 13 : 15 }}>{meta.emoji}</span>
+            {labels && <span style={{ fontSize: 12.5 }}>{meta.label}</span>}
           </button>
         );
       })}
@@ -104,6 +151,19 @@ export function TypeSelect({ value, onChange, style }) {
 export const CRM_CSS = `
   :root { --crm-gutter: clamp(12px, 2.5vw, 28px); }
   * { -webkit-tap-highlight-color: transparent; }
+
+  @keyframes crmFlame {
+    0%, 100% { box-shadow: 0 0 0 1px #FB7042, 0 8px 20px -8px #FB7042; }
+    50% { box-shadow: 0 0 0 1px #FB7042, 0 8px 26px -6px #FBBF24; }
+  }
+
+  /* Fixed-width contact-icon rail so the phone/mail/whatsapp buttons line up
+     into a straight column across every row, even when a channel is missing. */
+  .crm-contacts { display: inline-flex; gap: 6px; justify-content: flex-end; flex-shrink: 0; }
+  .crm-contact-slot { width: 34px; height: 34px; border-radius: 10px; display: inline-flex;
+    align-items: center; justify-content: center; border: 1px solid ${c.line};
+    background: rgba(255,255,255,.05); color: ${c.stone}; text-decoration: none; }
+  .crm-contact-slot.is-off { opacity: .28; pointer-events: none; }
   .crm-wrap, .ops-wrap { max-width: 1440px; margin: 0 auto; padding: 18px var(--crm-gutter) 96px; }
 
   /* card / surface primitives */
