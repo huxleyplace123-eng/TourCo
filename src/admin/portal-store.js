@@ -29,6 +29,8 @@ export function loadPortal(opId) {
     agreement: p.agreement || { status: "Not sent" }, // status, signedName, signedAt
     bookingResponses: p.bookingResponses || {},        // { bookingId: "accepted"|"declined" }
     profile: p.profile || {},             // operator-editable overrides: name, phone, whatsapp, email, website, logo, blurb
+    tourOverrides: p.tourOverrides || {}, // { [seedTourId]: { product?, retail?, hidden? } } — operator edits to their listed tours
+    customTours: p.customTours || [],     // [{ id, product, category, retail, duration }] — operator-added tours
   };
 }
 

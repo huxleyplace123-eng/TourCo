@@ -7,8 +7,9 @@ import { useMemo, useState } from "react";
 import {
   Home, CalendarDays, Ticket, MessageCircle, Building2, ShieldCheck, X,
   Phone, MapPin, Users, Check, ChevronLeft, ChevronRight, Upload, Send, Globe, Mail,
+  Pencil, Plus, Trash2, Clock, Tag,
 } from "lucide-react";
-import { c, FONT, radius, shadow, grad } from "../theme.js";
+import { c, FONT, radius, shadow, grad, gradFor, gradText } from "../theme.js";
 import { fmtDate } from "./store.js";
 import { pct } from "./operators-store.js";
 import { TOUR_SEED } from "./operators-data.js";
@@ -45,6 +46,25 @@ export default function OperatorPortal({ op, onExit }) {
 
   const tours = useMemo(() => TOUR_SEED.filter((t) => t.operatorId === op.id), [op.id]);
   const bookings = useMemo(() => sampleBookings(op, tours), [op.id, tours]);
+
+  // The operator's editable tour list = seed tours with their overrides applied
+  // (hidden ones dropped) + any tours they've added themselves.
+  const effTours = useMemo(() => {
+    const ov = portal.tourOverrides || {};
+    const seeded = tours.filter((t) => !ov[t.id]?.hidden).map((t) => ({ ...t, ...ov[t.id] }));
+    const custom = (portal.customTours || []).map((t) => ({ ...t, custom: true }));
+    return [...seeded, ...custom];
+  }, [tours, portal.tourOverrides, portal.customTours]);
+
+  const editTour = (t, p) => {
+    if (t.custom) patch({ customTours: (portal.customTours || []).map((x) => (x.id === t.id ? { ...x, ...p } : x)) });
+    else patch({ tourOverrides: { ...(portal.tourOverrides || {}), [t.id]: { ...(portal.tourOverrides?.[t.id] || {}), ...p } } });
+  };
+  const addTour = (data) => patch({ customTours: [...(portal.customTours || []), { id: `ct_${Date.now().toString(36)}`, ...data }] });
+  const deleteTour = (t) => {
+    if (t.custom) patch({ customTours: (portal.customTours || []).filter((x) => x.id !== t.id) });
+    else patch({ tourOverrides: { ...(portal.tourOverrides || {}), [t.id]: { ...(portal.tourOverrides?.[t.id] || {}), hidden: true } } });
+  };
   const prof = effectiveProfile(op, portal.profile);
   const typeMeta = operatorType(op.type);
 
@@ -111,10 +131,10 @@ export default function OperatorPortal({ op, onExit }) {
 
       <div className="opp-body">
         <div className="opp-wrap">
-          {tab === "home" && <HomeTab prof={prof} bookings={bookings} responses={portal.bookingResponses} availableDays={availableDays} tours={tours} agreement={portal.agreement} go={setTab} />}
+          {tab === "home" && <HomeTab prof={prof} bookings={bookings} responses={portal.bookingResponses} availableDays={availableDays} tours={effTours} agreement={portal.agreement} go={setTab} />}
           {tab === "calendar" && <CalendarTab availability={portal.availability} bookings={calBookings} onSetSlot={(date, hour, cur) => patch({ availability: applySlot(portal.availability, date, hour, cur) })} availableDays={availableDays} />}
           {tab === "bookings" && <BookingsTab bookings={bookings} responses={portal.bookingResponses} onRespond={(id, r) => patch({ bookingResponses: { ...portal.bookingResponses, [id]: r } })} />}
-          {tab === "tours" && <ToursTab tours={tours} takeRate={op.takeRate} />}
+          {tab === "tours" && <ToursTab tours={effTours} takeRate={op.takeRate} onEdit={editTour} onAdd={addTour} onDelete={deleteTour} />}
           {tab === "messages" && <MessagesTab messages={portal.messages} onSend={(t) => { addMessage(op.id, "operator", t); sync(); }} name={prof.name} />}
           {tab === "business" && <BusinessTab prof={prof} agreement={portal.agreement} onSave={(profile) => patch({ profile: { ...portal.profile, ...profile } })} onSign={(name) => patch({ agreement: { status: "Signed", signedName: name, signedAt: new Date().toISOString() } })} />}
         </div>
@@ -371,23 +391,105 @@ function BookingsTab({ bookings, responses, onRespond }) {
   );
 }
 
-// ── Tours ─────────────────────────────────────────────────────────────────────
-function ToursTab({ tours, takeRate }) {
+// ── Tours ── premium, operator-editable product cards ─────────────────────────
+const netOf = (price, takeRate, fallback) => {
+  const p = Number(price) || 0;
+  if (takeRate != null) return Math.round(p * (1 - takeRate));
+  return fallback != null ? fallback : p;
+};
+
+function ToursTab({ tours, takeRate, onEdit, onAdd, onDelete }) {
+  const [adding, setAdding] = useState(false);
   return (
-    <div style={{ display: "grid", gap: 12 }}>
-      <SectionTitle right={<span style={{ color: c.gold, fontSize: 12.5, fontWeight: 700 }}>Referral fee {pct(takeRate)}</span>}>Your tours & rates</SectionTitle>
-      {tours.length ? tours.map((t) => (
-        <div key={t.id} className="opp-card" style={{ padding: "13px 15px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontWeight: 800, fontSize: 14 }}>{t.product}</div>
-            <div style={{ color: c.stone, fontSize: 12 }}>{t.category}{t.duration ? ` · ${t.duration}` : ""}</div>
+    <div style={{ display: "grid", gap: 14 }}>
+      <SectionTitle right={<span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.gold, fontSize: 12, fontWeight: 800, padding: "3px 10px", borderRadius: 999, background: "rgba(255,208,0,.12)", border: "1px solid rgba(255,208,0,.35)" }}><Tag size={12} /> Referral fee {pct(takeRate)}</span>}>
+        Your tours & rates
+      </SectionTitle>
+      <div style={{ color: c.stone, fontSize: 12.5, fontWeight: 600, margin: "-6px 2px 2px" }}>
+        These are your listings on TicoWild. Tap <Pencil size={12} style={{ verticalAlign: -1 }} /> to rename or re-price — you always see what you net after the referral fee.
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
+        {tours.map((t) => <TourCard key={t.id} t={t} takeRate={takeRate} onEdit={onEdit} onDelete={onDelete} />)}
+        {adding
+          ? <TourEditor onCancel={() => setAdding(false)} onSave={(data) => { onAdd(data); setAdding(false); }} />
+          : (
+            <button onClick={() => setAdding(true)}
+              style={{ minHeight: 150, borderRadius: radius.md, border: `1.5px dashed ${c.line}`, background: "rgba(255,255,255,.02)", color: c.teal, fontFamily: FONT, fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <span style={{ width: 40, height: 40, borderRadius: 999, background: "rgba(34,211,238,.14)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Plus size={20} /></span>
+              Add a tour
+            </button>
+          )}
+      </div>
+    </div>
+  );
+}
+
+function TourCard({ t, takeRate, onEdit, onDelete }) {
+  const [editing, setEditing] = useState(false);
+  const g = gradFor(t.category || "");
+  const net = netOf(t.retail, takeRate, t.suggestedOperatorNet);
+  if (editing) {
+    return <TourEditor init={t} onCancel={() => setEditing(false)} onDelete={() => onDelete(t)}
+      onSave={(data) => { onEdit(t, data); setEditing(false); }} />;
+  }
+  return (
+    <div className="opp-card" style={{ overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div style={{ height: 6, background: g }} />
+      <div style={{ padding: "14px 15px 15px", display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+          <span style={{ ...gradText(g), fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".04em" }}>{t.category || "Tour"}</span>
+          <button onClick={() => setEditing(true)} title="Edit tour"
+            style={{ display: "inline-flex", width: 30, height: 30, borderRadius: 9, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.05)", color: c.stone, cursor: "pointer", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <Pencil size={14} />
+          </button>
+        </div>
+        <div style={{ fontWeight: 800, fontSize: 15.5, lineHeight: 1.25, flex: 1 }}>{t.product}</div>
+        {t.duration && <div style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.stone, fontSize: 12, fontWeight: 600 }}><Clock size={12} /> {t.duration}</div>}
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 8, marginTop: 2, paddingTop: 10, borderTop: `1px solid ${c.line}` }}>
+          <div>
+            <div style={{ color: c.stone, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".05em" }}>Retail</div>
+            <div style={{ fontSize: 22, fontWeight: 800 }}>{money(t.retail)}</div>
           </div>
-          <div style={{ textAlign: "right", fontSize: 12.5 }}>
-            <div>retail <b>{money(t.retail)}</b></div>
-            <div style={{ color: c.gold, fontWeight: 700 }}>you net {money(t.suggestedOperatorNet)}</div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ color: c.stone, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".05em" }}>You net</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: c.gold }}>{money(net)}</div>
           </div>
         </div>
-      )) : <div className="opp-card" style={{ padding: 24, textAlign: "center", color: c.stone }}>No tours listed yet.</div>}
+      </div>
+    </div>
+  );
+}
+
+function TourEditor({ init, onSave, onCancel, onDelete }) {
+  const [f, setF] = useState({ product: init?.product || "", category: init?.category || "", retail: init?.retail ?? "", duration: init?.duration || "" });
+  const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }));
+  const canSave = f.product.trim() && String(f.retail).trim() !== "" && !Number.isNaN(Number(f.retail));
+  const field = { ...inputBase, fontSize: 14, padding: "9px 11px" };
+  return (
+    <div className="opp-card" style={{ padding: "14px 15px", display: "grid", gap: 9, border: `1px solid ${c.teal}55` }}>
+      <div style={{ ...label, marginBottom: 0 }}>{init ? "Edit tour" : "New tour"}</div>
+      <input autoFocus value={f.product} onChange={set("product")} placeholder="Tour name" style={field} />
+      <div style={{ display: "flex", gap: 8 }}>
+        <input value={f.category} onChange={set("category")} placeholder="Category" style={{ ...field, flex: 1 }} />
+        <div style={{ position: "relative", width: 120 }}>
+          <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: c.stone, fontWeight: 700 }}>$</span>
+          <input value={f.retail} onChange={set("retail")} placeholder="Price" inputMode="numeric" style={{ ...field, paddingLeft: 22 }} />
+        </div>
+      </div>
+      <input value={f.duration} onChange={set("duration")} placeholder="Duration (e.g. 3 hours)" style={field} />
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
+        <button disabled={!canSave} onClick={() => onSave({ product: f.product.trim(), category: f.category.trim(), retail: Number(f.retail), duration: f.duration.trim() })}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: radius.sm, border: "none", background: canSave ? c.gold : "rgba(255,255,255,.12)", color: canSave ? c.ink : c.stone, fontFamily: FONT, fontWeight: 800, fontSize: 13.5, cursor: canSave ? "pointer" : "default" }}>
+          <Check size={15} /> Save
+        </button>
+        <button onClick={onCancel} style={{ padding: "9px 14px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "transparent", color: c.stone, fontFamily: FONT, fontWeight: 700, fontSize: 13.5, cursor: "pointer" }}>Cancel</button>
+        {onDelete && (
+          <button onClick={onDelete} title="Remove tour" style={{ marginLeft: "auto", display: "inline-flex", width: 34, height: 34, borderRadius: 9, border: "1px solid rgba(251,112,66,.4)", background: "transparent", color: "#FB7042", cursor: "pointer", alignItems: "center", justifyContent: "center" }}>
+            <Trash2 size={15} />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
