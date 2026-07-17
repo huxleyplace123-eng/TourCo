@@ -60,8 +60,9 @@ export default function OperatorPortal({ op, onExit }) {
       <style>{`
         .opp-body { flex: 1; overflow-y: auto; }
         .opp-wrap { max-width: 920px; margin: 0 auto; padding: 18px clamp(14px, 4vw, 26px) 40px; }
-        .opp-tabs { display: flex; gap: 4px; overflow-x: auto; padding: 6px clamp(10px,3vw,20px); background: ${c.canvas2}; border-bottom: 1px solid ${c.line}; scrollbar-width: none; }
+        .opp-tabs { display: flex; justify-content: center; gap: 4px; overflow-x: auto; padding: 6px clamp(10px,3vw,20px); background: ${c.canvas2}; border-bottom: 1px solid ${c.line}; scrollbar-width: none; }
         .opp-tabs::-webkit-scrollbar { display: none; }
+        @media (max-width: 640px) { .opp-tabs { justify-content: flex-start; } }
         .opp-card { border-radius: ${radius.md}px; border: 1px solid ${c.line}; background: ${c.white}; box-shadow: ${shadow.sm}; }
         .opp-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
         .opp-cal button { aspect-ratio: 1 / 1; }
