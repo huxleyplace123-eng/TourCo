@@ -5,6 +5,7 @@
 // redeploy with fresher spreadsheet data never wipes working state.
 
 import { OPERATOR_SEED } from "./operators-data.js";
+import { inferOperatorType } from "./crm-shared.js";
 
 const OVERLAY_KEY = "ticowild_crm_operators_v1";
 
@@ -75,6 +76,10 @@ export function mergedOperators(overlay) {
     return {
       ...seed,
       stage: ov.stage ?? normalizeSeedStage(seed.seedStage),
+      temperature: ov.temperature ?? "Warm",
+      type: ov.type ?? inferOperatorType(seed.categories),
+      owner: ov.owner ?? "",
+      preferred: ov.preferred ?? false,
       nextFollowUp: ov.nextFollowUp ?? "",
       lastContacted: ov.lastContacted ?? "",
       notes: ov.notes ?? [],
@@ -89,6 +94,7 @@ export function mergedOperators(overlay) {
     .map(([id, ov]) => ({
       id,
       name: ov.name || "New operator",
+      type: ov.type ?? "tours",
       regions: ov.regions || "",
       destinations: ov.destinations || "",
       categories: ov.categories || [],
@@ -111,6 +117,9 @@ export function mergedOperators(overlay) {
       seedStage: "Not contacted",
       outreachNotes: "",
       stage: ov.stage ?? "Not contacted",
+      temperature: ov.temperature ?? "Warm",
+      owner: ov.owner ?? "",
+      preferred: ov.preferred ?? false,
       nextFollowUp: ov.nextFollowUp ?? "",
       lastContacted: ov.lastContacted ?? "",
       notes: ov.notes ?? [],

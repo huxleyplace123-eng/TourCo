@@ -7,9 +7,11 @@ import { c, FONT, radius, shadow } from "../theme.js";
 import {
   ACTIVE_STAGES, LEAD_SOURCES, PAYMENT_STATUSES, STAGES, STAGE_COLORS,
   addDaysIso, blankCustomer, daysFromToday, findDuplicates, fmtDate, followUpBuckets,
-  importCsv, loadColumnPrefs, loadCustomers, moneyNum, normPhone, sampleCustomers,
+  importCsv, loadColumnPrefs, loadCustomers, moneyNum, normPhone,
   saveColumnPrefs, saveCustomers, toCsv, todayIso,
 } from "./store.js";
+import { TEMPERATURES, TEMPERATURE_META, tempRank } from "./crm-shared.js";
+import { TempBadge, TempPicker, CRM_CSS } from "./crm-ui.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -126,6 +128,7 @@ function QuickActions({ cust, onLog, size = 15 }) {
 // ── Column model for the table ────────────────────────────────────────────────
 const ALL_COLUMNS = [
   { key: "name", label: "Customer", always: true },
+  { key: "temperature", label: "Heat" },
   { key: "stage", label: "Stage" },
   { key: "nextFollowUp", label: "Follow-up" },
   { key: "travel", label: "Travel dates" },
@@ -143,11 +146,12 @@ const ALL_COLUMNS = [
   { key: "source", label: "Source" },
   { key: "payment", label: "Payment" },
 ];
-const DEFAULT_COLUMNS = ["name", "stage", "nextFollowUp", "travel", "travelers", "tripValue", "assignee", "tags", "lastContacted"];
+const DEFAULT_COLUMNS = ["name", "temperature", "stage", "nextFollowUp", "travel", "travelers", "tripValue", "assignee", "lastContacted"];
 
 const sortVal = (cust, key) => {
   switch (key) {
     case "name": return String(cust.name).toLowerCase();
+    case "temperature": return -tempRank(cust.temperature);
     case "stage": return STAGES.indexOf(cust.stage);
     case "nextFollowUp": return cust.nextFollowUp || "9999";
     case "travel": return cust.travelStart || "9999";
@@ -167,6 +171,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   const [assigneeFilter, setAssigneeFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
   const [tagFilter, setTagFilter] = useState("");
+  const [tempFilter, setTempFilter] = useState("");
   const [sortKey, setSortKey] = useState("nextFollowUp");
   const [sortDir, setSortDir] = useState("asc");
   const [selectedId, setSelectedId] = useState(null);
@@ -200,6 +205,8 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     addNote(id, `Stage: ${cust.stage} → ${stage}`, "stage");
   };
 
+  const setTemp = (id, temperature) => update(id, { temperature });
+
   const removeCustomer = (id) => {
     const cust = customers.find((x) => x.id === id);
     if (!cust) return;
@@ -228,8 +235,9 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     if (assigneeFilter) list = list.filter((x) => x.assignee === assigneeFilter);
     if (sourceFilter) list = list.filter((x) => x.source === sourceFilter);
     if (tagFilter) list = list.filter((x) => (x.tags || []).includes(tagFilter));
+    if (tempFilter) list = list.filter((x) => x.temperature === tempFilter);
     return list;
-  }, [customers, query, stageFilter, assigneeFilter, sourceFilter, tagFilter]);
+  }, [customers, query, stageFilter, assigneeFilter, sourceFilter, tagFilter, tempFilter]);
 
   const sorted = useMemo(() => {
     const list = [...filtered];
@@ -244,15 +252,17 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
 
   const buckets = useMemo(() => followUpBuckets(filtered), [filtered]);
   const selected = customers.find((x) => x.id === selectedId) || null;
-  const filtersOn = stageFilter || assigneeFilter || sourceFilter || tagFilter || query;
+  const filtersOn = stageFilter || assigneeFilter || sourceFilter || tagFilter || tempFilter || query;
 
   // Stat strip numbers (whole book, not the filtered view — these are the pulse).
   const stats = useMemo(() => {
     const all = followUpBuckets(customers);
     const open = customers.filter((x) => ["New", "Contacted", "Planning", "Quote sent"].includes(x.stage));
     const booked = customers.filter((x) => x.stage === "Booked");
+    const hot = customers.filter((x) => (x.temperature === "Fire" || x.temperature === "Hot") && ACTIVE_STAGES.includes(x.stage));
     return {
       active: open.length,
+      hot: hot.length,
       overdue: all.overdue.length,
       pipeline: open.reduce((s, x) => s + moneyNum(x.tripValue), 0),
       bookedValue: booked.reduce((s, x) => s + moneyNum(x.tripValue), 0),
@@ -295,9 +305,8 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   return (
     <div style={{ minHeight: "100vh", background: c.sand, color: c.charcoal, fontFamily: FONT }}>
       <style>{`
-        .crm-wrap { max-width: 1440px; margin: 0 auto; padding: 18px clamp(12px, 2.5vw, 28px) 90px; }
+        ${CRM_CSS}
         .crm-topbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .crm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 16px 0 12px; }
         .crm-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
         .crm-table-head { position: sticky; top: 0; z-index: 2; background: ${c.canvas2}; }
         .crm-row:hover { background: rgba(255,255,255,.04); }
@@ -310,16 +319,6 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         .crm-modal-bg { position: fixed; inset: 0; background: rgba(4,10,20,.6); backdrop-filter: blur(3px); z-index: 60;
           display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 4vh 12px 8vh; }
         .crm-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(.8); }
-        select option { color: ${c.ink}; background: #fff; }
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 999px; }
-        @media (max-width: 760px) {
-          .crm-grid2 { grid-template-columns: 1fr; }
-          .crm-hide-mobile { display: none !important; }
-          button, select, input { min-height: 42px; }
-        }
       `}</style>
 
       <div className="crm-wrap">
@@ -331,7 +330,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           </div>
           <WorkspaceSwitch workspace={workspace} onWorkspace={onWorkspace} />
 
-          <div style={{ position: "relative", flex: "1 1 220px", maxWidth: 420 }}>
+          <div className="crm-toolgrow" style={{ position: "relative", flex: "1 1 220px", maxWidth: 420 }}>
             <Search size={15} style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: c.stone }} />
             <input
               value={query}
@@ -416,6 +415,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         <div className="crm-stats">
           {[
             { label: "Open leads", value: stats.active, icon: <Users size={15} />, col: c.teal },
+            { label: "🔥 Hot & fire", value: stats.hot, icon: null, col: stats.hot ? "#FB7185" : c.stone, onClick: () => { setView("table"); setTempFilter("Fire"); } },
             { label: "Overdue follow-ups", value: stats.overdue, icon: <CalendarClock size={15} />, col: stats.overdue ? "#F87171" : c.stone, onClick: () => setView("followups") },
             { label: "Open pipeline", value: `$${stats.pipeline.toLocaleString()}`, icon: null, col: c.gold },
             { label: `Booked (${stats.bookedCount})`, value: `$${stats.bookedValue.toLocaleString()}`, icon: null, col: "#34D399" },
@@ -436,6 +436,10 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         {/* ── Filters ── */}
         <div className="crm-filters">
           <Filter size={14} style={{ color: c.stone }} />
+          <select value={tempFilter} onChange={(e) => setTempFilter(e.target.value)} style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
+            <option value="">All heat</option>
+            {[...TEMPERATURES].reverse().map((t) => <option key={t} value={t}>{TEMPERATURE_META[t].emoji}  {t}</option>)}
+          </select>
           <select value={stageFilter} onChange={(e) => setStageFilter(e.target.value)} style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
             <option value="">All stages</option>
             {STAGES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -455,6 +459,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           <select value={`${sortKey}:${sortDir}`} onChange={(e) => { const [k, d] = e.target.value.split(":"); setSortKey(k); setSortDir(d); }}
             style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
             <option value="nextFollowUp:asc">Sort: next follow-up</option>
+            <option value="temperature:asc">Sort: heat (hottest)</option>
             <option value="travel:asc">Sort: travel date</option>
             <option value="tripValue:desc">Sort: value (high→low)</option>
             <option value="stage:asc">Sort: stage</option>
@@ -462,7 +467,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
             <option value="name:asc">Sort: name</option>
           </select>
           {filtersOn && (
-            <button onClick={() => { setQuery(""); setStageFilter(""); setAssigneeFilter(""); setSourceFilter(""); setTagFilter(""); }}
+            <button onClick={() => { setQuery(""); setStageFilter(""); setAssigneeFilter(""); setSourceFilter(""); setTagFilter(""); setTempFilter(""); }}
               style={{ ...headerBtn, padding: "7px 11px", color: c.teal }}>
               <X size={13} /> Clear
             </button>
@@ -474,12 +479,12 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
 
         {/* ── Views ── */}
         {customers.length === 0 ? (
-          <EmptyState onAdd={() => setShowAdd(true)} onSample={() => setCustomers(sampleCustomers())} />
+          <EmptyState onAdd={() => setShowAdd(true)} onImport={() => fileRef.current?.click()} />
         ) : view === "table" ? (
           <TableView
             customers={sorted} columns={columns} sortKey={sortKey} sortDir={sortDir}
             onSort={(k) => { if (sortKey === k) setSortDir((d) => (d === "asc" ? "desc" : "asc")); else { setSortKey(k); setSortDir("asc"); } }}
-            onOpen={setSelectedId} onStage={setStage} onLog={logContact}
+            onOpen={setSelectedId} onStage={setStage} onLog={logContact} onTemp={setTemp}
           />
         ) : view === "pipeline" ? (
           <PipelineView customers={filtered} onOpen={setSelectedId} onStage={setStage} />
@@ -512,7 +517,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
 }
 
 // ── Empty state ───────────────────────────────────────────────────────────────
-function EmptyState({ onAdd, onSample }) {
+function EmptyState({ onAdd, onImport }) {
   return (
     <div style={{
       marginTop: 40, padding: "56px 24px", textAlign: "center", borderRadius: radius.lg,
@@ -521,7 +526,7 @@ function EmptyState({ onAdd, onSample }) {
       <div style={{ fontSize: 40, marginBottom: 8 }}>🌴</div>
       <div style={{ fontSize: 19, fontWeight: 800 }}>No customers yet</div>
       <div style={{ color: c.stone, fontSize: 14, margin: "8px auto 20px", maxWidth: 420, lineHeight: 1.5 }}>
-        Add your first lead, import a CSV from the toolbar, or load sample data to see how the three views work.
+        Add your first lead, or import a CSV of existing leads from the toolbar.
       </div>
       <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
         <button onClick={onAdd} style={{
@@ -530,11 +535,11 @@ function EmptyState({ onAdd, onSample }) {
         }}>
           <Plus size={14} style={{ verticalAlign: -2 }} /> Add customer
         </button>
-        <button onClick={onSample} style={{
+        <button onClick={onImport} style={{
           padding: "11px 18px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "transparent",
           color: c.teal, fontFamily: FONT, fontWeight: 700, fontSize: 14, cursor: "pointer",
         }}>
-          Load sample data
+          <Upload size={14} style={{ verticalAlign: -2 }} /> Import CSV
         </button>
       </div>
     </div>
@@ -542,7 +547,7 @@ function EmptyState({ onAdd, onSample }) {
 }
 
 // ── Table view ────────────────────────────────────────────────────────────────
-function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onStage, onLog }) {
+function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onStage, onLog, onTemp }) {
   const cols = ALL_COLUMNS.filter((col) => columns.includes(col.key));
   const cellStyle = { padding: "10px 12px", fontSize: 13.5, verticalAlign: "middle", borderBottom: `1px solid ${c.line}`, whiteSpace: "nowrap" };
   const render = (cust, key) => {
@@ -557,6 +562,7 @@ function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onSta
             <QuickActions cust={cust} onLog={onLog} size={14} />
           </div>
         );
+      case "temperature": return <TempPicker size="sm" value={cust.temperature} onChange={(t) => onTemp(cust.id, t)} />;
       case "stage": return <StageSelect compact value={cust.stage} onChange={(s) => onStage(cust.id, s)} />;
       case "nextFollowUp": return <FollowUpCell iso={cust.nextFollowUp} />;
       case "travel":
@@ -579,27 +585,56 @@ function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onSta
     return <div style={{ padding: 40, textAlign: "center", color: c.stone, background: c.white, borderRadius: radius.md, border: `1px solid ${c.line}` }}>No customers match these filters.</div>;
   }
   return (
-    <div style={{ borderRadius: radius.md, border: `1px solid ${c.line}`, background: c.white, boxShadow: shadow.sm, overflow: "auto", maxHeight: "70vh" }}>
-      <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 760 }}>
-        <thead className="crm-table-head">
-          <tr>
-            {cols.map((col) => (
-              <th key={col.key} onClick={() => onSort(col.key)}
-                style={{ ...cellStyle, cursor: "pointer", textAlign: "left", fontSize: 11.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".05em", color: sortKey === col.key ? c.teal : c.stone, userSelect: "none" }}>
-                {col.label}{sortKey === col.key ? (sortDir === "asc" ? " ↑" : " ↓") : ""}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {customers.map((cust) => (
-            <tr key={cust.id} className="crm-row" onClick={() => onOpen(cust.id)} style={{ cursor: "pointer" }}>
-              {cols.map((col) => <td key={col.key} style={cellStyle}>{render(cust, col.key)}</td>)}
+    <>
+      {/* Desktop */}
+      <div className="crm-desk" style={{ borderRadius: radius.md, border: `1px solid ${c.line}`, background: c.white, boxShadow: shadow.sm, overflow: "auto", maxHeight: "70vh" }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 760 }}>
+          <thead className="crm-table-head">
+            <tr>
+              {cols.map((col) => (
+                <th key={col.key} onClick={() => onSort(col.key)}
+                  style={{ ...cellStyle, cursor: "pointer", textAlign: "left", fontSize: 11.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".05em", color: sortKey === col.key ? c.teal : c.stone, userSelect: "none" }}>
+                  {col.label}{sortKey === col.key ? (sortDir === "asc" ? " ↑" : " ↓") : ""}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {customers.map((cust) => (
+              <tr key={cust.id} className="crm-row" onClick={() => onOpen(cust.id)} style={{ cursor: "pointer" }}>
+                {cols.map((col) => <td key={col.key} style={cellStyle}>{render(cust, col.key)}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile */}
+      <div className="crm-mob" style={{ display: "grid", gap: 10 }}>
+        {customers.map((cust) => (
+          <div key={cust.id} className="crm-mcard" onClick={() => onOpen(cust.id)}>
+            <div className="crm-mcard-top">
+              <div style={{ minWidth: 0 }}>
+                <div className="crm-mcard-name" style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{cust.name}</div>
+                <div className="crm-mcard-sub">
+                  {cust.travelStart ? `${fmtDate(cust.travelStart)}` : "no dates"}{cust.travelers ? ` · ${cust.travelers} pax` : ""}{cust.country ? ` · ${cust.country}` : ""}
+                </div>
+              </div>
+              <TempBadge temperature={cust.temperature} small />
+            </div>
+            <div className="crm-mcard-meta">
+              <StageChip stage={cust.stage} small />
+              <FollowUpCell iso={cust.nextFollowUp} />
+              <span style={{ fontWeight: 700, fontSize: 12.5, color: moneyNum(cust.tripValue) ? c.gold : c.stone }}>{money(cust.tripValue)}</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+              <span onClick={(e) => e.stopPropagation()}><TempPicker value={cust.temperature} onChange={(t) => onTemp(cust.id, t)} /></span>
+              <QuickActions cust={cust} onLog={onLog} size={16} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -785,6 +820,10 @@ function Drawer({ cust, customers, update, addNote, setStage, logContact, onDele
             {cust.country || "—"} · {cust.travelers || "?"} pax · {cust.travelStart ? `${fmtDate(cust.travelStart)}${cust.travelEnd ? ` – ${fmtDate(cust.travelEnd)}` : ""}` : "no dates"} ·{" "}
             <span style={{ color: moneyNum(cust.tripValue) ? c.gold : c.stone, fontWeight: 700 }}>{money(cust.tripValue)}</span>
           </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
+            <span style={{ fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".05em" }}>Heat</span>
+            <TempPicker value={cust.temperature} onChange={(t) => update(cust.id, { temperature: t })} />
+          </div>
           {dupes.length > 0 && (
             <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 7, padding: "7px 10px", borderRadius: radius.sm, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.35)", color: c.gold, fontSize: 12.5, fontWeight: 600 }}>
               <AlertTriangle size={14} /> Possible duplicate of {dupes.map((d) => d.name).join(", ")} (same phone/email)
@@ -948,6 +987,9 @@ function AddModal({ customers, onClose, onSave, onOpenExisting }) {
               </select>
             </Field>
             <Field label="Next follow-up"><input type="date" value={rec.nextFollowUp} onChange={set("nextFollowUp")} style={inputBase} /></Field>
+            <Field label="Lead heat" span2>
+              <TempPicker value={rec.temperature} onChange={(t) => setRec((r) => ({ ...r, temperature: t }))} />
+            </Field>
             <Field label="Tags" span2><TagsEditor tags={rec.tags} onChange={(tags) => setRec((r) => ({ ...r, tags }))} /></Field>
             <Field label="First note" span2>
               <input

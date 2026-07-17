@@ -3,6 +3,8 @@
 // copy, and CSV export/import is the hand-off/backup path. Keeping the logic
 // here pure (no React) keeps the UI file readable.
 
+import { TEMPERATURES } from "./crm-shared.js";
+
 const STORAGE_KEY = "ticowild_crm_v1";
 const COLUMNS_KEY = "ticowild_crm_columns_v1";
 
@@ -70,6 +72,7 @@ export function blankCustomer() {
     budget: "",
     source: "",
     stage: "New",
+    temperature: "Warm",
     assignee: "",
     nextFollowUp: "",
     lastContacted: "",
@@ -206,6 +209,7 @@ export const CSV_HEADERS = [
   ["budget", "Budget"],
   ["source", "Lead source"],
   ["stage", "Stage"],
+  ["temperature", "Temperature"],
   ["assignee", "Assigned to"],
   ["nextFollowUp", "Next follow-up"],
   ["lastContacted", "Last contacted"],
@@ -289,6 +293,7 @@ export function importCsv(text, existing) {
     budget: ["budget", "estimatedbudget"],
     source: ["source", "leadsource"],
     stage: ["stage", "salesstage", "status", "pipeline"],
+    temperature: ["temperature", "temp", "heat", "priority", "leadtemperature"],
     assignee: ["assignee", "assignedto", "assignedteammember", "owner", "rep"],
     nextFollowUp: ["nextfollowup", "followup", "nextfollowupdate", "followupdate"],
     lastContacted: ["lastcontacted", "lastcontact", "lasttouch"],
@@ -324,6 +329,7 @@ export function importCsv(text, existing) {
     }
     if (!STAGES.includes(rec.stage)) rec.stage = "New";
     if (!PAYMENT_STATUSES.includes(rec.payment)) rec.payment = "No payment";
+    if (!TEMPERATURES.includes(rec.temperature)) rec.temperature = "Warm";
     const tags = get("tags");
     if (tags) rec.tags = tags.split(/[;,]/).map((t) => t.trim()).filter(Boolean);
     const notesText = get("notesText");
@@ -340,91 +346,4 @@ export function importCsv(text, existing) {
     imported.push(rec);
   }
   return { imported, skippedDuplicates, badRows };
-}
-
-// ── Sample data ───────────────────────────────────────────────────────────────
-// Optional starter set (button in the empty state) so every view shows life
-// before real leads exist. Dates are relative to "now" so buckets populate.
-export function sampleCustomers() {
-  const mk = (over) => ({ ...blankCustomer(), ...over });
-  const note = (daysAgo, text, kind = "note") => ({
-    id: `n_${Math.random().toString(36).slice(2, 9)}`,
-    at: new Date(Date.now() - daysAgo * 86400000).toISOString(),
-    kind,
-    text,
-  });
-  return [
-    mk({
-      name: "Sarah Mitchell", phone: "+1 415 555 0132", email: "sarah.m@gmail.com", country: "USA",
-      travelStart: addDaysIso(45), travelEnd: addDaysIso(52), travelers: "2",
-      region: "Guanacaste", activities: "Catamaran, Zipline, Sloth tour", budget: "$3,000",
-      source: "Instagram", stage: "Quote sent", assignee: "John",
-      nextFollowUp: addDaysIso(-2), lastContacted: addDaysIso(-4), tripValue: "2800",
-      payment: "No payment", tags: ["honeymoon", "hot lead"],
-      notes: [note(6, "Wants beachfront + adventure mix. Sent Tamarindo package."), note(4, "Quote sent — $2,800 for 2. Waiting on partner's dates.", "whatsapp")],
-    }),
-    mk({
-      name: "Familie Bakker", phone: "+31 6 1234 5678", email: "j.bakker@ziggo.nl", country: "Netherlands",
-      travelStart: addDaysIso(80), travelEnd: addDaysIso(94), travelers: "5",
-      region: "Arenal + Manuel Antonio", activities: "Rafting, Hot springs, Wildlife night walk", budget: "€6,000",
-      source: "Website", stage: "Planning", assignee: "Maria",
-      nextFollowUp: addDaysIso(0), lastContacted: addDaysIso(-1), tripValue: "5500",
-      payment: "No payment", tags: ["family", "2 weeks"],
-      notes: [note(3, "Three kids (8–14). Prefers eco-lodges. Building 14-day route.")],
-    }),
-    mk({
-      name: "Diego Fernández", phone: "+54 9 11 5555 4321", email: "diegof@outlook.com", country: "Argentina",
-      travelStart: addDaysIso(20), travelEnd: addDaysIso(27), travelers: "4",
-      region: "Caribbean side", activities: "Surf lessons, Snorkeling", budget: "$2,000",
-      source: "Referral", stage: "Booked", assignee: "John",
-      nextFollowUp: addDaysIso(5), lastContacted: addDaysIso(-2), tripValue: "1900",
-      payment: "Deposit paid", tags: ["surf crew"],
-      notes: [note(9, "Referred by Sarah M. Puerto Viejo focus."), note(2, "Deposit received. Send packing list next week.", "email")],
-    }),
-    mk({
-      name: "Emma Thompson", phone: "+44 7700 900123", email: "emma.t@btinternet.com", country: "UK",
-      travelStart: addDaysIso(120), travelEnd: addDaysIso(130), travelers: "2",
-      region: "Undecided", activities: "Yoga retreat, Waterfalls", budget: "£4,000",
-      source: "WhatsApp", stage: "New", assignee: "Maria",
-      nextFollowUp: addDaysIso(1), lastContacted: "", tripValue: "3200",
-      payment: "No payment", tags: [],
-      notes: [note(0, "Came in via WhatsApp widget — asked about wellness trips.")],
-    }),
-    mk({
-      name: "The Hendersons", phone: "+1 512 555 0198", email: "hendersonfam@yahoo.com", country: "USA",
-      travelStart: addDaysIso(10), travelEnd: addDaysIso(17), travelers: "6",
-      region: "Guanacaste", activities: "ATV, Catamaran, Fishing charter", budget: "$8,000",
-      source: "Repeat guest", stage: "Booked", assignee: "John",
-      nextFollowUp: addDaysIso(3), lastContacted: addDaysIso(-3), tripValue: "7400",
-      payment: "Paid in full", tags: ["VIP", "repeat"],
-      notes: [note(30, "Third trip with us. Wants same captain for the fishing day."), note(3, "Paid in full. Confirm ATV pickup time Thursday.", "call")],
-    }),
-    mk({
-      name: "Lucía Morales", phone: "+34 612 345 678", email: "lucia.morales@gmail.com", country: "Spain",
-      travelStart: addDaysIso(60), travelEnd: addDaysIso(70), travelers: "3",
-      region: "Monteverde + Arenal", activities: "Canopy, Coffee tour, Hanging bridges", budget: "€3,500",
-      source: "Google", stage: "Contacted", assignee: "Maria",
-      nextFollowUp: addDaysIso(-1), lastContacted: addDaysIso(-9), tripValue: "3100",
-      payment: "No payment", tags: ["spanish-speaking"],
-      notes: [note(9, "Prefers WhatsApp in Spanish. Sent intro + sample itinerary.", "whatsapp")],
-    }),
-    mk({
-      name: "Mark & Kevin O'Brien", phone: "+1 646 555 0177", email: "mkobrien@gmail.com", country: "USA",
-      travelStart: addDaysIso(150), travelEnd: addDaysIso(160), travelers: "2",
-      region: "South Pacific coast", activities: "Whale watching, Corcovado hike", budget: "$5,000",
-      source: "Instagram", stage: "Not ready", assignee: "John",
-      nextFollowUp: addDaysIso(30), lastContacted: addDaysIso(-14), tripValue: "4600",
-      payment: "No payment", tags: ["next season"],
-      notes: [note(14, "Planning for next season — check back in a month.")],
-    }),
-    mk({
-      name: "Anna Kowalski", phone: "+48 601 234 567", email: "a.kowalski@wp.pl", country: "Poland",
-      travelStart: addDaysIso(35), travelEnd: addDaysIso(42), travelers: "2",
-      region: "Arenal", activities: "Rafting, Hot springs", budget: "$1,800",
-      source: "Facebook", stage: "Lost", assignee: "Maria",
-      nextFollowUp: "", lastContacted: addDaysIso(-20), tripValue: "1700",
-      payment: "No payment", tags: [],
-      notes: [note(20, "Went with a cheaper operator. Keep for next year — was friendly.")],
-    }),
-  ];
 }
