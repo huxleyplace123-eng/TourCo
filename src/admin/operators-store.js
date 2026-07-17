@@ -5,9 +5,13 @@
 // redeploy with fresher spreadsheet data never wipes working state.
 
 import { OPERATOR_SEED } from "./operators-data.js";
+import { CONTACTS_SEED } from "./operators-contacts.js";
 import { inferOperatorType } from "./crm-shared.js";
 
 const OVERLAY_KEY = "ticowild_crm_operators_v1";
+
+// The pricing-sheet operators + the field-team outreach list, one seed.
+const ALL_SEED = [...OPERATOR_SEED, ...CONTACTS_SEED];
 
 export const PARTNER_STAGES = [
   "Not contacted",
@@ -70,8 +74,8 @@ const normalizeSeedStage = (s) =>
 
 /** Seed + overlay → the working operator list the UI renders. */
 export function mergedOperators(overlay) {
-  const seedIds = new Set(OPERATOR_SEED.map((o) => o.id));
-  const fromSeed = OPERATOR_SEED.map((seed) => {
+  const seedIds = new Set(ALL_SEED.map((o) => o.id));
+  const fromSeed = ALL_SEED.map((seed) => {
     const ov = overlay[seed.id] || {};
     return {
       ...seed,
