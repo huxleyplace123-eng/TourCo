@@ -440,7 +440,7 @@ function Directory({ operators, sortKey, sortDir, onSort, onOpen, onStage, onLog
       </div>
 
       {/* Mobile */}
-      <div className="crm-mob" style={{ display: "grid", gap: 10 }}>
+      <div className="crm-mob" style={{ gap: 10 }}>
         {operators.map((op) => {
           const prog = checklistProgress(op.checklist);
           return (

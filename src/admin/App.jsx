@@ -586,7 +586,7 @@ function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onSta
       </div>
 
       {/* Mobile */}
-      <div className="crm-mob" style={{ display: "grid", gap: 10 }}>
+      <div className="crm-mob" style={{ gap: 10 }}>
         {customers.map((cust) => (
           <div key={cust.id} className="crm-mcard" onClick={() => onOpen(cust.id)}>
             <div className="crm-mcard-top">
