@@ -31,7 +31,7 @@ export function Footer({ go }) {
 
       <div style={{ maxWidth: 1180, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 30 }}>
         <div>
-          <div style={{ marginBottom: 12 }}><Logo fontSize={22} tagline /></div>
+          <div style={{ marginBottom: 12 }}><Logo height="clamp(72px, 11vw, 92px)" /></div>
           <p style={{ fontSize: 14, lineHeight: 1.6, maxWidth: 240 }}>
             Costa Rica adventures, planned by locals. Vetted tours, transparent pricing, human support.
           </p>
