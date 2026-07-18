@@ -4,7 +4,7 @@ import React from "react";
 // "TICO WILD ADVENTURES" wordmark + tagline), so it's self-contained. `height`
 // takes any CSS length; the default is a responsive clamp tuned for the nav on
 // desktop and mobile. (fontSize/tagline kept for call-site compatibility.)
-export function Logo({ height = "clamp(80px, 11vw, 116px)", fontSize, tagline }) {
+export function Logo({ height = "clamp(68px, 9.4vw, 99px)", fontSize, tagline }) {
   return (
     <img
       src="/logo-crest.webp"
