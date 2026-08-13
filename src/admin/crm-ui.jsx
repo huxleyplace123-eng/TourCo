@@ -164,7 +164,9 @@ export const CRM_CSS = `
     align-items: center; justify-content: center; border: 1px solid ${c.line};
     background: rgba(255,255,255,.05); color: ${c.stone}; text-decoration: none; }
   .crm-contact-slot.is-off { opacity: .28; pointer-events: none; }
-  .crm-wrap, .ops-wrap { max-width: 1440px; margin: 0 auto; padding: 18px var(--crm-gutter) 96px; }
+  /* Global text/density dial for the whole CRM — nudged a touch smaller.
+     Bump toward 1 to enlarge, down to shrink further. */
+  .crm-wrap, .ops-wrap { max-width: 1440px; margin: 0 auto; padding: 18px var(--crm-gutter) 96px; zoom: .95; }
 
   /* card / surface primitives */
   .crm-card { border-radius: ${radius.md}px; border: 1px solid ${c.line}; background: ${c.white}; }
