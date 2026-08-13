@@ -8,15 +8,19 @@ import { addDaysIso, daysFromToday, fmtDate, normPhone, todayIso } from "./store
 import { CATEGORY_BENCHMARKS, TOUR_SEED } from "./operators-data.js";
 import {
   OUTREACH_CHECKLIST, PARTNER_STAGES, PARTNER_STAGE_COLORS,
-  checklistProgress, importOperatorsCsv, loadOperatorOverlay, mergedOperators, patchOperator, pct, saveOverlay,
+  checklistProgress, deleteOperators, importOperatorsCsv, loadOperatorOverlay, mergedOperators,
+  operatorsToCsv, patchOperator, pct, saveOverlay,
 } from "./operators-store.js";
 import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType, tempRank,
 } from "./crm-shared.js";
 import { TempBadge, TempPicker, TypeBadge, TypeSelect, OperatorContacts, CRM_CSS } from "./crm-ui.jsx";
+import { useSelection, SelectCheckbox, BulkBar, ComposeModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
 import { loadPortal, addMessage } from "./portal-store.js";
 import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
+
+const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
 const inputBase = {
   width: "100%",
@@ -88,6 +92,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [selectedId, setSelectedId] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [portalOpId, setPortalOpId] = useState(null);
+  const [compose, setCompose] = useState(null); // "email" | "text" | null
   const fileRef = useRef(null);
 
   useEffect(() => saveOverlay(overlay), [overlay]);
@@ -192,6 +197,73 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
 
   const anyFilter = query || stageFilter || regionFilter || categoryFilter || typeFilter || tempFilter;
   const clearFilters = () => { setQuery(""); setStageFilter(""); setRegionFilter(""); setCategoryFilter(""); setTypeFilter(""); setTempFilter(""); };
+
+  // ── Bulk selection ── acts on the currently filtered directory list; clears
+  // whenever the view/filters change so you never act on hidden rows. ─────────
+  const filteredIds = useMemo(() => filtered.map((o) => o.id), [filtered]);
+  const resetKey = `${view}|${query}|${regionFilter}|${categoryFilter}|${stageFilter}|${typeFilter}|${tempFilter}`;
+  const sel = useSelection(filteredIds, resetKey);
+  const selectedOps = () => operators.filter((o) => sel.selectedIds.includes(o.id));
+
+  const bulkStage = (stage) => setOverlay((ov) => {
+    let next = ov;
+    for (const id of sel.selectedIds) {
+      const op = operators.find((o) => o.id === id);
+      if (!op || op.stage === stage) continue;
+      next = patchOperator(next, id, {
+        stage,
+        notes: [...(op.notes || []), { id: noteId(), at: new Date().toISOString(), text: `Stage: ${op.stage} → ${stage}` }],
+      });
+    }
+    return next;
+  });
+  const bulkTemp = (temperature) => setOverlay((ov) => {
+    let next = ov;
+    for (const id of sel.selectedIds) next = patchOperator(next, id, { temperature });
+    return next;
+  });
+  const bulkFollowUp = (iso) => setOverlay((ov) => {
+    let next = ov;
+    for (const id of sel.selectedIds) next = patchOperator(next, id, { nextFollowUp: iso });
+    return next;
+  });
+  const bulkDelete = () => {
+    const ids = sel.selectedIds;
+    const customCount = ids.filter((id) => operators.find((o) => o.id === id)?.custom).length;
+    const seedCount = ids.length - customCount;
+    if (!customCount) {
+      window.alert(`${seedCount} operator${seedCount === 1 ? "" : "s"} come from the pricing sheet and can't be deleted.`);
+      return;
+    }
+    const msg = `Delete ${customCount} operator${customCount === 1 ? "" : "s"}?`
+      + (seedCount ? ` ${seedCount} seed operator${seedCount === 1 ? "" : "s"} will be skipped.` : "")
+      + " This can't be undone.";
+    if (!window.confirm(msg)) return;
+    setOverlay((ov) => deleteOperators(ov, ids, operators).overlay);
+    sel.clear();
+  };
+  const exportSelected = () => downloadCsv(operatorsToCsv(selectedOps()), `ticowild-operators-${todayIso()}.csv`);
+  const sendBulkEmail = ({ subject, body }) => {
+    const ops = selectedOps();
+    openBulkEmail(ops.map((o) => o.email), subject, body);
+    setOverlay((ov) => {
+      let next = ov;
+      for (const op of ops) {
+        if (!op.email) continue;
+        next = patchOperator(next, op.id, {
+          lastContacted: todayIso(),
+          notes: [...(op.notes || []), { id: noteId(), at: new Date().toISOString(), text: `Bulk email sent${subject ? `: ${subject}` : ""}` }],
+        });
+      }
+      return next;
+    });
+    setCompose(null);
+  };
+  const statusOptions = PARTNER_STAGES.map((s) => ({ value: s, label: s, color: PARTNER_STAGE_COLORS[s] }));
+  const heatOptions = [
+    ...[...TEMPERATURES].reverse().map((t) => ({ value: t, label: t, emoji: TEMPERATURE_META[t].emoji, color: TEMPERATURE_META[t].color })),
+    { value: "", label: "Clear heat", emoji: "", color: c.stone },
+  ];
 
   const due = useMemo(() => {
     return operators
@@ -348,7 +420,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
                 </div>
               </div>
             )}
-            <Directory operators={filtered} sortKey={sortKey} sortDir={sortDir} onSort={onSort} onOpen={setSelectedId} onStage={setStage} onLog={logTouch} onTemp={setTemp} onPreferred={togglePreferred} />
+            <Directory operators={filtered} sel={sel} sortKey={sortKey} sortDir={sortDir} onSort={onSort} onOpen={setSelectedId} onStage={setStage} onLog={logTouch} onTemp={setTemp} onPreferred={togglePreferred} />
           </>
         )}
         {view === "pipeline" && <OpsPipeline operators={filtered} onOpen={setSelectedId} onStage={setStage} />}
@@ -366,6 +438,22 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
         <AddOperatorModal
           onClose={() => setShowAdd(false)}
           onSave={(id, entry) => { setOverlay((ov) => patchOperator(ov, id, entry)); setShowAdd(false); setSelectedId(id); }}
+        />
+      )}
+
+      <BulkBar
+        count={sel.count} onClear={sel.clear} entityLabel="operator"
+        statusOptions={statusOptions} onStatus={bulkStage}
+        heatOptions={heatOptions} onHeat={bulkTemp}
+        onFollowUp={bulkFollowUp}
+        onEmail={() => setCompose("email")} onText={() => setCompose("text")}
+        onExport={exportSelected} onDelete={bulkDelete}
+      />
+      {compose && (
+        <ComposeModal
+          mode={compose} entityLabel="operator"
+          recipients={selectedOps().map((o) => ({ id: o.id, name: o.name, email: o.email, phone: o.phone || o.whatsapp }))}
+          onClose={() => setCompose(null)} onSend={sendBulkEmail}
         />
       )}
     </div>
@@ -386,7 +474,7 @@ function StarButton({ on, onClick }) {
   );
 }
 
-function Directory({ operators, sortKey, sortDir, onSort, onOpen, onStage, onLog, onTemp, onPreferred }) {
+function Directory({ operators, sel, sortKey, sortDir, onSort, onOpen, onStage, onLog, onTemp, onPreferred }) {
   if (!operators.length) {
     return <div style={{ padding: 40, textAlign: "center", color: c.stone, background: c.white, borderRadius: radius.md, border: `1px solid ${c.line}` }}>No operators match these filters.</div>;
   }
@@ -411,6 +499,9 @@ function Directory({ operators, sortKey, sortDir, onSort, onOpen, onStage, onLog
         <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 1040 }}>
           <thead style={{ position: "sticky", top: 0, zIndex: 2, background: c.canvas2 }}>
             <tr>
+              <th style={{ ...cell, width: 42, paddingRight: 0 }}>
+                <SelectCheckbox checked={sel.allVisibleSelected} indeterminate={sel.someVisibleSelected} onChange={sel.toggleAll} title="Select all" />
+              </th>
               {headers.map((h, i) => {
                 const active = h.key && sortKey === h.key;
                 return (
@@ -427,7 +518,10 @@ function Directory({ operators, sortKey, sortDir, onSort, onOpen, onStage, onLog
             {operators.map((op) => {
               const prog = checklistProgress(op.checklist);
               return (
-                <tr key={op.id} className="ops-row" onClick={() => onOpen(op.id)} style={{ cursor: "pointer" }}>
+                <tr key={op.id} className={`ops-row${sel.isSelected(op.id) ? " crm-row-selected" : ""}`} onClick={() => onOpen(op.id)} style={{ cursor: "pointer" }}>
+                  <td style={{ ...cell, width: 42, paddingRight: 0 }} onClick={(e) => e.stopPropagation()}>
+                    <SelectCheckbox checked={sel.isSelected(op.id)} onChange={() => sel.toggle(op.id)} title={`Select ${op.name}`} />
+                  </td>
                   <td style={{ ...cell, paddingRight: 0 }}><StarButton on={op.preferred} onClick={() => onPreferred(op.id)} /></td>
                   <td style={cell}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 250, justifyContent: "space-between" }}>
@@ -466,14 +560,17 @@ function Directory({ operators, sortKey, sortDir, onSort, onOpen, onStage, onLog
         {operators.map((op) => {
           const prog = checklistProgress(op.checklist);
           return (
-            <div key={op.id} className="crm-mcard" onClick={() => onOpen(op.id)}>
+            <div key={op.id} className={`crm-mcard${sel.isSelected(op.id) ? " crm-row-selected" : ""}`} onClick={() => onOpen(op.id)}>
               <div className="crm-mcard-top">
-                <div style={{ minWidth: 0 }}>
-                  <div className="crm-mcard-name" style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                    {op.preferred && <Star size={14} fill={c.gold} color={c.gold} style={{ flexShrink: 0 }} />}
-                    <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{op.name}</span>
+                <div style={{ display: "flex", gap: 10, minWidth: 0, flex: 1 }}>
+                  <SelectCheckbox checked={sel.isSelected(op.id)} onChange={() => sel.toggle(op.id)} title={`Select ${op.name}`} />
+                  <div style={{ minWidth: 0 }}>
+                    <div className="crm-mcard-name" style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                      {op.preferred && <Star size={14} fill={c.gold} color={c.gold} style={{ flexShrink: 0 }} />}
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{op.name}</span>
+                    </div>
+                    <div className="crm-mcard-sub">{op.regions || "—"}</div>
                   </div>
-                  <div className="crm-mcard-sub">{op.regions || "—"}</div>
                 </div>
                 <TempBadge temperature={op.temperature} small />
               </div>

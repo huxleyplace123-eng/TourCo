@@ -1,7 +1,7 @@
 // Shared CRM UI atoms + the responsive stylesheet, so the customer and
 // operator workspaces render temperature, type and mobile cards identically.
 import { MessageCircle, Mail, Phone, Globe } from "lucide-react";
-import { c, FONT, radius } from "../theme.js";
+import { c, FONT, radius, shadow } from "../theme.js";
 import { normPhone } from "./store.js";
 import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType,
@@ -188,6 +188,51 @@ export const CRM_CSS = `
 
   select option { color: ${c.ink}; background: #fff; }
   input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(.8); }
+
+  /* ── Bulk multi-select ── themed checkbox, selected-row tint, floating bar ── */
+  .crm-check { all: unset; box-sizing: border-box; display: inline-flex; align-items: center;
+    justify-content: center; border-radius: 6px; border: 1.6px solid ${c.stone}88;
+    background: rgba(255,255,255,.04); color: ${c.ink}; cursor: pointer; flex-shrink: 0;
+    transition: background .12s ease, border-color .12s ease, transform .08s ease; }
+  .crm-check:hover { border-color: ${c.gold}; }
+  .crm-check:active { transform: scale(.9); }
+  .crm-check.on, .crm-check.mixed { background: ${c.gold}; border-color: ${c.gold}; color: ${c.ink}; }
+  .crm-row-selected { background: rgba(255,208,0,.09) !important; }
+  .crm-row-selected:hover { background: rgba(255,208,0,.14) !important; }
+
+  .crm-bulkbar-wrap { position: fixed; left: 0; right: 0; bottom: 20px; z-index: 48;
+    display: flex; justify-content: center; padding: 0 12px; pointer-events: none; }
+  .crm-bulkbar { pointer-events: auto; display: flex; align-items: center; gap: 12px;
+    max-width: 100%; padding: 9px 12px 9px 16px; border-radius: 999px;
+    background: ${c.surface2}; border: 1px solid ${c.line};
+    box-shadow: 0 24px 60px -18px rgba(0,0,0,.85), 0 0 0 1px rgba(255,208,0,.12);
+    animation: crmBarUp .18s ease; }
+  @keyframes crmBarUp { from { transform: translateY(16px); opacity: 0 } to { transform: none; opacity: 1 } }
+  .crm-bulkbar-count { font-size: 13px; font-weight: 700; color: ${c.charcoal}; white-space: nowrap; }
+  .crm-bulkbar-div { width: 1px; align-self: stretch; background: ${c.line}; }
+  .crm-bulkbar-actions { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; overflow-x: auto; }
+  .crm-bulk-btn { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 12px; border-radius: 999px; border: 1px solid ${c.line}; background: rgba(255,255,255,.05);
+    color: ${c.charcoal}; font-family: ${FONT}; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .crm-bulk-btn:hover { border-color: ${c.gold}; color: ${c.gold}; }
+  .crm-bulk-danger:hover { border-color: #F87171; color: #F87171; }
+  .crm-bulkbar-x { all: unset; display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 999px; color: ${c.stone}; cursor: pointer; flex-shrink: 0; }
+  .crm-bulkbar-x:hover { background: rgba(255,255,255,.06); color: ${c.charcoal}; }
+  .crm-bulk-menu { position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 49; min-width: 190px;
+    padding: 6px; border-radius: ${radius.md}px; background: ${c.canvas2}; border: 1px solid ${c.line};
+    box-shadow: ${shadow.lg}; display: grid; gap: 2px; max-height: 300px; overflow-y: auto; }
+  .crm-bulk-menu-item { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 9px;
+    padding: 9px 11px; border-radius: 10px; color: ${c.charcoal}; font-family: ${FONT}; font-size: 13px;
+    font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .crm-bulk-menu-item:hover { background: rgba(255,255,255,.06); }
+  @media (max-width: 820px) {
+    .crm-bulkbar-wrap { bottom: 12px; }
+    .crm-bulkbar { width: 100%; border-radius: ${radius.lg}px; flex-wrap: wrap; padding: 10px 12px; }
+    .crm-bulkbar-div { display: none; }
+    .crm-bulkbar-actions { width: 100%; }
+    .crm-bulk-menu { position: fixed; left: 12px; right: 12px; bottom: 84px; min-width: 0; }
+  }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(127,166,232,.22); border-radius: 999px; }

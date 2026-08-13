@@ -148,6 +148,46 @@ export function checklistProgress(checklist) {
 
 export const pct = (v) => (v === null || v === undefined ? "—" : `${Math.round(v * 100)}%`);
 
+// ── Bulk helpers (used by the bulk-action bar) ────────────────────────────────
+// Delete only removes custom/imported operators (their overlay entry); seed
+// operators from the pricing sheet can't be deleted, only skipped.
+export function deleteOperators(overlay, ids, mergedList) {
+  const byId = new Map(mergedList.map((o) => [o.id, o]));
+  const next = { ...overlay };
+  let deleted = 0, skippedSeed = 0;
+  for (const id of ids) {
+    const op = byId.get(id);
+    if (op && op.custom) { delete next[id]; deleted += 1; }
+    else skippedSeed += 1;
+  }
+  return { overlay: next, deleted, skippedSeed };
+}
+
+const opCsvEscape = (v) => {
+  const s = String(v ?? "");
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
+// Export a list of merged operators to CSV (matches the shape the importer reads
+// back in, so a round-trip stays clean).
+export function operatorsToCsv(list) {
+  const cols = [
+    ["name", "Operator"], ["type", "Type"], ["stage", "Stage"], ["temperature", "Heat"],
+    ["regions", "Regions"], ["destinations", "Destinations"], ["categories", "Categories"],
+    ["takeRate", "Referral fee"], ["phone", "Phone"], ["whatsapp", "WhatsApp"],
+    ["email", "Email"], ["website", "Website"], ["owner", "Owner"],
+    ["nextFollowUp", "Next follow-up"], ["lastContacted", "Last contacted"],
+  ];
+  const cell = (o, k) => {
+    if (k === "categories") return Array.isArray(o[k]) ? o[k].join("; ") : (o[k] || "");
+    if (k === "takeRate") return o[k] === null || o[k] === undefined ? "" : `${Math.round(o[k] * 100)}%`;
+    return o[k] ?? "";
+  };
+  const header = cols.map(([, l]) => opCsvEscape(l)).join(",");
+  const rows = list.map((o) => cols.map(([k]) => opCsvEscape(cell(o, k))).join(","));
+  return [header, ...rows].join("\r\n");
+}
+
 // ── CSV import ────────────────────────────────────────────────────────────────
 // Take a CSV (ours or a loose export), fuzzy-match its headers to operator
 // fields, and produce overlay entries (custom operators). Dedupes against the
