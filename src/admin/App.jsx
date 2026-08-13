@@ -12,7 +12,7 @@ import {
 } from "./store.js";
 import { TEMPERATURES, TEMPERATURE_META, tempRank } from "./crm-shared.js";
 import { TempBadge, TempPicker, CustomerContacts, CRM_CSS } from "./crm-ui.jsx";
-import { useSelection, SelectCheckbox, BulkBar, ComposeModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
+import { useSelection, SelectCheckbox, BulkBar, ComposeModal, WhatsAppSendModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
@@ -171,6 +171,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   const [showColumns, setShowColumns] = useState(false);
   const [columns, setColumns] = useState(() => loadColumnPrefs(DEFAULT_COLUMNS));
   const [compose, setCompose] = useState(null); // "email" | "text" | null
+  const [waOpen, setWaOpen] = useState(false);
   const fileRef = useRef(null);
 
   useEffect(() => saveCustomers(customers), [customers]);
@@ -278,6 +279,10 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     sel.clear();
   };
   const exportSelected = () => downloadCsv(toCsv(selectedCustomers()), `ticowild-customers-${todayIso()}.csv`);
+  const markWaSent = (id) => setCustomers((cs) => cs.map((x) => x.id === id ? {
+    ...x, lastContacted: todayIso(), updatedAt: new Date().toISOString(),
+    notes: [...(x.notes || []), { id: noteId(), at: new Date().toISOString(), kind: "whatsapp", text: "WhatsApp message sent (bulk)" }],
+  } : x));
   const sendBulkEmail = ({ subject, body }) => {
     const picked = selectedCustomers();
     openBulkEmail(picked.map((x) => x.email), subject, body);
@@ -561,6 +566,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           statusOptions={statusOptions} onStatus={bulkStage}
           heatOptions={heatOptions} onHeat={bulkTemp}
           onFollowUp={bulkFollowUp}
+          onWhatsApp={() => setWaOpen(true)}
           onEmail={() => setCompose("email")} onText={() => setCompose("text")}
           onExport={exportSelected} onDelete={bulkDelete}
         />
@@ -570,6 +576,12 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           mode={compose} entityLabel="customer"
           recipients={selectedCustomers().map((x) => ({ id: x.id, name: x.name, email: x.email, phone: x.phone }))}
           onClose={() => setCompose(null)} onSend={sendBulkEmail}
+        />
+      )}
+      {waOpen && (
+        <WhatsAppSendModal
+          recipients={selectedCustomers().map((x) => ({ id: x.id, name: x.name, number: x.phone }))}
+          onClose={() => setWaOpen(false)} onSent={markWaSent}
         />
       )}
     </div>

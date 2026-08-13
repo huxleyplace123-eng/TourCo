@@ -217,6 +217,8 @@ export const CRM_CSS = `
     padding: 8px 12px; border-radius: 999px; border: 1px solid ${c.line}; background: rgba(255,255,255,.05);
     color: ${c.charcoal}; font-family: ${FONT}; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
   .crm-bulk-btn:hover { border-color: ${c.gold}; color: ${c.gold}; }
+  .crm-bulk-wa { border-color: rgba(37,211,102,.45); color: #25D366; }
+  .crm-bulk-wa:hover { border-color: #25D366; color: #25D366; background: rgba(37,211,102,.12); }
   .crm-bulk-danger:hover { border-color: #F87171; color: #F87171; }
   .crm-bulkbar-x { all: unset; display: inline-flex; align-items: center; justify-content: center;
     width: 32px; height: 32px; border-radius: 999px; color: ${c.stone}; cursor: pointer; flex-shrink: 0; }

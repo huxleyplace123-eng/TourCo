@@ -15,7 +15,7 @@ import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType, tempRank,
 } from "./crm-shared.js";
 import { TempBadge, TempPicker, TypeBadge, TypeSelect, OperatorContacts, CRM_CSS } from "./crm-ui.jsx";
-import { useSelection, SelectCheckbox, BulkBar, ComposeModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
+import { useSelection, SelectCheckbox, BulkBar, ComposeModal, WhatsAppSendModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
 import { loadPortal, addMessage } from "./portal-store.js";
 import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
@@ -93,6 +93,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [showAdd, setShowAdd] = useState(false);
   const [portalOpId, setPortalOpId] = useState(null);
   const [compose, setCompose] = useState(null); // "email" | "text" | null
+  const [waOpen, setWaOpen] = useState(false);
   const fileRef = useRef(null);
 
   useEffect(() => saveOverlay(overlay), [overlay]);
@@ -243,6 +244,13 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
     sel.clear();
   };
   const exportSelected = () => downloadCsv(operatorsToCsv(selectedOps()), `ticowild-operators-${todayIso()}.csv`);
+  const markWaSent = (id) => setOverlay((ov) => {
+    const op = operators.find((o) => o.id === id);
+    return patchOperator(ov, id, {
+      lastContacted: todayIso(),
+      notes: [...(op?.notes || []), { id: noteId(), at: new Date().toISOString(), text: "WhatsApp message sent (bulk)" }],
+    });
+  });
   const sendBulkEmail = ({ subject, body }) => {
     const ops = selectedOps();
     openBulkEmail(ops.map((o) => o.email), subject, body);
@@ -446,6 +454,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
         statusOptions={statusOptions} onStatus={bulkStage}
         heatOptions={heatOptions} onHeat={bulkTemp}
         onFollowUp={bulkFollowUp}
+        onWhatsApp={() => setWaOpen(true)}
         onEmail={() => setCompose("email")} onText={() => setCompose("text")}
         onExport={exportSelected} onDelete={bulkDelete}
       />
@@ -454,6 +463,12 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
           mode={compose} entityLabel="operator"
           recipients={selectedOps().map((o) => ({ id: o.id, name: o.name, email: o.email, phone: o.phone || o.whatsapp }))}
           onClose={() => setCompose(null)} onSend={sendBulkEmail}
+        />
+      )}
+      {waOpen && (
+        <WhatsAppSendModal
+          recipients={selectedOps().map((o) => ({ id: o.id, name: o.name, number: o.whatsapp || o.phone }))}
+          onClose={() => setWaOpen(false)} onSent={markWaSent}
         />
       )}
     </div>
