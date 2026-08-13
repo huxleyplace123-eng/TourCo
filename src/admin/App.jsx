@@ -12,7 +12,10 @@ import {
 } from "./store.js";
 import { TEMPERATURES, TEMPERATURE_META, tempRank } from "./crm-shared.js";
 import { TempBadge, TempPicker, CustomerContacts, CRM_CSS } from "./crm-ui.jsx";
+import { useSelection, SelectCheckbox, BulkBar, ComposeModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
+
+const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TicoWild CRM — one screen, three views (Table · Pipeline · Follow-ups),
@@ -167,6 +170,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   const [showAdd, setShowAdd] = useState(false);
   const [showColumns, setShowColumns] = useState(false);
   const [columns, setColumns] = useState(() => loadColumnPrefs(DEFAULT_COLUMNS));
+  const [compose, setCompose] = useState(null); // "email" | "text" | null
   const fileRef = useRef(null);
 
   useEffect(() => saveCustomers(customers), [customers]);
@@ -242,6 +246,53 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   const buckets = useMemo(() => followUpBuckets(filtered), [filtered]);
   const selected = customers.find((x) => x.id === selectedId) || null;
   const filtersOn = stageFilter || assigneeFilter || sourceFilter || tagFilter || tempFilter || query;
+
+  // ── Bulk selection ── scoped to the visible (sorted+filtered) table; clears
+  // whenever the view/filters change so hidden rows are never touched. ────────
+  const visibleIds = useMemo(() => sorted.map((x) => x.id), [sorted]);
+  const resetKey = `${view}|${query}|${stageFilter}|${assigneeFilter}|${sourceFilter}|${tagFilter}|${tempFilter}`;
+  const sel = useSelection(visibleIds, resetKey);
+  const selectedCustomers = () => { const s = new Set(sel.selectedIds); return customers.filter((x) => s.has(x.id)); };
+
+  const bulkStage = (stage) => setCustomers((cs) => {
+    const s = new Set(sel.selectedIds);
+    return cs.map((x) => (s.has(x.id) && x.stage !== stage) ? {
+      ...x, stage, updatedAt: new Date().toISOString(),
+      notes: [...(x.notes || []), { id: noteId(), at: new Date().toISOString(), kind: "stage", text: `Stage: ${x.stage} → ${stage}` }],
+    } : x);
+  });
+  const bulkTemp = (temperature) => setCustomers((cs) => {
+    const s = new Set(sel.selectedIds);
+    return cs.map((x) => s.has(x.id) ? { ...x, temperature, updatedAt: new Date().toISOString() } : x);
+  });
+  const bulkFollowUp = (iso) => setCustomers((cs) => {
+    const s = new Set(sel.selectedIds);
+    return cs.map((x) => s.has(x.id) ? { ...x, nextFollowUp: iso, updatedAt: new Date().toISOString() } : x);
+  });
+  const bulkDelete = () => {
+    const n = sel.count;
+    if (!n || !window.confirm(`Delete ${n} customer${n === 1 ? "" : "s"}? This can't be undone.`)) return;
+    const s = new Set(sel.selectedIds);
+    setSelectedId(null);
+    setCustomers((cs) => cs.filter((x) => !s.has(x.id)));
+    sel.clear();
+  };
+  const exportSelected = () => downloadCsv(toCsv(selectedCustomers()), `ticowild-customers-${todayIso()}.csv`);
+  const sendBulkEmail = ({ subject, body }) => {
+    const picked = selectedCustomers();
+    openBulkEmail(picked.map((x) => x.email), subject, body);
+    const s = new Set(picked.filter((x) => x.email).map((x) => x.id));
+    setCustomers((cs) => cs.map((x) => s.has(x.id) ? {
+      ...x, lastContacted: todayIso(), updatedAt: new Date().toISOString(),
+      notes: [...(x.notes || []), { id: noteId(), at: new Date().toISOString(), kind: "email", text: `Bulk email sent${subject ? `: ${subject}` : ""}` }],
+    } : x));
+    setCompose(null);
+  };
+  const statusOptions = STAGES.map((s) => ({ value: s, label: s, color: STAGE_COLORS[s] }));
+  const heatOptions = [
+    ...[...TEMPERATURES].reverse().map((t) => ({ value: t, label: t, emoji: TEMPERATURE_META[t].emoji, color: TEMPERATURE_META[t].color })),
+    { value: "", label: "Clear heat", emoji: "", color: c.stone },
+  ];
 
   // Stat strip numbers (whole book, not the filtered view — these are the pulse).
   const stats = useMemo(() => {
@@ -473,7 +524,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           <EmptyState onAdd={() => setShowAdd(true)} onImport={() => fileRef.current?.click()} />
         ) : view === "table" ? (
           <TableView
-            customers={sorted} columns={columns} sortKey={sortKey} sortDir={sortDir}
+            customers={sorted} sel={sel} columns={columns} sortKey={sortKey} sortDir={sortDir}
             onSort={(k) => { if (sortKey === k) setSortDir((d) => (d === "asc" ? "desc" : "asc")); else { setSortKey(k); setSortDir("asc"); } }}
             onOpen={setSelectedId} onStage={setStage} onLog={logContact} onTemp={setTemp}
           />
@@ -503,6 +554,24 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
       {/* Shared datalists — the drawer and the add-form both use them. */}
       <datalist id="crm-sources">{sources.map((s) => <option key={s} value={s} />)}</datalist>
       <datalist id="crm-assignees">{assignees.map((a) => <option key={a} value={a} />)}</datalist>
+
+      {view === "table" && (
+        <BulkBar
+          count={sel.count} onClear={sel.clear} entityLabel="customer"
+          statusOptions={statusOptions} onStatus={bulkStage}
+          heatOptions={heatOptions} onHeat={bulkTemp}
+          onFollowUp={bulkFollowUp}
+          onEmail={() => setCompose("email")} onText={() => setCompose("text")}
+          onExport={exportSelected} onDelete={bulkDelete}
+        />
+      )}
+      {compose && (
+        <ComposeModal
+          mode={compose} entityLabel="customer"
+          recipients={selectedCustomers().map((x) => ({ id: x.id, name: x.name, email: x.email, phone: x.phone }))}
+          onClose={() => setCompose(null)} onSend={sendBulkEmail}
+        />
+      )}
     </div>
   );
 }
@@ -538,7 +607,7 @@ function EmptyState({ onAdd, onImport }) {
 }
 
 // ── Table view ────────────────────────────────────────────────────────────────
-function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onStage, onLog, onTemp }) {
+function TableView({ customers, sel, columns, sortKey, sortDir, onSort, onOpen, onStage, onLog, onTemp }) {
   // `always` columns render regardless of saved prefs, so "Added" + "Customer"
   // are always the first two, lined up.
   const cols = ALL_COLUMNS.filter((col) => col.always || columns.includes(col.key));
@@ -591,6 +660,9 @@ function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onSta
         <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 760 }}>
           <thead className="crm-table-head">
             <tr>
+              <th style={{ ...cellStyle, width: 42, paddingRight: 0 }}>
+                <SelectCheckbox checked={sel.allVisibleSelected} indeterminate={sel.someVisibleSelected} onChange={sel.toggleAll} title="Select all" />
+              </th>
               {cols.map((col) => (
                 <th key={col.key} onClick={() => onSort(col.key)}
                   style={{ ...cellStyle, cursor: "pointer", textAlign: "left", fontSize: 11.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".05em", color: sortKey === col.key ? c.teal : c.stone, userSelect: "none" }}>
@@ -601,7 +673,10 @@ function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onSta
           </thead>
           <tbody>
             {customers.map((cust) => (
-              <tr key={cust.id} className="crm-row" onClick={() => onOpen(cust.id)} style={{ cursor: "pointer" }}>
+              <tr key={cust.id} className={`crm-row${sel.isSelected(cust.id) ? " crm-row-selected" : ""}`} onClick={() => onOpen(cust.id)} style={{ cursor: "pointer" }}>
+                <td style={{ ...cellStyle, width: 42, paddingRight: 0 }} onClick={(e) => e.stopPropagation()}>
+                  <SelectCheckbox checked={sel.isSelected(cust.id)} onChange={() => sel.toggle(cust.id)} title={`Select ${cust.name}`} />
+                </td>
                 {cols.map((col) => <td key={col.key} style={cellStyle}>{render(cust, col.key)}</td>)}
               </tr>
             ))}
@@ -612,14 +687,17 @@ function TableView({ customers, columns, sortKey, sortDir, onSort, onOpen, onSta
       {/* Mobile */}
       <div className="crm-mob" style={{ gap: 10 }}>
         {customers.map((cust) => (
-          <div key={cust.id} className="crm-mcard" onClick={() => onOpen(cust.id)}>
+          <div key={cust.id} className={`crm-mcard${sel.isSelected(cust.id) ? " crm-row-selected" : ""}`} onClick={() => onOpen(cust.id)}>
             <div className="crm-mcard-top">
-              <div style={{ minWidth: 0 }}>
+              <div style={{ display: "flex", gap: 10, minWidth: 0, flex: 1 }}>
+                <SelectCheckbox checked={sel.isSelected(cust.id)} onChange={() => sel.toggle(cust.id)} title={`Select ${cust.name}`} />
+                <div style={{ minWidth: 0 }}>
                 <div className="crm-mcard-name" style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{cust.name}</div>
                 <div className="crm-mcard-sub">
                   {cust.travelStart ? `${fmtDate(cust.travelStart)}` : "no dates"}{cust.travelers ? ` · ${cust.travelers} pax` : ""}{cust.country ? ` · ${cust.country}` : ""}
                 </div>
                 {cust.createdAt && <div className="crm-mcard-sub" style={{ opacity: .8 }}>Added {fmtDate(cust.createdAt)}</div>}
+                </div>
               </div>
               <TempBadge temperature={cust.temperature} small />
             </div>
