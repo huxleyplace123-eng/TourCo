@@ -6,38 +6,38 @@
 <style>
 /* ─────────────────────────── tokens ─────────────────────────── */
 :root{
-  --paper:#FCFAF7;
+  --paper:#FFFFFF;
   --surface:#FFFFFF;
-  --surface-2:#F4F0E9;
-  --surface-3:#EBE5DA;
-  --ink:#10201F;
-  --ink-2:#3F5453;
-  --dust:#6E8180;
-  --line:#E4DDD1;
-  --line-2:#CFC5B5;
-  --brand:#0C7C77;
-  --brand-deep:#095E5A;
-  --brand-soft:#E2F1F0;
-  --gold:#C07A22;
-  --clay:#A8503A;
-  --shadow-s:0 1px 2px rgba(16,32,31,.05),0 6px 16px -10px rgba(16,32,31,.18);
-  --shadow-l:0 2px 4px rgba(16,32,31,.05),0 28px 54px -28px rgba(16,32,31,.3);
+  --surface-2:#F4F6FA;
+  --surface-3:#E7ECF4;
+  --ink:#0E1A2B;
+  --ink-2:#45566D;
+  --dust:#78879B;
+  --line:#E2E8F1;
+  --line-2:#C6D0DE;
+  --brand:#1A50C7;
+  --brand-deep:#123C96;
+  --brand-soft:#E9EFFC;
+  --gold:#D9891A;
+  --clay:#B5432F;
+  --shadow-s:0 1px 2px rgba(14,26,43,.05),0 6px 16px -10px rgba(14,26,43,.18);
+  --shadow-l:0 2px 4px rgba(14,26,43,.05),0 28px 54px -28px rgba(14,26,43,.3);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --paper:#0A1414;--surface:#101E1E;--surface-2:#162828;--surface-3:#1D3333;
-    --ink:#E9F1EF;--ink-2:#B4C7C5;--dust:#7F9694;--line:#20393A;--line-2:#2E4C4D;
-    --brand:#2CC3BC;--brand-deep:#8CEFE9;--brand-soft:#0E2E2E;
-    --gold:#E5A64F;--clay:#D07C63;
+    --paper:#0B131F;--surface:#121B29;--surface-2:#172232;--surface-3:#1E2B3E;
+    --ink:#E9EEF6;--ink-2:#AFBCCD;--dust:#7C8A9E;--line:#253246;--line-2:#33425A;
+    --brand:#6C9BFF;--brand-deep:#A8C5FF;--brand-soft:#15223A;
+    --gold:#F0AD4E;--clay:#E0806A;
     --shadow-s:0 1px 2px rgba(0,0,0,.4),0 6px 16px -10px rgba(0,0,0,.6);
     --shadow-l:0 2px 4px rgba(0,0,0,.4),0 28px 54px -28px rgba(0,0,0,.85);
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0A1414;--surface:#101E1E;--surface-2:#162828;--surface-3:#1D3333;
-  --ink:#E9F1EF;--ink-2:#B4C7C5;--dust:#7F9694;--line:#20393A;--line-2:#2E4C4D;
-  --brand:#2CC3BC;--brand-deep:#8CEFE9;--brand-soft:#0E2E2E;
-  --gold:#E5A64F;--clay:#D07C63;
+  --paper:#0B131F;--surface:#121B29;--surface-2:#172232;--surface-3:#1E2B3E;
+  --ink:#E9EEF6;--ink-2:#AFBCCD;--dust:#7C8A9E;--line:#253246;--line-2:#33425A;
+  --brand:#6C9BFF;--brand-deep:#A8C5FF;--brand-soft:#15223A;
+  --gold:#F0AD4E;--clay:#E0806A;
   --shadow-s:0 1px 2px rgba(0,0,0,.4),0 6px 16px -10px rgba(0,0,0,.6);
   --shadow-l:0 2px 4px rgba(0,0,0,.4),0 28px 54px -28px rgba(0,0,0,.85);
 }
@@ -76,7 +76,7 @@ section[id],#quote{scroll-margin-top:86px}
   background:repeating-linear-gradient(90deg,var(--brand) 0 12px,var(--line-2) 12px 16px)}
 .eyebrow{display:flex;align-items:center;gap:12px;color:var(--brand-deep);margin-bottom:18px}
 .eyebrow--dark{color:rgba(255,255,255,.72)}
-.eyebrow--dark .inlay{background:repeating-linear-gradient(90deg,#38D6CE 0 12px,rgba(255,255,255,.34) 12px 16px)}
+.eyebrow--dark .inlay{background:repeating-linear-gradient(90deg,#6C9BFF 0 12px,rgba(255,255,255,.34) 12px 16px)}
 
 /* ── buttons ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
@@ -84,10 +84,10 @@ section[id],#quote{scroll-margin-top:86px}
   font-weight:700;font-size:1rem;letter-spacing:-.01em;text-decoration:none;cursor:pointer;
   transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease;
   touch-action:manipulation}
-.btn--primary{background:var(--brand);color:#fff;box-shadow:0 1px 2px rgba(16,32,31,.2)}
+.btn--primary{background:var(--brand);color:#fff;box-shadow:0 1px 2px rgba(14,26,43,.2)}
 .btn--primary:hover{background:var(--brand-deep);color:#fff}
-:root[data-theme="dark"] .btn--primary,:root:not([data-theme="light"]) .btn--primary{color:#05201F}
-:root[data-theme="dark"] .btn--primary:hover,:root:not([data-theme="light"]) .btn--primary:hover{color:#05201F}
+:root[data-theme="dark"] .btn--primary,:root:not([data-theme="light"]) .btn--primary{color:#06152E}
+:root[data-theme="dark"] .btn--primary:hover,:root:not([data-theme="light"]) .btn--primary:hover{color:#06152E}
 .btn--ghost{background:var(--surface);color:var(--ink);border-color:var(--line-2)}
 .btn--ghost:hover{border-color:var(--brand);color:var(--brand-deep)}
 .btn--onDark{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.34)}
@@ -107,10 +107,7 @@ section[id],#quote{scroll-margin-top:86px}
 .photo{position:relative;overflow:hidden;border-radius:12px;
   background:var(--surface-2);border:1px solid var(--line-2);isolation:isolate}
 .photo::before{content:"";position:absolute;inset:0;z-index:0;
-  background:
-    radial-gradient(70% 60% at 26% 20%,color-mix(in srgb,var(--brand) 16%,transparent) 0%,transparent 70%),
-    radial-gradient(66% 60% at 82% 88%,color-mix(in srgb,var(--gold) 15%,transparent) 0%,transparent 68%),
-    linear-gradient(150deg,var(--surface-3) 0%,var(--surface-2) 62%)}
+  background:linear-gradient(155deg,var(--surface-3) 0%,var(--surface-2) 58%)}
 .photo::after{content:"";position:absolute;inset:12px;z-index:1;pointer-events:none;
   background:
     linear-gradient(var(--line-2),var(--line-2)) left top/18px 1.5px no-repeat,
@@ -137,24 +134,23 @@ section[id],#quote{scroll-margin-top:86px}
 /* dark surfaces get their own slot treatment */
 .onDark .photo{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.22)}
 .onDark .photo::before{background:
-  radial-gradient(70% 60% at 26% 20%,rgba(56,214,206,.16) 0%,transparent 70%),
-  radial-gradient(66% 60% at 82% 88%,rgba(229,166,79,.14) 0%,transparent 68%)}
+  linear-gradient(155deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.03) 60%)}
 .onDark .photo::after{background-image:
   linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),
   linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),
   linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),
   linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34))}
 .onDark .photo-in{color:rgba(255,255,255,.72)}
-.onDark .photo-in b{color:#5FE3DB}
+.onDark .photo-in b{color:#8FB6FF}
 </style>
 
 <style>
 /* ─────────────────────────── header ─────────────────────────── */
 .utility{background:var(--ink);color:rgba(255,255,255,.72)}
-:root[data-theme="dark"] .utility,:root:not([data-theme="light"]) .utility{background:#050F0F}
+:root[data-theme="dark"] .utility,:root:not([data-theme="light"]) .utility{background:#060D18}
 .utility .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:36px}
 .utility a{color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
-.utility a:hover{color:#5FE3DB}
+.utility a:hover{color:#8FB6FF}
 .u-hide{display:none}
 @media (min-width:760px){.u-hide{display:inline-flex}}
 
@@ -194,7 +190,7 @@ section[id],#quote{scroll-margin-top:86px}
 
 /* ─────────────────────────── hero ─────────────────────────── */
 .hero{border-bottom:1px solid var(--line);background:
-  linear-gradient(180deg,color-mix(in srgb,var(--brand) 5%,var(--paper)) 0%,var(--paper) 62%)}
+  linear-gradient(180deg,var(--surface-2) 0%,var(--paper) 64%)}
 .hero-grid{display:grid;gap:clamp(28px,4vw,52px);padding:clamp(34px,5vw,64px) 0 clamp(44px,6vw,76px)}
 @media (min-width:980px){.hero-grid{grid-template-columns:1.14fr .86fr;align-items:center}}
 .hero h1{margin-top:4px}
@@ -275,10 +271,9 @@ section[id],#quote{scroll-margin-top:86px}
 
 /* ─────────────────────────── dark band ─────────────────────────── */
 .band{background:var(--ink);color:#fff;position:relative;overflow:hidden}
-:root[data-theme="dark"] .band,:root:not([data-theme="light"]) .band{background:#061313}
+:root[data-theme="dark"] .band,:root:not([data-theme="light"]) .band{background:#070F1D}
 .band::before{content:"";position:absolute;inset:0;opacity:.5;
-  background:radial-gradient(60% 80% at 82% 18%,rgba(44,195,188,.2) 0%,transparent 62%),
-             radial-gradient(50% 70% at 10% 90%,rgba(229,166,79,.14) 0%,transparent 60%)}
+  background:radial-gradient(62% 82% at 84% 14%,rgba(108,155,255,.2) 0%,transparent 64%)}
 .band .wrap{position:relative;z-index:2;padding:clamp(56px,7vw,96px) 0}
 .band h2{color:#fff}
 .band .lede{color:rgba(255,255,255,.76)}
@@ -288,7 +283,7 @@ section[id],#quote{scroll-margin-top:86px}
 @media (min-width:560px){.stats{grid-template-columns:repeat(3,1fr)}}
 .stat{padding:20px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16)}
 .stat b{display:block;font-family:Figtree,system-ui,sans-serif;font-weight:800;
-  font-size:clamp(2rem,4vw,2.6rem);letter-spacing:-.04em;line-height:1;color:#5FE3DB;
+  font-size:clamp(2rem,4vw,2.6rem);letter-spacing:-.04em;line-height:1;color:#8FB6FF;
   font-variant-numeric:tabular-nums}
 .stat span{display:block;margin-top:8px;color:rgba(255,255,255,.72);font-size:.92rem;line-height:1.45}
 
@@ -339,12 +334,12 @@ section[id],#quote{scroll-margin-top:86px}
 
 /* ─────────────────────────── footer ─────────────────────────── */
 .foot{background:var(--ink);color:rgba(255,255,255,.74);padding:clamp(44px,6vw,72px) 0 0}
-:root[data-theme="dark"] .foot,:root:not([data-theme="light"]) .foot{background:#050F0F}
+:root[data-theme="dark"] .foot,:root:not([data-theme="light"]) .foot{background:#060D18}
 .foot-grid{display:grid;gap:32px}
 @media (min-width:800px){.foot-grid{grid-template-columns:1.4fr 1fr 1fr 1.2fr}}
 .foot h4{color:#fff;font-size:.93rem;margin-bottom:13px}
 .foot a{color:rgba(255,255,255,.74);text-decoration:none}
-.foot a:hover{color:#5FE3DB}
+.foot a:hover{color:#8FB6FF}
 .foot ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:.95rem}
 .foot .brand-name{color:#fff}
 .legal{margin-top:40px;padding:20px 0 28px;border-top:1px solid rgba(255,255,255,.14);
@@ -354,7 +349,7 @@ section[id],#quote{scroll-margin-top:86px}
   color:rgba(255,255,255,.76);font-size:.86rem;line-height:1.62}
 .handoff b{color:#fff}
 .handoff ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:5px;font-size:.83rem}
-.handoff li::before{content:"—  ";color:#5FE3DB}
+.handoff li::before{content:"—  ";color:#8FB6FF}
 
 /* ─────────────────────────── dock ─────────────────────────── */
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:1fr 1fr;gap:10px;
@@ -378,7 +373,7 @@ section[id],#quote{scroll-margin-top:86px}
 <!-- ═══════════ icon sprite ═══════════ -->
 <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
 <defs><linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
-  <stop offset="0" stop-color="#12A8A4"/><stop offset="1" stop-color="#0A6C6A"/></linearGradient></defs>
+  <stop offset="0" stop-color="#2E6FE0"/><stop offset="1" stop-color="#143F9E"/></linearGradient></defs>
   <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h3l1.5 4-2 1.4a12 12 0 0 0 6.6 6.6L17 13l4 1.5v3a2.5 2.5 0 0 1-2.8 2.5C10.6 19.3 4.7 13.4 4 5.8A2.5 2.5 0 0 1 6.5 3Z"/></symbol>
   <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="5" width="18.4" height="14" rx="2.4"/><path d="m3.4 7 8.6 6 8.6-6"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L3.5 20.5l1.4-5.9A8 8 0 1 1 21 12Z"/></symbol>
@@ -902,7 +897,7 @@ section[id],#quote{scroll-margin-top:86px}
     <div class="foot-grid">
       <div>
         <div class="brand" style="margin-bottom:12px">
-          <svg class="brand-mark" viewBox="0 0 76 88" style="color:#2CC3BC"><use href="#brandmark"/></svg>
+          <svg class="brand-mark" viewBox="0 0 76 88" style="color:#6C9BFF"><use href="#brandmark"/></svg>
           <span class="brand-name">AZ Family Insurance<span>Independent · Phoenix</span></span>
         </div>
         <p style="font-size:.95rem;max-width:34ch">An independent insurance agency in Phoenix, writing personal and commercial lines across Arizona.</p>
