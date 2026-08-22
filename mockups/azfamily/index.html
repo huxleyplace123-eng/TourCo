@@ -189,28 +189,51 @@ section[id],#quote{scroll-margin-top:86px}
 .sheet-actions{display:grid;gap:10px;margin-top:22px}
 
 /* ─────────────────────────── hero ─────────────────────────── */
-.hero{border-bottom:1px solid var(--line);background:
-  linear-gradient(180deg,var(--surface-2) 0%,var(--paper) 64%)}
-.hero-grid{display:grid;gap:clamp(28px,4vw,52px);padding:clamp(34px,5vw,64px) 0 clamp(44px,6vw,76px)}
-@media (min-width:980px){.hero-grid{grid-template-columns:1.14fr .86fr;align-items:center}}
-.hero h1{margin-top:4px}
-.hero-lede{margin-top:20px}
+.hero{position:relative;overflow:hidden;background:var(--ink);color:#fff}
+:root[data-theme="dark"] .hero,:root:not([data-theme="light"]) .hero{background:#070F1D}
+.hero::before{content:"";position:absolute;inset:0;opacity:.7;
+  background:radial-gradient(58% 78% at 80% 6%,rgba(108,155,255,.24) 0%,transparent 64%),
+             radial-gradient(48% 68% at 4% 98%,rgba(108,155,255,.12) 0%,transparent 62%)}
+.hero .wrap{position:relative;z-index:2}
+.hero-grid{display:grid;gap:clamp(30px,4vw,52px);padding:clamp(38px,5vw,68px) 0 clamp(44px,6vw,72px)}
+@media (min-width:980px){
+  .hero-grid{grid-template-columns:1.08fr .92fr;align-items:start}
+  .hero-copy{grid-column:1;grid-row:1}
+  .hero-grid > .quote-card{grid-column:2;grid-row:1 / span 2}
+  .hero-grid > .contactbar{grid-column:1;grid-row:2;grid-template-columns:repeat(2,1fr)}
+}
+.hero h1{color:#fff;margin-top:4px}
+.hero .hero-lede{color:rgba(255,255,255,.78);margin-top:20px}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 @media (max-width:520px){.hero-actions .btn{width:100%}}
 .hero-trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
-.hero-media{position:relative}
-.hero-media .photo{aspect-ratio:5/4}
-@media (min-width:980px){.hero-media .photo{aspect-ratio:4/4.6}}
-.hero-badge{position:absolute;left:-14px;bottom:24px;z-index:4;display:flex;align-items:center;gap:12px;
-  padding:14px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-l)}
-@media (max-width:520px){.hero-badge{left:8px;bottom:12px;padding:12px 14px}}
-.hero-badge b{display:block;font-family:Figtree,system-ui,sans-serif;font-weight:800;font-size:1.5rem;
-  letter-spacing:-.03em;line-height:1;color:var(--brand-deep);font-variant-numeric:tabular-nums}
-.hero-badge span{display:block;font-size:.82rem;color:var(--dust);margin-top:3px}
+.chip--dark{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.88)}
+.chip--dark svg{color:#8FB6FF}
+.chip--dark .stars svg{color:var(--gold)}
+.stars--chip{display:inline-flex;gap:2px}
+.stars--chip svg{width:13px;height:13px}
+
+/* every way to reach the agency, above the fold */
+.contactbar{display:grid;gap:12px;grid-template-columns:1fr;
+  margin-top:clamp(22px,3vw,30px);padding-top:clamp(22px,3vw,30px);
+  border-top:1px solid rgba(255,255,255,.16)}
+@media (min-width:600px){.contactbar{grid-template-columns:repeat(2,1fr)}}
+.cbar{display:flex;gap:13px;align-items:flex-start;padding:15px 16px;border-radius:10px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  text-decoration:none;transition:background .16s ease,border-color .16s ease}
+a.cbar:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.32)}
+.cbar-ico{width:38px;height:38px;flex:none;border-radius:9px;display:grid;place-items:center;
+  background:rgba(255,255,255,.1);color:#8FB6FF}
+.cbar-ico svg{width:19px;height:19px}
+.cbar .mono{display:block;color:rgba(255,255,255,.5);margin-bottom:5px}
+.cbar b{display:block;font-size:.99rem;color:#fff;letter-spacing:-.015em;line-height:1.25;overflow-wrap:anywhere}
+.cbar em{display:block;font-style:normal;font-size:.83rem;color:rgba(255,255,255,.62);margin-top:4px;line-height:1.42}
 
 /* quote card */
 .quote-card{background:var(--surface);border-radius:14px;border:1px solid var(--line);
   box-shadow:var(--shadow-l);padding:clamp(20px,3vw,26px)}
+/* the card is a light surface even inside a dark section — never inherit its colour */
+.quote-card,.quote-card h2,.quote-card p,.pick label{color:var(--ink)}
 .field{display:block;margin-top:14px}
 .field > .mono{display:block;color:var(--dust);margin-bottom:7px}
 .field input,.field select,.field textarea{width:100%;min-height:50px;padding:12px 14px;border-radius:9px;
@@ -460,60 +483,31 @@ section[id],#quote{scroll-margin-top:86px}
 <!-- ═══════════════════════════ HOME ═══════════════════════════ -->
 <main class="page" id="page-home" data-active="true">
 
-<section class="hero">
+<section class="hero onDark">
   <div class="wrap">
     <div class="hero-grid">
-      <div>
-        <div class="eyebrow"><span class="inlay"></span><span class="mono">Independent · Phoenix, Arizona</span></div>
+      <div class="hero-copy">
+        <div class="eyebrow eyebrow--dark"><span class="inlay"></span><span class="mono">Independent · Phoenix, Arizona</span></div>
         <h1 class="display">Cover the people in the <em>back seat</em>.</h1>
         <p class="lede hero-lede">We're an independent Arizona agency. One conversation, twenty-plus A-rated carriers shopped against each other, and a real person who picks up when something actually goes wrong.</p>
         <div class="hero-actions">
           <a class="btn btn--primary" href="#quote">Get my quote <svg><use href="#i-arrow"/></svg></a>
-          <a class="btn btn--ghost" href="tel:+16025550142"><svg><use href="#i-phone"/></svg>(602) 555-0142</a>
+          <a class="btn btn--onDark" href="tel:+16025550142"><svg><use href="#i-phone"/></svg>(602) 555-0142</a>
         </div>
         <div class="hero-trust">
-          <span class="chip"><svg><use href="#i-shield"/></svg>Independent, never captive</span>
-          <span class="chip"><svg><use href="#i-tag"/></svg>20+ A-rated carriers</span>
-          <span class="chip"><svg><use href="#i-users"/></svg>Se habla español</span>
+          <span class="chip chip--dark"><span class="stars stars--chip" aria-label="4.9 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span>4.9 Google · placeholder</span>
+          <span class="chip chip--dark"><svg><use href="#i-shield"/></svg>Independent, never captive</span>
+          <span class="chip chip--dark"><svg><use href="#i-tag"/></svg>20+ A-rated carriers</span>
+          <span class="chip chip--dark"><svg><use href="#i-users"/></svg>Se habla español</span>
         </div>
       </div>
-      <div class="hero-media reveal">
-        <div class="photo">
-          <div class="photo-in">
-            <svg><use href="#i-camera"/></svg>
-            <b>Hero photo · 1200 × 1500</b>
-            <span>A family on the driveway of their Phoenix home, late afternoon light. Warm, unposed, faces visible.</span>
-          </div>
-        </div>
-        <div class="hero-badge">
-          <div><b class="num">4.9</b><span>Google rating · placeholder</span></div>
-          <div class="stars" aria-label="4.9 out of 5">
-            <svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ── quote form ── -->
-<section class="section" id="quote" style="background:var(--surface-2);border-bottom:1px solid var(--line);padding-block:clamp(46px,6vw,80px)">
-  <div class="wrap">
-    <div class="split split--top">
-      <div>
-        <div class="eyebrow"><span class="inlay"></span><span class="mono">Start here</span></div>
-        <h2 class="h2">See what you'd pay.</h2>
-        <p class="lede" style="margin-top:16px">No account, no credit pull, no eight-page form. Four fields, then a licensed agent calls you back the same business day with real numbers.</p>
-        <div class="reasons" style="margin-top:24px">
-          <div class="reason"><span class="reason-ico"><svg><use href="#i-clock"/></svg></span>
-            <div><h3 class="h3">Two minutes now</h3><p>Longer than that and we're wasting your time.</p></div></div>
-          <div class="reason"><span class="reason-ico"><svg><use href="#i-file"/></svg></span>
-            <div><h3 class="h3">A written proposal</h3><p>Side-by-side carrier pricing on the same coverage, in your inbox.</p></div></div>
-        </div>
-      </div>
-      <div class="quote-card reveal">
+      <div class="quote-card reveal" id="quote">
+        <div class="eyebrow" style="margin-bottom:10px"><span class="inlay"></span><span class="mono">Start here · two minutes</span></div>
+        <h2 class="h2" style="font-size:clamp(1.45rem,2.6vw,1.85rem)">See what you'd pay</h2>
+        <p class="small" style="margin-top:6px">No account, no credit pull. A licensed agent calls you back the same business day with real numbers.</p>
         <form class="qform" novalidate>
-          <label class="field" style="margin-top:0">
+          <label class="field">
             <span class="mono">What do you need covered?</span>
             <span class="pick">
               <label><input type="radio" name="need" value="auto" checked>Auto</label>
@@ -532,6 +526,25 @@ section[id],#quote{scroll-margin-top:86px}
         </form>
         <div class="form-done"><strong>That's all we need.</strong><span class="small">In the real build this hands off to the agency's CRM and texts a confirmation.</span></div>
       </div>
+
+    <div class="contactbar">
+      <a class="cbar" href="tel:+16025550142">
+        <span class="cbar-ico"><svg><use href="#i-phone"/></svg></span>
+        <span><span class="mono">Call</span><b>(602) 555-0142</b><em>Mon–Fri 8am–6pm · Sat 9am–1pm</em></span>
+      </a>
+      <a class="cbar" href="sms:+16025550142">
+        <span class="cbar-ico"><svg><use href="#i-chat"/></svg></span>
+        <span><span class="mono">Text</span><b>(602) 555-0142</b><em>Send a photo of your declarations page</em></span>
+      </a>
+      <a class="cbar" href="mailto:hello@azfamilyinsurance.com">
+        <span class="cbar-ico"><svg><use href="#i-mail"/></svg></span>
+        <span><span class="mono">Email</span><b>hello@azfamilyinsurance.com</b><em>Answered same business day</em></span>
+      </a>
+      <a class="cbar" href="#/contact" data-nav="contact">
+        <span class="cbar-ico"><svg><use href="#i-pin"/></svg></span>
+        <span><span class="mono">Office</span><b>1234 E. Camelback Rd, Ste 200</b><em>Phoenix, AZ 85014 · walk-ins welcome</em></span>
+      </a>
+    </div>
     </div>
   </div>
 </section>
