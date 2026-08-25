@@ -20,9 +20,11 @@ const home = read("src/pages/Home.jsx");
 assert.equal(home.includes("ActivityCard"), false, "homepage should promote one journey instead of repeating the activity catalog");
 assert.equal(home.includes("TodaySection"), false, "homepage should not repeat the separate Today catalog");
 assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a second ranked catalog");
-assert.match(home, /How TicoWild works/);
+assert.match(home, /How it works/);
 assert.match(home, /Confirm before you pay/);
-assert.match(home, /Stop building your trip from twenty open tabs/);
+assert.match(home, /Here’s what happens next/);
+assert.match(home, /home-support-copy h2\{color:#fff;font-size:clamp\(26px,3vw,38px\)/, "the supporting section must stay visually below the hero");
+assert.match(home, /home-band-how \.home-chapter\{display:none\}/, "the first mobile support section must not repeat hero framing");
 assert.match(home, /One plan, built around you/);
 assert.match(home, /Your trip should feel exciting before you even land/);
 
