@@ -151,7 +151,7 @@ export function Packages({ go, addToTrip }) {
       {/* ── Vivid fishing-forward cinematic hero ── */}
       <div style={{ position: "relative", overflow: "hidden", padding: "88px 20px 64px", minHeight: 340 }}>
         {PKG_SLIDES.map((s, i) => (
-          <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "low"} decoding="async"
+          <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
               opacity: i === slide ? 1 : 0, transition: "opacity 1.6s ease", transform: "scale(1.06)",
               animation: i === slide ? "tnPkgKen 8s ease-out both" : "none" }} />

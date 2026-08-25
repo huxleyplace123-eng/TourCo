@@ -22,10 +22,23 @@ assert.equal(home.includes("TodaySection"), false, "homepage should not repeat t
 assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a second ranked catalog");
 assert.match(home, /How TicoWild works/);
 assert.match(home, /Confirm before you pay/);
+assert.match(home, /Choose what fits/);
+assert.match(home, /Know before you commit/);
 
 const app = read("src/App.jsx");
 assert.match(app, /routeFromPath\(window\.location\.pathname\)/, "public pages must restore state from a real URL");
 assert.match(app, /window\.history\[replace \? "replaceState" : "pushState"\]/, "public navigation must update browser history");
+assert.match(app, /ticowild\.trip\.v1/, "saved consumer trips must survive a refresh");
+assert.match(app, /mobile-plan-bar/, "mobile visitors need a persistent planning action after the hero");
+
+const trips = read("src/pages/MyTrips.jsx");
+assert.match(trips, /Ideas saved/);
+assert.match(trips, /Availability check/);
+assert.match(trips, /Confirm and pay/);
+
+const detail = read("src/pages/Detail.jsx");
+assert.match(detail, /What you’ll know before you pay/);
+assert.match(detail, /Cancellation terms/);
 
 const routing = read("src/routing.js");
 for (const route of ["/activities", "/collections", "/plan", "/why-ticowild", "/insider-guide"]) {

@@ -64,6 +64,7 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note, compact = false }
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Clock size={13} />{a.duration}</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Compass size={13} />{a.level}</span>
         </div>
+        <div style={{ color: c.stone, fontSize: 12.5, lineHeight: 1.4 }}><span style={{ color: c.charcoal, fontWeight: 800 }}>Best for:</span> {a.bestFor?.slice(0, 3).join(" · ")}</div>
 
         {/* Planning note based on TicoWild's static season and route model. */}
         {!compact && insight && (
@@ -84,7 +85,7 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note, compact = false }
         {/* CTA row — one clear primary action + a clean details link */}
         <div className="activity-card-actions" style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto", paddingTop: 14 }}>
           <Button variant={inTrip ? "dark" : "primary"} size="sm" full onClick={() => onAdd(a.id)}>
-            {inTrip ? <><Check size={15} />Added</> : <><Plus size={15} />Add to trip</>}
+            {inTrip ? <><Check size={15} />Saved to trip</> : <><Plus size={15} />Save to trip</>}
           </Button>
           <a href={activityPath(a)} onClick={(event) => { event.preventDefault(); onView(a.id); }} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: c.stone, fontWeight: 700, fontSize: 13.5, cursor: "pointer", whiteSpace: "nowrap", padding: "8px 2px", transition: "color .15s", textDecoration: "none" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = c.teal)}

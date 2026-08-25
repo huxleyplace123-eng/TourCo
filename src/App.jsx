@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useLayoutEffect } from "react";
 import { ChevronRight } from "lucide-react";
-import { c, FONT, money, grad } from "./theme.js";
+import { c, FONT, grad } from "./theme.js";
 import { activities } from "./data.js";
 import { Nav } from "./components/Nav.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { Button } from "./components/ui.jsx";
-import { useCountUp } from "./motion.jsx";
 import { Home } from "./pages/Home.jsx";
 import { Activities } from "./pages/Activities.jsx";
 import { Detail } from "./pages/Detail.jsx";
@@ -24,24 +23,61 @@ import { SoundscapeControl } from "./components/SoundscapeControl.jsx";
 import { ConversionCenter } from "./components/ConversionCenter.jsx";
 import { metadataFor, pathFor, routeFromPath } from "./routing.js";
 
-function StickyDeposit({ total, count, onView }) {
-  const shown = useCountUp(Math.round(total * 0.2));
+function usePastOpening(page) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const update = () => {
+      const firstSection = document.querySelector("main")?.firstElementChild;
+      const threshold = Math.min(560, Math.max(260, firstSection?.getBoundingClientRect().height * .62 || 360));
+      setVisible(window.scrollY > threshold);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [page]);
+  return visible;
+}
+
+function StickyDeposit({ count, onView, page }) {
+  const visible = usePastOpening(page);
   return (
-    <div className="mobile-trip-bar" style={{ position: "fixed", left: 12, right: 12, bottom: 12, zIndex: 55, background: c.emerald, borderRadius: 18, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 16px 40px -14px rgba(47,107,235,.7)" }}>
+    <div className="mobile-trip-bar" data-visible={visible ? "true" : "false"} style={{ position: "fixed", left: 12, right: 12, bottom: 12, zIndex: 55, background: c.emerald, borderRadius: 18, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 16px 40px -14px rgba(47,107,235,.7)" }}>
       <div style={{ color: "#fff" }}>
-        <div style={{ fontSize: 12, opacity: .85 }}>{count} activit{count === 1 ? "y" : "ies"} · estimated 20%</div>
-        <div style={{ fontWeight: 800, fontSize: 17 }}>{money(shown)} <span style={{ fontSize: 12, opacity: .8, fontWeight: 600 }}>after confirmation</span></div>
+        <div style={{ fontSize: 12, opacity: .82 }}>{count} saved experience{count === 1 ? "" : "s"}</div>
+        <div style={{ fontWeight: 800, fontSize: 14 }}>Review your trip</div>
       </div>
       <Button variant="gold" size="sm" onClick={onView}>View trip <ChevronRight size={15} /></Button>
     </div>
   );
 }
 
+function MobilePlanBar({ onStart, page }) {
+  const visible = usePastOpening(page);
+  return (
+    <div className="mobile-plan-bar" data-visible={visible ? "true" : "false"} role="region" aria-label="Start planning">
+      <div><strong>Not sure where to start?</strong><span>Answer 2 quick questions.</span></div>
+      <Button variant="gold" size="sm" onClick={onStart}>Plan my trip <ChevronRight size={15} /></Button>
+    </div>
+  );
+}
+
+function readSavedTrip() {
+  try {
+    const saved = JSON.parse(window.localStorage.getItem("ticowild.trip.v1") || "[]");
+    if (!Array.isArray(saved)) return [];
+    return saved
+      .filter((item) => item && activities.some((activity) => activity.id === item.id))
+      .map((item) => ({ id: item.id, pax: Math.max(1, Number(item.pax) || 2) }));
+  } catch {
+    return [];
+  }
+}
+
 export default function App() {
   const initialRoute = routeFromPath(window.location.pathname);
   const [page, setPage] = useState(initialRoute.page);
   const [activeId, setActiveId] = useState(initialRoute.activeId);
-  const [trip, setTrip] = useState([]); // [{id, pax}]
+  const [trip, setTrip] = useState(readSavedTrip); // [{id, pax}]
   const [cartOpen, setCartOpen] = useState(false);
   const [plannerDraft, setPlannerDraft] = useState(null);
 
@@ -84,6 +120,10 @@ export default function App() {
     }
     canonical.href = `${window.location.origin}${pathFor(page, activeId)}`;
   }, [page, activeId]);
+
+  useEffect(() => {
+    window.localStorage.setItem("ticowild.trip.v1", JSON.stringify(trip));
+  }, [trip]);
   // Always land at the top of a newly-opened page. Runs AFTER the new page
   // renders (useLayoutEffect + instant scroll), so it isn't undone by the
   // page-enter animation or content reflow — a smooth scroll during a full
@@ -97,7 +137,7 @@ export default function App() {
   const consumePlannerDraft = () => setPlannerDraft(null);
   const addToTrip = (id) => { setTrip((t) => (t.some((x) => x.id === id) ? t : [...t, { id, pax: 2 }])); setCartOpen(true); };
   const removeFromTrip = (id) => setTrip((t) => t.filter((x) => x.id !== id));
-  const total = trip.reduce((s, g) => s + (activities.find((a) => a.id === g.id)?.price || 0) * g.pax, 0);
+  const showMobilePlanBar = trip.length === 0 && !["build", "builder", "portal", "partner"].includes(page);
 
   const shared = { go, addToTrip, trip, viewActivity, removeFromTrip, startPlan, consumePlannerDraft };
 
@@ -133,11 +173,12 @@ export default function App() {
       <Footer go={go} />
 
       {/* Tico — the living macaw companion, present on every page */}
-      <TicoDock page={page} go={go} trip={trip} lift={trip.length > 0 && !["portal", "build", "builder"].includes(page)} />
+      <TicoDock page={page} go={go} trip={trip} lift={(trip.length > 0 && !["portal", "build", "builder"].includes(page)) || showMobilePlanBar} />
       {(page === "home" || page === "today") && <SoundscapeControl lift={trip.length > 0} />}
 
       {/* Sticky trip bar */}
-      {trip.length > 0 && !["portal", "build", "builder"].includes(page) && <StickyDeposit total={total} count={trip.length} onView={() => go("portal")} />}
+      {trip.length > 0 && !["portal", "build", "builder"].includes(page) && <StickyDeposit page={page} count={trip.length} onView={() => go("portal")} />}
+      {showMobilePlanBar && <MobilePlanBar page={page} onStart={() => go("build")} />}
 
       {/* Quick "added to trip" toast/modal */}
       {cartOpen && (
@@ -145,7 +186,7 @@ export default function App() {
           <div className="trip-added-sheet" onClick={(e) => e.stopPropagation()} style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 22, padding: 24, maxWidth: 420, width: "100%", marginBottom: 20, boxShadow: "0 40px 90px -30px rgba(0,0,0,.9)" }}>
             <h3 style={{ margin: "0 0 4px", color: c.charcoal, fontSize: 20, fontWeight: 800 }}>Added to your trip 🎉</h3>
             <p style={{ color: c.stone, fontSize: 14.5, margin: "0 0 16px" }}>
-              You have <b style={{ color: c.charcoal }}>{trip.length}</b> experience{trip.length !== 1 ? "s" : ""}. Estimated deposit after confirmation: <b style={{ color: c.emerald }}>{money(total * 0.2)}</b>
+              You have <b style={{ color: c.charcoal }}>{trip.length}</b> saved experience{trip.length !== 1 ? "s" : ""}. Nothing is reserved or charged yet.
             </p>
             <div className="trip-added-actions" style={{ display: "flex", gap: 10 }}>
               <Button variant="primary" full onClick={() => go("portal")}>View my trip <ChevronRight size={16} /></Button>

@@ -20,6 +20,22 @@ const SAMPLE_DAYS = [
   { day: "Day 3", icon: Sun, label: "Keep one day flexible", title: "Choose the ocean or a waterfall", note: "We confirm conditions and match the day to what feels best." },
 ];
 
+const JOURNEY = [
+  { number: "01", label: "Tell us", detail: "Where, who and what kind of trip" },
+  { number: "02", label: "See your fit", detail: "A few choices that work together" },
+  { number: "03", label: "Confirm", detail: "Availability, details and final price" },
+];
+
+function Chapter({ number, label }) {
+  return (
+    <div className="home-chapter" aria-hidden="true">
+      <span>{number}</span>
+      <i />
+      <strong>{label}</strong>
+    </div>
+  );
+}
+
 export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
   const featured = activities.slice(0, 4);
   const { openConcierge } = useConversion();
@@ -28,7 +44,22 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
     <>
       <CinematicHero go={go} onStartPlan={startPlan} />
 
-      <Section bg={c.sand} pad={68}>
+      <div className="home-journey" aria-label="How planning works">
+        <div className="home-journey-inner">
+          {JOURNEY.map((item, index) => (
+            <React.Fragment key={item.number}>
+              <div className="home-journey-step">
+                <span>{item.number}</span>
+                <div><strong>{item.label}</strong><small>{item.detail}</small></div>
+              </div>
+              {index < JOURNEY.length - 1 && <ArrowRight className="home-journey-arrow" size={18} aria-hidden="true" />}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
+      <Section className="home-band home-band-how" bg={c.canvas2} pad={84}>
+        <Chapter number="01" label="Start simply" />
         <Reveal>
           <div className="home-intro" style={{ display: "grid", gridTemplateColumns: "minmax(0,.8fr) minmax(0,1.2fr)", gap: "clamp(30px,6vw,78px)", alignItems: "start" }}>
             <div>
@@ -52,9 +83,10 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
         </Reveal>
       </Section>
 
-      <Section bg={c.sand} pad={54}>
+      <Section className="home-band home-band-discover" bg={c.sand} pad={82}>
+        <Chapter number="02" label="Choose what fits" />
         <div className="section-action-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12, marginBottom: 28 }}>
-          <SectionHead eyebrow="A few places to start" title="Experiences worth building a day around" accent />
+          <SectionHead eyebrow="A short list, not endless scrolling" title="Experiences worth building a day around" accent sub="Each one shows the starting price, location, time needed and who it fits best, so you can decide quickly." />
           <Button variant="ghost" onClick={() => go("activities")}>See all experiences <ArrowRight size={16} /></Button>
         </div>
         <div className="responsive-card-grid home-featured-grid" style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(4,minmax(0,1fr))" }}>
@@ -66,7 +98,8 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
         </div>
       </Section>
 
-      <Section bg={c.sand} pad={68}>
+      <Section className="home-band home-band-plan" bg={c.canvas2} pad={86}>
+        <Chapter number="03" label="See the whole day" />
         <div className="sample-plan" style={{ position: "relative", overflow: "hidden", borderRadius: 30, background: grad.hero, border: `1px solid ${c.line}`, padding: "clamp(24px,5vw,50px)" }}>
           <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 88% 12%, rgba(255,208,0,.2), transparent 38%), radial-gradient(circle at 8% 88%, rgba(34,211,238,.2), transparent 42%)" }} />
           <div className="sample-plan-grid" style={{ position: "relative", display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "clamp(28px,6vw,72px)", alignItems: "center" }}>
@@ -96,8 +129,9 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
         </div>
       </Section>
 
-      <Section bg={c.sand} pad={58}>
-        <div className="home-trust" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 30, alignItems: "center", borderTop: `1px solid ${c.line}`, borderBottom: `1px solid ${c.line}`, padding: "38px 0" }}>
+      <Section className="home-band home-band-confirm" bg={c.sand} pad={82}>
+        <Chapter number="04" label="Know before you commit" />
+        <div className="home-trust" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 30, alignItems: "center", padding: "clamp(26px,4vw,40px)", borderRadius: 26, background: "linear-gradient(125deg,rgba(34,211,238,.11),rgba(255,255,255,.035) 55%,rgba(255,208,0,.08))", border: `1px solid ${c.line}` }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, color: c.teal, fontWeight: 800, marginBottom: 8 }}><ShieldCheck size={20} />Clear before you commit</div>
             <h2 style={{ color: "#fff", fontSize: "clamp(25px,3.8vw,38px)", letterSpacing: -1, margin: "0 0 10px" }}>Availability, timing and the final price are confirmed first.</h2>
@@ -109,7 +143,7 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
         </div>
       </Section>
 
-      <Section bg={c.sand} pad={70}>
+      <Section className="home-band home-band-close" bg={c.canvas2} pad={88}>
         <div className="closing-cta" style={{ position: "relative", borderRadius: 30, overflow: "hidden", background: grad.hero, padding: "60px 28px", textAlign: "center" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 20% 20%, rgba(255,208,0,.28), transparent 50%)" }} />
           <div style={{ position: "relative" }}>
@@ -124,8 +158,22 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
       </Section>
 
       <style>{`
-        @media(max-width:980px){.home-intro,.sample-plan-grid{grid-template-columns:1fr!important}.home-featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-        @media(max-width:720px){.home-steps{grid-template-columns:1fr!important}.home-steps>div{min-height:0!important}.home-featured-grid{grid-template-columns:1fr!important}.home-featured-grid>*:nth-child(n+3){display:none!important}.home-trust{grid-template-columns:1fr!important}.home-trust button{width:100%}.sample-day{grid-template-columns:52px 1fr!important;padding:14px!important}}
+        .home-journey{position:relative;background:#081525;border-bottom:1px solid rgba(127,166,232,.18);padding:0 20px}
+        .home-journey-inner{max-width:1180px;margin:0 auto;min-height:108px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:22px}
+        .home-journey-step{display:flex;align-items:center;gap:14px;min-width:0}
+        .home-journey-step>span{width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:grid;place-items:center;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.26);color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.08em}
+        .home-journey-step div{display:grid;gap:3px;min-width:0}.home-journey-step strong{color:#fff;font-size:14px}.home-journey-step small{color:${c.stone};font-size:11.5px;line-height:1.35}
+        .home-journey-arrow{color:rgba(127,166,232,.45)}
+        .home-band{position:relative;isolation:isolate;border-bottom:1px solid rgba(127,166,232,.13)}
+        .home-band:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
+        .home-band-how:before{background:radial-gradient(55% 70% at 0% 35%,rgba(34,211,238,.08),transparent 70%)}
+        .home-band-discover:before{background:radial-gradient(45% 65% at 100% 30%,rgba(127,166,232,.09),transparent 70%)}
+        .home-band-plan:before{background:linear-gradient(180deg,rgba(255,255,255,.015),transparent 28%,rgba(34,211,238,.025))}
+        .home-band-confirm:before{background:radial-gradient(55% 90% at 50% 100%,rgba(255,208,0,.055),transparent 70%)}
+        .home-chapter{display:grid;grid-template-columns:auto minmax(34px,72px) auto;align-items:center;gap:12px;width:max-content;margin-bottom:34px;color:${c.stone};text-transform:uppercase;letter-spacing:.13em;font-size:10px;font-weight:900}
+        .home-chapter span{color:${c.teal}}.home-chapter i{height:1px;background:linear-gradient(90deg,${c.teal},rgba(34,211,238,.08))}.home-chapter strong{font:inherit;color:${c.stone}}
+        @media(max-width:980px){.home-intro,.sample-plan-grid{grid-template-columns:1fr!important}.home-featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.home-journey-inner{gap:12px}.home-journey-step small{display:none}}
+        @media(max-width:720px){.home-journey{padding:0 16px}.home-journey-inner{min-height:84px;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px}.home-journey-step{display:grid;justify-items:center;text-align:center;gap:5px}.home-journey-step>span{width:30px;height:30px;flex-basis:30px;border-radius:10px}.home-journey-step strong{font-size:11px;line-height:1.15}.home-journey-arrow{width:13px}.home-chapter{margin-bottom:24px}.home-steps{grid-template-columns:1fr!important}.home-steps>div{min-height:0!important}.home-featured-grid{grid-template-columns:1fr!important}.home-featured-grid>*:nth-child(n+3){display:none!important}.home-trust{grid-template-columns:1fr!important}.home-trust button{width:100%}.sample-day{grid-template-columns:52px 1fr!important;padding:14px!important}}
       `}</style>
     </>
   );

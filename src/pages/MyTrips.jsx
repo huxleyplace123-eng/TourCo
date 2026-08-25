@@ -119,7 +119,16 @@ export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
         </div>
       )}
 
-      <Section bg={c.sand}>
+      <Section bg={c.canvas2} className="trip-workspace" pad={chosen.length ? 64 : 54}>
+        {chosen.length > 0 && (
+          <div className="trip-progress" aria-label="Trip confirmation progress">
+            <div className="trip-progress-step is-current"><span>1</span><div><strong>Ideas saved</strong><small>Stored on this device</small></div></div>
+            <i aria-hidden="true" />
+            <div className="trip-progress-step"><span>2</span><div><strong>Availability check</strong><small>Not requested yet</small></div></div>
+            <i aria-hidden="true" />
+            <div className="trip-progress-step"><span>3</span><div><strong>Confirm and pay</strong><small>Only after details are clear</small></div></div>
+          </div>
+        )}
         {chosen.length > 0 && view === "story" ? (
           <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 30, alignItems: "start" }}>
             <div>
@@ -191,7 +200,17 @@ export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
         )}
       </Section>
 
-      <style>{`@media(min-width:940px){.detail-grid{grid-template-columns:1fr 340px!important}}`}</style>
+      <style>{`
+        .trip-workspace{border-top:1px solid rgba(127,166,232,.13)}
+        .trip-progress{display:grid;grid-template-columns:1fr minmax(24px,70px) 1fr minmax(24px,70px) 1fr;align-items:center;gap:12px;margin:0 0 46px;padding:18px 20px;border:1px solid ${c.line};border-radius:20px;background:rgba(11,26,46,.45)}
+        .trip-progress-step{display:flex;align-items:center;gap:11px;min-width:0;opacity:.58}.trip-progress-step.is-current{opacity:1}
+        .trip-progress-step>span{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;border:1px solid rgba(127,166,232,.28);color:${c.stone};font-size:12px;font-weight:900}
+        .trip-progress-step.is-current>span{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.42);color:${c.teal}}
+        .trip-progress-step div{display:grid;gap:2px;min-width:0}.trip-progress-step strong{color:#fff;font-size:13.5px}.trip-progress-step small{color:${c.stone};font-size:11px;line-height:1.25}
+        .trip-progress>i{height:1px;background:linear-gradient(90deg,rgba(34,211,238,.4),rgba(127,166,232,.12))}
+        @media(min-width:940px){.detail-grid{grid-template-columns:1fr 340px!important}}
+        @media(max-width:720px){.trip-progress{grid-template-columns:1fr;margin-bottom:32px;padding:16px}.trip-progress>i{width:1px;height:16px;margin-left:16px}.trip-progress-step small{font-size:11.5px}}
+      `}</style>
     </>
   );
 }

@@ -132,7 +132,7 @@ export function CinematicHero({ go, onStartPlan }) {
           a light mouse/scroll parallax drift, no compounding scale. */}
       <div style={{ position: "absolute", inset: 0, transform: `translate3d(${mouse.x * 8}px, ${mouse.y * 6 + scrollY * 0.06}px, 0)`, transition: "transform .18s cubic-bezier(.2,.7,.2,1)" }}>
         {SLIDES.map((s, i) => (
-          <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "low"} decoding="async"
+          <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center",
               opacity: (i === slide ? 1 : 0) * (1 - scrub * 0.5),
               transform: `scale(${1 + scrub * 0.12})`,

@@ -41,7 +41,7 @@ export function BuildHero() {
 
       {/* cinematic activities backdrop, Ken-Burns */}
       {slides.map((s, i) => (
-        <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "low"} decoding="async"
+        <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
             opacity: i === slide ? 1 : 0, transition: "opacity 1.6s ease",
             animation: i === slide ? "bhKen 7s ease-out both" : "none" }} />

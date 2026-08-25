@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowLeft, MapPin, Clock, Compass, Check, Plus, ShieldCheck, MessageCircle, Package, Backpack } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Compass, Check, Plus, ShieldCheck, MessageCircle, Package, Backpack, Calendar } from "lucide-react";
 import { c, grad, gradFor, money } from "../theme.js";
 import { activities } from "../data.js";
 import { activityImage } from "../images.js";
@@ -84,6 +84,24 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
               <p style={{ color: c.stone, fontSize: 16, lineHeight: 1.7, margin: 0 }}>{a.desc}</p>
             </div>
 
+            <div className="detail-decision-block" style={{ padding: "clamp(22px,4vw,30px)", borderRadius: 22, background: c.canvas2, border: `1px solid ${c.line}` }}>
+              <div style={{ color: c.teal, fontSize: 11.5, fontWeight: 900, letterSpacing: ".09em", textTransform: "uppercase" }}>No surprises at checkout</div>
+              <h2 style={{ color: "#fff", fontSize: "clamp(22px,3vw,30px)", letterSpacing: -.6, margin: "7px 0 8px" }}>What you’ll know before you pay</h2>
+              <p style={{ color: c.stone, fontSize: 14, lineHeight: 1.55, margin: "0 0 20px" }}>These details arrive with the availability confirmation, so you can make the decision with the full picture.</p>
+              <div className="detail-decision-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 10 }}>
+                {[
+                  [ShieldCheck, "Confirmed operator"],
+                  [Clock, "Exact start and pickup"],
+                  [Package, "Final total and inclusions"],
+                  [Calendar, "Cancellation terms"],
+                ].map(([Icon, label]) => (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 13px", borderRadius: 14, background: "rgba(255,255,255,.045)", border: `1px solid ${c.line}`, color: "#fff", fontSize: 12.5, fontWeight: 800 }}>
+                    <Icon size={16} color={c.teal} style={{ flexShrink: 0 }} />{label}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* TicoWild Vibe Scores — the brain, not a directory */}
             <VibeScores activity={a} />
 
@@ -91,7 +109,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
             <div style={{ background: grad.jungle, borderRadius: 18, padding: 24, color: "#fff", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 90% 10%, rgba(34,211,238,.4), transparent 45%)" }} />
               <div style={{ position: "relative", display: "flex", gap: 16, alignItems: "flex-start" }}>
-                <div style={{ width: 52, height: 52, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 20, color: c.charcoal, flexShrink: 0 }}>J</div>
+                <div style={{ width: 52, height: 52, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", color: c.ink, flexShrink: 0 }}><Compass size={23} /></div>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 6 }}>
                     <Compass size={16} color={c.gold} />
@@ -159,7 +177,10 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
         </div>
       </Section>
 
-      <style>{`@media(min-width:940px){.detail-grid{grid-template-columns:1fr 360px!important}.detail-grid .two-col{grid-template-columns:1fr 1fr!important}}`}</style>
+      <style>{`
+        @media(min-width:940px){.detail-grid{grid-template-columns:1fr 360px!important}.detail-grid .two-col{grid-template-columns:1fr 1fr!important}}
+        @media(max-width:520px){.detail-decision-grid{grid-template-columns:1fr!important}}
+      `}</style>
     </>
   );
 }
