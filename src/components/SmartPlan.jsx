@@ -20,10 +20,10 @@ export function SmartPlan({ chosen, pax = 2, budget, monthIdx, planOverride = nu
       {/* engine header */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 7, ...glass, color: c.teal, padding: "7px 13px", borderRadius: 999, fontWeight: 800, fontSize: 12.5 }}>
-          <Brain size={14} /> Optimized by TicoWild AI
+          <Brain size={14} /> Sequenced by TicoWild
         </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.stone, fontSize: 12.5, fontWeight: 600 }}>
-          <Route size={13} />{plan.totals.days} days · {plan.totals.drive}h total drive
+          <Route size={13} />{plan.totals.days} {plan.totals.days === 1 ? "day" : "days"} · {plan.totals.drive ? `${plan.totals.drive}h estimated drive` : "no between-activity transfer"}
         </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.stone, fontSize: 12.5, fontWeight: 600 }}>
           <DollarSign size={13} />{money(plan.totals.cost)} for {pax}

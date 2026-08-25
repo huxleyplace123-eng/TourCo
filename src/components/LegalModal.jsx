@@ -54,7 +54,7 @@ export function LegalModal({ kind, onClose }) {
             </div>
           ))}
           <p style={{ color: c.stone, fontSize: 11.5, lineHeight: 1.5, marginTop: 20, paddingTop: 14, borderTop: `1px solid ${c.line}` }}>
-            This summary is provided for transparency and is not legal advice. TicoWild's full, counsel-reviewed {title.toLowerCase()} governs.
+            These are the terms currently provided for the public planning site. Provider-specific booking, cancellation and safety terms are supplied with any confirmed offer before payment.
           </p>
         </div>
       </div>

@@ -28,10 +28,12 @@ function InquiryModal({ request, onClose }) {
   useEffect(() => {
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.body.classList.add("ticowild-modal-open");
     const closeOnEscape = (event) => event.key === "Escape" && onClose();
     window.addEventListener("keydown", closeOnEscape);
     return () => {
       document.body.style.overflow = previous;
+      document.body.classList.remove("ticowild-modal-open");
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [onClose]);
@@ -80,7 +82,7 @@ function InquiryModal({ request, onClose }) {
               <Field label="Name"><input required autoFocus maxLength={120} value={form.name} onChange={set("name")} style={inputStyle} autoComplete="name" /></Field>
               <Field label="Email"><input required type="email" maxLength={320} value={form.email} onChange={set("email")} style={inputStyle} autoComplete="email" /></Field>
               <Field label="Phone / WhatsApp (optional)"><input maxLength={50} value={form.phone} onChange={set("phone")} style={inputStyle} autoComplete="tel" /></Field>
-              <Field label="Where are you staying?"><input maxLength={160} value={form.destination} onChange={set("destination")} style={inputStyle} placeholder="Manuel Antonio" /></Field>
+              <Field label="Where are you staying?"><input maxLength={160} value={form.destination} onChange={set("destination")} style={inputStyle} placeholder="Your hotel or town" /></Field>
               <Field label="Arrival"><input type="date" value={form.arrival} onChange={set("arrival")} style={inputStyle} /></Field>
               <Field label="Departure"><input type="date" min={form.arrival || undefined} value={form.departure} onChange={set("departure")} style={inputStyle} /></Field>
             </div>
@@ -101,12 +103,7 @@ export function ConversionCenter({ children }) {
   const [request, setRequest] = useState(null);
   const api = useMemo(() => ({
     openInquiry: (details = {}) => setRequest({ ...details, key: Date.now() }),
-    openConcierge: (details = {}) => {
-      const message = inquiryMessage({ intent: details.intent || "planning", ...details });
-      const href = whatsappHref(message);
-      if (href) window.open(href, "_blank", "noopener,noreferrer");
-      else setRequest({ ...details, key: Date.now() });
-    },
+    openConcierge: (details = {}) => window.dispatchEvent(new CustomEvent("ticowild:open-rico", { detail: details })),
   }), []);
   return <ConversionContext.Provider value={api}>{children}{request && <InquiryModal key={request.key} request={request} onClose={() => setRequest(null)} />}</ConversionContext.Provider>;
 }

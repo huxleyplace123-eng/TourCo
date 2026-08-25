@@ -13,7 +13,7 @@ import { useConversion } from "../components/ConversionCenter.jsx";
 
 // How the trip works — three simple, reassuring steps.
 const STEPS = [
-  { icon: PlusCircle, title: "1 · Add what you love", body: "Tap 'Add to trip' on any activity, or let Rico build a day-by-day. No account, no commitment — it just gathers here." },
+  { icon: PlusCircle, title: "1 · Save what you love", body: "Tap 'Save to trip' on any activity, or let Rico build a day-by-day. No account, no commitment — it just gathers here." },
   { icon: Route, title: "2 · We shape the days", body: "Rico orders everything around drive times, tides and season, so your trip flows instead of zig-zagging the coast." },
   { icon: CalendarCheck, title: "3 · Confirm before you pay", body: "TicoWild checks availability, timing, the operator and final total. You decide whether to continue after that." },
 ];
@@ -96,6 +96,13 @@ export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
   const { openInquiry, openConcierge } = useConversion();
   const [view, setView] = useState("story"); // 'story' | 'list'
   const chosen = trip.map((t) => ({ ...t, a: activities.find((a) => a.id === t.id) })).filter((x) => x.a);
+  const tripRegions = [...new Set(chosen.map(({ a }) => a.region).filter(Boolean))];
+  const inquiryDetails = {
+    intent: "trip",
+    activity_ids: chosen.map(({ a }) => a.id),
+    activity_titles: chosen.map(({ a }) => a.title),
+    destination: tripRegions.length === 1 ? tripRegions[0] : "",
+  };
   const total = chosen.reduce((s, g) => s + g.a.price * g.pax, 0);
   const deposit = useCountUp(Math.round(total * 0.2));
 
@@ -135,7 +142,7 @@ export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
               <h2 style={{ fontSize: 22, fontWeight: 800, color: c.charcoal, margin: "0 0 20px" }}>Your smart day-by-day</h2>
               <SmartPlan chosen={chosen} pax={chosen[0]?.pax || 2} />
               <div style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
-                <Button variant="primary" onClick={() => openInquiry({ intent: "trip", activity_ids: chosen.map(({ a }) => a.id), activity_titles: chosen.map(({ a }) => a.title) })}>
+                <Button variant="primary" onClick={() => openInquiry(inquiryDetails)}>
                   <ShieldCheck size={16} />Request availability
                 </Button>
                 <Button variant="ghost" onClick={() => go("activities")}>Add more <ArrowRight size={15} /></Button>
@@ -186,7 +193,7 @@ export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
                 <span style={{ fontWeight: 800, color: c.charcoal }}>Estimated deposit after confirmation</span>
                 <span style={{ fontWeight: 800, fontSize: 24, color: c.emerald }}>{money(deposit)}</span>
               </div>
-              <Button variant="primary" full size="lg" style={{ marginTop: 18 }} onClick={() => openInquiry({ intent: "trip", activity_ids: chosen.map(({ a }) => a.id), activity_titles: chosen.map(({ a }) => a.title) })}>
+              <Button variant="primary" full size="lg" style={{ marginTop: 18 }} onClick={() => openInquiry(inquiryDetails)}>
                 <ShieldCheck size={17} />Request availability
               </Button>
               <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => openConcierge({ intent: "trip", activity_titles: chosen.map(({ a }) => a.title) })}>

@@ -30,7 +30,7 @@ export function Why({ go }) {
       >
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 22 }}>
           <Button variant="primary" size="lg" onClick={() => go("build")}>Start my plan <ArrowRight size={18} /></Button>
-          <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask a question</Button>
+          <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask Rico</Button>
         </div>
       </PageHero>
 
@@ -78,7 +78,7 @@ export function Why({ go }) {
             <div>
               <span style={{ color: c.gold, fontSize: 12, fontWeight: 800, letterSpacing: ".09em", textTransform: "uppercase" }}>The real difference</span>
               <h2 style={{ color: "#fff", fontSize: "clamp(29px,4.4vw,45px)", lineHeight: 1.05, letterSpacing: -1.2, margin: "9px 0 14px" }}>We are not trying to show you everything.</h2>
-              <p style={{ color: c.stone, fontSize: 16.5, lineHeight: 1.72, margin: 0 }}>A marketplace wins by listing more. TicoWild should win by making the decision easier: what fits your route, what is worth the time and what should happen on which day.</p>
+              <p style={{ color: c.stone, fontSize: 16.5, lineHeight: 1.72, margin: 0 }}>Instead of scrolling through hundreds of nearly identical listings, you get a smaller set of experiences that fit your route, pace and available time.</p>
               <div style={{ marginTop: 22 }}><Button variant="primary" onClick={() => go("activities")}><Sparkles size={16} />Explore the curated list</Button></div>
             </div>
           </div>
@@ -91,7 +91,7 @@ export function Why({ go }) {
           <p style={{ color: "rgba(255,255,255,.75)", fontSize: 16.5, lineHeight: 1.65, maxWidth: 560, margin: "13px auto 24px" }}>Choose the feeling first. Your destination and dates come next, once the plan has a direction.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
             <Button variant="primary" size="lg" onClick={() => go("build")}>Build my plan <ArrowRight size={18} /></Button>
-            <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask TicoWild</Button>
+            <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask Rico</Button>
           </div>
         </div>
       </Section>

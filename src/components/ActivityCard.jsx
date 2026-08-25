@@ -24,7 +24,7 @@ function topInsight(a) {
 }
 
 // Activity card — dark glass + real 3D tilt + neon glow + cinematic photo.
-// `note` (optional) renders John's take INSIDE the card so every card is a
+// `note` (optional) renders the guide's take inside the card so every card is a
 // single aligned unit of equal height.
 export function ActivityCard({ a, onAdd, onView, inTrip, note, compact = false }) {
   const insight = topInsight(a);

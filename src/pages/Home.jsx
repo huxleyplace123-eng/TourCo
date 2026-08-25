@@ -145,7 +145,7 @@ export function Home({ go, viewActivity }) {
             </div>
             <div className="mobile-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Plan my Costa Rica days <ArrowRight size={18} /></Button>
-              <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask TicoWild</Button>
+              <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask Rico</Button>
             </div>
           </div>
           <div className="home-final-mark" aria-hidden="true"><Compass size={84} /></div>

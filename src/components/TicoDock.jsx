@@ -22,6 +22,11 @@ export function TicoDock({ page, go, lift = false, trip = [] }) {
     setOpen(false);
     setMsgs([{ from: "tico", ...ticoGreeting(page, trip.length) }]);
   }, [page]);
+  useEffect(() => {
+    const openRico = () => setOpen(true);
+    window.addEventListener("ticowild:open-rico", openRico);
+    return () => window.removeEventListener("ticowild:open-rico", openRico);
+  }, []);
   // keep scrolled to the latest message
   useEffect(() => { if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight; }, [msgs, open]);
 
@@ -49,7 +54,7 @@ export function TicoDock({ page, go, lift = false, trip = [] }) {
             <TicoAvatar size={34} mood="happy" />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ color: "#fff", fontWeight: 800, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>{TICO.fullName}<span style={{ width: 6, height: 6, borderRadius: 999, background: "#37E36B", boxShadow: "0 0 8px #37E36B" }} /></div>
-              <div style={{ color: c.stone, fontSize: 10.5 }}>Local trip concierge · always here</div>
+              <div style={{ color: c.stone, fontSize: 10.5 }}>TicoWild planning guide · human help available</div>
             </div>
             <button onClick={() => setOpen(false)} aria-label="Close chat" style={{ background: "none", border: "none", color: c.stone, cursor: "pointer", padding: 2 }}><X size={17} /></button>
           </div>

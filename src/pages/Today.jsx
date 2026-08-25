@@ -35,7 +35,7 @@ function PickCard({ label, a, tone, onView, onAdd, inTrip }) {
           <span style={{ marginLeft: "auto", color: c.charcoal, fontWeight: 800 }}>{money(a.price)}</span>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <Button variant={inTrip ? "dark" : "primary"} size="sm" full onClick={() => onAdd(a.id)}>{inTrip ? "Added" : "Add to trip"}</Button>
+          <Button variant={inTrip ? "dark" : "primary"} size="sm" full onClick={() => onAdd(a.id)}>{inTrip ? "Saved" : "Save to trip"}</Button>
           <Button variant="ghost" size="sm" onClick={() => onView(a.id)}>Details <ArrowRight size={14} /></Button>
         </div>
       </div>

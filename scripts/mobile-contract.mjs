@@ -30,12 +30,11 @@ for (const contract of [
   ".interactive-map",
   ".trip-builder-form",
   ".detail-hero",
-  ".askjohn-chat",
   ".tico-chat-window",
   ".package-drawer",
   ".agreement-modal",
   ".footer-grid",
-  ".deals-chapter-head",
+  ".deals-chapter-tabs",
   ".insider-anchor",
   ".mobile-break-grid",
 ]) {
@@ -44,8 +43,8 @@ for (const contract of [
 
 const publicPages = [
   "home", "today", "eat", "guide", "insider", "deals", "map", "tico",
-  "activities", "detail", "packages", "build", "ask", "builder", "why",
-  "partner", "portal", "john",
+  "activities", "detail", "packages", "build", "builder", "why",
+  "partner", "portal",
 ];
 for (const page of publicPages) {
   assert.ok(app.includes(`page === "${page}"`), `public page ${page} is not covered by the shared mobile shell`);
@@ -58,6 +57,10 @@ assert.equal(activities.includes("gradText"), false, "the second Activities sect
 assert.match(ticoRanked, /className="rico-stars"/, "ranked ratings need a stable mobile star row");
 assert.match(ticoRanked, /lineHeight: 0/, "star icons must not be clipped by the inline text baseline");
 assert.match(ticoRanked, /position: "absolute", inset: 0, display: "block", maxWidth: "none"/, "partial star fills must stay aligned with their full star");
+assert.match(css, /\.tico-dock\[data-lifted="true"\][\s\S]*?bottom: calc\(82px/, "the Rico guide must stay available above a mobile action bar");
+assert.equal(css.includes('.tico-dock[data-lifted="true"] {\n    display: none'), false, "mobile action bars must not hide Rico chat actions");
+assert.match(css, /\.meet-tico-hero \{[\s\S]*?flex-direction: column !important/, "the Rico hero and proof strip must stack instead of competing side by side on mobile");
+assert.match(css, /\.tico-credential-strip \{[\s\S]*?width: 100% !important/, "the Rico proof strip must use the full phone width");
 
 assert.match(
   activities,

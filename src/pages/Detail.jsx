@@ -142,7 +142,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
                 <ShieldCheck size={15} />Final price and availability confirmed first
               </div>
               <Button variant={inTrip ? "dark" : "primary"} full size="lg" style={{ marginTop: 18 }} onClick={() => addToTrip(a.id)}>
-                {inTrip ? <><Check size={17} />Added to your trip</> : <><Plus size={17} />Add to my plan</>}
+                {inTrip ? <><Check size={17} />Saved to your trip</> : <><Plus size={17} />Save to trip</>}
               </Button>
               <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => openInquiry({ intent: "activity", activity: a, destination: a.region })}>
                 <MessageCircle size={15} />Request current availability
@@ -161,7 +161,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
                   </div>
                 ))}
               </div>
-              <button onClick={() => openConcierge({ intent: "activity", activity_title: a.title, destination: a.region })} style={{ marginTop: 16, background: "none", border: 0, padding: 0, color: c.teal, fontWeight: 800, cursor: "pointer" }}>Ask a question first →</button>
+              <button onClick={() => openConcierge({ intent: "activity", activity_title: a.title, destination: a.region })} style={{ marginTop: 16, background: "none", border: 0, padding: 0, color: c.teal, fontWeight: 800, cursor: "pointer" }}>Ask Rico first →</button>
             </div>
           </aside>
         </div>

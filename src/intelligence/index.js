@@ -1,5 +1,5 @@
 // ── TicoWild Intelligence: the tool surface ──────────────────────────────────
-// One clean API the concierge calls to "think". Today the concierge (Ask John)
+// One clean API the Rico guide calls to "think". Today the on-site guide
 // is a rules engine that calls these tools; tomorrow a real LLM calls the exact
 // same tools via function-calling. Keeping this seam means the brain can be
 // upgraded without touching the UI. This IS the industry-changing architecture:
@@ -11,7 +11,8 @@ import { planTrip } from "./planner.js";
 
 // TOOL: recommend activities for a traveler profile (who/vibe/budget/month).
 export function recommendActivities(profile = {}) {
-  const monthIdx = profile.monthIdx ?? monthIndexNow();
+  const hasMonth = Number.isInteger(profile.monthIdx);
+  const monthIdx = hasMonth ? profile.monthIdx : null;
   const selectedRegions = (profile.regions || []).filter((region) => region && region !== "Not sure yet");
   const scored = activities.map((a) => {
     let s = a.rating || 0;
@@ -19,7 +20,9 @@ export function recommendActivities(profile = {}) {
     if (profile.who === "family" && a.family) { s += 3; reasons.push("kid-safe"); }
     if (profile.who === "couple" && a.bestFor?.includes("Couples")) { s += 3; reasons.push("great for two"); }
     if (profile.who === "group" && a.bestFor?.includes("Groups")) { s += 3; reasons.push("built for groups"); }
-    if (profile.vibe === "thrill" && a.level === "High") { s += 3; reasons.push("adrenaline"); }
+    const isAdventure = /ATV|Zip|Rafting|Paragl|Waterfall|Surf/.test(a.category);
+    if (profile.vibe === "thrill" && isAdventure) { s += 4; reasons.push("adventure-forward"); }
+    if (profile.vibe === "thrill" && a.level === "Easy" && !isAdventure) s -= 2.5;
     if (profile.vibe === "chill" && a.level === "Easy") { s += 3; reasons.push("relaxed"); }
     if (profile.vibe === "nature" && /Wildlife|Whale|Snorkel|Waterfall/.test(a.category)) { s += 3; reasons.push("wildlife & nature"); }
     if (profile.vibe === "water" && /Fishing|Catamaran|Snorkel|Surf|Whale|Rafting/.test(a.category)) { s += 3; reasons.push("on the water"); }
@@ -43,9 +46,11 @@ export function recommendActivities(profile = {}) {
     if (profile.fears?.includes("boats") && /Fishing|Catamaran|Whale|Snorkel/.test(a.category)) s -= 4;
 
     // in-season boost
-    const { insights } = activityInsights(a, monthIdx);
-    const inSeason = insights.find((i) => i.type === "season" && i.tone === "good");
-    if (inSeason) { s += 2.5; reasons.unshift(inSeason.text.toLowerCase()); }
+    if (hasMonth) {
+      const { insights } = activityInsights(a, monthIdx);
+      const inSeason = insights.find((i) => i.type === "season" && i.tone === "good");
+      if (inSeason) { s += 2.5; reasons.unshift(inSeason.text.toLowerCase()); }
+    }
     return { a, score: s, reasons };
   }).sort((x, y) => y.score - x.score);
   return scored;
@@ -63,7 +68,7 @@ export function buildMyCostaRica(profile = {}) {
   const ranked = (routeRegions.length ? allRanked.filter((r) => routeRegions.includes(r.a.region)) : allRanked).slice(0, want);
   const reasonById = Object.fromEntries(ranked.map((r) => [r.a.id, r.reasons]));
   const plan = planTrip(ranked.map((r) => r.a), {
-    monthIdx: profile.monthIdx ?? monthIndexNow(),
+    monthIdx: Number.isInteger(profile.monthIdx) ? profile.monthIdx : undefined,
     maxPerDay: perDay,
     pax: profile.pax || 2,
     budget: profile.budget === "low" ? days * 240 : profile.budget === "high" ? Infinity : days * 400,
@@ -78,7 +83,7 @@ export function buildMyCostaRica(profile = {}) {
   const coveredRegions = new Set(plan.days.flatMap((day) => day.region));
   const uncoveredRegions = routeRegions.filter((region) => !coveredRegions.has(region));
   if (uncoveredRegions.length) plan.warnings.push(`Rico is still curating approved experiences for ${uncoveredRegions.join(" and ")}; these stops remain in your route without placeholder tours.`);
-  return { plan, reasonById, brief: monthBriefing(profile.monthIdx), route: profile.stops || [], uncoveredRegions };
+  return { plan, reasonById, brief: Number.isInteger(profile.monthIdx) ? monthBriefing(profile.monthIdx) : null, route: profile.stops || [], uncoveredRegions };
 }
 
 // TOOL: get the smart insight badges for one activity.

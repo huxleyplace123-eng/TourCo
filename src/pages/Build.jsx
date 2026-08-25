@@ -20,7 +20,7 @@ function nightsBetween(arrival, departure) {
 
 function initialForm(initialPlan) {
   const multi = initialPlan?.dest === "Multiple stops";
-  const destination = !initialPlan?.dest || initialPlan.dest === "Not sure yet" || multi ? "Manuel Antonio" : initialPlan.dest;
+  const destination = !initialPlan?.dest || initialPlan.dest === "Not sure yet" || multi ? "Not sure yet" : initialPlan.dest;
   const group = Math.max(1, parseInt(initialPlan?.group, 10) || 2);
   const type = String(initialPlan?.type || "").toLowerCase();
   return {
@@ -66,12 +66,12 @@ function buildFlags(form) {
 function solIntro(form, result) {
   const bits = [];
   if (form.stops.length > 1) bits.push(`I kept your stops in the order you chose: ${form.stops.map((stop) => stop.region).join(" → ")}`);
-  if (result.brief.inSeason.length) bits.push(`the seasonal pattern favors ${result.brief.inSeason[0].toLowerCase()}, so I built around it`);
+  if (result.brief?.inSeason.length) bits.push(`the seasonal pattern favors ${result.brief.inSeason[0].toLowerCase()}, so I built around it`);
   if (form.avoidLongDrives) bits.push("I kept the driving short and grouped each day by area");
   if (form.youngKids) bits.push("everything's paced and safe for the little ones");
   if (form.fears.length) bits.push(`and I steered clear of ${form.fears.join(" & ")}`);
   const tail = bits.length ? ` — ${bits.join(", ")}.` : ".";
-  return `I sequenced each day using TicoWild's typical drive-time and seasonal planning model${tail} Add it to your trip and TicoWild will confirm the current timing, conditions, operator and availability.`;
+  return `I sequenced each day using TicoWild's route and timing model${tail} Save it to your trip and TicoWild will confirm the current timing, conditions, operator and availability.`;
 }
 
 export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consumePlannerDraft }) {
@@ -248,8 +248,8 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
                   <span style={{ width: 44, height: 44, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 19, color: c.ink }}>S</span>
                   <div>
-                    <div style={{ color: "#fff", fontWeight: 800, fontSize: 17 }}>Here's your {result.plan.totals.days}-day plan 🌴</div>
-                    <div style={{ color: c.stone, fontSize: 13 }}>Built through {form.stops.map((stop) => stop.region).join(" → ")} · {form.pax} traveler{form.pax !== "1" ? "s" : ""} · {result.brief.month}</div>
+                    <div style={{ color: "#fff", fontWeight: 800, fontSize: 17 }}>Here’s your {result.plan.totals.days}-day activity plan 🌴</div>
+                    <div style={{ color: c.stone, fontSize: 13 }}>Built through {form.stops.map((stop) => stop.region).join(" → ")} · {form.pax} traveler{form.pax !== "1" ? "s" : ""}{result.brief?.month ? ` · ${result.brief.month}` : ""}</div>
                   </div>
                 </div>
                 <p style={{ color: "rgba(243,247,255,.85)", fontSize: 15, lineHeight: 1.6, margin: 0 }}>{solIntro(form, result)}</p>
@@ -259,9 +259,9 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
             <SmartPlan chosen={result.plan.days.flatMap((d) => d.activities)} pax={parseInt(form.pax, 10) || 2} planOverride={result.plan} />
 
             <div className="mobile-cta-row" style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
-              <Button variant="primary" onClick={addAll}><Plus size={16} />Add all to my trip</Button>
+              <Button variant="primary" onClick={addAll}><Plus size={16} />Save all to trip</Button>
               <Button variant="ghost" onClick={() => setResult(null)}><RotateCcw size={15} />Start over</Button>
-              <Button variant="ghost" onClick={() => openConcierge({ intent: "planning", destination: form.stops.map((stop) => stop.region).join(", "), arrival: form.arrival, departure: form.departure, travelers: form.pax })}><MessageCircle size={15} />Tweak with TicoWild</Button>
+              <Button variant="ghost" onClick={() => openConcierge({ intent: "planning", destination: form.stops.map((stop) => stop.region).join(", "), arrival: form.arrival, departure: form.departure, travelers: form.pax })}><MessageCircle size={15} />Ask Rico to adjust it</Button>
             </div>
           </div>
         )}

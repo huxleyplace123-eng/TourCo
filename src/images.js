@@ -139,7 +139,7 @@ export const themedSlides = (key, w = 1900) =>
 
 // Cinematic hero photo per curated package (by package id).
 const BY_PACKAGE = {
-  p1: "photo-1533105079780-92b9be482077", // family / beach
+  p1: "photo-1468413253725-0d5181091126", // family / jungle-backed Costa Rica beach
   p2: "photo-1507525428034-b723cf961d3e", // group / boat
   p3: "photo-1544551763-46a013bb70d5",   // fishing / ocean
   p4: "photo-1519741497674-611481863552", // honeymoon / couple, golden-hour

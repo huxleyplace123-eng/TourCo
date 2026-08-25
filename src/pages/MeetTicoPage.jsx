@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { ArrowRight, Heart, ThumbsDown, Waves, Sun, Bird, ShieldCheck, Cloud, Map, Sparkles } from "lucide-react";
 import { c, grad, glass } from "../theme.js";
-import { activities } from "../data.js";
+import { activities, regions } from "../data.js";
 import { Section, Button } from "../components/ui.jsx";
 import { Reveal, useCountUp, Photo } from "../motion.jsx";
 import { TicoFace } from "../components/TicoFace.jsx";
 import { TicoRanked } from "../components/TicoRanked.jsx";
 import { heroSlides, cdnImage } from "../images.js";
-import { LIFE, CREDENTIALS, KNOWLEDGE, LORE } from "../intelligence/ticoPersona.js";
+import { LIFE, LORE } from "../intelligence/ticoPersona.js";
 
 const KICON = { waves: Waves, sun: Sun, bird: Bird, shield: ShieldCheck, cloud: Cloud, map: Map };
+
+const PLATFORM_PROOF = [
+  { value: activities.length, suffix: "", label: "published experiences", sub: "in the current starting collection" },
+  { value: regions.length, suffix: "", label: "regions in the guide", sub: "organized around the route" },
+  { value: 0, suffix: "", label: "cost to start", sub: "$0 · no signup or payment needed" },
+  { value: 100, suffix: "%", label: "confirmed first", sub: "current details before payment" },
+];
+
+const GUIDE_KNOWLEDGE = [
+  { icon: "map", title: "Route fit", img: "photo-1519046904884-53103b34b206", stat: "less zig-zag", line: "I compare the region and likely transfer time so the activities in a day make geographic sense." },
+  { icon: "sun", title: "Seasonal context", img: "photo-1441974231531-c6227db76b6e", stat: "date-aware", line: "Give me dates and I can use the seasonal planning model. Leave them blank and I won’t pretend to know the month." },
+  { icon: "waves", title: "A realistic day", img: "photo-1502680390469-be75c86b636f", stat: "time-aware", line: "Full-day experiences stay on their own. Shorter activities are paired only when their timing and location fit." },
+  { icon: "shield", title: "Confirmation before payment", img: "photo-1544551763-46a013bb70d5", stat: "details first", line: "The website gives you a planning estimate. TicoWild confirms the operator, availability, timing and final total before payment." },
+];
 
 // A single live credential counter (animates when the hero mounts).
 function Stat({ value, suffix, label, sub, delay = 0 }) {
@@ -89,7 +103,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
         {/* résumé stat strip pinned to the bottom of the hero */}
         <div className="tico-credential-strip" style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 3, borderTop: "1px solid rgba(127,166,232,.18)", background: "rgba(11,26,46,.55)", backdropFilter: "blur(10px)" }}>
           <div style={{ maxWidth: 1120, margin: "0 auto", padding: "18px 20px", display: "flex", gap: 18, justifyContent: "space-around", flexWrap: "wrap" }}>
-            {CREDENTIALS.map((s, i) => <Stat key={s.label} {...s} delay={250 + i * 130} />)}
+            {PLATFORM_PROOF.map((s, i) => <Stat key={s.label} {...s} delay={250 + i * 130} />)}
           </div>
         </div>
 
@@ -109,7 +123,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
           <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>What Rico knows</h2>
         </div>
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))" }}>
-          {KNOWLEDGE.map((k, i) => {
+          {GUIDE_KNOWLEDGE.map((k, i) => {
             const Ico = KICON[k.icon] || Sparkles;
             return (
               <Reveal key={k.title} delay={(i % 3) * 70}>

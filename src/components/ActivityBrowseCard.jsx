@@ -541,7 +541,7 @@ export function ActivityBrowseCard({
               onClick={() => onAdd(a.id)}
               aria-label={inTrip ? `${a.title} is added to your trip` : `Add ${a.title} to your trip`}
             >
-              {inTrip ? <><Check size={15} aria-hidden="true" />Added</> : <><Plus size={15} aria-hidden="true" />Add to trip</>}
+              {inTrip ? <><Check size={15} aria-hidden="true" />Saved</> : <><Plus size={15} aria-hidden="true" />Save to trip</>}
             </Button>
 
             <a
