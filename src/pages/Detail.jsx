@@ -10,6 +10,8 @@ import { depositTerms } from "../intelligence/trust.js";
 import { VibeScores } from "../components/VibeScores.jsx";
 import { useConversion } from "../components/ConversionCenter.jsx";
 
+const HERO_GLASS = "rgba(5,15,33,.86)";
+
 function InfoList({ title, icon: Icon, items }) {
   return (
     <div style={{ background: c.white, borderRadius: 18, padding: 22, border: "1px solid rgba(255,255,255,.08)" }}>
@@ -56,14 +58,14 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
         <Photo src={activityImage(a, 1600)} fallback={gradFor(a.category)} alt={a.title} height={380} zoom={false}
           overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8,20,45,.35) 0%, transparent 30%, rgba(8,20,45,.72) 100%)" }} />} />
         <div className="detail-hero-content" style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", maxWidth: 1180, margin: "0 auto", padding: "22px 20px 30px", left: 0, right: 0 }}>
-          <button onClick={() => go("activities")} style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,.9)", border: "none", borderRadius: 999, padding: "9px 16px", fontWeight: 700, color: c.charcoal, cursor: "pointer", fontSize: 14 }}>
+          <button className="detail-back-button" onClick={() => go("activities")} style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 7, background: HERO_GLASS, border: "1px solid rgba(255,255,255,.28)", backdropFilter: "blur(10px)", borderRadius: 999, padding: "9px 16px", fontWeight: 800, color: "#fff", cursor: "pointer", fontSize: 14, boxShadow: "0 8px 24px rgba(5,15,33,.22)" }}>
             <ArrowLeft size={16} />All activities
           </button>
           <div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-              <Badge icon={ShieldCheck} bg="rgba(255,255,255,.92)">Curated by TicoWild</Badge>
-              {a.family && <Badge bg="rgba(255,255,255,.92)" color={c.blue}>Family-friendly</Badge>}
-              {a.private && <Badge bg="rgba(255,255,255,.92)" color={c.orchid}>Private available</Badge>}
+            <div className="detail-hero-badges" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+              <Badge icon={ShieldCheck} bg={HERO_GLASS} color={c.teal}>Curated by TicoWild</Badge>
+              {a.family && <Badge bg={HERO_GLASS} color="#fff">Family-friendly</Badge>}
+              {a.private && <Badge bg={HERO_GLASS} color={c.gold}>Private available</Badge>}
             </div>
             <div style={{ color: c.gold, fontWeight: 800, fontSize: 14, letterSpacing: 0.5 }}>{a.category}</div>
             <h1 style={{ color: "#fff", fontSize: "clamp(28px,5vw,46px)", fontWeight: 800, letterSpacing: -1, margin: "4px 0 0", maxWidth: 760 }}>{a.title}</h1>
@@ -178,6 +180,9 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
       </Section>
 
       <style>{`
+        .detail-hero-badges>span{border:1px solid rgba(255,255,255,.24);box-shadow:0 8px 24px rgba(5,15,33,.2);backdrop-filter:blur(10px)}
+        .detail-back-button:hover{background:rgba(15,36,64,.96)!important;border-color:rgba(34,211,238,.65)!important}
+        .detail-back-button:focus-visible{outline:3px solid ${c.teal};outline-offset:3px}
         @media(min-width:940px){.detail-grid{grid-template-columns:1fr 360px!important}.detail-grid .two-col{grid-template-columns:1fr 1fr!important}}
         @media(max-width:520px){.detail-decision-grid{grid-template-columns:1fr!important}}
       `}</style>
