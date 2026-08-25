@@ -136,7 +136,7 @@ function CollectionMosaic({ onChoose }) {
       <div className="activity-mosaic-heading">
         <Eyebrow><span style={{ color: c.teal }}>Four ways into Costa Rica</span></Eyebrow>
         <h2>Start with the feeling. <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>We’ll find the day.</span></h2>
-        <p>Every experience is offered by an approved partner. Choose a world below, then let Rico narrow it to the one worth your time.</p>
+        <p>Choose a world below, then let Rico narrow it to the experiences most likely to fit your route, pace and travel style.</p>
       </div>
       <div className="activity-worlds" aria-label="Activity collections">
         {COLLECTIONS.map((collection) => {
@@ -225,9 +225,9 @@ export function Activities({ addToTrip, trip, viewActivity }) {
       <PageHero
         slides={themedSlides("activities")}
         height={380}
-        eyebrow="Approved TicoWild experiences"
+        eyebrow="Curated TicoWild experiences"
         title="Choose your kind of wild"
-        sub="Four distinct ways to experience Costa Rica—organized by feeling, screened by our team, and ranked with Rico’s honest take."
+        sub="Four distinct ways to experience Costa Rica—organized by feeling and ranked with Rico’s honest take. Availability and operating details are confirmed before payment."
       >
         <ActivityMarquee />
       </PageHero>

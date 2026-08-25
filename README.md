@@ -1,6 +1,6 @@
 # TourCo — TripNest
 
-Costa Rica adventure concierge. Vetted local tours, transparent pricing (20% deposit, rest on arrival), human WhatsApp support, and John's local recommendations.
+Costa Rica experience discovery and planning. TicoWild helps travelers narrow the choices around their route, dates and travel style, then request current availability before payment.
 
 ## What's here
 
@@ -23,9 +23,10 @@ Or double-click `index.html`.
 
 ## Pages / flow
 
-Home · John Recommends · Activities (filterable) · Activity detail · Packages · Build-my-trip wizard · Local's Guide · Why TripNest · Partner · My Trips portal — plus a trip cart with deposit math and a WhatsApp concierge CTA.
+Home · Activities (filterable) · shareable activity detail URLs · Collections · Build-my-trip wizard · Insider Guide · Why TicoWild · Partner · My Trips portal — plus an availability-request flow and optional WhatsApp handoff.
 
-## Notes
+## Public inquiries
 
-- Prototype: bookings, payments, and WhatsApp actions are stubbed (`window.alert`) — no backend yet.
-- Single-file by design so it's trivial to preview and hand off.
+Run `supabase/schema.sql`, then configure `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to deliver public planning and availability requests into `public.public_inquiries`. Configure `VITE_TICOWILD_WHATSAPP` for direct click-to-chat. When the inquiry backend is not configured, the UI says so and opens a ready-to-send email rather than displaying a false success state.
+
+The public site does not collect card payments yet. Prices and 20% figures are estimates until availability, provider, final price and terms are confirmed.

@@ -3,6 +3,7 @@ import { Compass, ChevronRight, Menu, X } from "lucide-react";
 import { c } from "../theme.js";
 import { Logo } from "./Logo.jsx";
 import { Button } from "./ui.jsx";
+import { pathFor } from "../routing.js";
 
 const LINKS = [
   ["tico", "Meet Rico"],
@@ -18,14 +19,14 @@ export function Nav({ page, go, tripCount, openTrip }) {
   return (
     <header className="site-nav" style={{ position: "sticky", top: 0, zIndex: 60, background: "rgba(11,26,46,.72)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: `1px solid ${c.line}` }}>
       <div className="site-nav-inner" style={{ maxWidth: 1180, margin: "0 auto", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-        <button onClick={() => go("home")} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}>
+        <a href="/" onClick={(event) => { event.preventDefault(); go("home"); }} style={{ cursor: "pointer", display: "flex", alignItems: "center", textDecoration: "none" }}>
           <Logo fontSize={22} />
-        </button>
+        </a>
         <div className="nav-links" style={{ display: "none", gap: 4, alignItems: "center" }}>
           {LINKS.map(([id, label]) => (
-            <button key={id} onClick={() => go(id)} style={{ background: page === id ? "rgba(47,107,235,.08)" : "none", border: "none", cursor: "pointer", padding: "8px 12px", borderRadius: 999, fontWeight: 700, fontSize: 14, color: page === id ? c.emerald : c.charcoal }}>
+            <a key={id} href={pathFor(id)} onClick={(event) => { event.preventDefault(); go(id); }} style={{ background: page === id ? "rgba(47,107,235,.08)" : "none", cursor: "pointer", padding: "8px 12px", borderRadius: 999, fontWeight: 700, fontSize: 14, color: page === id ? c.emerald : c.charcoal, textDecoration: "none" }}>
               {label}
-            </button>
+            </a>
           ))}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -48,9 +49,9 @@ export function Nav({ page, go, tripCount, openTrip }) {
       {open && (
         <nav className="mobile-nav-menu" aria-label="Main navigation" style={{ borderTop: `1px solid ${c.line}`, padding: 12, display: "flex", flexDirection: "column", gap: 2, background: "rgba(11,26,46,.96)", backdropFilter: "blur(16px)" }}>
           {LINKS.map(([id, label]) => (
-            <button key={id} onClick={() => { go(id); setOpen(false); }} style={{ background: page === id ? "rgba(47,107,235,.08)" : "none", border: "none", cursor: "pointer", padding: "12px 14px", borderRadius: 12, fontWeight: 700, fontSize: 15.5, color: page === id ? c.emerald : c.charcoal, textAlign: "left" }}>
+            <a key={id} href={pathFor(id)} onClick={(event) => { event.preventDefault(); go(id); setOpen(false); }} style={{ background: page === id ? "rgba(47,107,235,.08)" : "none", cursor: "pointer", padding: "12px 14px", borderRadius: 12, fontWeight: 700, fontSize: 15.5, color: page === id ? c.emerald : c.charcoal, textAlign: "left", textDecoration: "none" }}>
               {label}
-            </button>
+            </a>
           ))}
           <Button variant="primary" full style={{ marginTop: 8 }} onClick={() => { go("build"); setOpen(false); }}>Plan my trip</Button>
         </nav>

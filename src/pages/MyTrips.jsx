@@ -9,12 +9,13 @@ import { StoryPoster } from "../components/TripStory.jsx";
 import { SmartPlan } from "../components/SmartPlan.jsx";
 import { TripsHero } from "../components/TripsHero.jsx";
 import { TicoFace } from "../components/TicoFace.jsx";
+import { useConversion } from "../components/ConversionCenter.jsx";
 
 // How the trip works — three simple, reassuring steps.
 const STEPS = [
   { icon: PlusCircle, title: "1 · Add what you love", body: "Tap 'Add to trip' on any activity, or let Rico build a day-by-day. No account, no commitment — it just gathers here." },
   { icon: Route, title: "2 · We shape the days", body: "Rico orders everything around drive times, tides and season, so your trip flows instead of zig-zagging the coast." },
-  { icon: CalendarCheck, title: "3 · Reserve for 20%", body: "Lock it in with a 20% deposit; pay the rest to the approved operator on the day. TicoWild coordinates confirmation before you go." },
+  { icon: CalendarCheck, title: "3 · Confirm before you pay", body: "TicoWild checks availability, timing, the operator and final total. You decide whether to continue after that." },
 ];
 
 // What a great Costa Rica trip actually looks like — descriptive, not a list of
@@ -91,7 +92,8 @@ function EmptyState({ go }) {
   );
 }
 
-export function MyTrips({ go, trip, removeFromTrip }) {
+export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
+  const { openInquiry, openConcierge } = useConversion();
   const [view, setView] = useState("story"); // 'story' | 'list'
   const chosen = trip.map((t) => ({ ...t, a: activities.find((a) => a.id === t.id) })).filter((x) => x.a);
   const total = chosen.reduce((s, g) => s + g.a.price * g.pax, 0);
@@ -124,8 +126,8 @@ export function MyTrips({ go, trip, removeFromTrip }) {
               <h2 style={{ fontSize: 22, fontWeight: 800, color: c.charcoal, margin: "0 0 20px" }}>Your smart day-by-day</h2>
               <SmartPlan chosen={chosen} pax={chosen[0]?.pax || 2} />
               <div style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
-                <Button variant="primary" onClick={() => window.alert("Reservation flow — connect payments here.")}>
-                  <ShieldCheck size={16} />Reserve for {money(total * 0.2)}
+                <Button variant="primary" onClick={() => openInquiry({ intent: "trip", activity_ids: chosen.map(({ a }) => a.id), activity_titles: chosen.map(({ a }) => a.title) })}>
+                  <ShieldCheck size={16} />Request availability
                 </Button>
                 <Button variant="ghost" onClick={() => go("activities")}>Add more <ArrowRight size={15} /></Button>
               </div>
@@ -154,7 +156,7 @@ export function MyTrips({ go, trip, removeFromTrip }) {
                     <div style={{ marginTop: "auto", paddingTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
                       <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 16 }}>{money(a.price)} <span style={{ color: c.stone, fontWeight: 600, fontSize: 13 }}>× {pax}</span></span>
                       <div style={{ display: "flex", gap: 8 }}>
-                        <Button variant="ghost" size="sm" onClick={() => go("detail") || null}>Details</Button>
+                        <Button variant="ghost" size="sm" onClick={() => viewActivity(a.id)}>Details</Button>
                         <button onClick={() => removeFromTrip(id)} style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,90,77,.1)", color: c.orchid, border: "none", borderRadius: 999, padding: "9px 14px", fontWeight: 700, fontSize: 13.5, cursor: "pointer" }}>
                           <Trash2 size={14} />Remove
                         </button>
@@ -172,17 +174,17 @@ export function MyTrips({ go, trip, removeFromTrip }) {
                 <span>{chosen.length} experiences</span><span style={{ fontWeight: 700, color: c.charcoal }}>{money(total)}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 12, borderTop: "1px dashed rgba(255,255,255,.12)" }}>
-                <span style={{ fontWeight: 800, color: c.charcoal }}>Due today (20%)</span>
+                <span style={{ fontWeight: 800, color: c.charcoal }}>Estimated deposit after confirmation</span>
                 <span style={{ fontWeight: 800, fontSize: 24, color: c.emerald }}>{money(deposit)}</span>
               </div>
-              <Button variant="primary" full size="lg" style={{ marginTop: 18 }} onClick={() => window.alert("Reservation flow — connect payments here.")}>
-                <ShieldCheck size={17} />Reserve for {money(total * 0.2)}
+              <Button variant="primary" full size="lg" style={{ marginTop: 18 }} onClick={() => openInquiry({ intent: "trip", activity_ids: chosen.map(({ a }) => a.id), activity_titles: chosen.map(({ a }) => a.title) })}>
+                <ShieldCheck size={17} />Request availability
               </Button>
-              <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => window.alert("Opening WhatsApp concierge…")}>
-                <MessageCircle size={15} />Send to concierge
+              <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => openConcierge({ intent: "trip", activity_titles: chosen.map(({ a }) => a.title) })}>
+                <MessageCircle size={15} />Ask about this plan
               </Button>
               <div style={{ display: "flex", alignItems: "center", gap: 7, color: c.stone, fontSize: 12.5, marginTop: 14, justifyContent: "center" }}>
-                <Calendar size={14} />Balance due closer to your dates
+                <Calendar size={14} />No payment is taken until details are confirmed
               </div>
             </div>
           </div>

@@ -43,8 +43,8 @@ export function TripsHero({ count = 0 }) {
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "trRise .6s .2s both" }}>
             {count > 0
-              ? `${count} experience${count !== 1 ? "s" : ""} lined up. Here's your day-by-day, the deposit math, and exactly what to expect — all in one place.`
-              : "Everything you add lands here and becomes a real plan — the route, the timing, the deposit, and what to do each day. Start adding and watch it come together."}
+              ? `${count} experience${count !== 1 ? "s" : ""} lined up. Review the suggested order and request current availability when it feels right.`
+              : "Everything you add lands here and becomes a starting plan. Nothing is reserved and no payment is taken until the details are confirmed."}
           </p>
         </div>
 

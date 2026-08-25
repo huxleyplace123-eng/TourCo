@@ -605,9 +605,7 @@
   }
 
   .tico-soundscape {
-    left: 12px !important;
-    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
-    padding: 6px !important;
+    display: none !important;
   }
 
   .tico-soundscape[data-lifted="true"] {
@@ -616,6 +614,16 @@
 
   .tico-soundscape > span:last-of-type {
     display: none !important;
+  }
+
+  .tico-dock > button,
+  .tico-dock > button > span:last-child {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .tico-dock > button > span:last-child > * {
+    transform: scale(.86);
   }
 
   .mobile-trip-bar {

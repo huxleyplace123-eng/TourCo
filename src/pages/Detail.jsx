@@ -1,13 +1,14 @@
 import React from "react";
-import { ArrowLeft, MapPin, Clock, Compass, Star, Check, Plus, ShieldCheck, MessageCircle, Package, Backpack, Quote } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Compass, Check, Plus, ShieldCheck, MessageCircle, Package, Backpack } from "lucide-react";
 import { c, grad, gradFor, money } from "../theme.js";
-import { activities, operators } from "../data.js";
+import { activities } from "../data.js";
 import { activityImage } from "../images.js";
 import { Section, Button, Badge } from "../components/ui.jsx";
 import { Photo, Reveal } from "../motion.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
-import { trustForActivity, depositTerms } from "../intelligence/trust.js";
+import { depositTerms } from "../intelligence/trust.js";
 import { VibeScores } from "../components/VibeScores.jsx";
+import { useConversion } from "../components/ConversionCenter.jsx";
 
 function InfoList({ title, icon: Icon, items }) {
   return (
@@ -30,6 +31,7 @@ function InfoList({ title, icon: Icon, items }) {
 }
 
 export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
+  const { openInquiry, openConcierge } = useConversion();
   const a = activeId ? activities.find((x) => x.id === activeId) : activities[0];
   if (!a) {
     return (
@@ -42,8 +44,6 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
       </Section>
     );
   }
-  const op = operators.find((o) => o.id === a.operatorId);
-  const receipt = trustForActivity(a.operatorId);
   const terms = depositTerms(a.price, 1);
   const inTrip = trip.some((t) => t.id === a.id);
   const related = activities.filter((x) => x.category === a.category && x.id !== a.id).slice(0, 3);
@@ -61,7 +61,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
           </button>
           <div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-              <Badge icon={ShieldCheck} bg="rgba(255,255,255,.92)">Approved partner</Badge>
+              <Badge icon={ShieldCheck} bg="rgba(255,255,255,.92)">Curated by TicoWild</Badge>
               {a.family && <Badge bg="rgba(255,255,255,.92)" color={c.blue}>Family-friendly</Badge>}
               {a.private && <Badge bg="rgba(255,255,255,.92)" color={c.orchid}>Private available</Badge>}
             </div>
@@ -71,7 +71,6 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><MapPin size={15} />{a.region}</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Clock size={15} />{a.duration}</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Compass size={15} />{a.level}</span>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Star size={15} fill={c.gold} color={c.gold} />{a.rating} · {a.reviews} reviews</span>
             </div>
           </div>
         </div>
@@ -88,18 +87,18 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
             {/* TicoWild Vibe Scores — the brain, not a directory */}
             <VibeScores activity={a} />
 
-            {/* John's local take */}
+            {/* TicoWild planning note */}
             <div style={{ background: grad.jungle, borderRadius: 18, padding: 24, color: "#fff", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 90% 10%, rgba(34,211,238,.4), transparent 45%)" }} />
               <div style={{ position: "relative", display: "flex", gap: 16, alignItems: "flex-start" }}>
                 <div style={{ width: 52, height: 52, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 20, color: c.charcoal, flexShrink: 0 }}>J</div>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 6 }}>
-                    <Quote size={16} color={c.gold} />
-                    <span style={{ fontWeight: 800, fontSize: 15 }}>John's local take</span>
+                    <Compass size={16} color={c.gold} />
+                    <span style={{ fontWeight: 800, fontSize: 15 }}>TicoWild planning note</span>
                   </div>
                   <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.65, color: "rgba(255,255,255,.92)" }}>
-                    {`"${a.bestFor?.[0] || "Everyone"} love this one — this experience is offered by ${op?.name}, whose listed response time is ${op?.responseTime}. Book the morning slot for the best conditions, and let me handle the pickup timing so it fits the rest of your day."`}
+                    This is a strong fit for {a.bestFor?.join(", ") || "travelers who want something memorable"}. We confirm the current operator, start time, pickup details and weather plan before asking you to commit.
                   </p>
                 </div>
               </div>
@@ -115,54 +114,34 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
           <aside className="detail-book-panel" style={{ position: "sticky", top: 92, display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ background: c.white, borderRadius: 20, padding: 24, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
+                <span style={{ color: c.stone, fontWeight: 700, marginBottom: 7, marginRight: 2 }}>From</span>
                 <span style={{ fontSize: 32, fontWeight: 800, color: c.charcoal }}>{money(a.price)}</span>
                 <span style={{ color: c.stone, fontWeight: 600, marginBottom: 6 }}>/ person</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, color: c.teal, fontWeight: 700, fontSize: 13.5, marginTop: 4 }}>
-                <ShieldCheck size={15} />{terms.short}
+                <ShieldCheck size={15} />Final price and availability confirmed first
               </div>
               <Button variant={inTrip ? "dark" : "primary"} full size="lg" style={{ marginTop: 18 }} onClick={() => addToTrip(a.id)}>
-                {inTrip ? <><Check size={17} />Added to your trip</> : <><Plus size={17} />Reserve for {money(terms.deposit)}</>}
+                {inTrip ? <><Check size={17} />Added to your trip</> : <><Plus size={17} />Add to my plan</>}
               </Button>
-              <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => window.alert("Opening WhatsApp concierge…")}>
-                <MessageCircle size={15} />Ask about this activity
+              <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => openInquiry({ intent: "activity", activity: a, destination: a.region })}>
+                <MessageCircle size={15} />Request current availability
               </Button>
-              {/* crystal-clear 20/80 language — no payment surprises */}
-              <p style={{ color: c.stone, fontSize: 12, lineHeight: 1.5, marginTop: 14, marginBottom: 0 }}>{terms.line}</p>
+              <p style={{ color: c.stone, fontSize: 12, lineHeight: 1.5, marginTop: 14, marginBottom: 0 }}>Adding this to your trip does not reserve it or charge you. TicoWild confirms the exact details first. If you continue, the estimated deposit is {money(terms.deposit)} per person.</p>
             </div>
 
-            {/* Operator record: show only evidence explicitly stored in data. */}
+            {/* Clear next steps instead of publishing unverified operator claims. */}
             <div style={{ background: c.white, borderRadius: 20, padding: 20, border: "1px solid rgba(255,255,255,.08)" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-                <div>
-                  <div style={{ fontSize: 12, color: c.stone, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Operated by</div>
-                  <div style={{ fontWeight: 800, color: c.charcoal, fontSize: 17, marginTop: 4 }}>{op?.name}</div>
-                  <div style={{ display: "flex", gap: 12, marginTop: 6, flexWrap: "wrap", fontSize: 12.5, color: c.stone, fontWeight: 600 }}>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Star size={12} fill={c.gold} color={c.gold} />{op?.rating}</span>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><MapPin size={12} />{op?.region}</span>
-                  </div>
-                </div>
-                {receipt && (
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, flexShrink: 0, background: "rgba(34,211,238,.1)", border: "1px solid rgba(34,211,238,.25)", color: c.teal, padding: "7px 11px", borderRadius: 999, fontWeight: 800, fontSize: 11.5 }}>
-                    <ShieldCheck size={14} />APPROVED
-                  </div>
-                )}
-              </div>
-
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 14, marginBottom: 12, background: "rgba(34,211,238,.1)", border: "1px solid rgba(34,211,238,.25)", color: c.teal, padding: "6px 12px", borderRadius: 999, fontWeight: 800, fontSize: 11.5, letterSpacing: 0.5 }}>
-                <ShieldCheck size={13} />TICOWILD OPERATOR RECORD
-              </div>
+              <div style={{ fontWeight: 800, color: c.charcoal, fontSize: 17, marginBottom: 13 }}>What happens after you ask</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-                {receipt?.checks.map((ch) => (
-                  <div key={ch.key} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
-                    <Check size={15} color={ch.ok ? c.teal : c.stone} style={{ flexShrink: 0, marginTop: 1, opacity: ch.ok ? 1 : 0.4 }} />
-                    <div>
-                      <div style={{ fontSize: 13.5, fontWeight: 700, color: c.charcoal, lineHeight: 1.25 }}>{ch.label}</div>
-                      <div style={{ fontSize: 12, color: c.stone, lineHeight: 1.35 }}>{ch.detail}</div>
-                    </div>
+                {["We check the date and starting time", "We confirm the operator, pickup and final total", "You decide whether to continue"].map((label) => (
+                  <div key={label} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
+                    <Check size={15} color={c.teal} style={{ flexShrink: 0, marginTop: 2 }} />
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: c.charcoal, lineHeight: 1.35 }}>{label}</div>
                   </div>
                 ))}
               </div>
+              <button onClick={() => openConcierge({ intent: "activity", activity_title: a.title, destination: a.region })} style={{ marginTop: 16, background: "none", border: 0, padding: 0, color: c.teal, fontWeight: 800, cursor: "pointer" }}>Ask a question first →</button>
             </div>
           </aside>
         </div>

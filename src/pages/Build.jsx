@@ -8,6 +8,7 @@ import { pageHero } from "../images.js";
 import { SmartPlan } from "../components/SmartPlan.jsx";
 import { buildMyCostaRica } from "../intelligence/index.js";
 import { Reveal } from "../motion.jsx";
+import { useConversion } from "../components/ConversionCenter.jsx";
 
 const REGIONS = ["San José", "La Fortuna", "Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Not sure yet"];
 const DAY_MS = 86_400_000;
@@ -67,15 +68,16 @@ function buildFlags(form) {
 function solIntro(form, result) {
   const bits = [];
   if (form.stops.length > 1) bits.push(`I kept your stops in the order you chose: ${form.stops.map((stop) => stop.region).join(" → ")}`);
-  if (result.brief.inSeason.length) bits.push(`it's ${result.brief.inSeason[0].toLowerCase()} right now, so I built around it`);
+  if (result.brief.inSeason.length) bits.push(`the seasonal pattern favors ${result.brief.inSeason[0].toLowerCase()}, so I built around it`);
   if (form.avoidLongDrives) bits.push("I kept the driving short and grouped each day by area");
   if (form.youngKids) bits.push("everything's paced and safe for the little ones");
   if (form.fears.length) bits.push(`and I steered clear of ${form.fears.join(" & ")}`);
   const tail = bits.length ? ` — ${bits.join(", ")}.` : ".";
-  return `I sequenced each day around real drive times, tides, and the weather${tail} Add it to your trip and TicoWild will coordinate availability with each approved partner.`;
+  return `I sequenced each day using TicoWild's typical drive-time and seasonal planning model${tail} Add it to your trip and TicoWild will confirm the current timing, conditions, operator and availability.`;
 }
 
 export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consumePlannerDraft }) {
+  const { openConcierge } = useConversion();
   const [form, setForm] = useState(() => initialForm(initialPlan));
   const [result, setResult] = useState(null);
   const [building, setBuilding] = useState(false);
@@ -232,7 +234,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
             <div className="mobile-cta-row" style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
               <Button variant="primary" onClick={addAll}><Plus size={16} />Add all to my trip</Button>
               <Button variant="ghost" onClick={() => setResult(null)}><RotateCcw size={15} />Start over</Button>
-              <Button variant="ghost" onClick={() => window.alert("Opening WhatsApp concierge…")}><MessageCircle size={15} />Tweak with a local</Button>
+              <Button variant="ghost" onClick={() => openConcierge({ intent: "planning", destination: form.stops.map((stop) => stop.region).join(", "), arrival: form.arrival, departure: form.departure, travelers: form.pax })}><MessageCircle size={15} />Tweak with TicoWild</Button>
             </div>
           </div>
         )}

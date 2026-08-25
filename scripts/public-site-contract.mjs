@@ -1,0 +1,51 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+
+const root = process.cwd();
+const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
+const walk = (dir) => fs.readdirSync(path.join(root, dir), { withFileTypes: true }).flatMap((entry) => {
+  const relative = path.join(dir, entry.name);
+  return entry.isDirectory() ? walk(relative) : [relative];
+});
+
+const publicSource = ["src/App.jsx", ...walk("src/components"), ...walk("src/pages")]
+  .filter((file) => /\.(jsx|js)$/.test(file))
+  .map((file) => `${file}\n${read(file)}`)
+  .join("\n");
+
+assert.equal(publicSource.includes("window.alert("), false, "public conversion actions must never fall back to prototype alerts");
+
+const home = read("src/pages/Home.jsx");
+assert.match(home, /activities\.slice\(0, 4\)/, "homepage should keep the featured catalog deliberately small");
+assert.equal(home.includes("TodaySection"), false, "homepage should not repeat the separate Today catalog");
+assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a second ranked catalog");
+assert.match(home, /How TicoWild works/);
+assert.match(home, /Confirm before you pay/);
+
+const app = read("src/App.jsx");
+assert.match(app, /routeFromPath\(window\.location\.pathname\)/, "public pages must restore state from a real URL");
+assert.match(app, /window\.history\[replace \? "replaceState" : "pushState"\]/, "public navigation must update browser history");
+
+const routing = read("src/routing.js");
+for (const route of ["/activities", "/collections", "/plan", "/why-ticowild", "/insider-guide"]) {
+  assert.ok(routing.includes(`"${route}"`), `missing public route ${route}`);
+}
+assert.match(routing, /metadataFor/);
+assert.match(routing, /activityPath/);
+
+const conversion = read("src/components/ConversionCenter.jsx");
+assert.match(conversion, /No payment is taken here/);
+assert.match(conversion, /instead of pretending your request was delivered/);
+
+const schema = read("supabase/schema.sql");
+assert.match(schema, /create table if not exists public\.public_inquiries/);
+assert.match(schema, /create policy "public can create inquiries"/);
+
+const sitemap = read("public/sitemap.xml");
+for (const activity of ["offshore-sport-fishing-charter", "sunset-catamaran-cruise", "honeymoon-waterfall-sunset"]) {
+  assert.ok(sitemap.includes(`/activities/${activity}`), `sitemap is missing ${activity}`);
+}
+assert.match(read("public/robots.txt"), /Sitemap: https:\/\/ticowild\.com\/sitemap\.xml/);
+
+console.log("Public site contract passed: truthful conversion, concise home, URL routing, metadata, and inquiry storage are present.");

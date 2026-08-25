@@ -7,6 +7,7 @@ import { packageImage, activityImage, heroImage, themedSlides } from "../images.
 const PKG_SLIDES = themedSlides("fishing", 1800);
 import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { TiltCard, Photo, Reveal } from "../motion.jsx";
+import { useConversion } from "../components/ConversionCenter.jsx";
 
 // Try to map each package inclusion to a real activity (for photos in the drawer).
 function itemActivity(label) {
@@ -28,7 +29,7 @@ function PackageCard({ p, featured, onOpen }) {
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
           {featured && (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: c.gold, color: c.ink, padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, letterSpacing: 0.3, boxShadow: "0 0 20px -4px rgba(255,208,0,.8)" }}>
-              <Star size={12} fill={c.ink} />MOST POPULAR
+              <Star size={12} fill={c.ink} />FEATURED COLLECTION
             </span>
           )}
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, ...glass, color: "#fff", padding: "5px 11px", borderRadius: 999, fontSize: 12, fontWeight: 700 }}><Clock size={12} />{p.length}</span>
@@ -113,7 +114,7 @@ function PackageDrawer({ p, onClose, addToTrip }) {
 
           {/* trust row */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
-            {[["Approved partners", ShieldCheck], ["Only 20% to reserve", Sparkles], ["Concierge coordinated", MessageCircle]].map(([t, Icon]) => (
+            {[["Current details confirmed", ShieldCheck], ["No payment in the planner", Sparkles], ["Human help available", MessageCircle]].map(([t, Icon]) => (
               <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(34,211,238,.08)", border: "1px solid rgba(34,211,238,.2)", color: c.teal, padding: "7px 12px", borderRadius: 999, fontWeight: 700, fontSize: 12.5 }}><Icon size={14} />{t}</span>
             ))}
           </div>
@@ -121,7 +122,7 @@ function PackageDrawer({ p, onClose, addToTrip }) {
           {/* footer / price + actions */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap", marginTop: 24, paddingTop: 20, borderTop: `1px dashed ${c.line}` }}>
             <div>
-              <div style={{ fontSize: 12, color: c.stone }}>from · deposit today {money(p.price * 0.2)}</div>
+              <div style={{ fontSize: 12, color: c.stone }}>from · estimated 20% after confirmation {money(p.price * 0.2)}</div>
               <div style={{ fontSize: 28, fontWeight: 800, color: c.charcoal }}>{money(p.price)}<span style={{ fontSize: 14, color: c.stone, fontWeight: 600 }}>/person</span></div>
             </div>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -136,6 +137,7 @@ function PackageDrawer({ p, onClose, addToTrip }) {
 }
 
 export function Packages({ go, addToTrip }) {
+  const { openConcierge } = useConversion();
   const [open, setOpen] = useState(null);
   const [featured, ...rest] = packages;
   const [slide, setSlide] = useState(0);
@@ -149,7 +151,7 @@ export function Packages({ go, addToTrip }) {
       {/* ── Vivid fishing-forward cinematic hero ── */}
       <div style={{ position: "relative", overflow: "hidden", padding: "88px 20px 64px", minHeight: 340 }}>
         {PKG_SLIDES.map((s, i) => (
-          <img key={s.src} src={s.src} alt="" aria-hidden
+          <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "low"} decoding="async"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
               opacity: i === slide ? 1 : 0, transition: "opacity 1.6s ease", transform: "scale(1.06)",
               animation: i === slide ? "tnPkgKen 8s ease-out both" : "none" }} />
@@ -201,7 +203,7 @@ export function Packages({ go, addToTrip }) {
             <p style={{ color: "rgba(243,247,255,.8)", fontSize: 17, marginTop: 12, maxWidth: 520, marginInline: "auto" }}>Every package is a starting point. Tell John what you want and he'll build a custom one from scratch.</p>
             <div className="mobile-cta-row" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 26 }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Build a custom trip <ArrowRight size={18} /></Button>
-              <Button variant="glass" size="lg" onClick={() => window.alert("Opening WhatsApp concierge…")}><MessageCircle size={18} />Ask a local</Button>
+              <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "collection" })}><MessageCircle size={18} />Ask TicoWild</Button>
             </div>
           </div>
         </div>
