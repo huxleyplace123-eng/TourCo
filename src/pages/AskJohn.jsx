@@ -6,6 +6,7 @@ import { activityImage } from "../images.js";
 import { Button } from "../components/ui.jsx";
 import { Photo, useCountUp } from "../motion.jsx";
 import { recommendActivities, monthBriefing } from "../intelligence/index.js";
+import { useConversion } from "../components/ConversionCenter.jsx";
 
 // ── John's brain: a small rules engine with personality. Each step asks a
 // question; the answer scores every activity AND makes John react like a real
@@ -15,10 +16,10 @@ import { recommendActivities, monthBriefing } from "../intelligence/index.js";
 const SCRIPT = [
   {
     id: "who",
-    john: "¡Pura vida! I'm John — I've guided Costa Rica for 15 years. Let's build your trip together. First: who's coming?",
+    john: "¡Pura vida! I'm Rico, TicoWild's planning companion. Let's make the choices easier. First: who's coming?",
     chips: [
       { label: "Just us two 💕", value: "couple", react: "Ooh, a trip for two — my favorite to plan. I know the most romantic spots on the coast.", match: (a) => a.bestFor?.includes("Couples"), reason: "perfect for couples" },
-      { label: "Family with kids 👨‍👩‍👧", value: "family", react: "Amazing — I've got kids myself. I only pick things that are safe AND genuinely fun for them.", match: (a) => a.family, reason: "safe & kid-approved" },
+      { label: "Family with kids 👨‍👩‍👧", value: "family", react: "Perfect. I'll favor the experiences marked family-friendly and keep the pace realistic.", match: (a) => a.family, reason: "family-friendly fit" },
       { label: "Group of friends 🍻", value: "group", react: "A crew! This is where Costa Rica really shines. Let's make it a trip they'll talk about for years.", match: (a) => a.bestFor?.includes("Groups"), reason: "built for groups" },
       { label: "Solo adventure 🎒", value: "solo", react: "Respect — solo travel here is unforgettable. I'll make sure you're never without a friendly local.", match: (a) => a.level !== "High" || a.bestFor?.includes("Adventure"), reason: "great going solo" },
     ],
@@ -64,8 +65,8 @@ function reasonFor(a, answers) {
   });
   // Prefer a personalized, answer-based reason; only fall back to rating.
   if (hits[0]) return hits[0];
-  if (a.rating >= 4.9) return "one of my highest-rated";
-  return "John's local pick";
+  if (a.rating >= 4.9) return "a strong catalog match";
+  return "Rico's planning pick";
 }
 
 function TypingDots() {
@@ -80,11 +81,12 @@ function TypingDots() {
 
 function JohnAvatar({ size = 40 }) {
   return (
-    <div style={{ width: size, height: size, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: size * 0.42, color: c.charcoal, flexShrink: 0, boxShadow: "0 6px 16px -6px rgba(0,0,0,.4)" }}>J</div>
+    <div style={{ width: size, height: size, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: size * 0.42, color: c.charcoal, flexShrink: 0, boxShadow: "0 6px 16px -6px rgba(0,0,0,.4)" }}>R</div>
   );
 }
 
 export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
+  const { openConcierge } = useConversion();
   const [msgs, setMsgs] = useState([]); // {from:'john'|'me', text}
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -162,7 +164,7 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
           <JohnAvatar size={54} />
           <div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: c.gold, fontWeight: 800, fontSize: 12.5, letterSpacing: 1, textTransform: "uppercase" }}>
-              <Sparkles size={13} /> Ask John · live trip builder
+              <Sparkles size={13} /> Ask Rico · interactive trip builder
             </div>
             <h1 style={{ color: "#fff", fontSize: "clamp(22px,3.5vw,30px)", fontWeight: 800, letterSpacing: -0.5, margin: "2px 0 0" }}>Let's plan your Costa Rica trip together</h1>
           </div>
@@ -205,10 +207,10 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
             {done && !typing && (
               <div style={{ display: "flex", gap: 8, width: "100%" }}>
                 <Button variant="ghost" size="sm" onClick={restart}><RotateCcw size={14} />Start over</Button>
-                <Button variant="dark" size="sm" onClick={() => window.alert("Opening WhatsApp concierge…")}><MessageCircle size={14} />Chat with the real John</Button>
+                <Button variant="dark" size="sm" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={14} />Ask the TicoWild team</Button>
               </div>
             )}
-            {!current && !done && <span style={{ color: c.stone, fontSize: 13 }}>John is thinking…</span>}
+            {!current && !done && <span style={{ color: c.stone, fontSize: 13 }}>Rico is thinking…</span>}
           </div>
         </div>
 
@@ -218,9 +220,9 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
             <div style={{ background: grad.hero, padding: "18px 20px", color: "#fff" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <Compass size={18} color={c.gold} />
-                <span style={{ fontWeight: 800, fontSize: 16 }}>Your trip, building live</span>
+                <span style={{ fontWeight: 800, fontSize: 16 }}>Your trip, taking shape</span>
               </div>
-              <div style={{ fontSize: 13, opacity: .9, marginTop: 2 }}>{trip.length} added · John suggested {suggestedActs.length}</div>
+              <div style={{ fontSize: 13, opacity: .9, marginTop: 2 }}>{trip.length} added · Rico suggested {suggestedActs.length}</div>
             </div>
 
             <div style={{ padding: 16, maxHeight: 380, overflowY: "auto" }}>
@@ -229,7 +231,7 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
                   <div style={{ width: 60, height: 60, borderRadius: 999, background: c.sand, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
                     <Sparkles size={26} color={c.teal} />
                   </div>
-                  <p style={{ fontWeight: 700, color: c.charcoal, margin: "0 0 4px" }}>Answer John's questions</p>
+                  <p style={{ fontWeight: 700, color: c.charcoal, margin: "0 0 4px" }}>Answer Rico's questions</p>
                   <p style={{ fontSize: 13.5, margin: 0 }}>Your personalized itinerary appears here as you chat.</p>
                 </div>
               ) : (
@@ -262,7 +264,7 @@ export function AskJohn({ go, trip, addToTrip, removeFromTrip }) {
             {/* deposit footer */}
             <div style={{ padding: 18, borderTop: "1px solid rgba(255,255,255,.08)", background: c.sand }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
-                <span style={{ fontWeight: 700, color: c.charcoal, fontSize: 14 }}>Deposit today (20%)</span>
+                <span style={{ fontWeight: 700, color: c.charcoal, fontSize: 14 }}>Estimated 20% after confirmation</span>
                 <span style={{ fontWeight: 800, fontSize: 22, color: c.emerald }}>{money(deposit)}</span>
               </div>
               <Button variant="primary" full onClick={() => go("portal")} disabled={trip.length === 0} style={trip.length === 0 ? { opacity: .5, cursor: "not-allowed" } : {}}>

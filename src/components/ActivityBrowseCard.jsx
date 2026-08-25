@@ -9,12 +9,12 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { operators } from "../data.js";
 import { activityImage } from "../images.js";
 import { ticoActivityVerdict } from "../intelligence/tico.js";
 import { c, gradFor, money } from "../theme.js";
 import { Photo } from "../motion.jsx";
 import { Button } from "./ui.jsx";
+import { activityPath } from "../routing.js";
 
 const CARD_STYLES = `
   .tn-activity-browse-card {
@@ -451,11 +451,6 @@ export function ActivityBrowseCard({
 }) {
   if (!a) return null;
 
-  const operator = operators.find((item) => item.id === a.operatorId);
-  // Publication stays fail-closed: never present an activity as approved when
-  // its approved operator record is not available.
-  if (!operator) return null;
-
   const rico = ticoActivityVerdict(a);
   const accent = collectionAccent || c.teal;
 
@@ -493,15 +488,15 @@ export function ActivityBrowseCard({
             </span>
             <span
               className="tn-activity-browse-card__approved"
-              title={`Operated by approved partner ${operator.name}`}
+              title="A curated TicoWild experience idea"
             >
               <ShieldCheck size={13} aria-hidden="true" />
-              <span>Approved</span>
+              <span>Curated</span>
             </span>
           </div>
 
-          <div className="tn-activity-browse-card__price" aria-label={`${money(a.price)} per person`}>
-            {money(a.price)} <small>/ person</small>
+          <div className="tn-activity-browse-card__price" aria-label={`From ${money(a.price)} per person`}>
+            <small>from</small> {money(a.price)} <small>/ person</small>
           </div>
           {ricoPick ? (
             <div className="tn-activity-browse-card__top-pick">
@@ -533,7 +528,7 @@ export function ActivityBrowseCard({
           </div>
 
           <div className="tn-activity-browse-card__operator">
-            Operated by <strong>{operator.name}</strong>
+            <strong>Current availability and operator are confirmed before payment.</strong>
           </div>
 
           <div className="tn-activity-browse-card__actions">
@@ -549,14 +544,14 @@ export function ActivityBrowseCard({
               {inTrip ? <><Check size={15} aria-hidden="true" />Added</> : <><Plus size={15} aria-hidden="true" />Add to trip</>}
             </Button>
 
-            <button
-              type="button"
+            <a
+              href={activityPath(a)}
               className="tn-activity-browse-card__details"
-              onClick={() => onView(a.id)}
+              onClick={(event) => { event.preventDefault(); onView(a.id); }}
               aria-label={`View details for ${a.title}`}
             >
               Details <ArrowUpRight size={15} aria-hidden="true" />
-            </button>
+            </a>
           </div>
         </div>
       </article>

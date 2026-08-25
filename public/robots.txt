@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /partners/
+Disallow: /my/
+
+Sitemap: https://ticowild.com/sitemap.xml

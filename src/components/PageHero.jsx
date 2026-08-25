@@ -32,14 +32,14 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
     <div className="page-hero" style={{ position: "relative", overflow: "hidden", minHeight: h, display: "flex", alignItems: "flex-end" }}>
       {useSlides ? (
         slides.map((s, i) => (
-          <img key={s.src} src={s.src} alt="" aria-hidden
+          <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center",
               opacity: i === slide ? 1 : 0, transition: "opacity 1.6s ease",
               transform: "scale(1)", animation: i === slide ? "tnHeroKenSoft 9s ease-out both" : "none" }} />
         ))
       ) : (
         image && (
-          <img src={image} alt="" aria-hidden
+          <img src={image} alt="" aria-hidden loading="eager" fetchpriority="high" decoding="async"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.46, animation: "tnHeroKen 24s ease-in-out infinite alternate" }} />
         )
       )}

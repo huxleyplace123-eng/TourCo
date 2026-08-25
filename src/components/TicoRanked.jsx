@@ -32,14 +32,14 @@ function rankBadge(rank) {
 function Stars({ score }) {
   // 5 stars, filled proportionally to the score
   return (
-    <span style={{ display: "inline-flex", gap: 1 }}>
+    <span className="rico-stars" style={{ display: "inline-flex", alignItems: "center", gap: 1, lineHeight: 0, flexShrink: 0 }}>
       {[0, 1, 2, 3, 4].map((i) => {
         const fill = Math.max(0, Math.min(1, score - i));
         return (
-          <span key={i} style={{ position: "relative", width: 13, height: 13, display: "inline-block" }}>
-            <Star size={13} color={c.line} fill={c.line} style={{ position: "absolute", inset: 0 }} />
-            <span style={{ position: "absolute", inset: 0, width: `${fill * 100}%`, overflow: "hidden" }}>
-              <Star size={13} color={c.gold} fill={c.gold} />
+          <span key={i} style={{ position: "relative", width: 14, height: 14, display: "block", flex: "0 0 14px", overflow: "visible" }}>
+            <Star size={14} color={c.line} fill={c.line} style={{ position: "absolute", inset: 0, display: "block" }} />
+            <span style={{ position: "absolute", inset: 0, width: `${fill * 100}%`, overflow: "hidden", display: "block" }}>
+              <Star size={14} color={c.gold} fill={c.gold} style={{ position: "absolute", inset: 0, display: "block", maxWidth: "none" }} />
             </span>
           </span>
         );

@@ -5,6 +5,8 @@ import { Logo } from "./Logo.jsx";
 import { Button } from "./ui.jsx";
 import { OperatorAgreement } from "./OperatorAgreement.jsx";
 import { LegalModal } from "./LegalModal.jsx";
+import { useConversion } from "./ConversionCenter.jsx";
+import { pathFor } from "../routing.js";
 
 function Col({ title, links, go }) {
   return (
@@ -12,9 +14,9 @@ function Col({ title, links, go }) {
       <div style={{ fontWeight: 800, color: "#fff", marginBottom: 12 }}>{title}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {links.map(([id, label, action]) => (
-          <button key={id} onClick={() => (action ? action() : go(id))} style={{ background: "none", border: "none", color: "rgba(255,255,255,.8)", cursor: "pointer", textAlign: "left", fontSize: 14, padding: 0 }}>
+          <a key={id} href={action ? "#" : pathFor(id)} onClick={(event) => { event.preventDefault(); action ? action() : go(id); }} style={{ color: "rgba(255,255,255,.8)", cursor: "pointer", textAlign: "left", fontSize: 14, padding: 0, textDecoration: "none" }}>
             {label}
-          </button>
+          </a>
         ))}
       </div>
     </div>
@@ -22,6 +24,7 @@ function Col({ title, links, go }) {
 }
 
 export function Footer({ go }) {
+  const { openConcierge } = useConversion();
   const [agreement, setAgreement] = useState(false);
   const [legal, setLegal] = useState(null); // "terms" | "privacy" | null
   return (
@@ -33,17 +36,17 @@ export function Footer({ go }) {
         <div className="footer-brand">
           <div style={{ marginBottom: 12 }}><Logo fontSize={22} tagline /></div>
           <p style={{ fontSize: 14, lineHeight: 1.6, maxWidth: 240 }}>
-            Costa Rica adventures, planned by locals. Vetted tours, transparent pricing, human support.
+            Curated Costa Rica experiences, route-aware planning and a clear human handoff.
           </p>
         </div>
-        <Col title="Explore" links={[["tico", "Meet Rico"], ["activities", "Activities"], ["insider", "Insider Guide"], ["deals", "Deals"], ["packages", "Packages"], ["john", "John Recommends"]]} go={go} />
+        <Col title="Explore" links={[["tico", "Meet Rico"], ["activities", "Activities"], ["insider", "Insider Guide"], ["deals", "Deals"], ["packages", "Collections"]]} go={go} />
         <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["build", "Build My Trip"], ["portal", "My Trips"], ["operator-agreement", "Operator agreement", () => setAgreement(true)]]} go={go} />
         <div className="footer-support">
           <div style={{ fontWeight: 800, color: "#fff", marginBottom: 12 }}>Support</div>
-          <Button variant="gold" size="sm" onClick={() => window.alert("Opening WhatsApp concierge…")}>
-            <MessageCircle size={15} />WhatsApp concierge
+          <Button variant="gold" size="sm" onClick={() => openConcierge({ intent: "support" })}>
+            <MessageCircle size={15} />Ask TicoWild
           </Button>
-          <p style={{ fontSize: 13, marginTop: 14 }}>Mon–Sun · 6am–10pm local</p>
+          <p style={{ fontSize: 13, marginTop: 14 }}>Trip questions and current availability</p>
         </div>
       </div>
 

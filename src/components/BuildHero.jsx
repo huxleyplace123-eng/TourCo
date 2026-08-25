@@ -41,7 +41,7 @@ export function BuildHero() {
 
       {/* cinematic activities backdrop, Ken-Burns */}
       {slides.map((s, i) => (
-        <img key={s.src} src={s.src} alt="" aria-hidden
+        <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
             opacity: i === slide ? 1 : 0, transition: "opacity 1.6s ease",
             animation: i === slide ? "bhKen 7s ease-out both" : "none" }} />
@@ -57,7 +57,7 @@ export function BuildHero() {
             Watch your trip<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>build itself.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.85)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "bhRise .6s .2s both" }}>
-            Tell Rico your vibe and dates. He assembles a day-by-day plan from approved local partners — drive times, tides, and season all handled.
+            Tell Rico your route, dates and pace. He assembles a starting plan around typical drive times and seasonal fit, then TicoWild confirms the real details.
           </p>
           {/* Tico "planning" status line */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 9, marginTop: 20, background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", border: `1px solid ${c.line}`, padding: "8px 13px", borderRadius: 999, animation: "bhRise .6s .28s both" }}>
@@ -72,7 +72,7 @@ export function BuildHero() {
         {/* ── the itinerary assembling itself ── */}
         <div className="bh-plan" style={{ display: "flex", flexDirection: "column", gap: 12, justifySelf: "stretch" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 7, color: c.gold, fontWeight: 800, fontSize: 12.5, textTransform: "uppercase", letterSpacing: 0.5, animation: "bhRise .6s .3s both" }}>
-            <Sparkles size={14} /> Your day-by-day, live
+            <Sparkles size={14} /> Example day-by-day
           </div>
           {PLAN.map((d, i) => (
             <div key={d.day}
@@ -106,7 +106,10 @@ export function BuildHero() {
         </div>
       </div>
 
-      <style>{`@media(min-width:900px){ .bh-grid{ grid-template-columns: 1fr .92fr!important } }`}</style>
+      <style>{`
+        @media(min-width:900px){ .bh-grid{ grid-template-columns: 1fr .92fr!important } }
+        @media(max-width:620px){.build-hero{min-height:330px!important}.build-hero .bh-grid{padding:34px 22px!important}.build-hero .bh-plan{display:none!important}.build-hero .bh-copy p{max-width:34ch}.build-hero .bh-copy h1{font-size:36px!important}}
+      `}</style>
     </div>
   );
 }

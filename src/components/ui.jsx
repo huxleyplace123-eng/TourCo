@@ -79,9 +79,9 @@ export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
 }
 
 // ── Section wrapper ──
-export function Section({ children, bg, pad = 52, id }) {
+export function Section({ children, bg, pad = 52, id, className = "", style = {} }) {
   return (
-    <section className="site-section" id={id} style={{ background: bg, padding: `${pad}px 20px` }}>
+    <section className={`site-section ${className}`.trim()} id={id} style={{ background: bg, padding: `${pad}px 20px`, ...style }}>
       <div className="site-section-inner" style={{ maxWidth: 1180, margin: "0 auto" }}>{children}</div>
     </section>
   );

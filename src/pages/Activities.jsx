@@ -136,7 +136,7 @@ function CollectionMosaic({ onChoose }) {
       <div className="activity-mosaic-heading">
         <Eyebrow><span style={{ color: c.teal }}>Four ways into Costa Rica</span></Eyebrow>
         <h2>Start with the feeling. <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>We’ll find the day.</span></h2>
-        <p>Every experience is offered by an approved partner. Choose a world below, then let Rico narrow it to the one worth your time.</p>
+        <p>Choose a world below, then let Rico narrow it to the experiences most likely to fit your route, pace and travel style.</p>
       </div>
       <div className="activity-worlds" aria-label="Activity collections">
         {COLLECTIONS.map((collection) => {
@@ -225,9 +225,9 @@ export function Activities({ addToTrip, trip, viewActivity }) {
       <PageHero
         slides={themedSlides("activities")}
         height={380}
-        eyebrow="Approved TicoWild experiences"
+        eyebrow="Curated TicoWild experiences"
         title="Choose your kind of wild"
-        sub="Four distinct ways to experience Costa Rica—organized by feeling, screened by our team, and ranked with Rico’s honest take."
+        sub="Four distinct ways to experience Costa Rica—organized by feeling and ranked with Rico’s honest take. Availability and operating details are confirmed before payment."
       >
         <ActivityMarquee />
       </PageHero>
@@ -396,7 +396,9 @@ export function Activities({ addToTrip, trip, viewActivity }) {
           .activity-filter-panel{padding:4px 14px 14px}
           .activity-filter-fields{grid-template-columns:1fr}
           .activity-filter-options{align-items:flex-start;flex-direction:column;gap:10px}
-          .activity-collection-section{padding:52px 16px 8px;scroll-margin-top:138px;contain-intrinsic-size:0 1100px}
+          .activity-collection-section{padding:58px 16px 18px;scroll-margin-top:138px;contain-intrinsic-size:0 1100px;border-radius:24px}
+          .activity-collection-section+.activity-collection-section{margin-top:28px;padding-top:76px;border-top:20px solid #071827;box-shadow:inset 0 1px rgba(127,166,232,.18)}
+          .activity-collection-section:nth-of-type(even){background:linear-gradient(180deg,rgba(127,166,232,.055),rgba(255,255,255,.012))}
           .activity-collection-heading{grid-template-columns:44px minmax(0,1fr);gap:12px;margin-bottom:22px}
           .activity-collection-mark{width:44px;height:44px;border-radius:14px}
           .activity-collection-heading h2{font-size:30px;line-height:1.04}

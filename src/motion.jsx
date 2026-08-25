@@ -231,6 +231,8 @@ export function Photo({ src, fallback, alt = "", height = 168, zoom = true, chil
           ref={imgRef}
           src={src}
           alt={alt}
+          loading="lazy"
+          decoding="async"
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
           style={{

@@ -77,7 +77,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
               The smartest bird<br />in <span style={{ color: c.gold }}>Costa Rica.</span>
             </h1>
             <p style={{ color: "rgba(243,247,255,.9)", fontSize: "clamp(16px,2vw,18px)", lineHeight: 1.55, margin: "18px 0 0", maxWidth: 520, animation: "ticoRise .5s .2s both" }}>
-              I'm Rico the Tico — a scarlet macaw who's flown every metre of this coast. I don't guess. I <b style={{ color: "#fff" }}>know</b> — the tides, the seasons, the wildlife, every honest guide. Now that mind works for you.
+              I'm Rico the Tico — the personality behind TicoWild's planning tools. I use your route, travel style and seasonal patterns to make a giant list of choices feel much smaller.
             </p>
             <div className="mobile-cta-row" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 24, animation: "ticoRise .5s .28s both" }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Plan with me <ArrowRight size={18} /></Button>
@@ -148,7 +148,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
               <h2 style={{ margin: 0, color: "#fff", fontSize: 22, fontWeight: 800 }}>How I rate — and why you can trust it</h2>
             </div>
             <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.6, margin: "0 0 18px" }}>
-              I don't hand out stars for fun. Every experience is scored on the operator, how in-season it is right now, the value, and whether it's the real thing or a trap. Then I give it to you straight:
+              I don't hand out stars for fun. Each score is a planning opinion based on trip fit, seasonal patterns, value and the information available in TicoWild. The team still confirms the current operator and details before payment:
             </p>
             <div style={{ display: "grid", gap: 10 }}>
               {[

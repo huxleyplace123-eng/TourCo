@@ -7,6 +7,7 @@ import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
 import { Reveal } from "../motion.jsx";
 import { PageHero } from "../components/PageHero.jsx";
+import { useConversion } from "../components/ConversionCenter.jsx";
 
 // John's personal picks: highest-rated + a couple of signature experiences.
 const PICK_IDS = ["a15", "a4", "a1", "a11", "a16", "a10", "a7", "a12"];
@@ -22,6 +23,7 @@ const NOTES = {
 };
 
 export function John({ go, addToTrip, trip, viewActivity }) {
+  const { openConcierge } = useConversion();
   const picks = PICK_IDS.map((id) => activities.find((a) => a.id === id)).filter(Boolean);
 
   return (
@@ -56,7 +58,7 @@ export function John({ go, addToTrip, trip, viewActivity }) {
             <p style={{ color: "rgba(255,255,255,.9)", fontSize: 17, marginTop: 12, maxWidth: 500, marginInline: "auto" }}>Tell me your dates and group — I'll put together a plan that fits you perfectly.</p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 24 }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Build with John <ArrowRight size={18} /></Button>
-              <Button variant="glass" size="lg" onClick={() => window.alert("Opening WhatsApp concierge…")}><MessageCircle size={18} />Message me</Button>
+              <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask TicoWild</Button>
             </div>
           </div>
         </div>

@@ -9,12 +9,13 @@ import { StoryPoster } from "../components/TripStory.jsx";
 import { SmartPlan } from "../components/SmartPlan.jsx";
 import { TripsHero } from "../components/TripsHero.jsx";
 import { TicoFace } from "../components/TicoFace.jsx";
+import { useConversion } from "../components/ConversionCenter.jsx";
 
 // How the trip works — three simple, reassuring steps.
 const STEPS = [
   { icon: PlusCircle, title: "1 · Add what you love", body: "Tap 'Add to trip' on any activity, or let Rico build a day-by-day. No account, no commitment — it just gathers here." },
   { icon: Route, title: "2 · We shape the days", body: "Rico orders everything around drive times, tides and season, so your trip flows instead of zig-zagging the coast." },
-  { icon: CalendarCheck, title: "3 · Reserve for 20%", body: "Lock it in with a 20% deposit; pay the rest to the approved operator on the day. TicoWild coordinates confirmation before you go." },
+  { icon: CalendarCheck, title: "3 · Confirm before you pay", body: "TicoWild checks availability, timing, the operator and final total. You decide whether to continue after that." },
 ];
 
 // What a great Costa Rica trip actually looks like — descriptive, not a list of
@@ -91,7 +92,8 @@ function EmptyState({ go }) {
   );
 }
 
-export function MyTrips({ go, trip, removeFromTrip }) {
+export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
+  const { openInquiry, openConcierge } = useConversion();
   const [view, setView] = useState("story"); // 'story' | 'list'
   const chosen = trip.map((t) => ({ ...t, a: activities.find((a) => a.id === t.id) })).filter((x) => x.a);
   const total = chosen.reduce((s, g) => s + g.a.price * g.pax, 0);
@@ -117,15 +119,24 @@ export function MyTrips({ go, trip, removeFromTrip }) {
         </div>
       )}
 
-      <Section bg={c.sand}>
+      <Section bg={c.canvas2} className="trip-workspace" pad={chosen.length ? 64 : 54}>
+        {chosen.length > 0 && (
+          <div className="trip-progress" aria-label="Trip confirmation progress">
+            <div className="trip-progress-step is-current"><span>1</span><div><strong>Ideas saved</strong><small>Stored on this device</small></div></div>
+            <i aria-hidden="true" />
+            <div className="trip-progress-step"><span>2</span><div><strong>Availability check</strong><small>Not requested yet</small></div></div>
+            <i aria-hidden="true" />
+            <div className="trip-progress-step"><span>3</span><div><strong>Confirm and pay</strong><small>Only after details are clear</small></div></div>
+          </div>
+        )}
         {chosen.length > 0 && view === "story" ? (
           <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 30, alignItems: "start" }}>
             <div>
               <h2 style={{ fontSize: 22, fontWeight: 800, color: c.charcoal, margin: "0 0 20px" }}>Your smart day-by-day</h2>
               <SmartPlan chosen={chosen} pax={chosen[0]?.pax || 2} />
               <div style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
-                <Button variant="primary" onClick={() => window.alert("Reservation flow — connect payments here.")}>
-                  <ShieldCheck size={16} />Reserve for {money(total * 0.2)}
+                <Button variant="primary" onClick={() => openInquiry({ intent: "trip", activity_ids: chosen.map(({ a }) => a.id), activity_titles: chosen.map(({ a }) => a.title) })}>
+                  <ShieldCheck size={16} />Request availability
                 </Button>
                 <Button variant="ghost" onClick={() => go("activities")}>Add more <ArrowRight size={15} /></Button>
               </div>
@@ -154,7 +165,7 @@ export function MyTrips({ go, trip, removeFromTrip }) {
                     <div style={{ marginTop: "auto", paddingTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
                       <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 16 }}>{money(a.price)} <span style={{ color: c.stone, fontWeight: 600, fontSize: 13 }}>× {pax}</span></span>
                       <div style={{ display: "flex", gap: 8 }}>
-                        <Button variant="ghost" size="sm" onClick={() => go("detail") || null}>Details</Button>
+                        <Button variant="ghost" size="sm" onClick={() => viewActivity(a.id)}>Details</Button>
                         <button onClick={() => removeFromTrip(id)} style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,90,77,.1)", color: c.orchid, border: "none", borderRadius: 999, padding: "9px 14px", fontWeight: 700, fontSize: 13.5, cursor: "pointer" }}>
                           <Trash2 size={14} />Remove
                         </button>
@@ -172,24 +183,34 @@ export function MyTrips({ go, trip, removeFromTrip }) {
                 <span>{chosen.length} experiences</span><span style={{ fontWeight: 700, color: c.charcoal }}>{money(total)}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 12, borderTop: "1px dashed rgba(255,255,255,.12)" }}>
-                <span style={{ fontWeight: 800, color: c.charcoal }}>Due today (20%)</span>
+                <span style={{ fontWeight: 800, color: c.charcoal }}>Estimated deposit after confirmation</span>
                 <span style={{ fontWeight: 800, fontSize: 24, color: c.emerald }}>{money(deposit)}</span>
               </div>
-              <Button variant="primary" full size="lg" style={{ marginTop: 18 }} onClick={() => window.alert("Reservation flow — connect payments here.")}>
-                <ShieldCheck size={17} />Reserve for {money(total * 0.2)}
+              <Button variant="primary" full size="lg" style={{ marginTop: 18 }} onClick={() => openInquiry({ intent: "trip", activity_ids: chosen.map(({ a }) => a.id), activity_titles: chosen.map(({ a }) => a.title) })}>
+                <ShieldCheck size={17} />Request availability
               </Button>
-              <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => window.alert("Opening WhatsApp concierge…")}>
-                <MessageCircle size={15} />Send to concierge
+              <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => openConcierge({ intent: "trip", activity_titles: chosen.map(({ a }) => a.title) })}>
+                <MessageCircle size={15} />Ask about this plan
               </Button>
               <div style={{ display: "flex", alignItems: "center", gap: 7, color: c.stone, fontSize: 12.5, marginTop: 14, justifyContent: "center" }}>
-                <Calendar size={14} />Balance due closer to your dates
+                <Calendar size={14} />No payment is taken until details are confirmed
               </div>
             </div>
           </div>
         )}
       </Section>
 
-      <style>{`@media(min-width:940px){.detail-grid{grid-template-columns:1fr 340px!important}}`}</style>
+      <style>{`
+        .trip-workspace{border-top:1px solid rgba(127,166,232,.13)}
+        .trip-progress{display:grid;grid-template-columns:1fr minmax(24px,70px) 1fr minmax(24px,70px) 1fr;align-items:center;gap:12px;margin:0 0 46px;padding:18px 20px;border:1px solid ${c.line};border-radius:20px;background:rgba(11,26,46,.45)}
+        .trip-progress-step{display:flex;align-items:center;gap:11px;min-width:0;opacity:.58}.trip-progress-step.is-current{opacity:1}
+        .trip-progress-step>span{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;border:1px solid rgba(127,166,232,.28);color:${c.stone};font-size:12px;font-weight:900}
+        .trip-progress-step.is-current>span{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.42);color:${c.teal}}
+        .trip-progress-step div{display:grid;gap:2px;min-width:0}.trip-progress-step strong{color:#fff;font-size:13.5px}.trip-progress-step small{color:${c.stone};font-size:11px;line-height:1.25}
+        .trip-progress>i{height:1px;background:linear-gradient(90deg,rgba(34,211,238,.4),rgba(127,166,232,.12))}
+        @media(min-width:940px){.detail-grid{grid-template-columns:1fr 340px!important}}
+        @media(max-width:720px){.trip-progress{grid-template-columns:1fr;margin-bottom:32px;padding:16px}.trip-progress>i{width:1px;height:16px;margin-left:16px}.trip-progress-step small{font-size:11.5px}}
+      `}</style>
     </>
   );
 }

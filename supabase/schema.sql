@@ -57,16 +57,47 @@ create table if not exists public.messages (
   at         timestamptz default now()
 );
 
+-- Public trip and availability requests. The public site may insert a request
+-- without an account; only authenticated team tooling/service-role reads it.
+create table if not exists public.public_inquiries (
+  id              uuid primary key default gen_random_uuid(),
+  name            text not null,
+  email           text not null,
+  phone           text default '',
+  destination     text default '',
+  arrival         date,
+  departure       date,
+  travelers       text default '',
+  intent          text default 'planning',
+  activity_ids    text[] default '{}',
+  activity_titles text[] default '{}',
+  notes           text default '',
+  source_path     text default '/',
+  status          text default 'new',
+  created_at      timestamptz default now()
+);
+
 -- ── Row-level security ───────────────────────────────────────────────────────
 alter table public.profiles enable row level security;
 alter table public.trips    enable row level security;
 alter table public.bookings enable row level security;
 alter table public.messages enable row level security;
+alter table public.public_inquiries enable row level security;
 
 create policy "own profile"   on public.profiles for all using (auth.uid() = id)      with check (auth.uid() = id);
 create policy "own trips"     on public.trips    for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own bookings"  on public.bookings for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own messages"  on public.messages for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "public can create inquiries" on public.public_inquiries;
+create policy "public can create inquiries" on public.public_inquiries for insert to anon, authenticated with check (
+  length(trim(name)) between 1 and 120
+  and length(trim(email)) between 3 and 320
+  and length(phone) <= 50
+  and length(destination) <= 160
+  and length(notes) <= 5000
+  and cardinality(activity_ids) <= 20
+  and status = 'new'
+);
 
 -- Auto-create a profile row on signup.
 create or replace function public.handle_new_user() returns trigger language plpgsql security definer as $$

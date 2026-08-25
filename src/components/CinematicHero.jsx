@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowRight, Compass, Calendar, Users, Heart, ChevronDown, ShieldCheck, Sparkles, MessageCircle, Star } from "lucide-react";
+import { ArrowRight, Compass, Heart, ChevronDown, ShieldCheck, Sparkles, Route } from "lucide-react";
 import { c, grad, glass, gradText } from "../theme.js";
-import { themedSlides, personImage } from "../images.js";
+import { themedSlides } from "../images.js";
 import { Button, Field } from "./ui.jsx";
 import { Magnetic } from "../motion.jsx";
 
@@ -50,14 +50,6 @@ export function CinematicHero({ go, onStartPlan }) {
   const beginPlan = () => {
     if (onStartPlan) onStartPlan(plan);
     else go("build");
-  };
-
-  const setArrival = (arrival) => {
-    setPlan((current) => ({
-      ...current,
-      arrival,
-      departure: current.departure && current.departure <= arrival ? "" : current.departure,
-    }));
   };
 
   const selectStyle = { width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 12px 11px 38px", fontSize: 14.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", appearance: "none", paddingRight: 34, cursor: "pointer" };
@@ -140,7 +132,7 @@ export function CinematicHero({ go, onStartPlan }) {
           a light mouse/scroll parallax drift, no compounding scale. */}
       <div style={{ position: "absolute", inset: 0, transform: `translate3d(${mouse.x * 8}px, ${mouse.y * 6 + scrollY * 0.06}px, 0)`, transition: "transform .18s cubic-bezier(.2,.7,.2,1)" }}>
         {SLIDES.map((s, i) => (
-          <img key={s.src} src={s.src} alt="" aria-hidden
+          <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center",
               opacity: (i === slide ? 1 : 0) * (1 - scrub * 0.5),
               transform: `scale(${1 + scrub * 0.12})`,
@@ -192,12 +184,12 @@ export function CinematicHero({ go, onStartPlan }) {
             </span>
           </h1>
           <p className="rise" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
-            Tell us how you want Costa Rica to feel. We pair your trip with hand-selected local experiences, fair pricing, and a real person in your corner.
+            Tell us where you’re staying and how you want the trip to feel. We’ll help you choose experiences that fit the route, then confirm the details before you commit.
           </p>
 
           {/* refined trust row */}
           <div className="rise" style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 24, animationDelay: ".2s" }}>
-            {[[ShieldCheck, "Approved local partners"], [Sparkles, "Curated, never crowded"], [MessageCircle, "Human concierge"]].map(([Icon, t]) => (
+            {[[Sparkles, "A smaller, curated selection"], [Route, "Built around your route"], [ShieldCheck, "Details confirmed first"]].map(([Icon, t]) => (
               <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "rgba(243,247,255,.72)", fontSize: 13.5, fontWeight: 600 }}>
                 <Icon size={15} color={c.teal} />{t}
               </span>
@@ -209,23 +201,6 @@ export function CinematicHero({ go, onStartPlan }) {
             <Magnetic strength={0.25}><Button variant="glass" size="lg" onClick={() => go("activities")}>Browse activities</Button></Magnetic>
           </div>
 
-          {/* social proof — avatar stack + rating, balances the card's weight */}
-          <div className="rise" style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 30, animationDelay: ".3s" }}>
-            <div style={{ display: "flex" }}>
-              {["sarah", "delgado", "crew", "emma"].map((who, i) => (
-                <span key={who} style={{ width: 38, height: 38, borderRadius: 999, overflow: "hidden", border: `2px solid ${c.sand}`, marginLeft: i ? -12 : 0, background: grad.ocean, flexShrink: 0 }}>
-                  <img src={personImage(who, 80)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                </span>
-              ))}
-            </div>
-            <div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                {[0, 1, 2, 3, 4].map((k) => <Star key={k} size={14} fill={c.gold} color={c.gold} />)}
-                <span style={{ color: "#fff", fontWeight: 800, fontSize: 14, marginLeft: 4 }}>4.9</span>
-              </div>
-              <div style={{ color: "rgba(243,247,255,.65)", fontSize: 13, fontWeight: 500 }}>Loved by 4,200+ travelers</div>
-            </div>
-          </div>
         </div>
 
         {/* Plan card — glass */}
@@ -234,40 +209,19 @@ export function CinematicHero({ go, onStartPlan }) {
             <Compass size={20} color={c.teal} />
             <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 18 }}>Start your trip plan</span>
           </div>
-          <p style={{ color: c.stone, fontSize: 13.5, margin: "0 0 16px" }}>Tell us the basics — your concierge takes it from there.</p>
-          <Field label="Destination">
+          <p style={{ color: c.stone, fontSize: 13.5, margin: "0 0 16px" }}>Two quick choices. The full planner opens next.</p>
+          <Field label="Where are you staying?">
             {wrap(Compass, <select value={plan.dest} onChange={(e) => setPlan({ ...plan, dest: e.target.value })} style={selectStyle}>
               {["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Multiple stops", "Not sure yet"].map((o) => <option key={o}>{o}</option>)}
             </select>)}
           </Field>
-          <div className="tn-hero-plan-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Field label="Arrival">
-              <div style={{ position: "relative" }}>
-                <Calendar size={16} color={c.stone} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
-                <input type="date" aria-label="Arrival date" value={plan.arrival} onChange={(e) => setArrival(e.target.value)} style={{ width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 10px 11px 38px", fontSize: 13.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", boxSizing: "border-box", colorScheme: "dark" }} />
-              </div>
-            </Field>
-            <Field label="Departure">
-              <div style={{ position: "relative" }}>
-                <Calendar size={16} color={c.stone} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
-                <input type="date" aria-label="Departure date" min={plan.arrival || undefined} value={plan.departure} onChange={(e) => setPlan({ ...plan, departure: e.target.value })} style={{ width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 10px 11px 38px", fontSize: 13.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", boxSizing: "border-box", colorScheme: "dark" }} />
-              </div>
-            </Field>
-          </div>
-          <div className="tn-hero-plan-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Field label="Group size">
-              {wrap(Users, <select value={plan.group} onChange={(e) => setPlan({ ...plan, group: e.target.value })} style={selectStyle}>
-                {["1", "2", "3–4", "5–8", "9+"].map((o) => <option key={o}>{o}</option>)}
-              </select>)}
-            </Field>
-            <Field label="Trip type">
-              {wrap(Heart, <select value={plan.type} onChange={(e) => setPlan({ ...plan, type: e.target.value })} style={selectStyle}>
-                {["Family", "Couple / Honeymoon", "Adult group weekend", "Fishing trip", "Adventure", "Luxury group"].map((o) => <option key={o}>{o}</option>)}
-              </select>)}
-            </Field>
-          </div>
+          <Field label="Who is this trip for?">
+            {wrap(Heart, <select value={plan.type} onChange={(e) => setPlan({ ...plan, type: e.target.value })} style={selectStyle}>
+              {["Couple / Honeymoon", "Family", "Adult group weekend", "Fishing trip", "Adventure", "Luxury group", "Solo traveler"].map((o) => <option key={o}>{o}</option>)}
+            </select>)}
+          </Field>
           <Button variant="dark" full size="lg" onClick={beginPlan} style={{ marginTop: 8 }}>Start planning <ArrowRight size={18} /></Button>
-          <p style={{ textAlign: "center", color: c.stone, fontSize: 12, marginTop: 12 }}>Free to plan · Only 20% to reserve · No spam</p>
+          <p style={{ textAlign: "center", color: c.stone, fontSize: 12, marginTop: 12 }}>Free to plan · No payment here · No obligation</p>
         </div>
       </div>
 
