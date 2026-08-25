@@ -55,8 +55,8 @@ function MobilePlanBar({ onStart, page }) {
   const visible = usePastOpening(page);
   return (
     <div className="mobile-plan-bar" data-visible={visible ? "true" : "false"} role="region" aria-label="Start planning">
-      <div><strong>Not sure where to start?</strong><span>Answer 2 quick questions.</span></div>
-      <Button variant="gold" size="sm" onClick={onStart}>Plan my trip <ChevronRight size={15} /></Button>
+      <div><strong>Ready to picture your trip?</strong><span>Start with the feeling, not a form.</span></div>
+      <Button variant="gold" size="sm" onClick={onStart}>Find my fit <ChevronRight size={15} /></Button>
     </div>
   );
 }

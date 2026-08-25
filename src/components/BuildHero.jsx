@@ -57,7 +57,7 @@ export function BuildHero() {
             Watch your trip<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>build itself.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.85)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "bhRise .6s .2s both" }}>
-            Tell Rico your route, dates and pace. He assembles a starting plan around typical drive times and seasonal fit, then TicoWild confirms the real details.
+            Start with how you want Costa Rica to feel. Once the trip has a direction, we’ll use your route and timing to make the days work in real life.
           </p>
           {/* Tico "planning" status line */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 9, marginTop: 20, background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", border: `1px solid ${c.line}`, padding: "8px 13px", borderRadius: 999, animation: "bhRise .6s .28s both" }}>

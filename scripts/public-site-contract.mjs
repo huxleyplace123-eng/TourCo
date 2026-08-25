@@ -26,6 +26,17 @@ assert.match(home, /Stop building your trip from twenty open tabs/);
 assert.match(home, /One plan, built around you/);
 assert.match(home, /Your trip should feel exciting before you even land/);
 
+const hero = read("src/components/CinematicHero.jsx");
+assert.equal(hero.includes("Where are you staying?"), false, "the homepage must earn the planning ask before requesting a city");
+assert.match(hero, /Start with the trip you want/);
+assert.match(hero, /No city, dates or signup required to begin/);
+
+const builder = read("src/pages/Build.jsx");
+assert.match(builder, /The feeling/);
+assert.match(builder, /The shape/);
+assert.match(builder, /Final touches/);
+assert.ok(builder.indexOf("What should this trip feel like?") < builder.indexOf("Where does this trip take shape?"), "the planning flow must ask about the desired experience before route logistics");
+
 const app = read("src/App.jsx");
 assert.match(app, /routeFromPath\(window\.location\.pathname\)/, "public pages must restore state from a real URL");
 assert.match(app, /window\.history\[replace \? "replaceState" : "pushState"\]/, "public navigation must update browser history");
