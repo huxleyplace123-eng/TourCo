@@ -71,8 +71,8 @@ function PackageDrawer({ p, onClose, addToTrip }) {
   const days = Math.max(3, Math.min(p.items.length, 7));
 
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(11,26,46,.75)", backdropFilter: "blur(6px)", display: "flex", justifyContent: "center", alignItems: "flex-start", overflowY: "auto", padding: "40px 16px" }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: c.canvas2, border: `1px solid ${c.line}`, borderRadius: 26, maxWidth: 780, width: "100%", overflow: "hidden", boxShadow: "0 60px 120px -40px rgba(0,0,0,.9)", animation: "tnDrawer .4s cubic-bezier(.2,.7,.2,1) both" }}>
+    <div className="package-drawer-backdrop" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(11,26,46,.75)", backdropFilter: "blur(6px)", display: "flex", justifyContent: "center", alignItems: "flex-start", overflowY: "auto", padding: "40px 16px" }}>
+      <div className="package-drawer" onClick={(e) => e.stopPropagation()} style={{ background: c.canvas2, border: `1px solid ${c.line}`, borderRadius: 26, maxWidth: 780, width: "100%", overflow: "hidden", boxShadow: "0 60px 120px -40px rgba(0,0,0,.9)", animation: "tnDrawer .4s cubic-bezier(.2,.7,.2,1) both" }}>
         <style>{`@keyframes tnDrawer{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}`}</style>
         {/* hero */}
         <div style={{ position: "relative", height: 240 }}>
@@ -183,7 +183,7 @@ export function Packages({ go, addToTrip }) {
           <PackageCard p={featured} featured onOpen={setOpen} />
         </Reveal>
         {/* grid of the rest */}
-        <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", marginTop: 20 }}>
+        <div className="responsive-card-grid package-grid" style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", marginTop: 20 }}>
           {rest.map((p, i) => (
             <Reveal key={p.id} delay={(i % 2) * 90}>
               <PackageCard p={p} onOpen={setOpen} />
@@ -194,12 +194,12 @@ export function Packages({ go, addToTrip }) {
 
       {/* closing CTA */}
       <Section bg={c.sand} pad={60}>
-        <div style={{ position: "relative", borderRadius: 30, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2, padding: "56px 28px", textAlign: "center" }}>
+        <div className="closing-cta" style={{ position: "relative", borderRadius: 30, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2, padding: "56px 28px", textAlign: "center" }}>
           <div style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 80% at 80% 20%, rgba(34,211,238,.18), transparent 55%), radial-gradient(60% 80% at 15% 90%, rgba(255,208,0,.12), transparent 55%)` }} />
           <div style={{ position: "relative" }}>
             <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,42px)", fontWeight: 800, letterSpacing: -1, margin: 0 }}>Nothing fits perfectly?</h2>
             <p style={{ color: "rgba(243,247,255,.8)", fontSize: 17, marginTop: 12, maxWidth: 520, marginInline: "auto" }}>Every package is a starting point. Tell John what you want and he'll build a custom one from scratch.</p>
-            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 26 }}>
+            <div className="mobile-cta-row" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 26 }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Build a custom trip <ArrowRight size={18} /></Button>
               <Button variant="glass" size="lg" onClick={() => window.alert("Opening WhatsApp concierge…")}><MessageCircle size={18} />Ask a local</Button>
             </div>

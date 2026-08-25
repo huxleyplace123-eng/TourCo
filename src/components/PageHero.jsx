@@ -29,7 +29,7 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
     return (<>{head} <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>{last}</span></>);
   };
   return (
-    <div style={{ position: "relative", overflow: "hidden", minHeight: h, display: "flex", alignItems: "flex-end" }}>
+    <div className="page-hero" style={{ position: "relative", overflow: "hidden", minHeight: h, display: "flex", alignItems: "flex-end" }}>
       {useSlides ? (
         slides.map((s, i) => (
           <img key={s.src} src={s.src} alt="" aria-hidden
@@ -55,7 +55,7 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
 
       {/* scene label + dots (slide mode only) */}
       {useSlides && (
-        <div style={{ position: "absolute", bottom: 16, right: 20, zIndex: 3, display: "flex", alignItems: "center", gap: 10 }}>
+        <div className="page-hero-scene" style={{ position: "absolute", bottom: 16, right: 20, zIndex: 3, display: "flex", alignItems: "center", gap: 10 }}>
           <span key={slide} style={{ background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", color: "#fff", padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, animation: "tnHeroRise .5s ease both" }}>{slides[slide].label}</span>
           <div style={{ display: "flex", gap: 5 }}>
             {slides.map((_, i) => (

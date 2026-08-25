@@ -61,19 +61,19 @@ export function TicoRanked({ items = [], limit = 5, onView, onAdd, trip = [] }) 
         const rank = i + 1;
         const inTrip = trip.some((t) => t.id === a.id);
         return (
-          <div key={a.id} style={{
+          <div key={a.id} className="ranked-card" style={{
             display: "flex", alignItems: "stretch", gap: 0, overflow: "hidden",
             background: c.white, border: `1px solid ${rank === 1 ? "rgba(255,208,0,.4)" : c.line}`,
             borderRadius: 18, boxShadow: rank === 1 ? "0 0 40px -20px rgba(255,208,0,.5)" : "none",
           }}>
             {/* thumbnail */}
-            <div style={{ position: "relative", width: 128, flexShrink: 0 }}>
+            <div className="ranked-thumb" style={{ position: "relative", width: 128, flexShrink: 0 }}>
               <Photo src={activityImage(a, 400)} fallback="#12325e" alt={a.title} height={"100%"} zoom={false} style={{ height: "100%", minHeight: 118 }} />
               <span style={{ position: "absolute", top: 8, left: 8, zIndex: 2 }}>{rankBadge(rank)}</span>
             </div>
 
             {/* body */}
-            <div style={{ flex: 1, minWidth: 0, padding: "13px 15px", display: "flex", flexDirection: "column", gap: 5 }}>
+            <div className="ranked-body" style={{ flex: 1, minWidth: 0, padding: "13px 15px", display: "flex", flexDirection: "column", gap: 5 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span style={{ fontSize: 11.5, fontWeight: 800, color: c.teal, textTransform: "uppercase", letterSpacing: 0.3 }}>{a.category}</span>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
@@ -92,15 +92,15 @@ export function TicoRanked({ items = [], limit = 5, onView, onAdd, trip = [] }) 
               </div>
 
               {/* actions */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 4 }}>
-                <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 14 }}>{money(a.price)}<span style={{ color: c.stone, fontWeight: 600, fontSize: 12 }}>/person</span></span>
+              <div className="ranked-actions" style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 4 }}>
+                <span className="ranked-price" style={{ fontWeight: 800, color: c.charcoal, fontSize: 14 }}>{money(a.price)}<span style={{ color: c.stone, fontWeight: 600, fontSize: 12 }}>/person</span></span>
                 {onAdd && (
-                  <button onClick={() => onAdd(a.id)} style={{ display: "inline-flex", alignItems: "center", gap: 4, background: inTrip ? "rgba(34,211,238,.14)" : c.gold, color: inTrip ? c.teal : c.ink, border: "none", borderRadius: 9, padding: "6px 11px", fontWeight: 800, fontSize: 12.5, cursor: "pointer" }}>
+                  <button className="ranked-add" onClick={() => onAdd(a.id)} style={{ display: "inline-flex", alignItems: "center", gap: 4, background: inTrip ? "rgba(34,211,238,.14)" : c.gold, color: inTrip ? c.teal : c.ink, border: "none", borderRadius: 9, padding: "6px 11px", fontWeight: 800, fontSize: 12.5, cursor: "pointer" }}>
                     {inTrip ? <><Check size={13} />Added</> : <><Plus size={13} />Add</>}
                   </button>
                 )}
                 {onView && (
-                  <button onClick={() => onView(a.id)} style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 3, background: "none", border: "none", color: c.stone, fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}>
+                  <button className="ranked-details" onClick={() => onView(a.id)} style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 3, background: "none", border: "none", color: c.stone, fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}>
                     Details <ArrowRight size={13} />
                   </button>
                 )}

@@ -26,7 +26,7 @@ import { SoundscapeControl } from "./components/SoundscapeControl.jsx";
 function StickyDeposit({ total, count, onView }) {
   const shown = useCountUp(Math.round(total * 0.2));
   return (
-    <div style={{ position: "fixed", left: 12, right: 12, bottom: 12, zIndex: 55, background: c.emerald, borderRadius: 18, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 16px 40px -14px rgba(47,107,235,.7)" }}>
+    <div className="mobile-trip-bar" style={{ position: "fixed", left: 12, right: 12, bottom: 12, zIndex: 55, background: c.emerald, borderRadius: 18, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 16px 40px -14px rgba(47,107,235,.7)" }}>
       <div style={{ color: "#fff" }}>
         <div style={{ fontSize: 12, opacity: .85 }}>{count} activit{count === 1 ? "y" : "ies"} · 20% deposit</div>
         <div style={{ fontWeight: 800, fontSize: 17 }}>{money(shown)} <span style={{ fontSize: 12, opacity: .8, fontWeight: 600 }}>today</span></div>
@@ -62,7 +62,7 @@ export default function App() {
   const shared = { go, addToTrip, trip, viewActivity, removeFromTrip, startPlan, consumePlannerDraft };
 
   return (
-    <div style={{ fontFamily: FONT, background: c.sand, color: c.charcoal, minHeight: "100vh", position: "relative" }}>
+    <div className="public-site" style={{ fontFamily: FONT, background: c.sand, color: c.charcoal, minHeight: "100vh", position: "relative" }}>
       {/* app-wide aurora wash + drifting glow */}
       <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 0, background: grad.aurora, pointerEvents: "none", animation: "tnAurora 24s ease-in-out infinite alternate" }} />
       <style>{`@keyframes tnAurora{0%{opacity:.75;transform:translateY(0)}100%{opacity:1;transform:translateY(-14px)}}`}</style>
@@ -70,7 +70,7 @@ export default function App() {
       <Nav page={page} go={go} tripCount={trip.length} openTrip={() => (trip.length ? go("portal") : setCartOpen(true))} />
 
       {/* keyed wrapper → every page fade-rises in on navigation */}
-      <div key={page + (page === "detail" ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>
+      <main className={`public-page public-page-${page}`} key={page + (page === "detail" ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>
         {(page === "home" || page === "today") && <Home {...shared} />}
         {(page === "eat" || page === "guide" || page === "insider") && <InsiderGuide {...shared} />}
         {page === "deals" && <Deals {...shared} />}
@@ -86,7 +86,7 @@ export default function App() {
         {page === "partner" && <Partner {...shared} />}
         {page === "portal" && <MyTrips {...shared} />}
         {page === "john" && <John {...shared} />}
-      </div>
+      </main>
       <style>{`@keyframes tnPageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){[style*="tnPageIn"]{animation:none!important}}`}</style>
 
       <Footer go={go} />
@@ -100,13 +100,13 @@ export default function App() {
 
       {/* Quick "added to trip" toast/modal */}
       {cartOpen && (
-        <div onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(11,26,46,.5)", zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 20 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 22, padding: 24, maxWidth: 420, width: "100%", marginBottom: 20, boxShadow: "0 40px 90px -30px rgba(0,0,0,.9)" }}>
+        <div className="trip-added-backdrop" onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(11,26,46,.5)", zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 20 }}>
+          <div className="trip-added-sheet" onClick={(e) => e.stopPropagation()} style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 22, padding: 24, maxWidth: 420, width: "100%", marginBottom: 20, boxShadow: "0 40px 90px -30px rgba(0,0,0,.9)" }}>
             <h3 style={{ margin: "0 0 4px", color: c.charcoal, fontSize: 20, fontWeight: 800 }}>Added to your trip 🎉</h3>
             <p style={{ color: c.stone, fontSize: 14.5, margin: "0 0 16px" }}>
               You have <b style={{ color: c.charcoal }}>{trip.length}</b> experience{trip.length !== 1 ? "s" : ""}. Deposit today: <b style={{ color: c.emerald }}>{money(total * 0.2)}</b>
             </p>
-            <div style={{ display: "flex", gap: 10 }}>
+            <div className="trip-added-actions" style={{ display: "flex", gap: 10 }}>
               <Button variant="primary" full onClick={() => go("portal")}>View my trip <ChevronRight size={16} /></Button>
               <Button variant="ghost" onClick={() => setCartOpen(false)}>Keep browsing</Button>
             </div>

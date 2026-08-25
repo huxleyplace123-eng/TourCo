@@ -21,6 +21,7 @@ export function Button({ children, variant = "primary", onClick, full, size = "m
   };
   return (
     <button
+      className="tico-button"
       onClick={onClick}
       style={{ ...base, ...variants[variant], ...style }}
       onMouseDown={(e) => (e.currentTarget.style.transform = "scale(.97)")}
@@ -63,7 +64,7 @@ export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
     return (<>{words.join(" ")} <span style={gradText(grad.ocean)}>{last}</span></>);
   };
   return (
-    <div style={{ maxWidth: 720, margin: center ? "0 auto" : 0, textAlign: center ? "center" : "left", marginBottom: 40 }}>
+    <div className="section-head" style={{ maxWidth: 720, margin: center ? "0 auto" : 0, textAlign: center ? "center" : "left", marginBottom: 40 }}>
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
       <h2 style={{ fontSize: "clamp(28px,4vw,42px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: -1, color: light ? "#fff" : c.charcoal, margin: 0 }}>
         {renderTitle()}
@@ -80,8 +81,8 @@ export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
 // ── Section wrapper ──
 export function Section({ children, bg, pad = 52, id }) {
   return (
-    <section id={id} style={{ background: bg, padding: `${pad}px 20px` }}>
-      <div style={{ maxWidth: 1180, margin: "0 auto" }}>{children}</div>
+    <section className="site-section" id={id} style={{ background: bg, padding: `${pad}px 20px` }}>
+      <div className="site-section-inner" style={{ maxWidth: 1180, margin: "0 auto" }}>{children}</div>
     </section>
   );
 }
@@ -89,7 +90,7 @@ export function Section({ children, bg, pad = 52, id }) {
 // ── Form field label ──
 export function Field({ label, children, htmlFor }) {
   return (
-    <div style={{ marginBottom: 12 }}>
+    <div className="form-field" style={{ marginBottom: 12 }}>
       <label htmlFor={htmlFor} style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: c.charcoal, marginBottom: 6 }}>{label}</label>
       {children}
     </div>

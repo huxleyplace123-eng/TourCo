@@ -21,7 +21,7 @@ export function TripsHero({ count = 0 }) {
   }, []);
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", minHeight: 340, background: "radial-gradient(130% 120% at 80% 15%, #0e3358 0%, #071a30 55%, #050f1f 100%)", display: "flex", alignItems: "center" }}>
+    <div className="trips-hero" style={{ position: "relative", overflow: "hidden", minHeight: 340, background: "radial-gradient(130% 120% at 80% 15%, #0e3358 0%, #071a30 55%, #050f1f 100%)", display: "flex", alignItems: "center" }}>
       <style>{`
         @keyframes trRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
         @keyframes trDraw{to{stroke-dashoffset:0}}

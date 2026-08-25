@@ -52,10 +52,10 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
   return (
     <>
       {/* Hero image band */}
-      <div style={{ position: "relative" }}>
+      <div className="detail-hero" style={{ position: "relative" }}>
         <Photo src={activityImage(a, 1600)} fallback={gradFor(a.category)} alt={a.title} height={380} zoom={false}
           overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8,20,45,.35) 0%, transparent 30%, rgba(8,20,45,.72) 100%)" }} />} />
-        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", maxWidth: 1180, margin: "0 auto", padding: "22px 20px 30px", left: 0, right: 0 }}>
+        <div className="detail-hero-content" style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", maxWidth: 1180, margin: "0 auto", padding: "22px 20px 30px", left: 0, right: 0 }}>
           <button onClick={() => go("activities")} style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,.9)", border: "none", borderRadius: 999, padding: "9px 16px", fontWeight: 700, color: c.charcoal, cursor: "pointer", fontSize: 14 }}>
             <ArrowLeft size={16} />All activities
           </button>
@@ -112,7 +112,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
           </div>
 
           {/* Book panel */}
-          <div style={{ position: "sticky", top: 92, display: "flex", flexDirection: "column", gap: 16 }}>
+          <aside className="detail-book-panel" style={{ position: "sticky", top: 92, display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ background: c.white, borderRadius: 20, padding: 24, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
                 <span style={{ fontSize: 32, fontWeight: 800, color: c.charcoal }}>{money(a.price)}</span>
@@ -164,13 +164,13 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
                 ))}
               </div>
             </div>
-          </div>
+          </aside>
         </div>
 
         {/* Related */}
         <div style={{ marginTop: 46 }}>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: c.charcoal, marginBottom: 20 }}>You might also like</h2>
-          <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
+          <div className="responsive-card-grid" style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
             {alsoLike.map((x, i) => (
               <Reveal key={x.id} delay={(i % 3) * 70}>
                 <ActivityCard a={x} onAdd={addToTrip} onView={viewActivity} inTrip={trip.some((t) => t.id === x.id)} />

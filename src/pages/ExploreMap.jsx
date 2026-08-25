@@ -109,14 +109,14 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
 
       <Section bg={c.sand}>
         {/* two rows of layer toggles: experiences + places */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 10 }}>
+        <div className="map-layer-scroll" style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 10 }}>
           {ACTIVITY_LAYERS.map((l) => <LayerBtn key={l.key} l={l} on={active[l.key]} onClick={() => toggle(l.key)} />)}
           {LANDMARK_LAYERS.map((l) => <LayerBtn key={l.key} l={{ ...l, icon: LM_ICON[l.icon] }} on={active[l.key]} onClick={() => toggle(l.key)} />)}
         </div>
 
         <div className="map-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 20, alignItems: "start" }}>
           {/* ── THE MAP ── */}
-          <div style={{ position: "relative", borderRadius: 26, overflow: "hidden", border: `1px solid ${c.line}`, aspectRatio: "1.15 / 1", minHeight: 460, background: "radial-gradient(120% 120% at 25% 12%, #0c2b4a 0%, #071a30 55%, #050f1f 100%)" }}>
+          <div className="interactive-map" style={{ position: "relative", borderRadius: 26, overflow: "hidden", border: `1px solid ${c.line}`, aspectRatio: "1.15 / 1", minHeight: 460, background: "radial-gradient(120% 120% at 25% 12%, #0c2b4a 0%, #071a30 55%, #050f1f 100%)" }}>
             <style>{`
               @keyframes tnRadar { 0%{ transform: rotate(0deg); opacity:.5 } 100%{ transform: rotate(360deg); opacity:.5 } }
               @keyframes tnPinFloat { 0%,100%{ transform: translate(-50%,-50%) } 50%{ transform: translate(-50%,-54%) } }
@@ -189,7 +189,7 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
           </div>
 
           {/* ── DETAIL ── */}
-          <div style={{ position: "sticky", top: 92 }}>
+          <div className="map-detail-panel" style={{ position: "sticky", top: 92 }}>
             {sel ? (
               <div style={{ background: c.white, borderRadius: 22, overflow: "hidden", border: `1px solid ${c.line}`, boxShadow: "0 24px 60px -34px rgba(0,0,0,.75)", animation: "tnCardIn .4s cubic-bezier(.2,.7,.2,1) both" }}>
                 {pinImage(sel) ? (

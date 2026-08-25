@@ -141,7 +141,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
 
       <Section bg={c.sand}>
         {!result ? (
-          <div style={{ maxWidth: 760, margin: "0 auto", ...glass, borderRadius: 24, padding: "clamp(22px,4vw,36px)" }}>
+          <div className="trip-builder-form" style={{ maxWidth: 760, margin: "0 auto", ...glass, borderRadius: 24, padding: "clamp(22px,4vw,36px)" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 22 }}>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }} className="trip-date-grid">
                 <Field label="Arrival date"><input type="date" aria-label="Arrival date" value={form.arrival} onChange={(e) => set("arrival", e.target.value)} style={dateInputStyle} /></Field>
@@ -162,7 +162,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
                       </div>
                     </div>
                   ))}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                  <div className="route-summary" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                     <button type="button" onClick={addStop} disabled={form.stops.length >= 5} style={{ background: "none", border: "none", color: c.teal, fontWeight: 800, cursor: form.stops.length >= 5 ? "not-allowed" : "pointer", opacity: form.stops.length >= 5 ? .45 : 1, padding: "5px 0", display: "inline-flex", alignItems: "center", gap: 6 }}><Plus size={15} />Add another stop</button>
                     <span style={{ color: c.stone, fontSize: 12.5 }}>{form.stops.map((stop) => stop.region).join(" → ")} · {nightsBetween(form.arrival, form.departure) || form.stops.reduce((sum, stop) => sum + Number(stop.nights), 0)} nights</span>
                   </div>
@@ -229,7 +229,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
 
             <SmartPlan chosen={result.plan.days.flatMap((d) => d.activities)} pax={parseInt(form.pax, 10) || 2} planOverride={result.plan} />
 
-            <div style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
+            <div className="mobile-cta-row" style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
               <Button variant="primary" onClick={addAll}><Plus size={16} />Add all to my trip</Button>
               <Button variant="ghost" onClick={() => setResult(null)}><RotateCcw size={15} />Start over</Button>
               <Button variant="ghost" onClick={() => window.alert("Opening WhatsApp concierge…")}><MessageCircle size={15} />Tweak with a local</Button>

@@ -52,6 +52,7 @@ export function SoundscapeControl({ lift = false }) {
     <button
       type="button"
       className="tico-soundscape"
+      data-lifted={lift ? "true" : "false"}
       onClick={toggle}
       aria-pressed={playing}
       aria-label={`${label}. Play My Last Mojito by Michael Ramir C.`}

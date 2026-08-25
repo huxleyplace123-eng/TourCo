@@ -108,7 +108,7 @@ export function MyTrips({ go, trip, removeFromTrip }) {
       <TripsHero count={chosen.length} />
       {chosen.length > 0 && (
         <div style={{ background: c.sand, borderBottom: `1px solid ${c.line}` }}>
-          <div style={{ maxWidth: 1180, margin: "0 auto", padding: "16px 20px", display: "flex", justifyContent: "flex-end" }}>
+          <div className="trip-view-toggle" style={{ maxWidth: 1180, margin: "0 auto", padding: "16px 20px", display: "flex", justifyContent: "flex-end" }}>
             <div style={{ display: "inline-flex", gap: 6, background: "rgba(255,255,255,.06)", border: `1px solid ${c.line}`, padding: 5, borderRadius: 999 }}>
               <ToggleBtn id="story" icon={Sparkles} label="Story view" />
               <ToggleBtn id="list" icon={List} label="List view" />
@@ -140,11 +140,11 @@ export function MyTrips({ go, trip, removeFromTrip }) {
           <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24, alignItems: "start" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {chosen.map(({ a, pax, id }) => (
-                <div key={id} style={{ background: c.white, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,.08)", display: "flex", flexWrap: "wrap" }}>
-                  <div style={{ width: 140, minWidth: 140, flex: "0 0 140px" }}>
+                <div key={id} className="trip-list-card" style={{ background: c.white, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,.08)", display: "flex", flexWrap: "wrap" }}>
+                  <div className="trip-list-photo" style={{ width: 140, minWidth: 140, flex: "0 0 140px" }}>
                     <Photo src={activityImage(a)} fallback={grad.ocean} alt={a.title} height={130} zoom={false} />
                   </div>
-                  <div style={{ padding: 16, flex: 1, minWidth: 200, display: "flex", flexDirection: "column" }}>
+                  <div className="trip-list-body" style={{ padding: 16, flex: 1, minWidth: 200, display: "flex", flexDirection: "column" }}>
                     <div style={{ fontSize: 12, fontWeight: 700, color: c.teal }}>{a.category}</div>
                     <h3 style={{ margin: "3px 0 6px", fontSize: 17, fontWeight: 800, color: c.charcoal }}>{a.title}</h3>
                     <div style={{ display: "flex", gap: 14, color: c.stone, fontSize: 13, fontWeight: 600, flexWrap: "wrap" }}>

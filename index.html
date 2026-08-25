@@ -31,7 +31,7 @@
          `.tn-dot` (pagination dots) opts out so they stay small but keep a
          padded, invisible 44px hit area via their own styles. */
       @media (pointer: coarse), (max-width: 820px) {
-        button:not(.tn-dot), a[role="button"], select, input:not([type="range"]) {
+        button:not(.tn-dot):not(.tn-pin), a[role="button"], select, input:not([type="range"]) {
           min-height: 44px;
         }
         button { touch-action: manipulation; }

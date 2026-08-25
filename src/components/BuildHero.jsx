@@ -28,7 +28,7 @@ export function BuildHero() {
   }, []);
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", minHeight: 460, display: "flex", alignItems: "center" }}>
+    <div className="build-hero" style={{ position: "relative", overflow: "hidden", minHeight: 460, display: "flex", alignItems: "center" }}>
       <style>{`
         @keyframes bhKen { from{ transform: scale(1.04) } to{ transform: scale(1.14) } }
         @keyframes bhRise { from{ opacity:0; transform: translateY(18px) } to{ opacity:1; transform: translateY(0) } }

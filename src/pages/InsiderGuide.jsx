@@ -119,7 +119,7 @@ export function InsiderGuide({ go, trip = [] }) {
             <p style={{ color: "rgba(243,247,255,.82)", maxWidth: 640, fontSize: 18, lineHeight: 1.65, margin: "24px 0 0" }}>
               Restaurants, drinks, beaches, local playbooks, deals, and nearly-free adventures—organized into one guide without throwing away the depth you already had.
             </p>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 30 }}>
+            <div className="mobile-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 30 }}>
               <Button variant="primary" size="lg" onClick={() => jumpTo("insider-dining")}>Explore the guide <ArrowRight size={18} /></Button>
               <Button variant="glass" size="lg" onClick={() => go("build")}>Plan around my route</Button>
             </div>
