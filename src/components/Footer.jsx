@@ -44,7 +44,7 @@ export function Footer({ go }) {
         <div className="footer-support">
           <div style={{ fontWeight: 800, color: "#fff", marginBottom: 12 }}>Support</div>
           <Button variant="gold" size="sm" onClick={() => openConcierge({ intent: "support" })}>
-            <MessageCircle size={15} />Ask TicoWild
+            <MessageCircle size={15} />Ask Rico
           </Button>
           <p style={{ fontSize: 13, marginTop: 14 }}>Trip questions and current availability</p>
         </div>

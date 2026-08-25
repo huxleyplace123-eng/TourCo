@@ -156,7 +156,7 @@ export function ticoPageLine(page) {
     tico:      { text: "I'm Rico the Tico — your local macaw, honest trip planner, and sharpest set of eyes on the coast.", mood: "proud" },
     why:       { text: "Want the short version? TicoWild pairs local knowledge with operators it can stand behind.", mood: "proud" },
     partner:   { text: "Great local operators make great trips. Tell the team what you do best.", mood: "happy" },
-    ask:       { text: "John knows the coast from the ground; I know it from the sky. Between us, you're covered.", mood: "cheeky" },
+    ask:       { text: "I can help narrow the choices here, and the TicoWild team can confirm the current details before you commit.", mood: "cheeky" },
   };
   return lines[page] || { text: "I'm Rico — your local macaw. Ask me anything.", mood: "happy" };
 }

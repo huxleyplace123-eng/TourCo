@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ArrowRight, MessageCircle, Clock, Users, Check, X, Star, ShieldCheck, Sparkles, MapPin, Plus } from "lucide-react";
 import { c, grad, glass, money, gradText } from "../theme.js";
 import { packages, activities } from "../data.js";
@@ -15,8 +16,15 @@ function itemActivity(label) {
   return activities.find((a) => a.title.toLowerCase().includes(l) || a.category.toLowerCase().includes(l) || l.includes(a.category.toLowerCase().split(" ")[0]));
 }
 
+function packageActivityTotal(p) {
+  const mapped = p.items.map(itemActivity).filter(Boolean);
+  const unique = [...new Map(mapped.map((activity) => [activity.id, activity])).values()];
+  return unique.reduce((total, activity) => total + Number(activity.price || 0), 0);
+}
+
 // ── One cinematic package card: full-bleed photo, glass info, day-strip ──
 function PackageCard({ p, featured, onOpen }) {
+  const activityTotal = packageActivityTotal(p);
   return (
     <TiltCard max={featured ? 6 : 9} radius={24}
       style={{ position: "relative", overflow: "hidden", border: `1px solid ${c.line}`, cursor: "pointer", minHeight: featured ? 460 : 380, display: "flex" }}>
@@ -54,8 +62,8 @@ function PackageCard({ p, featured, onOpen }) {
 
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, marginTop: 20, pointerEvents: "auto" }}>
           <div>
-            <div style={{ fontSize: 12, color: "rgba(243,247,255,.6)", fontWeight: 600 }}>from</div>
-            <div style={{ fontSize: featured ? 30 : 24, fontWeight: 800, ...gradText(`linear-gradient(100deg,${c.teal},${c.gold})`) }}>{money(p.price)}<span style={{ fontSize: 13, color: "rgba(243,247,255,.6)", WebkitTextFillColor: "rgba(243,247,255,.6)", fontWeight: 600 }}>/person</span></div>
+            <div style={{ fontSize: 12, color: "rgba(243,247,255,.6)", fontWeight: 600 }}>listed experiences from</div>
+            <div style={{ fontSize: featured ? 30 : 24, fontWeight: 800, ...gradText(`linear-gradient(100deg,${c.teal},${c.gold})`) }}>{money(activityTotal)}<span style={{ fontSize: 13, color: "rgba(243,247,255,.6)", WebkitTextFillColor: "rgba(243,247,255,.6)", fontWeight: 600 }}>/person</span></div>
           </div>
           <Button variant="primary" size={featured ? "md" : "sm"} onClick={() => onOpen(p)}>View this trip <ArrowRight size={15} /></Button>
         </div>
@@ -66,12 +74,19 @@ function PackageCard({ p, featured, onOpen }) {
 
 // ── Cinematic detail drawer ──
 function PackageDrawer({ p, onClose, addToTrip }) {
+  useEffect(() => {
+    if (!p) return undefined;
+    document.body.classList.add("ticowild-modal-open");
+    return () => document.body.classList.remove("ticowild-modal-open");
+  }, [p]);
+
   if (!p) return null;
   const acts = p.items.map((it) => ({ it, a: itemActivity(it) }));
+  const activityTotal = packageActivityTotal(p);
   const addAll = () => { acts.forEach(({ a }) => a && addToTrip(a.id)); onClose(); };
   const days = Math.max(3, Math.min(p.items.length, 7));
 
-  return (
+  return createPortal((
     <div className="package-drawer-backdrop" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(11,26,46,.75)", backdropFilter: "blur(6px)", display: "flex", justifyContent: "center", alignItems: "flex-start", overflowY: "auto", padding: "40px 16px" }}>
       <div className="package-drawer" onClick={(e) => e.stopPropagation()} style={{ background: c.canvas2, border: `1px solid ${c.line}`, borderRadius: 26, maxWidth: 780, width: "100%", overflow: "hidden", boxShadow: "0 60px 120px -40px rgba(0,0,0,.9)", animation: "tnDrawer .4s cubic-bezier(.2,.7,.2,1) both" }}>
         <style>{`@keyframes tnDrawer{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}`}</style>
@@ -122,18 +137,19 @@ function PackageDrawer({ p, onClose, addToTrip }) {
           {/* footer / price + actions */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap", marginTop: 24, paddingTop: 20, borderTop: `1px dashed ${c.line}` }}>
             <div>
-              <div style={{ fontSize: 12, color: c.stone }}>from · estimated 20% after confirmation {money(p.price * 0.2)}</div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: c.charcoal }}>{money(p.price)}<span style={{ fontSize: 14, color: c.stone, fontWeight: 600 }}>/person</span></div>
+              <div style={{ fontSize: 12, color: c.stone }}>listed experiences · estimated 20% after confirmation {money(activityTotal * 0.2)}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: c.charcoal }}>{money(activityTotal)}<span style={{ fontSize: 14, color: c.stone, fontWeight: 600 }}>/person</span></div>
+              <div style={{ maxWidth: 470, marginTop: 6, color: c.stone, fontSize: 12.5, lineHeight: 1.5 }}>This total covers the listed experiences currently matched in TicoWild. Lodging, transport, meals and custom additions are only included when they appear in your confirmed quote.</div>
             </div>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <Button variant="ghost" onClick={onClose}>Keep browsing</Button>
-              <Button variant="primary" onClick={addAll}><Plus size={16} />Add all to my trip</Button>
+              <Button variant="primary" onClick={addAll}><Plus size={16} />Save all to trip</Button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  ), document.body);
 }
 
 export function Packages({ go, addToTrip }) {
@@ -200,10 +216,10 @@ export function Packages({ go, addToTrip }) {
           <div style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 80% at 80% 20%, rgba(34,211,238,.18), transparent 55%), radial-gradient(60% 80% at 15% 90%, rgba(255,208,0,.12), transparent 55%)` }} />
           <div style={{ position: "relative" }}>
             <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,42px)", fontWeight: 800, letterSpacing: -1, margin: 0 }}>Nothing fits perfectly?</h2>
-            <p style={{ color: "rgba(243,247,255,.8)", fontSize: 17, marginTop: 12, maxWidth: 520, marginInline: "auto" }}>Every package is a starting point. Tell John what you want and he'll build a custom one from scratch.</p>
+            <p style={{ color: "rgba(243,247,255,.8)", fontSize: 17, marginTop: 12, maxWidth: 520, marginInline: "auto" }}>Every package is a starting point. Tell Rico what you want and we’ll shape it around your dates, pace and route.</p>
             <div className="mobile-cta-row" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 26 }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Build a custom trip <ArrowRight size={18} /></Button>
-              <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "collection" })}><MessageCircle size={18} />Ask TicoWild</Button>
+              <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "collection" })}><MessageCircle size={18} />Ask Rico</Button>
             </div>
           </div>
         </div>

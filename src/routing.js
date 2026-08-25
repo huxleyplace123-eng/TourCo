@@ -9,8 +9,6 @@ const PAGE_PATHS = {
   why: "/why-ticowild",
   partner: "/become-a-partner",
   portal: "/trip",
-  john: "/local-expert",
-  ask: "/ask-rico",
   deals: "/deals",
   map: "/explore-map",
   tico: "/meet-rico",
@@ -27,8 +25,6 @@ const PAGE_META = {
   why: ["How TicoWild Works | TicoWild", "See how TicoWild helps travelers choose experiences, confirm the details and stay supported during their trip."],
   partner: ["Become a TicoWild Partner", "Apply to offer your Costa Rica experiences through TicoWild."],
   portal: ["My Costa Rica Trip | TicoWild", "Review the Costa Rica experiences saved to your TicoWild trip."],
-  john: ["Meet Your Costa Rica Trip Concierge | TicoWild", "Learn how TicoWild combines local knowledge with a simpler way to plan Costa Rica experiences."],
-  ask: ["Ask Rico | TicoWild", "Get Costa Rica activity and route guidance from Rico, TicoWild's planning companion."],
   deals: ["Costa Rica Experience Offers | TicoWild", "Explore current TicoWild experience offers and trip ideas."],
   map: ["Explore Costa Rica by Map | TicoWild", "Explore Costa Rica destinations, experiences and local planning ideas on the TicoWild map."],
   tico: ["Meet Rico | TicoWild", "Meet Rico, TicoWild's Costa Rica planning companion."],
@@ -51,6 +47,8 @@ export function pathFor(page, activeId = null) {
 
 export function routeFromPath(pathname = "/") {
   const clean = `/${pathname.split("?")[0].split("#")[0].replace(/^\/+|\/+$/g, "")}`;
+  if (clean === "/ask-rico") return { page: "build", activeId: null, canonicalPath: "/plan" };
+  if (clean === "/local-expert") return { page: "tico", activeId: null, canonicalPath: "/meet-rico" };
   if (clean === "/") return { page: "home", activeId: null };
   if (clean.startsWith("/activities/")) {
     const slug = clean.slice("/activities/".length);

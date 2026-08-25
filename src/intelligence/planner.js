@@ -5,7 +5,7 @@
 // time of day, respect budget, and insert rest. Outputs a day-by-day plan with
 // human-readable reasoning for WHY it's ordered this way. Zero API cost.
 
-import { activityContext, driveHours, climateFor, monthIndexNow, REGION_ORDER } from "./context.js";
+import { activityContext, driveHours, climateFor, REGION_ORDER } from "./context.js";
 
 const TIME_RANK = { morning: 0, afternoon: 1, evening: 2 };
 
@@ -13,12 +13,12 @@ const TIME_RANK = { morning: 0, afternoon: 1, evening: 2 };
 function sameDayFit(a, b, strictRegions = false) {
   if (strictRegions && a.region !== b.region) return -Infinity;
   const ca = activityContext(a), cb = activityContext(b);
+  if (/full day/i.test(a.duration) || /full day/i.test(b.duration) || ca.hours + cb.hours > 8) return -Infinity;
   let s = 0;
   if (a.region === b.region) s += 3;                 // same place = no transfer
   else s -= driveHours(a.region, b.region);          // penalize distance
   if (ca.idealTime !== cb.idealTime) s += 1.5;        // different slots pair well
   if (ca.energy + cb.energy > 4) s -= 2;              // two hard things = too much
-  if (ca.hours + cb.hours > 9) s -= 3;                // no time in the day
   return s;
 }
 
@@ -26,7 +26,8 @@ function sameDayFit(a, b, strictRegions = false) {
 // the best-fitting companion. Keeps days regionally coherent and well-paced.
 export function planTrip(items, opts = {}) {
   const acts = items.map((it) => (it.a ? it.a : it)).filter(Boolean);
-  const monthIdx = opts.monthIdx ?? monthIndexNow();
+  const hasMonth = Number.isInteger(opts.monthIdx);
+  const monthIdx = hasMonth ? opts.monthIdx : null;
   const maxPerDay = opts.maxPerDay ?? 2;
   const budget = opts.budget ?? Infinity;
   const pax = opts.pax ?? 2;
@@ -96,8 +97,8 @@ export function planTrip(items, opts = {}) {
     });
   });
 
-  const cl = climateFor(monthIdx);
-  if (cl.rain > 0.45) warnings.push(`${cl.m}: ${cl.note.toLowerCase()}. Water tours are set for mornings.`);
+  const cl = hasMonth ? climateFor(monthIdx) : null;
+  if (cl?.rain > 0.45) warnings.push(`${cl.m}: ${cl.note.toLowerCase()}. Water tours are set for mornings.`);
   if (cost > budget && budget !== Infinity) warnings.push(`This plan is ${money(cost - budget)} over your ~${money(budget)} budget — trim a premium day or drop group size.`);
 
   return {

@@ -211,7 +211,7 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
                   <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.5, margin: "0 0 14px" }}>{sel.item.blurb || sel.item.desc}</p>
                   {sel.type === "tours" && (
                     <div style={{ display: "flex", gap: 8 }}>
-                      <Button variant="primary" size="sm" full onClick={() => addToTrip(sel.item.id)}>Add to trip</Button>
+                      <Button variant="primary" size="sm" full onClick={() => addToTrip(sel.item.id)}>Save to trip</Button>
                       <Button variant="ghost" size="sm" onClick={() => viewActivity(sel.item.id)}>Details</Button>
                     </div>
                   )}

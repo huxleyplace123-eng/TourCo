@@ -13,7 +13,6 @@ import { Build } from "./pages/Build.jsx";
 import { Why } from "./pages/Why.jsx";
 import { Partner } from "./pages/Partner.jsx";
 import { MyTrips } from "./pages/MyTrips.jsx";
-import { AskJohn } from "./pages/AskJohn.jsx";
 import { Deals } from "./pages/Deals.jsx";
 import { ExploreMap } from "./pages/ExploreMap.jsx";
 import { MeetTicoPage } from "./pages/MeetTicoPage.jsx";
@@ -81,6 +80,12 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [plannerDraft, setPlannerDraft] = useState(null);
 
+  useEffect(() => {
+    if (initialRoute.canonicalPath && window.location.pathname !== initialRoute.canonicalPath) {
+      window.history.replaceState({}, "", initialRoute.canonicalPath);
+    }
+  }, []);
+
   const navigate = (nextPage, nextActiveId = null, { replace = false } = {}) => {
     const resolvedActiveId = nextPage === "detail" ? (nextActiveId || activeId) : null;
     setPage(nextPage);
@@ -94,6 +99,7 @@ export default function App() {
   useEffect(() => {
     const onPopState = () => {
       const route = routeFromPath(window.location.pathname);
+      if (route.canonicalPath && window.location.pathname !== route.canonicalPath) window.history.replaceState({}, "", route.canonicalPath);
       setPage(route.page);
       setActiveId(route.activeId);
       setCartOpen(false);
@@ -124,6 +130,11 @@ export default function App() {
   useEffect(() => {
     window.localStorage.setItem("ticowild.trip.v1", JSON.stringify(trip));
   }, [trip]);
+  useEffect(() => {
+    if (cartOpen) document.body.classList.add("ticowild-modal-open");
+    else document.body.classList.remove("ticowild-modal-open");
+    return () => document.body.classList.remove("ticowild-modal-open");
+  }, [cartOpen]);
   // Always land at the top of a newly-opened page. Runs AFTER the new page
   // renders (useLayoutEffect + instant scroll), so it isn't undone by the
   // page-enter animation or content reflow — a smooth scroll during a full
@@ -137,7 +148,8 @@ export default function App() {
   const consumePlannerDraft = () => setPlannerDraft(null);
   const addToTrip = (id) => { setTrip((t) => (t.some((x) => x.id === id) ? t : [...t, { id, pax: 2 }])); setCartOpen(true); };
   const removeFromTrip = (id) => setTrip((t) => t.filter((x) => x.id !== id));
-  const showMobilePlanBar = trip.length === 0 && !["build", "builder", "portal", "partner"].includes(page);
+  const showMobilePlanBar = trip.length === 0 && ["home", "today", "why"].includes(page);
+  const showStickyTripBar = trip.length > 0 && ["home", "today", "activities", "packages", "why"].includes(page);
 
   const shared = { go, addToTrip, trip, viewActivity, removeFromTrip, startPlan, consumePlannerDraft };
 
@@ -161,30 +173,28 @@ export default function App() {
         {page === "detail" && <Detail activeId={activeId} {...shared} />}
         {page === "packages" && <Packages {...shared} />}
         {page === "build" && <Build {...shared} initialPlan={plannerDraft} />}
-        {page === "ask" && <AskJohn {...shared} />}
         {page === "builder" && <Build {...shared} initialPlan={plannerDraft} />}
         {page === "why" && <Why {...shared} />}
         {page === "partner" && <Partner {...shared} />}
         {page === "portal" && <MyTrips {...shared} />}
-        {page === "john" && <MeetTicoPage {...shared} />}
       </main>
       <style>{`@keyframes tnPageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){[style*="tnPageIn"]{animation:none!important}}`}</style>
 
       <Footer go={go} />
 
       {/* Tico — the living macaw companion, present on every page */}
-      <TicoDock page={page} go={go} trip={trip} lift={(trip.length > 0 && !["portal", "build", "builder"].includes(page)) || showMobilePlanBar} />
+      <TicoDock page={page} go={go} trip={trip} lift={showStickyTripBar || showMobilePlanBar} />
       {(page === "home" || page === "today") && <SoundscapeControl lift={trip.length > 0} />}
 
       {/* Sticky trip bar */}
-      {trip.length > 0 && !["portal", "build", "builder"].includes(page) && <StickyDeposit page={page} count={trip.length} onView={() => go("portal")} />}
+      {showStickyTripBar && <StickyDeposit page={page} count={trip.length} onView={() => go("portal")} />}
       {showMobilePlanBar && <MobilePlanBar page={page} onStart={() => go("build")} />}
 
       {/* Quick "added to trip" toast/modal */}
       {cartOpen && (
         <div className="trip-added-backdrop" onClick={() => setCartOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(11,26,46,.5)", zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 20 }}>
           <div className="trip-added-sheet" onClick={(e) => e.stopPropagation()} style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 22, padding: 24, maxWidth: 420, width: "100%", marginBottom: 20, boxShadow: "0 40px 90px -30px rgba(0,0,0,.9)" }}>
-            <h3 style={{ margin: "0 0 4px", color: c.charcoal, fontSize: 20, fontWeight: 800 }}>Added to your trip 🎉</h3>
+            <h3 style={{ margin: "0 0 4px", color: c.charcoal, fontSize: 20, fontWeight: 800 }}>Saved to your trip 🎉</h3>
             <p style={{ color: c.stone, fontSize: 14.5, margin: "0 0 16px" }}>
               You have <b style={{ color: c.charcoal }}>{trip.length}</b> saved experience{trip.length !== 1 ? "s" : ""}. Nothing is reserved or charged yet.
             </p>

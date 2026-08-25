@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { activities } from "../src/data.js";
+import { planTrip } from "../src/intelligence/planner.js";
 
 const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
@@ -44,6 +46,11 @@ assert.match(builder, /The feeling/);
 assert.match(builder, /The shape/);
 assert.match(builder, /Final touches/);
 assert.ok(builder.indexOf("What should this trip feel like?") < builder.indexOf("Where does this trip take shape?"), "the planning flow must ask about the desired experience before route logistics");
+assert.match(builder, /result\.brief\?\.month/, "the planner must not invent a travel month when dates are blank");
+
+const fullDayPlan = planTrip([activities.find((activity) => activity.id === "a15"), activities.find((activity) => activity.id === "a8")], { maxPerDay: 2, pax: 2 });
+assert.equal(fullDayPlan.days.length, 2, "a full-day experience must never be stacked with another activity");
+assert.equal(fullDayPlan.climate, null, "an undated plan must not invent seasonal context");
 
 const app = read("src/App.jsx");
 assert.match(app, /routeFromPath\(window\.location\.pathname\)/, "public pages must restore state from a real URL");
@@ -70,10 +77,29 @@ for (const route of ["/activities", "/collections", "/plan", "/why-ticowild", "/
 }
 assert.match(routing, /metadataFor/);
 assert.match(routing, /activityPath/);
+assert.match(routing, /clean === "\/ask-rico"[\s\S]*canonicalPath: "\/plan"/, "the retired standalone Rico builder must resolve to the canonical planner");
+assert.match(routing, /clean === "\/local-expert"[\s\S]*canonicalPath: "\/meet-rico"/, "the retired expert page must resolve to the canonical Rico page");
 
 const conversion = read("src/components/ConversionCenter.jsx");
 assert.match(conversion, /No payment is taken here/);
 assert.match(conversion, /instead of pretending your request was delivered/);
+assert.match(conversion, /ticowild:open-rico/, "Ask Rico actions must open the on-site guide instead of a different form");
+
+const packages = read("src/pages/Packages.jsx");
+assert.match(packages, /createPortal/, "the package drawer must escape transformed page layout");
+assert.match(packages, /listed experiences from/i, "package cards must label the price scope");
+assert.match(packages, /Lodging, transport, meals and custom additions are only included/, "package pricing must explain what the listed total excludes");
+assert.equal(packages.includes("Tell John"), false, "customer-facing package help must use the Rico identity");
+
+const insider = read("src/pages/InsiderGuide.jsx");
+assert.match(insider, /const \[active, setActive\] = useState\(null\)/, "the guide must open one collection at a time");
+assert.match(insider, /active === "dining"/, "the guide must conditionally render the selected collection");
+assert.equal(insider.includes("without throwing away the depth"), false, "internal implementation language must not appear in customer copy");
+
+const why = read("src/pages/Why.jsx");
+assert.equal(why.includes("TicoWild should win"), false, "internal positioning language must not appear on the public site");
+const legal = read("src/components/LegalModal.jsx");
+assert.equal(legal.includes("counsel-reviewed"), false, "the legal modal must not claim an unavailable governing document");
 
 const schema = read("supabase/schema.sql");
 assert.match(schema, /create table if not exists public\.public_inquiries/);

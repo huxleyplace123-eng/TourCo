@@ -141,26 +141,16 @@
     background: linear-gradient(90deg,rgba(34,211,238,.55),rgba(127,166,232,.08));
   }
 
-  .deals-chapter-head {
-    margin-top: 66px !important;
-    padding-top: 34px;
-    border-top: 14px solid #071827;
-    position: relative;
+  .deals-chapter-tabs {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
   }
 
-  .deals-chapter-head::before {
-    content: "";
-    position: absolute;
-    top: -8px;
-    left: 0;
-    width: 44px;
-    height: 3px;
-    border-radius: 999px;
-    background: #22D3EE;
-  }
-
-  .deals-chapter-head-listed {
-    margin-top: 54px !important;
+  .deals-chapter-tabs > button {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: 46px;
   }
 
   .mobile-break-grid > *:nth-child(4n + 5) {
@@ -180,21 +170,13 @@
 
   .insider-anchor {
     position: relative;
-    padding-top: 68px;
+    padding-top: 0;
     border-top: 24px solid #071827;
     background: #0B1A2E;
   }
 
   .insider-anchor::before {
-    content: attr(data-mobile-title);
-    position: absolute;
-    top: 20px;
-    left: var(--mobile-gutter);
-    color: #22D3EE;
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: .12em;
-    text-transform: uppercase;
+    display: none;
   }
 
   .insider-anchor:nth-of-type(even) {
@@ -588,7 +570,7 @@
     align-items: flex-end !important;
   }
 
-  .insider-hero > div[style*="padding: 84px 20px 100px"] {
+  .insider-hero-inner {
     padding: 54px var(--mobile-gutter) 48px !important;
   }
 
@@ -610,10 +592,13 @@
   .meet-tico-hero {
     min-height: auto !important;
     align-items: flex-start !important;
+    flex-direction: column !important;
     padding-bottom: 0;
   }
 
   .meet-tico-hero .tico-hero-grid {
+    width: 100% !important;
+    flex: 0 0 auto;
     padding: 42px var(--mobile-gutter) 0 !important;
     gap: 18px !important;
   }
@@ -631,6 +616,9 @@
 
   .tico-credential-strip {
     position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    flex: 0 0 auto;
     margin-top: 18px;
   }
 
@@ -704,7 +692,7 @@
   }
 
   .tico-dock[data-lifted="true"] {
-    display: none !important;
+    bottom: calc(82px + env(safe-area-inset-bottom)) !important;
   }
 
   .tico-chat-window {
@@ -859,6 +847,12 @@
 
   .package-drawer > div:first-child {
     height: 210px !important;
+  }
+
+  body.ticowild-modal-open .mobile-plan-bar,
+  body.ticowild-modal-open .mobile-trip-bar,
+  body.ticowild-modal-open .tico-dock {
+    display: none !important;
   }
 }
 
