@@ -59,6 +59,10 @@ assert.match(trips, /Confirm and pay/);
 const detail = read("src/pages/Detail.jsx");
 assert.match(detail, /What you’ll know before you pay/);
 assert.match(detail, /Cancellation terms/);
+assert.match(detail, /const HERO_GLASS = "rgba\(5,15,33,\.86\)"/, "activity hero controls need a high-contrast dark surface");
+assert.match(detail, /className="detail-back-button"/, "the activity back control needs explicit contrast styling");
+assert.match(detail, /className="detail-hero-badges"/, "activity hero labels need explicit contrast styling");
+assert.equal(detail.includes('bg="rgba(255,255,255,.92)"'), false, "activity hero badges must not use pale text on white surfaces");
 
 const routing = read("src/routing.js");
 for (const route of ["/activities", "/collections", "/plan", "/why-ticowild", "/insider-guide"]) {
