@@ -3,13 +3,15 @@
 The operator-facing application ships at `/partners/`. It supports two entry paths:
 
 1. **Existing operator invitation** — a TicoWild team member creates an invite for an existing CRM operator ID. When that email creates an account, the database links it to the company automatically.
-2. **New partner application** — an operator creates an account, completes the three-step application, and waits for TicoWild approval. Approval creates the operator and owner membership atomically.
+2. **New partner application** — an operator creates an account, completes the four-step application, signs the agreement, and waits for TicoWild approval. Approval creates the operator and owner membership atomically.
 
 ## What is implemented
 
 - Email/password sign-in and secure email-link sign-in through Supabase Auth
 - Account creation with email confirmation support
-- Three-step, mobile-first operator application
+- Four-step, mobile-first operator application with the agreement inside the flow
+- Stored agreement version, signer, acceptance time, and electronic signature
+- Database enforcement that blocks unsigned submission and approval
 - Pending-review state that does not expose portal data
 - Operator-to-user memberships with owner, manager, guide, and finance roles
 - Per-operator row-level security
@@ -45,15 +47,15 @@ select public.invite_operator(
 Approve a submitted application:
 
 ```sql
-select public.approve_operator_application('APPLICATION-UUID');
+select public.approve_operator_application('APPLICATION-UUID', 'Review note');
 ```
 
-Both functions reject non-team users. An applicant cannot set their own application to approved, choose an operator ID, or access another company's portal state.
+Both functions reject non-team users. An applicant cannot submit without signing, set their own application to approved, choose an operator ID, or access another company's portal state.
 
 ## Next production slice
 
 - Move the internal CRM team login to Supabase Auth so Invite and Approve can run directly from the CRM UI.
-- Normalize portal messages, tours, availability, agreements, and payouts from the compatibility JSON state into dedicated tables.
+- Normalize portal messages, tours, availability, and payouts from the compatibility JSON state into dedicated tables.
 - Add email delivery for invites and application decisions.
 - Add document uploads to a private Supabase Storage bucket with expiration reminders.
 - Connect booking payments and operator payouts after the real booking lifecycle is live.

@@ -76,6 +76,13 @@ create table if not exists public.operator_applications (
   updated_at         timestamptz not null default now()
 );
 
+alter table public.operator_applications add column if not exists agreement_version text;
+alter table public.operator_applications add column if not exists agreement_accepted_at timestamptz;
+alter table public.operator_applications add column if not exists agreement_signer_name text;
+alter table public.operator_applications add column if not exists agreement_signer_title text;
+alter table public.operator_applications add column if not exists agreement_legal_name text;
+alter table public.operator_applications add column if not exists agreement_signature text;
+
 -- Compatibility layer for the portal UI already in the repository. Moving
 -- tours/messages/availability to normalized tables later does not change auth.
 create table if not exists public.operator_portal_state (
@@ -147,10 +154,34 @@ returns trigger language plpgsql security definer set search_path = public as $$
 begin
   if public.is_team_member() then return new; end if;
   if new.status not in ('draft','pending') then raise exception 'Invalid applicant status'; end if;
+  if coalesce(new.agreement_signature, '') <> '' and (
+    new.agreement_signature not like 'data:image/png;base64,%' or
+    char_length(new.agreement_signature) > 1000000
+  ) then raise exception 'Invalid agreement signature'; end if;
+  if tg_op = 'INSERT' and coalesce(new.agreement_signature, '') <> '' then
+    new.agreement_accepted_at := now();
+  elsif tg_op = 'UPDATE' and old.status = 'draft' and new.agreement_signature is distinct from old.agreement_signature then
+    new.agreement_accepted_at := now();
+  end if;
+  if new.status = 'pending' and (
+    new.agreement_accepted_at is null or
+    coalesce(new.agreement_version, '') = '' or
+    coalesce(new.agreement_signer_name, '') = '' or
+    coalesce(new.agreement_legal_name, '') = '' or
+    coalesce(new.agreement_signature, '') = ''
+  ) then raise exception 'A signed operator agreement is required before submission'; end if;
   if tg_op = 'UPDATE' then
     new.review_notes := old.review_notes;
     new.reviewed_at := old.reviewed_at;
     new.reviewed_by := old.reviewed_by;
+    if old.status <> 'draft' and old.agreement_accepted_at is not null then
+      new.agreement_version := old.agreement_version;
+      new.agreement_accepted_at := old.agreement_accepted_at;
+      new.agreement_signer_name := old.agreement_signer_name;
+      new.agreement_signer_title := old.agreement_signer_title;
+      new.agreement_legal_name := old.agreement_legal_name;
+      new.agreement_signature := old.agreement_signature;
+    end if;
   end if;
   return new;
 end; $$;
@@ -216,6 +247,9 @@ begin
   if not public.is_team_member() then raise exception 'Not authorized'; end if;
   select * into app from public.operator_applications where id = application_id for update;
   if not found then raise exception 'Application not found'; end if;
+  if app.agreement_accepted_at is null or app.agreement_signature not like 'data:image/png;base64,%' then
+    raise exception 'Signed operator agreement required';
+  end if;
 
   new_operator_id := regexp_replace(lower(app.company_name), '[^a-z0-9]+', '-', 'g') || '-' || substr(app.id::text, 1, 8);
   insert into public.operators (id,name,status,email,phone,whatsapp,website,regions,categories)

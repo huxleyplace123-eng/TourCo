@@ -4,6 +4,7 @@ import { c, glass } from "../theme.js";
 
 // TicoWild's email — where signed agreements are sent.
 const TICOWILD_EMAIL = "partners@ticowild.com";
+export const AGREEMENT_VERSION = "2026-07-operator-partner-v1";
 
 // The agreement, section by section (condensed from the PDF for on-screen review).
 const SECTIONS = [
@@ -31,6 +32,7 @@ const FIELDS = [
 function SignaturePad({ onChange }) {
   const ref = useRef(null);
   const drawing = useRef(false);
+  const ink = useRef(false);
   const [hasInk, setHasInk] = useState(false);
 
   useEffect(() => {
@@ -49,9 +51,9 @@ function SignaturePad({ onChange }) {
     return { x: t.clientX - r.left, y: t.clientY - r.top };
   };
   const start = (e) => { e.preventDefault(); drawing.current = true; const ctx = ref.current.getContext("2d"); const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
-  const move = (e) => { if (!drawing.current) return; e.preventDefault(); const ctx = ref.current.getContext("2d"); const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); setHasInk(true); };
-  const end = () => { if (!drawing.current) return; drawing.current = false; onChange(hasInk ? ref.current.toDataURL("image/png") : ""); };
-  const clear = () => { const ctx = ref.current.getContext("2d"); ctx.clearRect(0, 0, ref.current.width, ref.current.height); setHasInk(false); onChange(""); };
+  const move = (e) => { if (!drawing.current) return; e.preventDefault(); const ctx = ref.current.getContext("2d"); const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); ink.current = true; setHasInk(true); };
+  const end = () => { if (!drawing.current) return; drawing.current = false; onChange(ink.current ? ref.current.toDataURL("image/png") : ""); };
+  const clear = () => { const ctx = ref.current.getContext("2d"); ctx.clearRect(0, 0, ref.current.width, ref.current.height); ink.current = false; setHasInk(false); onChange(""); };
 
   return (
     <div>
@@ -66,8 +68,8 @@ function SignaturePad({ onChange }) {
   );
 }
 
-export function OperatorAgreement({ onClose, onSigned }) {
-  const [form, setForm] = useState(Object.fromEntries(FIELDS.map((f) => [f.key, ""])));
+export function OperatorAgreement({ onClose, onSigned, initialValues = {}, delivery = "email" }) {
+  const [form, setForm] = useState(Object.fromEntries(FIELDS.map((f) => [f.key, initialValues[f.key] || ""])));
   const [sig, setSig] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [done, setDone] = useState(false);
@@ -104,15 +106,19 @@ ${secs}
 
   const submit = () => {
     download(); // give them the signed copy
-    // open a pre-filled email to TicoWild with the details
-    const body = `New signed Operator Partner Agreement:%0D%0A%0D%0A` +
-      FIELDS.map((f) => `${f.label}: ${form[f.key]}`).join("%0D%0A") +
-      `%0D%0ASigned: ${today}%0D%0A%0D%0A(The signed agreement file has been downloaded — please attach it to this email before sending.)`;
-    window.location.href = `mailto:${TICOWILD_EMAIL}?subject=${encodeURIComponent("Signed Operator Agreement — " + (form.legalName || ""))}&body=${body}`;
+    if (delivery === "email") {
+      const body = `New signed Operator Partner Agreement:%0D%0A%0D%0A` +
+        FIELDS.map((f) => `${f.label}: ${form[f.key]}`).join("%0D%0A") +
+        `%0D%0ASigned: ${today}%0D%0A%0D%0A(The signed agreement file has been downloaded — please attach it to this email before sending.)`;
+      window.location.href = `mailto:${TICOWILD_EMAIL}?subject=${encodeURIComponent("Signed Operator Agreement — " + (form.legalName || ""))}&body=${body}`;
+    }
     setDone(true);
-    // Let a host (the operator portal) record that it's signed, so both the
-    // operator and the TicoWild CRM see completion.
-    onSigned?.({ signerName: form.signerName, legalName: form.legalName });
+    onSigned?.({
+      ...form,
+      signature: sig,
+      acceptedAt: new Date().toISOString(),
+      agreementVersion: AGREEMENT_VERSION,
+    });
   };
 
   return (
@@ -133,7 +139,7 @@ ${secs}
             <span style={{ width: 64, height: 64, borderRadius: 999, background: "rgba(55,227,107,.14)", border: "1px solid rgba(55,227,107,.4)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}><Check size={32} color="#37E36B" /></span>
             <h3 style={{ color: "#fff", fontSize: 21, fontWeight: 800, margin: "0 0 8px" }}>Signed — ¡pura vida!</h3>
             <p style={{ color: c.stone, fontSize: 14.5, lineHeight: 1.55, maxWidth: 420, margin: "0 auto 18px" }}>
-              Your signed agreement downloaded, and an email to <b style={{ color: "#fff" }}>{TICOWILD_EMAIL}</b> opened — just attach the file and hit send. We'll review your documents and get your listing live.
+              {delivery === "email" ? <>Your signed agreement downloaded, and an email to <b style={{ color: "#fff" }}>{TICOWILD_EMAIL}</b> opened — just attach the file and hit send.</> : <>Your signed copy downloaded and the agreement is now attached to your TicoWild application.</>}
             </p>
             <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
               <button onClick={download} style={btnGhost}><Download size={15} />Download again</button>
@@ -176,7 +182,7 @@ ${secs}
             </label>
 
             <button onClick={submit} disabled={missing} style={{ ...btnPrimary, width: "100%", opacity: missing ? 0.5 : 1, cursor: missing ? "not-allowed" : "pointer", justifyContent: "center" }}>
-              <Mail size={16} />Sign & send to TicoWild
+              {delivery === "email" ? <Mail size={16} /> : <Check size={16} />}{delivery === "email" ? "Sign & send to TicoWild" : "Sign agreement"}
             </button>
             {missing && <p style={{ color: c.stone, fontSize: 11.5, textAlign: "center", margin: "8px 0 0" }}>Fill every field, sign, and check the box to continue.</p>}
           </div>
