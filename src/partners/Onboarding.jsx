@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, BadgeCheck, Building2, Check, Clock3, Globe2, LogOut, MapPin, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, Building2, Check, Clock3, FileSignature, Globe2, LogOut, MapPin, ShieldCheck } from "lucide-react";
 import { Logo } from "../components/Logo.jsx";
+import { AGREEMENT_VERSION, OperatorAgreement } from "../components/OperatorAgreement.jsx";
 import { c, FONT, grad, radius, shadow } from "../theme.js";
 import { saveApplication } from "./partnerData.js";
 
@@ -28,9 +29,24 @@ function valuesFrom(application, email) {
   };
 }
 
+function agreementFrom(application) {
+  if (!application?.agreement_accepted_at) return null;
+  return {
+    legalName: application.agreement_legal_name || application.company_name || "",
+    signerName: application.agreement_signer_name || "",
+    title: application.agreement_signer_title || "",
+    email: application.email || "",
+    signature: application.agreement_signature || "",
+    acceptedAt: application.agreement_accepted_at,
+    agreementVersion: application.agreement_version || AGREEMENT_VERSION,
+  };
+}
+
 export default function Onboarding({ user, application, onSubmitted, onSignOut }) {
   const [step, setStep] = useState(1);
   const [values, setValues] = useState(() => valuesFrom(application, user.email));
+  const [agreement, setAgreement] = useState(() => agreementFrom(application));
+  const [showAgreement, setShowAgreement] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const set = (key) => (event) => setValues((v) => ({ ...v, [key]: event.target.value }));
@@ -41,15 +57,23 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
     setError("");
     if (step === 1 && (!values.companyName.trim() || !values.contactName.trim() || !values.phone.trim())) return setError("Add your company, primary contact, and phone number to continue.");
     if (step === 2 && (!values.regions.length || !values.categories.length)) return setError("Choose at least one region and one service category.");
-    setStep((s) => Math.min(3, s + 1));
+    if (step === 3 && !values.description.trim()) return setError("Add a short company description before continuing to the agreement.");
+    setStep((s) => Math.min(4, s + 1));
   };
 
   const submit = async () => {
-    if (!values.description.trim()) return setError("Add a short company description before submitting.");
+    if (!agreement?.acceptedAt || !agreement?.signature) return setError("Review and sign the partner agreement before submitting.");
     setBusy(true); setError("");
-    try { onSubmitted(await saveApplication(user, values, true)); }
+    try { onSubmitted(await saveApplication(user, values, true, agreement)); }
     catch (err) { setError(err.message || "We couldn't submit your application."); }
     finally { setBusy(false); }
+  };
+
+  const signedAgreement = async (signed) => {
+    setAgreement(signed);
+    setError("");
+    try { await saveApplication(user, values, false, signed); }
+    catch (err) { setError(err.message || "We couldn't attach the signed agreement."); }
   };
 
   return (
@@ -62,7 +86,7 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
           <div style={{ color:c.teal,fontSize:11,fontWeight:800,textTransform:"uppercase",letterSpacing:".1em" }}>Partner onboarding</div>
           <h2 style={{ margin:"8px 0 6px",fontSize:22 }}>Build a profile guests can trust.</h2>
           <p style={{ margin:"0 0 20px",color:c.stone,fontSize:12.5,lineHeight:1.6 }}>TicoWild reviews every partner before publishing or sending bookings.</p>
-          {[['Business details',Building2],['Services and regions',MapPin],['Review and submit',BadgeCheck]].map(([label,Icon],i)=>{
+          {[['Business details',Building2],['Services and regions',MapPin],['Review details',BadgeCheck],['Agreement and submit',FileSignature]].map(([label,Icon],i)=>{
             const n=i+1,on=step===n,done=step>n;
             return <div key={label} style={{ display:"grid",gridTemplateColumns:"34px 1fr",gap:10,alignItems:"center",padding:"10px 0",opacity:on||done?1:.55 }}>
               <div style={{ width:34,height:34,borderRadius:11,display:"grid",placeItems:"center",background:done?"rgba(52,211,153,.14)":on?"rgba(255,208,0,.14)":"rgba(255,255,255,.04)",color:done?"#34D399":on?c.gold:c.stone }}>{done?<Check size={17}/>:<Icon size={16}/>}</div>
@@ -74,9 +98,9 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
         </aside>
 
         <main className="onboard-card" style={{ padding:"clamp(20px,4vw,34px)" }}>
-          <div style={{ color:c.gold,fontSize:11,fontWeight:800,textTransform:"uppercase",letterSpacing:".1em" }}>Step {step} of 3</div>
-          <h1 style={{ margin:"8px 0 6px",fontSize:"clamp(25px,4vw,36px)",letterSpacing:"-.035em" }}>{step===1?"Tell us about the business":step===2?"Where and how you operate":"Review your partner application"}</h1>
-          <p style={{ margin:"0 0 24px",color:c.stone,fontSize:13.5,lineHeight:1.6 }}>{step===1?"This creates the private company record connected to your login.":step===2?"We use this to match your company with the right travelers and requests.":"Once submitted, TicoWild will review the information before activating your portal."}</p>
+          <div style={{ color:c.gold,fontSize:11,fontWeight:800,textTransform:"uppercase",letterSpacing:".1em" }}>Step {step} of 4</div>
+          <h1 style={{ margin:"8px 0 6px",fontSize:"clamp(25px,4vw,36px)",letterSpacing:"-.035em" }}>{step===1?"Tell us about the business":step===2?"Where and how you operate":step===3?"Review your partner application":"Review and sign the agreement"}</h1>
+          <p style={{ margin:"0 0 24px",color:c.stone,fontSize:13.5,lineHeight:1.6 }}>{step===1?"This creates the private company record connected to your login.":step===2?"We use this to match your company with the right travelers and requests.":step===3?"Confirm the details before reviewing the TicoWild partner agreement.":"A signed agreement is required before the application can be submitted for approval."}</p>
 
           {step===1 && <div className="onboard-fields">
             <Field label="Company name"><input style={field} value={values.companyName} onChange={set('companyName')} placeholder="Legal or trading name"/></Field>
@@ -102,13 +126,23 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
             <div style={{ display:"flex",gap:10,alignItems:"flex-start",padding:14,borderRadius:14,border:"1px solid rgba(52,211,153,.25)",background:"rgba(52,211,153,.07)" }}><ShieldCheck size={19} color="#34D399"/><div style={{ fontSize:12.5,lineHeight:1.55,color:c.stone }}><b style={{ color:c.charcoal }}>Nothing is published automatically.</b> The TicoWild team will review your application, verify the business, and activate your full partner portal.</div></div>
           </div>}
 
+          {step===4 && <div style={{ display:"grid",gap:16 }}>
+            <div style={{ padding:18,borderRadius:18,border:`1px solid ${agreement?"rgba(52,211,153,.38)":c.line}`,background:agreement?"rgba(52,211,153,.075)":"rgba(255,255,255,.03)",display:"grid",gridTemplateColumns:"48px 1fr",gap:13,alignItems:"center" }}>
+              <div style={{ width:48,height:48,borderRadius:15,display:"grid",placeItems:"center",background:agreement?"rgba(52,211,153,.14)":"rgba(255,208,0,.12)",color:agreement?"#34D399":c.gold }}><FileSignature size={23}/></div>
+              <div><div style={{ fontWeight:850,fontSize:15 }}>Operator Partner, Booking Fee & Indemnity Agreement</div><div style={{ marginTop:4,color:agreement?"#6EE7B7":c.stone,fontSize:12.5,lineHeight:1.55 }}>{agreement?`Signed by ${agreement.signerName} on ${new Date(agreement.acceptedAt).toLocaleDateString()}`:"Review the booking model, fees, cancellations, safety, insurance, indemnity and non-circumvention terms."}</div></div>
+            </div>
+            <button type="button" onClick={()=>setShowAgreement(true)} style={{ ...button(true),width:"100%",padding:13 }}>{agreement?<><FileSignature size={17}/> Review or sign again</>:<><FileSignature size={17}/> Review and sign agreement</>}</button>
+            <div style={{ display:"flex",gap:10,alignItems:"flex-start",padding:14,borderRadius:14,border:`1px solid ${c.line}`,background:"rgba(255,255,255,.025)" }}><ShieldCheck size={19} color={c.teal}/><div style={{ fontSize:12.5,lineHeight:1.55,color:c.stone }}><b style={{ color:c.charcoal }}>The application cannot be approved without this agreement.</b> Your signed copy downloads automatically and the acceptance record stays attached to your application.</div></div>
+          </div>}
+
           {error && <div style={{ marginTop:18,padding:11,borderRadius:12,color:"#FCA5A5",background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.28)",fontSize:12.5 }}>{error}</div>}
           <div style={{ display:"flex",justifyContent:"space-between",gap:10,marginTop:26 }}>
             <button type="button" disabled={step===1} onClick={()=>setStep((s)=>s-1)} style={button(false,step===1)}><ArrowLeft size={16}/> Back</button>
-            {step<3?<button type="button" onClick={next} style={button(true)} >Continue <ArrowRight size={16}/></button>:<button type="button" disabled={busy} onClick={submit} style={button(true,busy)}>{busy?"Submitting…":"Submit for review"}<BadgeCheck size={17}/></button>}
+            {step<4?<button type="button" onClick={next} style={button(true)} >Continue <ArrowRight size={16}/></button>:<button type="button" disabled={busy||!agreement} onClick={submit} style={button(true,busy||!agreement)}>{busy?"Submitting…":"Submit signed application"}<BadgeCheck size={17}/></button>}
           </div>
         </main>
       </div>
+      {showAgreement && <OperatorAgreement delivery="record" initialValues={{ legalName:values.companyName,signerName:values.contactName,email:user.email,phone:values.whatsapp||values.phone,category:values.categories.join(', '),location:values.regions.join(', ') }} onSigned={signedAgreement} onClose={()=>setShowAgreement(false)}/>}
     </Shell>
   );
 }

@@ -155,7 +155,7 @@ export async function loadPartnerContext(session) {
   return { kind: "application", application: applicationResult.data, email: user.email };
 }
 
-export async function saveApplication(user, values, submit = false) {
+export async function saveApplication(user, values, submit = false, agreement = null) {
   const payload = {
     user_id: user.id,
     email: user.email,
@@ -172,6 +172,12 @@ export async function saveApplication(user, values, submit = false) {
     status: submit ? "pending" : "draft",
     submitted_at: submit ? new Date().toISOString() : null,
     updated_at: new Date().toISOString(),
+    agreement_version: agreement?.agreementVersion || null,
+    agreement_accepted_at: agreement?.acceptedAt || null,
+    agreement_signer_name: agreement?.signerName?.trim() || null,
+    agreement_signer_title: agreement?.title?.trim() || null,
+    agreement_legal_name: agreement?.legalName?.trim() || null,
+    agreement_signature: agreement?.signature || null,
   };
   if (!hasSupabase) return { id: "demo-application", ...payload };
   const { data, error } = await supabase

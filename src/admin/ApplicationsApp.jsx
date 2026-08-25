@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight, BadgeCheck, Building2, Check, CircleAlert, Clock3, ExternalLink,
-  FileCheck2, Inbox, KeyRound, LoaderCircle, LogOut, Mail, MapPin, MessageSquareText,
+  FileCheck2, FileSignature, Inbox, KeyRound, LoaderCircle, LogOut, Mail, MapPin, MessageSquareText,
   RefreshCw, Search, Send, ShieldCheck, Sparkles, UserRoundCheck, UsersRound, X,
 } from "lucide-react";
 import { c, FONT, grad, radius, shadow } from "../theme.js";
@@ -95,6 +95,7 @@ function DetailRow({ icon: Icon, label, value, href }) {
 
 function ApplicationDetail({ application, busy, onAction }) {
   const [notes, setNotes] = useState(application.review_notes || "");
+  const agreementSigned = Boolean(application.agreement_accepted_at && application.agreement_signature);
   useEffect(()=>setNotes(application.review_notes || ""),[application.id,application.review_notes]);
   const submitted = application.status !== "draft";
   const action = (status) => onAction(application, status, notes);
@@ -118,13 +119,15 @@ function ApplicationDetail({ application, busy, onAction }) {
     <div className="approval-section"><div className="approval-label">Languages</div><div className="approval-chips">{(application.languages||[]).length?(application.languages||[]).map((x)=><span key={x}>{x}</span>):<em>Not provided</em>}</div></div>
     <div className="approval-section"><div className="approval-label">About the company</div><p style={{ margin:"7px 0 0",color:application.description?c.charcoal:c.stone,fontSize:13.5,lineHeight:1.7,whiteSpace:"pre-wrap" }}>{application.description || "No company description yet."}</p></div>
 
+    <div className="approval-section" style={{ borderColor:agreementSigned?"rgba(52,211,153,.35)":"rgba(248,113,113,.3)",background:agreementSigned?"rgba(52,211,153,.055)":"rgba(248,113,113,.055)" }}><div style={{ display:"flex",alignItems:"flex-start",gap:11 }}><div className="approval-detail-icon" style={{ color:agreementSigned?"#34D399":"#FCA5A5",background:agreementSigned?"rgba(52,211,153,.12)":"rgba(248,113,113,.1)" }}><FileSignature size={17}/></div><div style={{ flex:1,minWidth:0 }}><div className="approval-label">Signed partner agreement</div><div style={{ fontWeight:850,fontSize:13.5,color:agreementSigned?"#6EE7B7":"#FCA5A5" }}>{agreementSigned?`Signed by ${application.agreement_signer_name}`:"Agreement missing"}</div>{agreementSigned&&<div style={{ color:c.stone,fontSize:11.5,marginTop:4,lineHeight:1.55 }}>{application.agreement_legal_name} · {application.agreement_signer_title||"Authorized signer"} · {dateLabel(application.agreement_accepted_at)} · {application.agreement_version}</div>}</div>{agreementSigned&&<img src={application.agreement_signature} alt={`Signature of ${application.agreement_signer_name}`} style={{ width:120,height:54,objectFit:"contain",borderRadius:9,background:"#fff",border:`1px solid ${c.line}` }}/>}</div></div>
+
     <label className="approval-section" style={{ display:"grid",gap:7 }}><div className="approval-label">Review note</div><textarea value={notes} onChange={(e)=>setNotes(e.target.value)} placeholder="What should the operator know, or what did the team verify?" style={{ ...input,minHeight:88,resize:"vertical",lineHeight:1.55 }}/></label>
 
     {!submitted && <div className="approval-draft-note"><CircleAlert size={17}/><div><b>This application is still being completed.</b><span> You can review what is here, but decisions unlock after the operator submits it.</span></div></div>}
     {submitted && application.status!=="approved" && application.status!=="declined" && <div className="approval-actions">
       <button disabled={busy} onClick={()=>action("declined")} className="approval-btn danger"><X size={16}/> Decline</button>
       <button disabled={busy} onClick={()=>action("needs_changes")} className="approval-btn secondary"><MessageSquareText size={16}/> Request changes</button>
-      <button disabled={busy} onClick={()=>action("approved")} className="approval-btn primary">{busy?<LoaderCircle className="approval-spin" size={17}/>:<Check size={18}/>} Approve partner</button>
+      <button disabled={busy||!agreementSigned} title={!agreementSigned?"A signed agreement is required before approval":""} onClick={()=>action("approved")} className="approval-btn primary" style={{ opacity:agreementSigned?1:.45,cursor:agreementSigned?"pointer":"not-allowed" }}>{busy?<LoaderCircle className="approval-spin" size={17}/>:<Check size={18}/>} Approve partner</button>
     </div>}
     {(application.status==="approved"||application.status==="declined") && <div className="approval-final"><StatusPill status={application.status}/><span>{application.review_notes || (application.status==="approved"?"Partner account activated.":"Application closed.")}</span></div>}
   </section>;
