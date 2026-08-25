@@ -34,7 +34,7 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
   const tico = useTicoActivity(a);
   if (!op) return null;
   return (
-    <TiltCard style={{ background: c.white, overflow: "hidden", border: `1px solid ${c.line}`, display: "flex", flexDirection: "column", height: "100%" }} radius={20}>
+    <TiltCard className="activity-card" style={{ background: c.white, overflow: "hidden", border: `1px solid ${c.line}`, display: "flex", flexDirection: "column", height: "100%" }} radius={20}>
       <Photo
         src={activityImage(a)}
         fallback={gradFor(a.category)}
@@ -92,7 +92,7 @@ export function ActivityCard({ a, onAdd, onView, inTrip, note }) {
         </div>
 
         {/* CTA row — one clear primary action + a clean details link */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto", paddingTop: 14 }}>
+        <div className="activity-card-actions" style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto", paddingTop: 14 }}>
           <Button variant={inTrip ? "dark" : "primary"} size="sm" full onClick={() => onAdd(a.id)}>
             {inTrip ? <><Check size={15} />Added</> : <><Plus size={15} />Add to trip</>}
           </Button>

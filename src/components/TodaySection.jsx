@@ -54,7 +54,7 @@ export function TodaySection({ go, addToTrip, trip, viewActivity }) {
   return (
     <Section bg={c.sand}>
       {/* section header — Tico framing + live status pill */}
-      <div style={{ display: "flex", gap: 13, alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap" }}>
+      <div className="today-heading" style={{ display: "flex", gap: 13, alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap" }}>
         <div style={{ position: "relative", flexShrink: 0 }}>
           <div aria-hidden style={{ position: "absolute", inset: -6, borderRadius: 999, background: "radial-gradient(circle, rgba(34,211,238,.3), transparent 70%)", filter: "blur(4px)" }} />
           <div style={{ position: "relative" }}><TicoAvatar size={46} mood="chill" /></div>
@@ -72,8 +72,8 @@ export function TodaySection({ go, addToTrip, trip, viewActivity }) {
       </div>
 
       {/* compact region + sun bar */}
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 22, padding: "12px 14px", background: c.canvas2, border: `1px solid ${c.line}`, borderRadius: 16 }}>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+      <div className="today-region-bar" style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 22, padding: "12px 14px", background: c.canvas2, border: `1px solid ${c.line}`, borderRadius: 16 }}>
+        <div className="today-region-scroll" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {REGIONS.map((r) => (
             <button key={r} onClick={() => setRegion(r)} style={{
               padding: "7px 12px", borderRadius: 999, cursor: "pointer", fontWeight: 700, fontSize: 12.5, transition: "all .15s",
@@ -82,7 +82,7 @@ export function TodaySection({ go, addToTrip, trip, viewActivity }) {
             }}>{r}</button>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 14, marginLeft: "auto", color: "rgba(243,247,255,.8)", fontSize: 13, fontWeight: 600 }}>
+        <div className="today-sun-times" style={{ display: "flex", gap: 14, marginLeft: "auto", color: "rgba(243,247,255,.8)", fontSize: 13, fontWeight: 600 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Sun size={14} color={c.gold} />{t.sunrise}</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Sunset size={14} color={c.gold} />{t.sunset}</span>
         </div>

@@ -29,7 +29,7 @@ export function GuideHero({ go }) {
   }, [slides.length]);
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", minHeight: 420, display: "flex", alignItems: "flex-end" }}>
+    <div className="guide-hero" style={{ position: "relative", overflow: "hidden", minHeight: 420, display: "flex", alignItems: "flex-end" }}>
       <style>{`
         @keyframes guideKen { 0%{ transform: scale(1.05) translate(0,0) } 100%{ transform: scale(1.16) translate(-2%,-2%) } }
         @keyframes guidePin { 0%,100%{ transform: translateY(0); opacity:.85 } 50%{ transform: translateY(-4px); opacity:1 } }
@@ -50,7 +50,7 @@ export function GuideHero({ go }) {
       <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(45% 60% at 82% 40%, rgba(34,211,238,.2), transparent 60%)` }} />
 
       {/* live map, top-right — the "interactive guide" motif */}
-      <svg viewBox="0 0 100 100" aria-hidden
+      <svg className="guide-hero-map" viewBox="0 0 100 100" aria-hidden
         style={{ position: "absolute", right: "3%", top: "8%", width: "min(38%, 360px)", height: "auto", opacity: 0.92, filter: "drop-shadow(0 8px 30px rgba(0,0,0,.5))" }}>
         <defs>
           <linearGradient id="ghTerr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#12467a" /><stop offset="1" stopColor="#0b1a2e" /></linearGradient>
@@ -66,7 +66,7 @@ export function GuideHero({ go }) {
       </svg>
 
       {/* content */}
-      <div style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "34px 20px 30px", width: "100%" }}>
+      <div className="guide-hero-content" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "34px 20px 30px", width: "100%" }}>
         <div style={{ animation: "guideRise .6s ease both" }}><Eyebrow><span style={{ color: c.gold }}>Local's Guide</span></Eyebrow></div>
         <h1 style={{ color: "#fff", fontSize: "clamp(28px,4.4vw,46px)", fontWeight: 800, letterSpacing: -1.4, lineHeight: 1.04, margin: "4px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)", animation: "guideRise .6s .06s both" }}>
           Costa Rica, <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>region by region</span>

@@ -39,7 +39,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
   return (
     <>
       {/* ══ CINEMATIC HERO ══ Tico perched over his coast, with his résumé ══ */}
-      <div style={{ position: "relative", overflow: "hidden", minHeight: "min(88vh, 780px)", display: "flex", alignItems: "center" }}>
+      <div className="meet-tico-hero" style={{ position: "relative", overflow: "hidden", minHeight: "min(88vh, 780px)", display: "flex", alignItems: "center" }}>
         {/* live cross-fading Costa Rica backdrop — HIS world */}
         {slides.map((s, i) => (
           <div key={i} aria-hidden style={{
@@ -79,7 +79,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
             <p style={{ color: "rgba(243,247,255,.9)", fontSize: "clamp(16px,2vw,18px)", lineHeight: 1.55, margin: "18px 0 0", maxWidth: 520, animation: "ticoRise .5s .2s both" }}>
               I'm Rico the Tico — a scarlet macaw who's flown every metre of this coast. I don't guess. I <b style={{ color: "#fff" }}>know</b> — the tides, the seasons, the wildlife, every honest guide. Now that mind works for you.
             </p>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 24, animation: "ticoRise .5s .28s both" }}>
+            <div className="mobile-cta-row" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 24, animation: "ticoRise .5s .28s both" }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Plan with me <ArrowRight size={18} /></Button>
               <Button variant="glass" size="lg" onClick={() => go("activities")}>See what I rate</Button>
             </div>
@@ -87,7 +87,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
         </div>
 
         {/* résumé stat strip pinned to the bottom of the hero */}
-        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 3, borderTop: "1px solid rgba(127,166,232,.18)", background: "rgba(11,26,46,.55)", backdropFilter: "blur(10px)" }}>
+        <div className="tico-credential-strip" style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 3, borderTop: "1px solid rgba(127,166,232,.18)", background: "rgba(11,26,46,.55)", backdropFilter: "blur(10px)" }}>
           <div style={{ maxWidth: 1120, margin: "0 auto", padding: "18px 20px", display: "flex", gap: 18, justifyContent: "space-around", flexWrap: "wrap" }}>
             {CREDENTIALS.map((s, i) => <Stat key={s.label} {...s} delay={250 + i * 130} />)}
           </div>

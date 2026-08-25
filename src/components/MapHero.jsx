@@ -34,7 +34,7 @@ function Stat({ to, suffix, label, delay }) {
 // preview of the interactive tool below. Nothing else on the site looks like it.
 export function MapHero() {
   return (
-    <div style={{ position: "relative", overflow: "hidden", minHeight: 440, background: "radial-gradient(130% 120% at 78% 18%, #0e3358 0%, #071a30 55%, #050f1f 100%)", display: "flex", alignItems: "center" }}>
+    <div className="map-hero" style={{ position: "relative", overflow: "hidden", minHeight: 440, background: "radial-gradient(130% 120% at 78% 18%, #0e3358 0%, #071a30 55%, #050f1f 100%)", display: "flex", alignItems: "center" }}>
       <style>{`
         @keyframes mhDraw { to { stroke-dashoffset: 0 } }
         @keyframes mhRoute { to { stroke-dashoffset: 0 } }

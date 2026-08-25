@@ -34,7 +34,7 @@ export function TicoDock({ page, go, lift = false, trip = [] }) {
   };
 
   return (
-    <div style={{ position: "fixed", right: 18, bottom: lift ? 86 : 18, zIndex: 60, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10, transition: "bottom .25s ease" }}>
+    <div className="tico-dock" data-lifted={lift ? "true" : "false"} style={{ position: "fixed", right: 18, bottom: lift ? 86 : 18, zIndex: 60, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10, transition: "bottom .25s ease" }}>
       <style>{`
         @keyframes ticoBob { 0%,100%{ transform: translateY(0) rotate(0) } 50%{ transform: translateY(-4px) rotate(-3deg) } }
         @keyframes ticoPop { from{ opacity:0; transform: translateY(14px) scale(.97) } to{ opacity:1; transform: translateY(0) scale(1) } }
@@ -43,7 +43,7 @@ export function TicoDock({ page, go, lift = false, trip = [] }) {
 
       {/* ── chat window ── */}
       {open && (
-        <div style={{ ...glass, background: "rgba(10,20,40,.95)", borderRadius: 20, width: "min(340px, calc(100vw - 32px))", boxShadow: "0 30px 70px -28px rgba(0,0,0,.95)", animation: "ticoPop .28s cubic-bezier(.2,.7,.2,1) both", overflow: "hidden", display: "flex", flexDirection: "column", maxHeight: "min(560px, calc(100vh - 120px))" }}>
+        <div className="tico-chat-window" role="dialog" aria-label="Chat with Rico" style={{ ...glass, background: "rgba(10,20,40,.95)", borderRadius: 20, width: "min(340px, calc(100vw - 32px))", boxShadow: "0 30px 70px -28px rgba(0,0,0,.95)", animation: "ticoPop .28s cubic-bezier(.2,.7,.2,1) both", overflow: "hidden", display: "flex", flexDirection: "column", maxHeight: "min(560px, calc(100vh - 120px))" }}>
           {/* header */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderBottom: `1px solid ${c.line}`, background: "linear-gradient(135deg, rgba(34,211,238,.12), transparent)" }}>
             <TicoAvatar size={34} mood="happy" />

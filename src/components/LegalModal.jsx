@@ -37,8 +37,8 @@ export function LegalModal({ kind, onClose }) {
   const sections = isTerms ? TERMS : PRIVACY;
 
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(5,12,26,.75)", backdropFilter: "blur(6px)", display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 14px" }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ ...glass, background: "rgba(10,20,40,.97)", borderRadius: 22, width: "min(640px,100%)", boxShadow: "0 40px 100px -40px rgba(0,0,0,.95)", overflow: "hidden" }}>
+    <div className="legal-modal-backdrop" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(5,12,26,.75)", backdropFilter: "blur(6px)", display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 14px" }}>
+      <div className="legal-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()} style={{ ...glass, background: "rgba(10,20,40,.97)", borderRadius: 22, width: "min(640px,100%)", boxShadow: "0 40px 100px -40px rgba(0,0,0,.95)", overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "18px 20px", borderBottom: `1px solid ${c.line}`, background: "linear-gradient(135deg, rgba(34,211,238,.1), transparent)" }}>
           <div>
             <div style={{ color: "#fff", fontWeight: 800, fontSize: 18 }}>{title}</div>
