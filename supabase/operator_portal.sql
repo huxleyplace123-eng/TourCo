@@ -206,7 +206,8 @@ create trigger on_operator_auth_user_created after insert on auth.users
 
 -- Team-only approval for a public application. This creates the company,
 -- links the applicant as owner, and opens the portal atomically.
-create or replace function public.approve_operator_application(application_id uuid)
+drop function if exists public.approve_operator_application(uuid);
+create or replace function public.approve_operator_application(application_id uuid, notes text default '')
 returns text language plpgsql security definer set search_path = public as $$
 declare
   app public.operator_applications%rowtype;
@@ -222,11 +223,34 @@ begin
   on conflict (id) do update set status='active', updated_at=now();
   insert into public.operator_memberships (operator_id,user_id,role) values (new_operator_id,app.user_id,'owner') on conflict do nothing;
   insert into public.operator_portal_state (operator_id,state) values (new_operator_id,jsonb_build_object('profile',jsonb_build_object('name',app.company_name,'email',app.email,'phone',app.phone,'whatsapp',app.whatsapp,'website',app.website,'blurb',app.description))) on conflict do nothing;
-  update public.operator_applications set status='approved',reviewed_at=now(),reviewed_by=auth.uid(),updated_at=now() where id=application_id;
+  update public.operator_applications set status='approved',review_notes=coalesce(notes,''),reviewed_at=now(),reviewed_by=auth.uid(),updated_at=now() where id=application_id;
   return new_operator_id;
 end; $$;
 
-grant execute on function public.approve_operator_application(uuid) to authenticated;
+grant execute on function public.approve_operator_application(uuid,text) to authenticated;
+
+-- Team-only non-approval decisions keep review state consistent. Approval has
+-- its own RPC because it also creates the operator and membership atomically.
+create or replace function public.review_operator_application(
+  application_id uuid,
+  next_status text,
+  notes text default ''
+) returns text language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_team_member() then raise exception 'Not authorized'; end if;
+  if next_status not in ('needs_changes','declined') then raise exception 'Invalid review status'; end if;
+  update public.operator_applications
+  set status = next_status,
+      review_notes = coalesce(notes, ''),
+      reviewed_at = now(),
+      reviewed_by = auth.uid(),
+      updated_at = now()
+  where id = application_id;
+  if not found then raise exception 'Application not found'; end if;
+  return next_status;
+end; $$;
+
+grant execute on function public.review_operator_application(uuid,text,text) to authenticated;
 
 -- Team-only invitation for an operator that already exists in the CRM. The
 -- portal signup trigger links the account only when the signup email matches.
@@ -243,7 +267,7 @@ begin
   insert into public.operators(id,name,email,status)
   values(requested_operator_id,company_name,lower(invite_email),'invited')
   on conflict(id) do update set name=excluded.name,email=excluded.email,updated_at=now();
-  update public.operator_invites set expires_at=now()
+  update public.operator_invites set expires_at=now(), accepted_at=now()
     where lower(email)=lower(invite_email) and accepted_at is null;
   insert into public.operator_invites(operator_id,email,role,invited_by)
   values(requested_operator_id,lower(invite_email),member_role,auth.uid()) returning id into invite_id;

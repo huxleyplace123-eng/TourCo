@@ -2,11 +2,12 @@ import { useState } from "react";
 import Login, { AUTH_KEY } from "./Login.jsx";
 import App from "./App.jsx";
 import OperatorsApp from "./OperatorsApp.jsx";
+import ApplicationsApp from "./ApplicationsApp.jsx";
 
 const WS_KEY = "ticowild_crm_workspace";
 
-// Auth gate + workspace routing. Customers and Operators are two views of the
-// same CRM behind one sign-in.
+// Auth gate + workspace routing. Customer sales, operator outreach, and live
+// partner applications share the CRM while approvals require staff auth.
 export default function Root() {
   const [signedIn, setSignedIn] = useState(() => localStorage.getItem(AUTH_KEY) === "1");
   const [workspace, setWorkspaceState] = useState(() => localStorage.getItem(WS_KEY) || "customers");
@@ -21,7 +22,9 @@ export default function Root() {
   };
 
   if (!signedIn) return <Login onSuccess={() => setSignedIn(true)} />;
-  return workspace === "operators" ? (
+  return workspace === "applications" ? (
+    <ApplicationsApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
+  ) : workspace === "operators" ? (
     <OperatorsApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
   ) : (
     <App workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
