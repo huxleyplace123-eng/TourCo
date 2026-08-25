@@ -6,6 +6,8 @@ const index = read("index.html");
 const main = read("src/main.jsx");
 const app = read("src/App.jsx");
 const css = read("src/mobile.css");
+const activities = read("src/pages/Activities.jsx");
+const activityCards = read("src/components/ActivityBrowseCard.jsx");
 
 assert.match(index, /width=device-width, initial-scale=1, viewport-fit=cover/);
 assert.match(index, /button:not\(\.tn-dot\):not\(\.tn-pin\)/);
@@ -44,5 +46,25 @@ const publicPages = [
 for (const page of publicPages) {
   assert.ok(app.includes(`page === "${page}"`), `public page ${page} is not covered by the shared mobile shell`);
 }
+
+assert.match(
+  activities,
+  /\.activity-worlds\{display:grid;grid-template-columns:minmax\(0,1fr\)/,
+  "activity collections must become a single-column mobile grid",
+);
+assert.match(
+  activities,
+  /\.activity-world-cta\{width:100%;min-height:46px/,
+  "activity collection actions must remain full width and touch friendly",
+);
+assert.ok(
+  !activities.includes("flex:0 0 84vw"),
+  "activity collection cards must not return to the cramped partial-width carousel",
+);
+assert.match(
+  activityCards,
+  /@media \(max-width: 380px\)[\s\S]*?\.tn-activity-browse-card__actions \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\)/,
+  "activity card actions must stack on narrow phones",
+);
 
 console.log(`Mobile contract passed for ${publicPages.length} public page states.`);

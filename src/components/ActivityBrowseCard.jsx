@@ -411,6 +411,19 @@ const CARD_STYLES = `
     }
   }
 
+  @media (max-width: 380px) {
+    .tn-activity-browse-card__actions {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .tn-activity-browse-card__details {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 12px;
+      border: 1px solid rgba(127, 166, 232, .18);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .tn-activity-browse-card,
     .tn-activity-browse-card__details {
