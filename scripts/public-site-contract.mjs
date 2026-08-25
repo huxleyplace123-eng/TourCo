@@ -23,6 +23,8 @@ assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a s
 assert.match(home, /How it works/);
 assert.match(home, /Confirm before you pay/);
 assert.match(home, /Here’s what happens next/);
+assert.match(home, /themedSlides\("activities", 1000\)\.slice\(0, 3\)/, "the homepage should keep a restrained three-image inspiration collage");
+assert.match(home, /className="home-story-images"/);
 assert.match(home, /home-support-copy h2\{color:#fff;font-size:clamp\(26px,3vw,38px\)/, "the supporting section must stay visually below the hero");
 assert.match(home, /home-band-how \.home-chapter\{display:none\}/, "the first mobile support section must not repeat hero framing");
 assert.match(home, /One plan, built around you/);

@@ -53,6 +53,8 @@ for (const page of publicPages) {
 
 assert.match(css, /site-section:not\(\.home-band\) \+ \.site-section:not\(\.home-band\)/, "adjacent mobile sections need a visible pause");
 assert.match(activities, /activity-collection-section\+\.activity-collection-section/, "activity collections need chapter breaks on mobile");
+assert.match(activities, /activity-mosaic-heading h2\{font-size:22px/, "the second Activities section must read as supporting content on mobile");
+assert.equal(activities.includes("gradText"), false, "the second Activities section must not repeat the hero gradient headline");
 assert.match(ticoRanked, /className="rico-stars"/, "ranked ratings need a stable mobile star row");
 assert.match(ticoRanked, /lineHeight: 0/, "star icons must not be clipped by the inline text baseline");
 assert.match(ticoRanked, /position: "absolute", inset: 0, display: "block", maxWidth: "none"/, "partial star fills must stay aligned with their full star");
