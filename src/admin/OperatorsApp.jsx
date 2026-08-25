@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle, BadgeCheck, ExternalLink, Globe, Mail, MessageCircle, Phone,
-  Plus, Search, X, ChevronDown, ChevronUp, Star, Eye, Send, Upload,
+  Plus, Search, X, ChevronDown, ChevronUp, Star, Eye, Send, Upload, Link2,
 } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import { addDaysIso, daysFromToday, fmtDate, normPhone, todayIso } from "./store.js";
@@ -816,6 +816,7 @@ function AgreementStatus({ op }) {
 // ── Operator drawer ───────────────────────────────────────────────────────────
 function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPortal, onClose }) {
   const [noteDraft, setNoteDraft] = useState("");
+  const [partnerLinkCopied, setPartnerLinkCopied] = useState(false);
   const tours = useMemo(() => TOUR_SEED.filter((t) => t.operatorId === op.id), [op.id]);
   const prog = checklistProgress(op.checklist);
   const notes = [...(op.notes || [])].reverse();
@@ -827,6 +828,14 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
     color, fontFamily: FONT, fontSize: 13, fontWeight: 700, textDecoration: "none",
     cursor: "pointer", opacity: enabled ? 1 : 0.4, pointerEvents: enabled ? "auto" : "none",
   });
+  const copyPartnerLink = async () => {
+    const link = new URL("/partners/", window.location.origin);
+    link.searchParams.set("company", op.name);
+    if (op.email) link.searchParams.set("email", op.email);
+    await navigator.clipboard.writeText(link.toString());
+    setPartnerLinkCopied(true);
+    window.setTimeout(() => setPartnerLinkCopied(false), 1800);
+  };
 
   return (
     <>
@@ -871,6 +880,10 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
           <button onClick={onPreviewPortal}
             style={{ marginTop: 10, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "11px", borderRadius: radius.sm, border: `1px solid ${c.teal}`, background: "rgba(34,211,238,.1)", color: c.teal, fontFamily: FONT, fontSize: 13.5, fontWeight: 800, cursor: "pointer" }}>
             <Eye size={16} /> Preview partner portal
+          </button>
+          <button onClick={copyPartnerLink}
+            style={{ marginTop: 8, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.035)", color: partnerLinkCopied ? "#34D399" : c.stone, fontFamily: FONT, fontSize: 12.5, fontWeight: 800, cursor: "pointer" }}>
+            <Link2 size={15} /> {partnerLinkCopied ? "Partner signup link copied" : "Copy partner signup link"}
           </button>
         </div>
 

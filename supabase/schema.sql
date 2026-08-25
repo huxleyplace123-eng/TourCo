@@ -71,7 +71,9 @@ create policy "own messages"  on public.messages for all using (auth.uid() = use
 -- Auto-create a profile row on signup.
 create or replace function public.handle_new_user() returns trigger language plpgsql security definer as $$
 begin
-  insert into public.profiles (id, email) values (new.id, new.email) on conflict do nothing;
+  if coalesce(new.raw_user_meta_data ->> 'account_type', '') <> 'operator' then
+    insert into public.profiles (id, email) values (new.id, new.email) on conflict do nothing;
+  end if;
   return new;
 end; $$;
 drop trigger if exists on_auth_user_created on auth.users;

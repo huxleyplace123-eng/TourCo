@@ -5,6 +5,9 @@ Costa Rica adventure concierge. Vetted local tours, transparent pricing (20% dep
 ## What's here
 
 - **`index.html`** — the complete, self-contained app. It bundles a React 18 single-page app inline (no build step, no dependencies to install). Open it in a browser or serve the folder and it runs.
+- **`/admin/`** — the internal TicoWild CRM.
+- **`/my/`** — the customer trip portal.
+- **`/partners/`** — operator applications, onboarding, and the Partner Center. See `docs/PARTNER_CENTER.md`.
 
 ## Run it locally
 
