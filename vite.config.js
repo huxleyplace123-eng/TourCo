@@ -10,6 +10,7 @@ const r = (p) => fileURLToPath(new URL(p, import.meta.url));
 //   /        → the TicoWild customer site (index.html)
 //   /admin/  → the internal TicoWild CRM (admin/index.html)
 //   /my/     → the customer portal — log in, see your trip (my/index.html)
+//   /partners/ → operator applications, onboarding, and partner portal
 export default defineConfig({
   plugins: [react()],
   server: { port: 5173, open: true },
@@ -19,6 +20,7 @@ export default defineConfig({
         main: r("index.html"),
         admin: r("admin/index.html"),
         my: r("my/index.html"),
+        partners: r("partners/index.html"),
       },
     },
   },

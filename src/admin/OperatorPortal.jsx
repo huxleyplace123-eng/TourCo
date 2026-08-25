@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import {
   Home, CalendarDays, Ticket, MessageCircle, Building2, ShieldCheck, X,
   Phone, MapPin, Users, Check, ChevronLeft, ChevronRight, Upload, Send, Globe, Mail,
-  Pencil, Plus, Trash2, Clock, Tag,
+  Pencil, Plus, Trash2, Clock, Tag, LogOut,
 } from "lucide-react";
 import { c, FONT, radius, shadow, grad, gradFor, gradText } from "../theme.js";
 import { fmtDate } from "./store.js";
@@ -39,13 +39,30 @@ const TABS = [
   { key: "business", label: "My Business", Icon: Building2 },
 ];
 
-export default function OperatorPortal({ op, onExit }) {
+const portalDefaults = (p = {}) => ({
+  availability: p.availability || {},
+  messages: p.messages || [],
+  agreement: p.agreement || { status: "Not sent" },
+  bookingResponses: p.bookingResponses || {},
+  profile: p.profile || {},
+  tourOverrides: p.tourOverrides || {},
+  customTours: p.customTours || [],
+});
+
+export default function OperatorPortal({
+  op, onExit, mode = "preview", role = "owner", initialPortal,
+  assignedBookings, onPortalChange, demo = false,
+}) {
   const [tab, setTab] = useState("home");
-  const [portal, setPortal] = useState(() => loadPortal(op.id));
-  const sync = () => setPortal(loadPortal(op.id));
+  const partnerMode = mode === "partner";
+  const [portal, setPortal] = useState(() => portalDefaults(initialPortal || loadPortal(op.id)));
+  const sync = () => setPortal(portalDefaults(loadPortal(op.id)));
 
   const tours = useMemo(() => TOUR_SEED.filter((t) => t.operatorId === op.id), [op.id]);
-  const bookings = useMemo(() => sampleBookings(op, tours), [op.id, tours]);
+  const bookings = useMemo(
+    () => assignedBookings ?? sampleBookings(op, tours),
+    [assignedBookings, op.id, tours],
+  );
 
   // The operator's editable tour list = seed tours with their overrides applied
   // (hidden ones dropped) + any tours they've added themselves.
@@ -68,7 +85,20 @@ export default function OperatorPortal({ op, onExit }) {
   const prof = effectiveProfile(op, portal.profile);
   const typeMeta = operatorType(op.type);
 
-  const patch = (p) => { patchPortal(op.id, p); sync(); };
+  const patch = (p) => {
+    const next = portalDefaults({ ...portal, ...p });
+    setPortal(next);
+    if (onPortalChange) onPortalChange(next);
+    else { patchPortal(op.id, p); sync(); }
+  };
+  const sendMessage = (text) => {
+    if (onPortalChange) {
+      patch({ messages: [...portal.messages, { id: `m_${Date.now().toString(36)}`, from: "operator", text, at: new Date().toISOString() }] });
+    } else {
+      addMessage(op.id, "operator", text);
+      sync();
+    }
+  };
   // A day counts as "open" if it has at least one open hour slot.
   const availableDays = Object.values(portal.availability).filter((day) => day && typeof day === "object" && Object.values(day).includes("open")).length;
   const unread = portal.messages.filter((m) => m.from === "team").length;
@@ -92,9 +122,16 @@ export default function OperatorPortal({ op, onExit }) {
       `}</style>
 
       {/* preview banner */}
-      <div className="opp-preview" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "6px 12px", fontSize: 12.5, fontWeight: 700, color: c.gold, borderBottom: `1px solid ${c.line}` }}>
-        👁 Preview — this is exactly what {prof.name} sees in their portal
-      </div>
+      {!partnerMode && (
+        <div className="opp-preview" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "6px 12px", fontSize: 12.5, fontWeight: 700, color: c.gold, borderBottom: `1px solid ${c.line}` }}>
+          👁 Preview — this is exactly what {prof.name} sees in their portal
+        </div>
+      )}
+      {partnerMode && demo && (
+        <div className="opp-preview" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: c.gold, borderBottom: `1px solid ${c.line}` }}>
+          Preview account · connect Supabase to activate real partner data
+        </div>
+      )}
 
       {/* app bar */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px clamp(14px,4vw,26px)", borderBottom: `1px solid ${c.line}`, background: c.canvas2 }}>
@@ -102,11 +139,11 @@ export default function OperatorPortal({ op, onExit }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 800, fontSize: 16, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{prof.name}</div>
           <div style={{ color: c.stone, fontSize: 12, fontWeight: 600 }}>
-            <span style={{ color: c.gold }}>Tico</span>Wild Partner · {typeMeta.emoji} {typeMeta.label}
+            <span style={{ color: c.gold }}>Tico</span>Wild Partner · {typeMeta.emoji} {typeMeta.label}{partnerMode ? ` · ${role}` : ""}
           </div>
         </div>
         <button onClick={onExit} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.05)", color: c.charcoal, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
-          <X size={15} /> Exit preview
+          {partnerMode ? <LogOut size={15} /> : <X size={15} />} {partnerMode ? "Sign out" : "Exit preview"}
         </button>
       </div>
 
@@ -135,7 +172,7 @@ export default function OperatorPortal({ op, onExit }) {
           {tab === "calendar" && <CalendarTab availability={portal.availability} bookings={calBookings} onSetSlot={(date, hour, cur) => patch({ availability: applySlot(portal.availability, date, hour, cur) })} availableDays={availableDays} />}
           {tab === "bookings" && <BookingsTab bookings={bookings} responses={portal.bookingResponses} onRespond={(id, r) => patch({ bookingResponses: { ...portal.bookingResponses, [id]: r } })} />}
           {tab === "tours" && <ToursTab tours={effTours} takeRate={op.takeRate} onEdit={editTour} onAdd={addTour} onDelete={deleteTour} />}
-          {tab === "messages" && <MessagesTab messages={portal.messages} onSend={(t) => { addMessage(op.id, "operator", t); sync(); }} name={prof.name} />}
+          {tab === "messages" && <MessagesTab messages={portal.messages} onSend={sendMessage} name={prof.name} />}
           {tab === "business" && <BusinessTab prof={prof} agreement={portal.agreement} onSave={(profile) => patch({ profile: { ...portal.profile, ...profile } })} onSign={(name) => patch({ agreement: { status: "Signed", signedName: name, signedAt: new Date().toISOString() } })} />}
         </div>
       </div>
