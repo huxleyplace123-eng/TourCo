@@ -54,8 +54,18 @@ assert.match(
 );
 assert.match(
   activities,
-  /\.activity-world-cta\{width:100%;min-height:46px/,
-  "activity collection actions must remain full width and touch friendly",
+  /\.activity-world-card\{width:100%;height:172px;min-height:172px/,
+  "activity collection cards must stay compact on phones",
+);
+assert.match(
+  activities,
+  /\.activity-world-copy>span:nth-of-type\(2\)\{display:none\}/,
+  "activity collection descriptions must not crowd compact phone cards",
+);
+assert.match(
+  activities,
+  /\.activity-world-cta\{width:auto;min-height:0;/,
+  "activity collection actions must remain visually lightweight on phones",
 );
 assert.ok(
   !activities.includes("flex:0 0 84vw"),
