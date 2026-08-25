@@ -143,9 +143,9 @@ export function InsiderGuide({ go, trip = [] }) {
       <CollectionOverview />
       <BookingLayer go={go} saved={saved} />
 
-      <div id="insider-dining" className="insider-anchor"><Restaurants go={go} embedded /></div>
-      <div id="insider-coast" className="insider-anchor"><Guide go={go} embedded /></div>
-      <div id="insider-savings" className="insider-anchor"><Deals go={go} trip={trip} embedded /></div>
+      <div id="insider-dining" className="insider-anchor" data-mobile-title="Eat & drink"><Restaurants go={go} embedded /></div>
+      <div id="insider-coast" className="insider-anchor" data-mobile-title="Beaches & regions"><Guide go={go} embedded /></div>
+      <div id="insider-savings" className="insider-anchor" data-mobile-title="Deals & local savings"><Deals go={go} trip={trip} embedded /></div>
 
       <Section bg={c.sand} pad={56}>
         <div style={{ textAlign: "center", maxWidth: 720, margin: "0 auto" }}>

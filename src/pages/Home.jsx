@@ -1,9 +1,7 @@
 import React from "react";
 import { ArrowRight, CalendarCheck, Check, Compass, MapPin, MessageCircle, Route, ShieldCheck, Sparkles, Sun, Waves } from "lucide-react";
-import { c, grad, glass } from "../theme.js";
-import { activities } from "../data.js";
-import { Button, Section, SectionHead } from "../components/ui.jsx";
-import { ActivityCard } from "../components/ActivityCard.jsx";
+import { c } from "../theme.js";
+import { Button, Section } from "../components/ui.jsx";
 import { Reveal } from "../motion.jsx";
 import { CinematicHero } from "../components/CinematicHero.jsx";
 import { useConversion } from "../components/ConversionCenter.jsx";
@@ -36,8 +34,7 @@ function Chapter({ number, label }) {
   );
 }
 
-export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
-  const featured = activities.slice(0, 4);
+export function Home({ go, startPlan }) {
   const { openConcierge } = useConversion();
 
   return (
@@ -64,18 +61,15 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
           <div className="home-intro" style={{ display: "grid", gridTemplateColumns: "minmax(0,.8fr) minmax(0,1.2fr)", gap: "clamp(30px,6vw,78px)", alignItems: "start" }}>
             <div>
               <div style={{ color: c.teal, fontWeight: 800, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase" }}>How TicoWild works</div>
-              <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.7vw,48px)", lineHeight: 1.04, letterSpacing: -1.5, margin: "10px 0 14px" }}>A better trip starts with fewer, better choices.</h2>
-              <p style={{ color: c.stone, lineHeight: 1.7, fontSize: 16.5, margin: 0 }}>You do not need another list of hundreds of tours. Tell us where you are staying and we will help you choose experiences that actually fit the trip.</p>
+              <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.7vw,48px)", lineHeight: 1.04, letterSpacing: -1.5, margin: "10px 0 14px" }}>Stop building your trip from twenty open tabs.</h2>
+              <p style={{ color: c.stone, lineHeight: 1.7, fontSize: 16.5, margin: 0 }}>TicoWild turns where you’re staying, who you’re traveling with and how you want the trip to feel into one plan you can actually follow.</p>
             </div>
             <div className="home-steps" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
               {STEPS.map(({ icon: Icon, number, title, body }) => (
-                <div key={number} style={{ ...glass, borderRadius: 20, padding: 20, minHeight: 210, display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ width: 42, height: 42, borderRadius: 13, background: "rgba(34,211,238,.12)", color: c.teal, display: "grid", placeItems: "center" }}><Icon size={20} /></span>
-                    <span style={{ color: "rgba(255,255,255,.22)", fontSize: 25, fontWeight: 800 }}>{number}</span>
-                  </div>
-                  <h3 style={{ color: "#fff", fontSize: 16.5, lineHeight: 1.25, margin: "22px 0 8px" }}>{title}</h3>
-                  <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.55, margin: 0 }}>{body}</p>
+                <div className="home-step-line" key={number}>
+                  <div className="home-step-number"><Icon size={18} /><span>{number}</span></div>
+                  <h3>{title}</h3>
+                  <p>{body}</p>
                 </div>
               ))}
             </div>
@@ -83,43 +77,27 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
         </Reveal>
       </Section>
 
-      <Section className="home-band home-band-discover" bg={c.sand} pad={82}>
-        <Chapter number="02" label="Choose what fits" />
-        <div className="section-action-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12, marginBottom: 28 }}>
-          <SectionHead eyebrow="A short list, not endless scrolling" title="Experiences worth building a day around" accent sub="Each one shows the starting price, location, time needed and who it fits best, so you can decide quickly." />
-          <Button variant="ghost" onClick={() => go("activities")}>See all experiences <ArrowRight size={16} /></Button>
-        </div>
-        <div className="responsive-card-grid home-featured-grid" style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(4,minmax(0,1fr))" }}>
-          {featured.map((activity, index) => (
-            <Reveal key={activity.id} delay={index * 70}>
-              <ActivityCard compact a={activity} onAdd={addToTrip} onView={viewActivity} inTrip={trip.some((item) => item.id === activity.id)} />
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      <Section className="home-band home-band-plan" bg={c.canvas2} pad={86}>
-        <Chapter number="03" label="See the whole day" />
-        <div className="sample-plan" style={{ position: "relative", overflow: "hidden", borderRadius: 30, background: grad.hero, border: `1px solid ${c.line}`, padding: "clamp(24px,5vw,50px)" }}>
-          <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 88% 12%, rgba(255,208,0,.2), transparent 38%), radial-gradient(circle at 8% 88%, rgba(34,211,238,.2), transparent 42%)" }} />
-          <div className="sample-plan-grid" style={{ position: "relative", display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "clamp(28px,6vw,72px)", alignItems: "center" }}>
+      <Section className="home-band home-band-plan" bg={c.sand} pad={92}>
+        <Chapter number="02" label="See the whole trip" />
+        <div className="sample-plan">
+          <div className="sample-plan-grid" style={{ display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "clamp(36px,7vw,86px)", alignItems: "center" }}>
             <Reveal>
               <div>
-                <span style={{ color: c.gold, fontWeight: 800, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase" }}>What planning looks like</span>
+                <span style={{ color: c.teal, fontWeight: 800, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase" }}>One plan, built around you</span>
                 <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.4vw,46px)", lineHeight: 1.05, letterSpacing: -1.4, margin: "10px 0 16px" }}>Three days that feel like a trip, not a checklist.</h2>
-                <p style={{ color: "rgba(255,255,255,.74)", lineHeight: 1.7, fontSize: 16, margin: "0 0 24px" }}>This is the difference: the experiences fit the route, the pace and each other. Your final plan changes around your actual dates and interests.</p>
+                <p style={{ color: c.stone, lineHeight: 1.7, fontSize: 16, margin: "0 0 24px" }}>Instead of choosing isolated tours, you see how the days work together around your route, pace and actual dates.</p>
                 <Button variant="primary" size="lg" onClick={() => go("build")}><Sparkles size={17} />Build my version</Button>
               </div>
             </Reveal>
-            <div style={{ display: "grid", gap: 12 }}>
+            <div className="sample-plan-timeline">
               {SAMPLE_DAYS.map(({ day, icon: Icon, label, title, note }, index) => (
                 <Reveal key={day} delay={index * 80}>
-                  <div className="sample-day" style={{ display: "grid", gridTemplateColumns: "64px 1fr", gap: 16, alignItems: "center", background: "rgba(255,255,255,.08)", border: "1px solid rgba(255,255,255,.13)", borderRadius: 18, padding: 16 }}>
-                    <span style={{ width: 54, height: 54, borderRadius: 16, background: index === 1 ? "rgba(255,208,0,.17)" : "rgba(34,211,238,.14)", color: index === 1 ? c.gold : c.teal, display: "grid", placeItems: "center" }}><Icon size={23} /></span>
+                  <div className="sample-day">
+                    <span className="sample-day-icon"><Icon size={19} /></span>
                     <div>
-                      <div style={{ color: c.teal, fontSize: 11.5, fontWeight: 800, letterSpacing: ".05em", textTransform: "uppercase" }}>{day} · {label}</div>
-                      <h3 style={{ color: "#fff", fontSize: 17, margin: "4px 0 4px" }}>{title}</h3>
-                      <p style={{ color: "rgba(255,255,255,.62)", fontSize: 13, lineHeight: 1.45, margin: 0 }}>{note}</p>
+                      <div>{day} · {label}</div>
+                      <h3>{title}</h3>
+                      <p>{note}</p>
                     </div>
                   </div>
                 </Reveal>
@@ -129,31 +107,22 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
         </div>
       </Section>
 
-      <Section className="home-band home-band-confirm" bg={c.sand} pad={82}>
-        <Chapter number="04" label="Know before you commit" />
-        <div className="home-trust" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 30, alignItems: "center", padding: "clamp(26px,4vw,40px)", borderRadius: 26, background: "linear-gradient(125deg,rgba(34,211,238,.11),rgba(255,255,255,.035) 55%,rgba(255,208,0,.08))", border: `1px solid ${c.line}` }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, color: c.teal, fontWeight: 800, marginBottom: 8 }}><ShieldCheck size={20} />Clear before you commit</div>
-            <h2 style={{ color: "#fff", fontSize: "clamp(25px,3.8vw,38px)", letterSpacing: -1, margin: "0 0 10px" }}>Availability, timing and the final price are confirmed first.</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "9px 18px", color: c.stone, fontSize: 14 }}>
-              {["No payment in the planning form", "Ask a real person", "Know what happens next"].map((item) => <span key={item} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Check size={14} color={c.teal} />{item}</span>)}
-            </div>
-          </div>
-          <Button variant="ghost" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={17} />Ask a question</Button>
-        </div>
-      </Section>
-
       <Section className="home-band home-band-close" bg={c.canvas2} pad={88}>
-        <div className="closing-cta" style={{ position: "relative", borderRadius: 30, overflow: "hidden", background: grad.hero, padding: "60px 28px", textAlign: "center" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 20% 20%, rgba(255,208,0,.28), transparent 50%)" }} />
-          <div style={{ position: "relative" }}>
-            <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", fontWeight: 800, letterSpacing: -1, margin: 0 }}>Tell us where you’re staying. We’ll help shape the days.</h2>
-            <p style={{ color: "rgba(255,255,255,.78)", fontSize: 17, lineHeight: 1.6, marginTop: 14, maxWidth: 600, marginInline: "auto" }}>Start with a simple plan or ask about one experience. Either way, the details are confirmed before you commit.</p>
-            <div className="mobile-cta-row" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 26 }}>
+        <Chapter number="03" label="Confirm with confidence" />
+        <div className="home-final-grid">
+          <div className="home-final-copy">
+            <div style={{ display: "flex", alignItems: "center", gap: 10, color: c.teal, fontWeight: 800, marginBottom: 10 }}><ShieldCheck size={20} />Clear before you commit</div>
+            <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.5vw,48px)", lineHeight: 1.04, fontWeight: 800, letterSpacing: -1.3, margin: 0 }}>Your trip should feel exciting before you even land.</h2>
+            <p style={{ color: c.stone, fontSize: 17, lineHeight: 1.65, margin: "16px 0 0", maxWidth: 610 }}>Start with two quick choices. TicoWild shapes the days, then confirms availability, timing and the final price before you decide.</p>
+            <div className="home-final-proof">
+              {["Free to plan", "No payment in the planner", "Real details confirmed first"].map((item) => <span key={item}><Check size={15} />{item}</span>)}
+            </div>
+            <div className="mobile-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Plan my Costa Rica days <ArrowRight size={18} /></Button>
               <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask TicoWild</Button>
             </div>
           </div>
+          <div className="home-final-mark" aria-hidden="true"><Compass size={84} /></div>
         </div>
       </Section>
 
@@ -167,13 +136,17 @@ export function Home({ go, addToTrip, trip, viewActivity, startPlan }) {
         .home-band{position:relative;isolation:isolate;border-bottom:1px solid rgba(127,166,232,.13)}
         .home-band:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
         .home-band-how:before{background:radial-gradient(55% 70% at 0% 35%,rgba(34,211,238,.08),transparent 70%)}
-        .home-band-discover:before{background:radial-gradient(45% 65% at 100% 30%,rgba(127,166,232,.09),transparent 70%)}
         .home-band-plan:before{background:linear-gradient(180deg,rgba(255,255,255,.015),transparent 28%,rgba(34,211,238,.025))}
-        .home-band-confirm:before{background:radial-gradient(55% 90% at 50% 100%,rgba(255,208,0,.055),transparent 70%)}
+        .home-band-close:before{background:radial-gradient(55% 90% at 100% 50%,rgba(34,211,238,.14),transparent 68%),radial-gradient(40% 65% at 0% 100%,rgba(255,208,0,.08),transparent 70%)}
         .home-chapter{display:grid;grid-template-columns:auto minmax(34px,72px) auto;align-items:center;gap:12px;width:max-content;margin-bottom:34px;color:${c.stone};text-transform:uppercase;letter-spacing:.13em;font-size:10px;font-weight:900}
         .home-chapter span{color:${c.teal}}.home-chapter i{height:1px;background:linear-gradient(90deg,${c.teal},rgba(34,211,238,.08))}.home-chapter strong{font:inherit;color:${c.stone}}
-        @media(max-width:980px){.home-intro,.sample-plan-grid{grid-template-columns:1fr!important}.home-featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.home-journey-inner{gap:12px}.home-journey-step small{display:none}}
-        @media(max-width:720px){.home-journey{padding:0 16px}.home-journey-inner{min-height:84px;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px}.home-journey-step{display:grid;justify-items:center;text-align:center;gap:5px}.home-journey-step>span{width:30px;height:30px;flex-basis:30px;border-radius:10px}.home-journey-step strong{font-size:11px;line-height:1.15}.home-journey-arrow{width:13px}.home-chapter{margin-bottom:24px}.home-steps{grid-template-columns:1fr!important}.home-steps>div{min-height:0!important}.home-featured-grid{grid-template-columns:1fr!important}.home-featured-grid>*:nth-child(n+3){display:none!important}.home-trust{grid-template-columns:1fr!important}.home-trust button{width:100%}.sample-day{grid-template-columns:52px 1fr!important;padding:14px!important}}
+        .home-step-line{padding:4px 20px 4px 0;border-right:1px solid rgba(127,166,232,.18)}.home-step-line:last-child{border-right:0}.home-step-number{display:flex;align-items:center;gap:10px;color:${c.teal}}.home-step-number span{font-size:11px;font-weight:900;letter-spacing:.1em}.home-step-line h3{color:#fff;font-size:17px;line-height:1.25;margin:18px 0 7px}.home-step-line p{color:${c.stone};font-size:13.5px;line-height:1.55;margin:0}
+        .sample-plan{border-top:1px solid rgba(127,166,232,.18);border-bottom:1px solid rgba(127,166,232,.18);padding:clamp(32px,5vw,54px) 0}
+        .sample-plan-timeline{position:relative}.sample-plan-timeline:before{content:"";position:absolute;left:21px;top:24px;bottom:24px;width:1px;background:linear-gradient(${c.teal},rgba(127,166,232,.18),${c.gold})}
+        .sample-day{position:relative;display:grid;grid-template-columns:44px 1fr;gap:18px;padding:18px 0}.sample-day+.sample-day{border-top:1px solid rgba(127,166,232,.12)}.sample-day-icon{position:relative;z-index:1;width:42px;height:42px;border-radius:50%;background:${c.canvas2};border:1px solid rgba(34,211,238,.35);color:${c.teal};display:grid;place-items:center}.sample-day>div>div{color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.sample-day h3{color:#fff;font-size:17px;margin:4px 0}.sample-day p{color:${c.stone};font-size:13px;line-height:1.5;margin:0}
+        .home-final-grid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:clamp(36px,7vw,96px);align-items:center}.home-final-proof{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:22px;color:${c.stone};font-size:13.5px}.home-final-proof span{display:inline-flex;align-items:center;gap:7px}.home-final-proof svg{color:${c.teal}}.home-final-mark{width:240px;height:240px;border-radius:50%;display:grid;place-items:center;color:#fff;background:radial-gradient(circle at 35% 30%,rgba(255,208,0,.85),rgba(34,211,238,.48) 44%,rgba(11,26,46,.18) 72%);box-shadow:0 40px 100px -42px rgba(34,211,238,.9)}
+        @media(max-width:980px){.home-intro,.sample-plan-grid,.home-final-grid{grid-template-columns:1fr!important}.home-journey-inner{gap:12px}.home-journey-step small{display:none}.home-final-mark{display:none}}
+        @media(max-width:720px){.home-journey{padding:0 16px}.home-journey-inner{min-height:84px;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px}.home-journey-step{display:grid;justify-items:center;text-align:center;gap:5px}.home-journey-step>span{width:30px;height:30px;flex-basis:30px;border-radius:10px}.home-journey-step strong{font-size:11px;line-height:1.15}.home-journey-arrow{width:13px}.home-chapter{margin-bottom:24px}.home-steps{grid-template-columns:1fr!important;gap:0!important}.home-step-line{display:grid;grid-template-columns:42px 1fr;padding:22px 0;border-right:0;border-bottom:1px solid rgba(127,166,232,.15)}.home-step-line:last-child{border-bottom:0}.home-step-number{grid-row:1 / span 2;align-self:start;display:grid;justify-items:center;gap:4px}.home-step-line h3{margin:0 0 6px}.home-step-line p{margin:0}.sample-plan{padding:30px 0}.sample-day{grid-template-columns:40px 1fr;gap:14px}.sample-day-icon{width:40px;height:40px}.home-final-proof{display:grid;gap:10px}}
       `}</style>
     </>
   );

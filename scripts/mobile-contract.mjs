@@ -34,6 +34,9 @@ for (const contract of [
   ".package-drawer",
   ".agreement-modal",
   ".footer-grid",
+  ".deals-chapter-head",
+  ".insider-anchor",
+  ".mobile-break-grid",
 ]) {
   assert.ok(css.includes(contract), `mobile contract missing ${contract}`);
 }
@@ -46,6 +49,9 @@ const publicPages = [
 for (const page of publicPages) {
   assert.ok(app.includes(`page === "${page}"`), `public page ${page} is not covered by the shared mobile shell`);
 }
+
+assert.match(css, /site-section:not\(\.home-band\) \+ \.site-section:not\(\.home-band\)/, "adjacent mobile sections need a visible pause");
+assert.match(activities, /activity-collection-section\+\.activity-collection-section/, "activity collections need chapter breaks on mobile");
 
 assert.match(
   activities,

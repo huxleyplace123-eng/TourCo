@@ -17,13 +17,14 @@ const publicSource = ["src/App.jsx", ...walk("src/components"), ...walk("src/pag
 assert.equal(publicSource.includes("window.alert("), false, "public conversion actions must never fall back to prototype alerts");
 
 const home = read("src/pages/Home.jsx");
-assert.match(home, /activities\.slice\(0, 4\)/, "homepage should keep the featured catalog deliberately small");
+assert.equal(home.includes("ActivityCard"), false, "homepage should promote one journey instead of repeating the activity catalog");
 assert.equal(home.includes("TodaySection"), false, "homepage should not repeat the separate Today catalog");
 assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a second ranked catalog");
 assert.match(home, /How TicoWild works/);
 assert.match(home, /Confirm before you pay/);
-assert.match(home, /Choose what fits/);
-assert.match(home, /Know before you commit/);
+assert.match(home, /Stop building your trip from twenty open tabs/);
+assert.match(home, /One plan, built around you/);
+assert.match(home, /Your trip should feel exciting before you even land/);
 
 const app = read("src/App.jsx");
 assert.match(app, /routeFromPath\(window\.location\.pathname\)/, "public pages must restore state from a real URL");

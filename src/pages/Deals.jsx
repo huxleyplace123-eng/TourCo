@@ -129,7 +129,7 @@ export function Deals({ go, trip, embedded = false }) {
         )}
 
         {/* listed deals + codes */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+        <div className="deals-chapter-head deals-chapter-head-listed" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
           <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 800, margin: 0 }}>Deals & promo codes</h2>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(34,211,238,.1)", border: "1px solid rgba(34,211,238,.25)", color: c.teal, padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 800 }}>
             <ShieldCheck size={13} />CONFIRM DETAILS BEFORE REDEMPTION
@@ -145,19 +145,19 @@ export function Deals({ go, trip, embedded = false }) {
             }}>{dt.label}</button>
           ))}
         </div>
-        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(230px,1fr))" }}>
+        <div className="mobile-break-grid" style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(230px,1fr))" }}>
           {rest.map((d, i) => <Reveal key={d.id} delay={(i % 4) * 50}><DealCard d={d} /></Reveal>)}
         </div>
 
         {/* Free & nearly-free */}
-        <div id={embedded ? "insider-free" : undefined} style={{ display: "flex", alignItems: "center", gap: 10, margin: "40px 0 16px", scrollMarginTop: 126 }}>
+        <div id={embedded ? "insider-free" : undefined} className="deals-chapter-head" style={{ display: "flex", alignItems: "center", gap: 10, margin: "40px 0 16px", scrollMarginTop: 126 }}>
           <span style={{ width: 40, height: 40, borderRadius: 11, background: "rgba(55,227,107,.14)", border: "1px solid rgba(55,227,107,.3)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Gift size={19} color="#37E36B" /></span>
           <div>
             <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 800, margin: 0 }}>Free & nearly-free</h2>
             <div style={{ color: c.stone, fontSize: 13 }}>The best value in Costa Rica — that nobody advertises.</div>
           </div>
         </div>
-        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
+        <div className="mobile-break-grid" style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
           {freeThings.map((f, i) => (
             <Reveal key={f.id} delay={(i % 3) * 55}>
               <div style={{ background: c.white, borderRadius: 16, overflow: "hidden", border: `1px solid ${c.line}`, height: "100%", display: "flex", flexDirection: "column" }}>
@@ -177,14 +177,14 @@ export function Deals({ go, trip, embedded = false }) {
         </div>
 
         {/* Money-saving tips */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "40px 0 16px" }}>
+        <div className="deals-chapter-head" style={{ display: "flex", alignItems: "center", gap: 10, margin: "40px 0 16px" }}>
           <span style={{ width: 40, height: 40, borderRadius: 11, background: "rgba(255,208,0,.14)", border: "1px solid rgba(255,208,0,.3)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><PiggyBank size={19} color={c.gold} /></span>
           <div>
             <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 800, margin: 0 }}>Local money-saving tips</h2>
             <div style={{ color: c.stone, fontSize: 13 }}>How Ticos actually stretch a trip.</div>
           </div>
         </div>
-        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
+        <div className="mobile-break-grid" style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
           {moneyTips.map((m, i) => (
             <Reveal key={m.id} delay={(i % 3) * 55}>
               <div style={{ background: c.surface2, borderRadius: 16, padding: 18, height: "100%", display: "flex", gap: 12 }}>

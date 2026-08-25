@@ -396,7 +396,9 @@ export function Activities({ addToTrip, trip, viewActivity }) {
           .activity-filter-panel{padding:4px 14px 14px}
           .activity-filter-fields{grid-template-columns:1fr}
           .activity-filter-options{align-items:flex-start;flex-direction:column;gap:10px}
-          .activity-collection-section{padding:52px 16px 8px;scroll-margin-top:138px;contain-intrinsic-size:0 1100px}
+          .activity-collection-section{padding:58px 16px 18px;scroll-margin-top:138px;contain-intrinsic-size:0 1100px;border-radius:24px}
+          .activity-collection-section+.activity-collection-section{margin-top:28px;padding-top:76px;border-top:20px solid #071827;box-shadow:inset 0 1px rgba(127,166,232,.18)}
+          .activity-collection-section:nth-of-type(even){background:linear-gradient(180deg,rgba(127,166,232,.055),rgba(255,255,255,.012))}
           .activity-collection-heading{grid-template-columns:44px minmax(0,1fr);gap:12px;margin-bottom:22px}
           .activity-collection-mark{width:44px;height:44px;border-radius:14px}
           .activity-collection-heading h2{font-size:30px;line-height:1.04}
