@@ -87,8 +87,8 @@ export function Why({ go }) {
 
       <Section bg={c.sand} pad={68}>
         <div style={{ borderRadius: 28, background: grad.hero, padding: "clamp(28px,5vw,54px)", textAlign: "center" }}>
-          <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", margin: 0, letterSpacing: -1.2 }}>Start with the place you’re staying.</h2>
-          <p style={{ color: "rgba(255,255,255,.75)", fontSize: 16.5, lineHeight: 1.65, maxWidth: 560, margin: "13px auto 24px" }}>The planner takes it from there. If you would rather talk first, ask TicoWild a question.</p>
+          <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", margin: 0, letterSpacing: -1.2 }}>Start with the trip you want to remember.</h2>
+          <p style={{ color: "rgba(255,255,255,.75)", fontSize: 16.5, lineHeight: 1.65, maxWidth: 560, margin: "13px auto 24px" }}>Choose the feeling first. Your destination and dates come next, once the plan has a direction.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
             <Button variant="primary" size="lg" onClick={() => go("build")}>Build my plan <ArrowRight size={18} /></Button>
             <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask TicoWild</Button>

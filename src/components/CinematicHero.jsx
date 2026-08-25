@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowRight, Compass, Heart, ChevronDown, ShieldCheck, Sparkles, Route } from "lucide-react";
+import { ArrowRight, ChevronDown, Compass, Heart, ShieldCheck, Sparkles, Route } from "lucide-react";
 import { c, grad, glass, gradText } from "../theme.js";
 import { themedSlides } from "../images.js";
-import { Button, Field } from "./ui.jsx";
+import { Button } from "./ui.jsx";
 import { Magnetic } from "../motion.jsx";
 
 // Vivid, fishing-forward home backdrop — distinct from the Meet Tico hero.
@@ -16,8 +16,7 @@ function timeGrade(hour) {
   return { accent: "#7DD3FC", label: "Good evening" };
 }
 
-export function CinematicHero({ go, onStartPlan }) {
-  const [plan, setPlan] = useState({ dest: "Manuel Antonio", arrival: "", departure: "", group: "2", type: "Couple / Honeymoon" });
+export function CinematicHero({ go }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
   const [hour, setHour] = useState(12);
@@ -47,19 +46,7 @@ export function CinematicHero({ go, onStartPlan }) {
   // Scroll-scrub: image scales up + fades as you scroll past the hero.
   const scrub = Math.min(1, scrollY / 700);
 
-  const beginPlan = () => {
-    if (onStartPlan) onStartPlan(plan);
-    else go("build");
-  };
-
-  const selectStyle = { width: "100%", border: `1.5px solid ${c.line}`, borderRadius: 12, padding: "11px 12px 11px 38px", fontSize: 14.5, color: c.charcoal, background: "rgba(255,255,255,.05)", outline: "none", appearance: "none", paddingRight: 34, cursor: "pointer" };
-  const wrap = (icon, node) => (
-    <div style={{ position: "relative" }}>
-      {React.createElement(icon, { size: 16, color: c.stone, style: { position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" } })}
-      {node}
-      <ChevronDown size={16} color={c.stone} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-    </div>
-  );
+  const showHow = () => document.querySelector(".home-band-how")?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
     <div
@@ -184,7 +171,7 @@ export function CinematicHero({ go, onStartPlan }) {
             </span>
           </h1>
           <p className="rise" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
-            Tell us where you’re staying and how you want the trip to feel. We’ll help you choose experiences that fit the route, then confirm the details before you commit.
+            Costa Rica is full of good options. TicoWild helps you turn them into one trip that feels like yours, flows naturally and is clear before you commit.
           </p>
 
           {/* refined trust row */}
@@ -197,31 +184,31 @@ export function CinematicHero({ go, onStartPlan }) {
           </div>
 
           <div className="rise tn-hero-actions" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28, animationDelay: ".24s" }}>
-            <Magnetic><Button variant="primary" size="lg" onClick={() => go("build")}>Build my adventure plan <ArrowRight size={18} /></Button></Magnetic>
+            <Magnetic><Button variant="primary" size="lg" onClick={showHow}>See how it comes together <ArrowRight size={18} /></Button></Magnetic>
             <Magnetic strength={0.25}><Button variant="glass" size="lg" onClick={() => go("activities")}>Browse activities</Button></Magnetic>
           </div>
 
         </div>
 
-        {/* Plan card — glass */}
+        {/* Value preview — earn the planning ask before showing a form. */}
         <div className="rise tn-hero-plan" style={{ ...glass, background: "rgba(14,21,38,.72)", borderRadius: 26, padding: 24, boxShadow: "0 50px 100px -34px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.08)", alignSelf: "start", animation: "tnFloat 7s ease-in-out infinite", animationDelay: ".3s", transform: `translate(${mouse.x * -10}px, ${mouse.y * -8}px)` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <Compass size={20} color={c.teal} />
-            <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 18 }}>Start your trip plan</span>
+            <Heart size={20} color={c.gold} />
+            <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 18 }}>Start with the trip you want</span>
           </div>
-          <p style={{ color: c.stone, fontSize: 13.5, margin: "0 0 16px" }}>Two quick choices. The full planner opens next.</p>
-          <Field label="Where are you staying?">
-            {wrap(Compass, <select value={plan.dest} onChange={(e) => setPlan({ ...plan, dest: e.target.value })} style={selectStyle}>
-              {["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Multiple stops", "Not sure yet"].map((o) => <option key={o}>{o}</option>)}
-            </select>)}
-          </Field>
-          <Field label="Who is this trip for?">
-            {wrap(Heart, <select value={plan.type} onChange={(e) => setPlan({ ...plan, type: e.target.value })} style={selectStyle}>
-              {["Couple / Honeymoon", "Family", "Adult group weekend", "Fishing trip", "Adventure", "Luxury group", "Solo traveler"].map((o) => <option key={o}>{o}</option>)}
-            </select>)}
-          </Field>
-          <Button variant="dark" full size="lg" onClick={beginPlan} style={{ marginTop: 8 }}>Start planning <ArrowRight size={18} /></Button>
-          <p style={{ textAlign: "center", color: c.stone, fontSize: 12, marginTop: 12 }}>Free to plan · No payment here · No obligation</p>
+          <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.55, margin: "0 0 18px" }}>We begin with how you want Costa Rica to feel. Your route and dates come after there is a reason to ask.</p>
+          {[
+            [Heart, "Choose the feeling", "Adventure, wildlife, water or an easy pace"],
+            [Route, "See the days take shape", "Experiences arranged around a trip that flows"],
+            [Compass, "Add your route when it matters", "Then we tailor the plan to where and when"],
+          ].map(([Icon, title, body], index) => (
+            <div key={title} className="tn-hero-preview-step" style={{ display: "grid", gridTemplateColumns: "38px 1fr", gap: 12, padding: "13px 0", borderTop: index ? `1px solid ${c.line}` : "none" }}>
+              <span style={{ width: 36, height: 36, borderRadius: 12, display: "grid", placeItems: "center", color: index === 2 ? c.gold : c.teal, background: index === 2 ? "rgba(255,208,0,.11)" : "rgba(34,211,238,.1)" }}><Icon size={17} /></span>
+              <div><strong style={{ display: "block", color: "#fff", fontSize: 14 }}>{title}</strong><span style={{ display: "block", color: c.stone, fontSize: 12.5, lineHeight: 1.45, marginTop: 3 }}>{body}</span></div>
+            </div>
+          ))}
+          <Button variant="dark" full size="lg" onClick={() => go("build")} style={{ marginTop: 14 }}>Find my kind of trip <ArrowRight size={18} /></Button>
+          <p style={{ textAlign: "center", color: c.stone, fontSize: 12, marginTop: 12 }}>No city, dates or signup required to begin</p>
         </div>
       </div>
 

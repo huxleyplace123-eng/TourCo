@@ -20,7 +20,7 @@ const PAGE_PATHS = {
 };
 
 const PAGE_META = {
-  home: ["TicoWild | Curated Costa Rica Experiences", "Tell us where you are staying and how you want Costa Rica to feel. TicoWild helps you choose and arrange the right local experiences."],
+  home: ["TicoWild | Curated Costa Rica Experiences", "Start with how you want Costa Rica to feel. TicoWild turns that vision into a trip that flows, then tailors it to your route and dates."],
   activities: ["Costa Rica Experiences | TicoWild", "Explore curated Costa Rica experiences by region, pace and travel style."],
   packages: ["Costa Rica Experience Collections | TicoWild", "Explore simple Costa Rica experience collections for couples, families, groups and adventure travelers."],
   build: ["Plan My Costa Rica Experiences | TicoWild", "Build a simple Costa Rica activity plan around your dates, route, group and travel style."],
@@ -68,4 +68,3 @@ export function metadataFor(page, activeId = null) {
   }
   return PAGE_META[page] || PAGE_META.home;
 }
-

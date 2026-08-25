@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, CalendarCheck, Check, Compass, MapPin, MessageCircle, Route, ShieldCheck, Sparkles, Sun, Waves } from "lucide-react";
+import { ArrowRight, CalendarCheck, Check, Compass, Heart, MapPin, MessageCircle, ShieldCheck, Sparkles, Sun, Waves } from "lucide-react";
 import { c } from "../theme.js";
 import { Button, Section } from "../components/ui.jsx";
 import { Reveal } from "../motion.jsx";
@@ -7,8 +7,8 @@ import { CinematicHero } from "../components/CinematicHero.jsx";
 import { useConversion } from "../components/ConversionCenter.jsx";
 
 const STEPS = [
-  { icon: MapPin, number: "01", title: "Tell us where you’ll be", body: "Share your dates, stops and the kind of trip you want." },
-  { icon: Route, number: "02", title: "Get a plan that fits", body: "We narrow the options and arrange the days around your route." },
+  { icon: Heart, number: "01", title: "Start with the feeling", body: "Tell us who is traveling and how you want Costa Rica to feel." },
+  { icon: MapPin, number: "02", title: "Then shape the route", body: "Once the trip has direction, add where you’ll be and when." },
   { icon: CalendarCheck, number: "03", title: "Confirm before you pay", body: "We check current availability, timing and the final price first." },
 ];
 
@@ -19,8 +19,8 @@ const SAMPLE_DAYS = [
 ];
 
 const JOURNEY = [
-  { number: "01", label: "Tell us", detail: "Where, who and what kind of trip" },
-  { number: "02", label: "See your fit", detail: "A few choices that work together" },
+  { number: "01", label: "Picture it", detail: "Who is going and how it should feel" },
+  { number: "02", label: "Shape it", detail: "Add the route once the trip has direction" },
   { number: "03", label: "Confirm", detail: "Availability, details and final price" },
 ];
 
@@ -34,12 +34,12 @@ function Chapter({ number, label }) {
   );
 }
 
-export function Home({ go, startPlan }) {
+export function Home({ go }) {
   const { openConcierge } = useConversion();
 
   return (
     <>
-      <CinematicHero go={go} onStartPlan={startPlan} />
+      <CinematicHero go={go} />
 
       <div className="home-journey" aria-label="How planning works">
         <div className="home-journey-inner">
@@ -62,7 +62,7 @@ export function Home({ go, startPlan }) {
             <div>
               <div style={{ color: c.teal, fontWeight: 800, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase" }}>How TicoWild works</div>
               <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.7vw,48px)", lineHeight: 1.04, letterSpacing: -1.5, margin: "10px 0 14px" }}>Stop building your trip from twenty open tabs.</h2>
-              <p style={{ color: c.stone, lineHeight: 1.7, fontSize: 16.5, margin: 0 }}>TicoWild turns where you’re staying, who you’re traveling with and how you want the trip to feel into one plan you can actually follow.</p>
+              <p style={{ color: c.stone, lineHeight: 1.7, fontSize: 16.5, margin: 0 }}>Start with the kind of trip you want. TicoWild turns that feeling into one plan, then uses your route and dates to make it practical.</p>
             </div>
             <div className="home-steps" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
               {STEPS.map(({ icon: Icon, number, title, body }) => (
