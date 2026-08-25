@@ -13,9 +13,9 @@ import {
   Star,
   Waves,
 } from "lucide-react";
-import { c, gradText } from "../theme.js";
+import { c } from "../theme.js";
 import { activities } from "../data.js";
-import { Section, Eyebrow, Field, TextInput, Select, Button } from "../components/ui.jsx";
+import { Section, Field, TextInput, Select, Button } from "../components/ui.jsx";
 import { ActivityBrowseCard, ActivityBrowseCardStyles } from "../components/ActivityBrowseCard.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { activityImage, themedSlides } from "../images.js";
@@ -134,8 +134,8 @@ function CollectionMosaic({ onChoose }) {
   return (
     <Section bg={c.sand} pad={52}>
       <div className="activity-mosaic-heading">
-        <Eyebrow><span style={{ color: c.teal }}>Four ways into Costa Rica</span></Eyebrow>
-        <h2>Start with the feeling. <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>We’ll find the day.</span></h2>
+        <div className="activity-mosaic-label">Four ways into Costa Rica</div>
+        <h2>Browse by the kind of day you want.</h2>
         <p>Choose a world below, then let Rico narrow it to the experiences most likely to fit your route, pace and travel style.</p>
       </div>
       <div className="activity-worlds" aria-label="Activity collections">
@@ -329,8 +329,9 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-marquee-shell{margin-top:18px;position:relative;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
         .activity-marquee-row{display:inline-flex;gap:9px;white-space:nowrap;animation:activityMarquee 34s linear infinite}
         .activity-marquee-pill{display:inline-flex;align-items:center;gap:7px;flex-shrink:0;background:rgba(11,26,46,.58);backdrop-filter:blur(9px);border:1px solid rgba(255,255,255,.13);color:#fff;font-weight:750;font-size:12.5px;padding:8px 13px;border-radius:999px}
-        .activity-mosaic-heading{max-width:780px;margin-bottom:30px}
-        .activity-mosaic-heading h2{color:#fff;font-size:clamp(30px,4.4vw,52px);line-height:1.04;letter-spacing:-1.5px;margin:8px 0 0;text-wrap:balance}
+        .activity-mosaic-heading{max-width:700px;margin-bottom:30px}
+        .activity-mosaic-label{color:${c.stone};font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
+        .activity-mosaic-heading h2{color:#fff;font-size:clamp(26px,3vw,38px);line-height:1.1;letter-spacing:-.9px;margin:7px 0 0;text-wrap:balance}
         .activity-mosaic-heading p{color:${c.stone};font-size:16px;line-height:1.65;margin:14px 0 0;max-width:680px}
         .activity-worlds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:320px;gap:20px}
         .activity-world-card{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:26px;padding:0;cursor:pointer;text-align:left;background:${c.white};color:#fff;isolation:isolate;box-shadow:0 28px 70px -34px rgba(0,0,0,.85);transition:transform .3s cubic-bezier(.2,.75,.2,1),border-color .3s ease,box-shadow .3s ease}
@@ -379,7 +380,10 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         @media(max-width:1100px){.activity-filter-fields{grid-template-columns:repeat(3,minmax(0,1fr))}.activity-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
         @media(max-width:900px){.activity-worlds{grid-auto-rows:300px}.activity-filter-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-filter-options{flex-wrap:wrap}.activity-reset{margin-left:0}}
         @media(max-width:620px){
-          .activity-mosaic-heading{margin-bottom:20px}
+          .activity-mosaic-heading{margin-bottom:20px;max-width:34ch}
+          .activity-mosaic-label{font-size:10px;color:${c.stone}}
+          .activity-mosaic-heading h2{font-size:22px;line-height:1.2;letter-spacing:-.35px;margin-top:6px}
+          .activity-mosaic-heading p{font-size:14px;line-height:1.55;margin-top:9px}
           .activity-worlds{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:auto;gap:12px;overflow:visible;margin:0;padding:0}
           .activity-world-card{width:100%;height:172px;min-height:172px;display:block;scroll-snap-align:none;border-radius:20px}
           .activity-world-card img{right:auto;width:42%;object-position:center}
