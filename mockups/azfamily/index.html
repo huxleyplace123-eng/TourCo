@@ -1,0 +1,1026 @@
+<title>AZ Family Insurance Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+
+<style>
+/* ─────────────────────────── tokens ─────────────────────────── */
+:root{
+  --paper:#FFFFFF;
+  --surface:#FFFFFF;
+  --surface-2:#F4F6FA;
+  --surface-3:#E7ECF4;
+  --ink:#0E1A2B;
+  --ink-2:#45566D;
+  --dust:#78879B;
+  --line:#E2E8F1;
+  --line-2:#C6D0DE;
+  --brand:#1A50C7;
+  --brand-deep:#123C96;
+  --brand-soft:#E9EFFC;
+  --gold:#D9891A;
+  --clay:#B5432F;
+  --shadow-s:0 1px 2px rgba(14,26,43,.05),0 6px 16px -10px rgba(14,26,43,.18);
+  --shadow-l:0 2px 4px rgba(14,26,43,.05),0 28px 54px -28px rgba(14,26,43,.3);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0B131F;--surface:#121B29;--surface-2:#172232;--surface-3:#1E2B3E;
+    --ink:#E9EEF6;--ink-2:#AFBCCD;--dust:#7C8A9E;--line:#253246;--line-2:#33425A;
+    --brand:#6C9BFF;--brand-deep:#A8C5FF;--brand-soft:#15223A;
+    --gold:#F0AD4E;--clay:#E0806A;
+    --shadow-s:0 1px 2px rgba(0,0,0,.4),0 6px 16px -10px rgba(0,0,0,.6);
+    --shadow-l:0 2px 4px rgba(0,0,0,.4),0 28px 54px -28px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0B131F;--surface:#121B29;--surface-2:#172232;--surface-3:#1E2B3E;
+  --ink:#E9EEF6;--ink-2:#AFBCCD;--dust:#7C8A9E;--line:#253246;--line-2:#33425A;
+  --brand:#6C9BFF;--brand-deep:#A8C5FF;--brand-soft:#15223A;
+  --gold:#F0AD4E;--clay:#E0806A;
+  --shadow-s:0 1px 2px rgba(0,0,0,.4),0 6px 16px -10px rgba(0,0,0,.6);
+  --shadow-l:0 2px 4px rgba(0,0,0,.4),0 28px 54px -28px rgba(0,0,0,.85);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:Figtree,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:1.0625rem;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+h1,h2,h3,h4{font-weight:700;line-height:1.06;letter-spacing:-.028em;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:inherit}
+img,svg{display:block;max-width:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:3px;border-radius:4px}
+::selection{background:var(--brand);color:#fff}
+
+.wrap{width:min(1200px,100% - 40px);margin-inline:auto}
+@media (max-width:640px){.wrap{width:min(1200px,100% - 32px)}}
+.section{padding:clamp(58px,8vw,110px) 0}
+section[id],#quote{scroll-margin-top:86px}
+
+.display{font-size:clamp(2.35rem,5.1vw,3.9rem);letter-spacing:-.036em}
+.display em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.h2{font-size:clamp(1.9rem,3.9vw,2.85rem)}
+.h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400}
+.h3{font-size:1.16rem;letter-spacing:-.018em;line-height:1.25}
+.lede{font-size:clamp(1.05rem,1.5vw,1.22rem);line-height:1.58;color:var(--ink-2);max-width:58ch}
+.small{font-size:.93rem;line-height:1.55;color:var(--dust)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.695rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+.inlay{height:5px;width:56px;border-radius:2px;flex:none;
+  background:repeating-linear-gradient(90deg,var(--brand) 0 12px,var(--line-2) 12px 16px)}
+.eyebrow{display:flex;align-items:center;gap:12px;color:var(--brand-deep);margin-bottom:18px}
+.eyebrow--dark{color:rgba(255,255,255,.72)}
+.eyebrow--dark .inlay{background:repeating-linear-gradient(90deg,#6C9BFF 0 12px,rgba(255,255,255,.34) 12px 16px)}
+
+/* ── buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  min-height:52px;padding:0 24px;border-radius:10px;border:1px solid transparent;
+  font-weight:700;font-size:1rem;letter-spacing:-.01em;text-decoration:none;cursor:pointer;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease;
+  touch-action:manipulation}
+.btn--primary{background:var(--brand);color:#fff;box-shadow:0 1px 2px rgba(14,26,43,.2)}
+.btn--primary:hover{background:var(--brand-deep);color:#fff}
+:root[data-theme="dark"] .btn--primary,:root:not([data-theme="light"]) .btn--primary{color:#06152E}
+:root[data-theme="dark"] .btn--primary:hover,:root:not([data-theme="light"]) .btn--primary:hover{color:#06152E}
+.btn--ghost{background:var(--surface);color:var(--ink);border-color:var(--line-2)}
+.btn--ghost:hover{border-color:var(--brand);color:var(--brand-deep)}
+.btn--onDark{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.34)}
+.btn--onDark:hover{background:rgba(255,255,255,.2);color:#fff}
+.btn--block{width:100%}
+.btn svg{width:18px;height:18px;flex:none}
+
+.chip{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:8px;
+  border:1px solid var(--line);background:var(--surface);font-size:.83rem;font-weight:600;color:var(--ink-2)}
+.chip svg{width:15px;height:15px;color:var(--brand)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-s)}
+
+/* ─────────────────── photo slots ───────────────────
+   Comp frames at final crop. Each names the shot the
+   agency needs to supply, so nothing is guessed at. */
+.photo{position:relative;overflow:hidden;border-radius:12px;
+  background:var(--surface-2);border:1px solid var(--line-2);isolation:isolate}
+.photo::before{content:"";position:absolute;inset:0;z-index:0;
+  background:linear-gradient(155deg,var(--surface-3) 0%,var(--surface-2) 58%)}
+.photo::after{content:"";position:absolute;inset:12px;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(var(--line-2),var(--line-2)) left top/18px 1.5px no-repeat,
+    linear-gradient(var(--line-2),var(--line-2)) left top/1.5px 18px no-repeat,
+    linear-gradient(var(--line-2),var(--line-2)) right top/18px 1.5px no-repeat,
+    linear-gradient(var(--line-2),var(--line-2)) right top/1.5px 18px no-repeat,
+    linear-gradient(var(--line-2),var(--line-2)) left bottom/18px 1.5px no-repeat,
+    linear-gradient(var(--line-2),var(--line-2)) left bottom/1.5px 18px no-repeat,
+    linear-gradient(var(--line-2),var(--line-2)) right bottom/18px 1.5px no-repeat,
+    linear-gradient(var(--line-2),var(--line-2)) right bottom/1.5px 18px no-repeat}
+.photo-in{position:relative;z-index:2;height:100%;width:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  padding:26px;text-align:center;color:var(--dust)}
+.photo-in > svg{width:30px;height:30px;opacity:.5}
+.photo-in b{font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:500;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--brand-deep)}
+.photo-in span{font-size:.88rem;line-height:1.45;max-width:30ch}
+.photo--wide{aspect-ratio:16/9}
+.photo--tall{aspect-ratio:4/5}
+.photo--sq{aspect-ratio:1/1}
+.photo--round{border-radius:50%}
+.photo--round .photo::after{display:none}
+
+/* dark surfaces get their own slot treatment */
+.onDark .photo{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.22)}
+.onDark .photo::before{background:
+  linear-gradient(155deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.03) 60%)}
+.onDark .photo::after{background-image:
+  linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),
+  linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),
+  linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),
+  linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34)),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34))}
+.onDark .photo-in{color:rgba(255,255,255,.72)}
+.onDark .photo-in b{color:#8FB6FF}
+</style>
+
+<style>
+/* ─────────────────────────── header ─────────────────────────── */
+.utility{background:var(--ink);color:rgba(255,255,255,.72)}
+:root[data-theme="dark"] .utility,:root:not([data-theme="light"]) .utility{background:#060D18}
+.utility .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:36px}
+.utility a{color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.utility a:hover{color:#8FB6FF}
+.u-hide{display:none}
+@media (min-width:760px){.u-hide{display:inline-flex}}
+
+.masthead{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--paper) 90%,transparent);
+  backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid var(--line)}
+.masthead .wrap{display:flex;align-items:center;gap:16px;min-height:68px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto}
+.brand-mark{width:34px;height:40px;flex:none;color:var(--brand)}
+.brand-name{font-weight:800;font-size:1.08rem;letter-spacing:-.03em;line-height:1.05}
+.brand-name span{display:block;color:var(--dust);font-family:"IBM Plex Mono",monospace;
+  font-size:.56rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;margin-top:3px}
+.mockup-pill{display:none;padding:4px 10px;border-radius:6px;border:1px dashed var(--line-2);
+  color:var(--dust);font-family:"IBM Plex Mono",monospace;font-size:.61rem;letter-spacing:.14em;text-transform:uppercase}
+@media (min-width:1280px){.mockup-pill{display:inline-block}}
+.nav{display:none;align-items:center;gap:2px}
+@media (min-width:980px){.nav{display:flex}}
+.nav a{padding:10px 12px;border-radius:8px;text-decoration:none;white-space:nowrap;
+  font-weight:600;font-size:.94rem;color:var(--ink-2);transition:color .15s,background .15s}
+.nav a:hover{color:var(--ink);background:var(--surface-2)}
+.nav a[aria-current="page"]{color:var(--brand-deep);background:var(--brand-soft)}
+.masthead .btn{min-height:44px;padding:0 18px;font-size:.94rem;white-space:nowrap}
+.head-cta{display:none}
+@media (min-width:980px){.head-cta{display:inline-flex}}
+.burger{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;
+  border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+@media (min-width:980px){.burger{display:none}}
+.burger svg{width:22px;height:22px}
+
+.sheet{position:fixed;inset:0;z-index:80;display:none;background:var(--paper);
+  padding:20px;flex-direction:column;gap:6px;overflow-y:auto}
+.sheet[data-open="true"]{display:flex}
+.sheet-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sheet a.sheet-link{display:flex;align-items:center;justify-content:space-between;padding:16px 4px;
+  text-decoration:none;font-weight:700;font-size:1.4rem;letter-spacing:-.03em;border-bottom:1px solid var(--line)}
+.sheet a.sheet-link span{color:var(--dust);font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.15em}
+.sheet-actions{display:grid;gap:10px;margin-top:22px}
+
+/* ─────────────────────────── hero ─────────────────────────── */
+.hero{position:relative;overflow:hidden;background:var(--ink);color:#fff}
+:root[data-theme="dark"] .hero,:root:not([data-theme="light"]) .hero{background:#070F1D}
+.hero::before{content:"";position:absolute;inset:0;opacity:.7;
+  background:radial-gradient(58% 78% at 80% 6%,rgba(108,155,255,.24) 0%,transparent 64%),
+             radial-gradient(48% 68% at 4% 98%,rgba(108,155,255,.12) 0%,transparent 62%)}
+.hero .wrap{position:relative;z-index:2}
+.hero-grid{display:grid;gap:clamp(30px,4vw,52px);padding:clamp(38px,5vw,68px) 0 clamp(44px,6vw,72px)}
+@media (min-width:980px){
+  .hero-grid{grid-template-columns:1.08fr .92fr;align-items:start}
+  .hero-copy{grid-column:1;grid-row:1}
+  .hero-grid > .quote-card{grid-column:2;grid-row:1 / span 2}
+  .hero-grid > .contactbar{grid-column:1;grid-row:2;grid-template-columns:repeat(2,1fr)}
+}
+.hero h1{color:#fff;margin-top:4px}
+.hero .hero-lede{color:rgba(255,255,255,.78);margin-top:20px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+@media (max-width:520px){.hero-actions .btn{width:100%}}
+.hero-trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.chip--dark{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.88)}
+.chip--dark svg{color:#8FB6FF}
+.chip--dark .stars svg{color:var(--gold)}
+.stars--chip{display:inline-flex;gap:2px}
+.stars--chip svg{width:13px;height:13px}
+
+/* every way to reach the agency, above the fold */
+.contactbar{display:grid;gap:12px;grid-template-columns:1fr;
+  margin-top:clamp(22px,3vw,30px);padding-top:clamp(22px,3vw,30px);
+  border-top:1px solid rgba(255,255,255,.16)}
+@media (min-width:600px){.contactbar{grid-template-columns:repeat(2,1fr)}}
+.cbar{display:flex;gap:13px;align-items:flex-start;padding:15px 16px;border-radius:10px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  text-decoration:none;transition:background .16s ease,border-color .16s ease}
+a.cbar:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.32)}
+.cbar-ico{width:38px;height:38px;flex:none;border-radius:9px;display:grid;place-items:center;
+  background:rgba(255,255,255,.1);color:#8FB6FF}
+.cbar-ico svg{width:19px;height:19px}
+.cbar .mono{display:block;color:rgba(255,255,255,.5);margin-bottom:5px}
+.cbar b{display:block;font-size:.99rem;color:#fff;letter-spacing:-.015em;line-height:1.25;overflow-wrap:anywhere}
+.cbar em{display:block;font-style:normal;font-size:.83rem;color:rgba(255,255,255,.62);margin-top:4px;line-height:1.42}
+
+/* quote card */
+.quote-card{background:var(--surface);border-radius:14px;border:1px solid var(--line);
+  box-shadow:var(--shadow-l);padding:clamp(20px,3vw,26px)}
+/* the card is a light surface even inside a dark section — never inherit its colour */
+.quote-card,.quote-card h2,.quote-card p,.pick label{color:var(--ink)}
+.field{display:block;margin-top:14px}
+.field > .mono{display:block;color:var(--dust);margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;min-height:50px;padding:12px 14px;border-radius:9px;
+  border:1.5px solid var(--line-2);background:var(--paper);color:var(--ink);font-size:1rem;
+  transition:border-color .15s,box-shadow .15s}
+.field textarea{min-height:112px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--brand);
+  box-shadow:0 0 0 4px var(--brand-soft)}
+.field input::placeholder{color:var(--dust)}
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pick label{position:relative;display:flex;align-items:center;justify-content:center;min-height:46px;padding:6px;border-radius:9px;
+  border:1.5px solid var(--line-2);background:var(--paper);font-size:.9rem;font-weight:600;cursor:pointer;
+  text-align:center;transition:border-color .15s,background .15s,color .15s}
+.pick input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;pointer-events:none}
+.pick label:has(input:checked){border-color:var(--brand);background:var(--brand-soft);color:var(--brand-deep)}
+.pick label:has(input:focus-visible){outline:3px solid var(--brand);outline-offset:2px}
+.form-note{margin-top:12px;text-align:center;color:var(--dust);font-size:.79rem}
+.form-done{display:none;padding:24px 18px;text-align:center;border:1.5px dashed var(--brand);
+  border-radius:10px;background:var(--brand-soft)}
+.form-done[data-on="true"]{display:block}
+.form-done strong{display:block;font-size:1.25rem;color:var(--brand-deep);margin-bottom:6px}
+
+/* ─────────────────────────── carriers ─────────────────────────── */
+.carriers{border-bottom:1px solid var(--line);background:var(--surface-2);padding:34px 0}
+.carrier-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+@media (min-width:760px){.carrier-row{grid-template-columns:repeat(6,1fr)}}
+.carrier{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:12px 8px;
+  border-radius:8px;border:1px dashed var(--line-2);color:var(--dust)}
+.carrier svg{width:22px;height:22px;opacity:.55;flex:none}
+.carrier span{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase}
+
+/* ─────────────────────────── grids ─────────────────────────── */
+.grid-3{display:grid;gap:16px;grid-template-columns:1fr}
+@media (min-width:660px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1000px){.grid-3{grid-template-columns:repeat(3,1fr)}}
+
+/* coverage: icon tiles, the way carriers actually present lines of business */
+.cover{display:flex;flex-direction:column;gap:10px;padding:24px;text-decoration:none;
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.cover:hover{border-color:var(--brand);box-shadow:var(--shadow-l);transform:translateY(-2px)}
+.cover-ico{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;
+  background:var(--brand-soft);color:var(--brand-deep);margin-bottom:4px}
+.cover-ico svg{width:24px;height:24px}
+.cover-code{color:var(--brand-deep)}
+.cover p{color:var(--ink-2);font-size:.96rem;line-height:1.55}
+.cover-link{margin-top:auto;padding-top:10px;display:inline-flex;align-items:center;gap:7px;
+  font-weight:700;font-size:.93rem;color:var(--brand-deep)}
+.cover-link svg{width:15px;height:15px;transition:transform .18s ease}
+.cover:hover .cover-link svg{transform:translateX(4px)}
+
+/* ─────────────────────────── steps ─────────────────────────── */
+.steps{display:grid;gap:18px;margin-top:40px;counter-reset:s}
+@media (min-width:840px){.steps{grid-template-columns:repeat(3,1fr);gap:24px}}
+.step{padding:26px 24px;position:relative}
+.step-n{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:var(--ink);
+  color:var(--paper);font-family:"IBM Plex Mono",monospace;font-size:.9rem;margin-bottom:14px}
+.step p{color:var(--ink-2);font-size:.96rem;margin-top:8px}
+
+/* ─────────────────────────── dark band ─────────────────────────── */
+.band{background:var(--ink);color:#fff;position:relative;overflow:hidden}
+:root[data-theme="dark"] .band,:root:not([data-theme="light"]) .band{background:#070F1D}
+.band::before{content:"";position:absolute;inset:0;opacity:.5;
+  background:radial-gradient(62% 82% at 84% 14%,rgba(108,155,255,.2) 0%,transparent 64%)}
+.band .wrap{position:relative;z-index:2;padding:clamp(56px,7vw,96px) 0}
+.band h2{color:#fff}
+.band .lede{color:rgba(255,255,255,.76)}
+.band-grid{display:grid;gap:clamp(30px,4vw,56px);align-items:center}
+@media (min-width:900px){.band-grid{grid-template-columns:1.05fr .95fr}}
+.stats{display:grid;gap:14px;margin-top:32px;grid-template-columns:1fr}
+@media (min-width:560px){.stats{grid-template-columns:repeat(3,1fr)}}
+.stat{padding:20px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16)}
+.stat b{display:block;font-family:Figtree,system-ui,sans-serif;font-weight:800;
+  font-size:clamp(2rem,4vw,2.6rem);letter-spacing:-.04em;line-height:1;color:#8FB6FF;
+  font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:8px;color:rgba(255,255,255,.72);font-size:.92rem;line-height:1.45}
+
+/* ─────────────────────────── split ─────────────────────────── */
+.split{display:grid;gap:clamp(28px,4vw,56px);align-items:center}
+@media (min-width:900px){.split{grid-template-columns:.86fr 1fr}}
+.split--top{align-items:start}
+.reasons{display:grid;margin-top:30px}
+.reason{display:flex;gap:15px;padding:19px 0;border-top:1px solid var(--line)}
+.reason:last-child{border-bottom:1px solid var(--line)}
+.reason-ico{width:40px;height:40px;flex:none;border-radius:9px;display:grid;place-items:center;
+  background:var(--brand-soft);color:var(--brand-deep)}
+.reason-ico svg{width:20px;height:20px}
+.reason p{color:var(--ink-2);font-size:.96rem;margin-top:4px}
+
+/* ─────────────────────────── reviews ─────────────────────────── */
+.review{padding:24px;display:flex;flex-direction:column;gap:14px}
+.stars{display:flex;gap:3px;color:var(--gold)}
+.stars svg{width:16px;height:16px}
+.review blockquote{margin:0;font-size:1.02rem;line-height:1.58;color:var(--ink)}
+.review-by{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:6px}
+.review-by .photo{width:46px;height:46px;border-radius:50%;flex:none}
+.review-by .photo::after{display:none}
+.review-by .photo-in{padding:0;gap:0}
+.review-by .photo-in > svg{width:16px;height:16px}
+.review-by b{display:block;font-size:.95rem}
+.review-by span{display:block;color:var(--dust);font-size:.84rem}
+
+/* ─────────────────────────── map ─────────────────────────── */
+.map-frame{border-radius:12px;background:var(--surface-2);border:1px solid var(--line);padding:20px}
+.city-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px 18px;margin-top:24px}
+@media (min-width:520px){.city-list{grid-template-columns:repeat(3,1fr)}}
+.city{display:flex;align-items:center;gap:9px;font-weight:600;font-size:.95rem}
+.city i{width:7px;height:7px;border-radius:50%;background:var(--brand);flex:none}
+
+/* ─────────────────────────── faq ─────────────────────────── */
+.faq{max-width:800px;margin-inline:auto}
+.qa{border-top:1px solid var(--line)}
+.qa:last-child{border-bottom:1px solid var(--line)}
+.qa summary{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:21px 2px;
+  cursor:pointer;list-style:none;font-weight:700;font-size:clamp(1.02rem,1.9vw,1.18rem);
+  letter-spacing:-.02em;line-height:1.3}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary:hover{color:var(--brand-deep)}
+.qa-plus{width:24px;height:24px;flex:none;color:var(--brand);transition:transform .22s ease;margin-top:2px}
+.qa[open] .qa-plus{transform:rotate(45deg)}
+.qa-a{padding:0 42px 22px 2px;color:var(--ink-2);max-width:64ch}
+
+/* ─────────────────────────── footer ─────────────────────────── */
+.foot{background:var(--ink);color:rgba(255,255,255,.74);padding:clamp(44px,6vw,72px) 0 0}
+:root[data-theme="dark"] .foot,:root:not([data-theme="light"]) .foot{background:#060D18}
+.foot-grid{display:grid;gap:32px}
+@media (min-width:800px){.foot-grid{grid-template-columns:1.4fr 1fr 1fr 1.2fr}}
+.foot h4{color:#fff;font-size:.93rem;margin-bottom:13px}
+.foot a{color:rgba(255,255,255,.74);text-decoration:none}
+.foot a:hover{color:#8FB6FF}
+.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:.95rem}
+.foot .brand-name{color:#fff}
+.legal{margin-top:40px;padding:20px 0 28px;border-top:1px solid rgba(255,255,255,.14);
+  display:flex;flex-wrap:wrap;gap:12px 26px;justify-content:space-between;
+  color:rgba(255,255,255,.5);font-size:.84rem}
+.handoff{margin-top:24px;padding:18px 20px;border-radius:10px;border:1px dashed rgba(255,255,255,.3);
+  color:rgba(255,255,255,.76);font-size:.86rem;line-height:1.62}
+.handoff b{color:#fff}
+.handoff ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:5px;font-size:.83rem}
+.handoff li::before{content:"—  ";color:#8FB6FF}
+
+/* ─────────────────────────── dock ─────────────────────────── */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb,var(--paper) 93%,transparent);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line)}
+@media (min-width:980px){.dock{display:none}}
+.dock .btn{min-height:50px;font-size:.96rem;padding:0 12px}
+@media (max-width:979px){body{padding-bottom:84px}}
+
+.page{display:none}
+.page[data-active="true"]{display:block}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+
+<!-- ═══════════ icon sprite ═══════════ -->
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+<defs><linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="#2E6FE0"/><stop offset="1" stop-color="#143F9E"/></linearGradient></defs>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h3l1.5 4-2 1.4a12 12 0 0 0 6.6 6.6L17 13l4 1.5v3a2.5 2.5 0 0 1-2.8 2.5C10.6 19.3 4.7 13.4 4 5.8A2.5 2.5 0 0 1 6.5 3Z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="5" width="18.4" height="14" rx="2.4"/><path d="m3.4 7 8.6 6 8.6-6"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L3.5 20.5l1.4-5.9A8 8 0 1 1 21 12Z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11" stroke-width="2.3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m-6-6.5L19.5 12 13 18.5" stroke-width="2.1"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14" stroke-width="2.1"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7h17M3.5 12h17M3.5 17h17" stroke-width="2"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18" stroke-width="2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 4.6 5.7v6.1c0 4.4 3 8.1 7.4 9.4 4.4-1.3 7.4-5 7.4-9.4V5.7Z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.6 2.3"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5S4.9 15.4 4.9 10.3a7.1 7.1 0 1 1 14.2 0c0 5.1-7.1 11.2-7.1 11.2Z"/><circle cx="12" cy="10.2" r="2.6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.4" cy="8" r="3.4"/><path d="M2.9 20a6.5 6.5 0 0 1 13 0M16.6 5a3.4 3.4 0 0 1 0 6.6M17.6 14.2A6.5 6.5 0 0 1 21.4 20"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11.4V4.2a.7.7 0 0 1 .7-.7h7.2l9 9-7.9 7.9Z"/><circle cx="7.9" cy="7.9" r="1.4"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.4 2.5 4.8 13.4h6l-.9 8.1 9-11h-6.4Z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.6 2.8H6.9a2 2 0 0 0-2 2v14.4a2 2 0 0 0 2 2h10.2a2 2 0 0 0 2-2V8.4Z"/><path d="M13.4 3v5.4h5.5M8.6 13.5h6.8M8.6 17h4.6"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.8h3.1l1.4-2.1h7l1.4 2.1H20A1.6 1.6 0 0 1 21.6 9.4v8.2A1.6 1.6 0 0 1 20 19.2H4a1.6 1.6 0 0 1-1.6-1.6V9.4A1.6 1.6 0 0 1 4 7.8Z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17.4h14a1.5 1.5 0 0 0 1.5-1.5v-3.1a2 2 0 0 0-1.35-1.9l-1.6-.55-2-3.1A2 2 0 0 0 13.85 6.3h-3.7a2 2 0 0 0-1.7.95l-2 3.1-1.6.55A2 2 0 0 0 3.5 12.8v3.1A1.5 1.5 0 0 0 5 17.4Z"/><path d="M7 10.9h10"/><circle cx="7.8" cy="17.4" r="1.5"/><circle cx="16.2" cy="17.4" r="1.5"/></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 10.7 12 4.2l8.4 6.5"/><path d="M5.7 12.3v6.6a1.1 1.1 0 0 0 1.1 1.1h10.4a1.1 1.1 0 0 0 1.1-1.1v-6.6"/><path d="M9.7 20v-5.1h4.6V20"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2s-7.6-4.7-7.6-9.7A3.9 3.9 0 0 1 12 8.1a3.9 3.9 0 0 1 7.6 2.4c0 5-7.6 9.7-7.6 9.7Z"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="3.4" width="17.2" height="17.2" rx="4.6"/><path d="M12 8.2v7.6M8.2 12h7.6"/></symbol>
+  <symbol id="i-case" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.9" y="7.4" width="18.2" height="12.6" rx="2.4"/><path d="M8.6 7.4V6a2 2 0 0 1 2-2h2.8a2 2 0 0 1 2 2v1.4M2.9 12.6h18.2"/></symbol>
+  <symbol id="i-umbrella" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.1v1.6M3.5 12.6a8.5 8.5 0 0 1 17 0Z"/><path d="M12 12.6v5.9a2.4 2.4 0 0 1-4.8 0"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M20.6 4.2v5h-5"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3.1-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9Z"/></symbol>
+<symbol id="brandmark" viewBox="0 0 76 88">
+  <path d="M38 3 6 14v29c0 19 13.5 34.6 32 42 18.5-7.4 32-23 32-42V14Z" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linejoin="round"/>
+  <g fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round">
+    <path d="M38 70V32"/><path d="M38 50h-8q-6 0-6-6v-8"/><path d="M38 58h9q6 0 6-6v-10"/></g>
+</symbol>
+<symbol id="mk-1" viewBox="0 0 40 40"><path d="M20 3 4 9v13c0 9 6.6 16.4 16 19 9.4-2.6 16-10 16-19V9Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></symbol>
+<symbol id="mk-2" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M8.5 20h23" stroke="currentColor" stroke-width="2.4"/></symbol>
+<symbol id="mk-3" viewBox="0 0 40 40"><path d="M20 3.5 35.6 12v16L20 36.5 4.4 28V12Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></symbol>
+<symbol id="az-outline" viewBox="0 0 300 340"><path d="M54 18H280V300H187L20 242 34 208 24 178 42 146 32 112 50 74 44 42Z"/></symbol>
+</svg>
+
+<!-- ═══════════ utility ═══════════ -->
+<div class="utility">
+  <div class="wrap">
+    <span class="mono u-hide" style="opacity:.72">Independent agency · Licensed in Arizona</span>
+    <span class="mono" style="opacity:.72">Mon–Fri 8–6 · Sat 9–1</span>
+    <a class="mono" href="tel:+16025550142"><svg style="width:14px;height:14px"><use href="#i-phone"/></svg>(602) 555-0142</a>
+  </div>
+</div>
+
+<!-- ═══════════ masthead ═══════════ -->
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="#/" data-nav="home">
+      <svg class="brand-mark" viewBox="0 0 76 88"><use href="#brandmark"/></svg>
+      <span class="brand-name">AZ Family Insurance<span>Independent · Phoenix</span></span>
+    </a>
+    <span class="mockup-pill">Design mockup</span>
+    <nav class="nav" aria-label="Primary">
+      <a href="#coverage">Coverage</a>
+      <a href="#how">How it works</a>
+      <a href="#why">Why us</a>
+      <a href="#area">Service area</a>
+      <a href="#faq">FAQ</a>
+      <a href="#/contact" data-nav="contact">Contact</a>
+    </nav>
+    <a class="btn btn--primary head-cta" href="#quote">Get my quote</a>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="sheet" aria-label="Open menu">
+      <svg><use href="#i-menu"/></svg></button>
+  </div>
+</header>
+
+<div class="sheet" id="sheet" data-open="false" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="sheet-top">
+    <span class="brand-name">AZ Family Insurance</span>
+    <button class="burger" id="sheet-close" aria-label="Close menu"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <a class="sheet-link" href="#coverage">Coverage <span>01</span></a>
+  <a class="sheet-link" href="#how">How it works <span>02</span></a>
+  <a class="sheet-link" href="#why">Why us <span>03</span></a>
+  <a class="sheet-link" href="#area">Service area <span>04</span></a>
+  <a class="sheet-link" href="#faq">FAQ <span>05</span></a>
+  <a class="sheet-link" href="#/contact" data-nav="contact">Contact <span>06</span></a>
+  <div class="sheet-actions">
+    <a class="btn btn--primary btn--block" href="#quote">Get my quote</a>
+    <a class="btn btn--ghost btn--block" href="tel:+16025550142"><svg><use href="#i-phone"/></svg>(602) 555-0142</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ HOME ═══════════════════════════ -->
+<main class="page" id="page-home" data-active="true">
+
+<section class="hero onDark">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow eyebrow--dark"><span class="inlay"></span><span class="mono">Independent · Phoenix, Arizona</span></div>
+        <h1 class="display">Cover the people in the <em>back seat</em>.</h1>
+        <p class="lede hero-lede">We're an independent Arizona agency. One conversation, twenty-plus A-rated carriers shopped against each other, and a real person who picks up when something actually goes wrong.</p>
+        <div class="hero-actions">
+          <a class="btn btn--primary" href="#quote">Get my quote <svg><use href="#i-arrow"/></svg></a>
+          <a class="btn btn--onDark" href="tel:+16025550142"><svg><use href="#i-phone"/></svg>(602) 555-0142</a>
+        </div>
+        <div class="hero-trust">
+          <span class="chip chip--dark"><span class="stars stars--chip" aria-label="4.9 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span>4.9 Google · placeholder</span>
+          <span class="chip chip--dark"><svg><use href="#i-shield"/></svg>Independent, never captive</span>
+          <span class="chip chip--dark"><svg><use href="#i-tag"/></svg>20+ A-rated carriers</span>
+          <span class="chip chip--dark"><svg><use href="#i-users"/></svg>Se habla español</span>
+        </div>
+      </div>
+
+      <div class="quote-card reveal" id="quote">
+        <div class="eyebrow" style="margin-bottom:10px"><span class="inlay"></span><span class="mono">Start here · two minutes</span></div>
+        <h2 class="h2" style="font-size:clamp(1.45rem,2.6vw,1.85rem)">See what you'd pay</h2>
+        <p class="small" style="margin-top:6px">No account, no credit pull. A licensed agent calls you back the same business day with real numbers.</p>
+        <form class="qform" novalidate>
+          <label class="field">
+            <span class="mono">What do you need covered?</span>
+            <span class="pick">
+              <label><input type="radio" name="need" value="auto" checked>Auto</label>
+              <label><input type="radio" name="need" value="home">Home</label>
+              <label><input type="radio" name="need" value="both">Both</label>
+            </span>
+          </label>
+          <label class="field"><span class="mono">ZIP code</span>
+            <input type="text" inputmode="numeric" maxlength="5" placeholder="85014" autocomplete="off"></label>
+          <label class="field"><span class="mono">First name</span>
+            <input type="text" placeholder="Your first name" autocomplete="off"></label>
+          <label class="field"><span class="mono">Phone</span>
+            <input type="tel" placeholder="(602) 555-0142" autocomplete="off"></label>
+          <button class="btn btn--primary btn--block" type="submit" style="margin-top:18px">Send my quote request <svg><use href="#i-arrow"/></svg></button>
+          <p class="form-note">Mockup form — nothing is sent, saved, or stored.</p>
+        </form>
+        <div class="form-done"><strong>That's all we need.</strong><span class="small">In the real build this hands off to the agency's CRM and texts a confirmation.</span></div>
+      </div>
+
+    <div class="contactbar">
+      <a class="cbar" href="tel:+16025550142">
+        <span class="cbar-ico"><svg><use href="#i-phone"/></svg></span>
+        <span><span class="mono">Call</span><b>(602) 555-0142</b><em>Mon–Fri 8am–6pm · Sat 9am–1pm</em></span>
+      </a>
+      <a class="cbar" href="sms:+16025550142">
+        <span class="cbar-ico"><svg><use href="#i-chat"/></svg></span>
+        <span><span class="mono">Text</span><b>(602) 555-0142</b><em>Send a photo of your declarations page</em></span>
+      </a>
+      <a class="cbar" href="mailto:hello@azfamilyinsurance.com">
+        <span class="cbar-ico"><svg><use href="#i-mail"/></svg></span>
+        <span><span class="mono">Email</span><b>hello@azfamilyinsurance.com</b><em>Answered same business day</em></span>
+      </a>
+      <a class="cbar" href="#/contact" data-nav="contact">
+        <span class="cbar-ico"><svg><use href="#i-pin"/></svg></span>
+        <span><span class="mono">Office</span><b>1234 E. Camelback Rd, Ste 200</b><em>Phoenix, AZ 85014 · walk-ins welcome</em></span>
+      </a>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── carriers ── -->
+<section class="carriers">
+  <div class="wrap">
+    <div class="eyebrow" style="justify-content:center;margin-bottom:0"><span class="inlay"></span><span class="mono">We shop these so you don't have to</span><span class="inlay"></span></div>
+    <div class="carrier-row">
+      <div class="carrier"><svg><use href="#mk-1"/></svg><span>Carrier logo</span></div>
+      <div class="carrier"><svg><use href="#mk-2"/></svg><span>Carrier logo</span></div>
+      <div class="carrier"><svg><use href="#mk-3"/></svg><span>Carrier logo</span></div>
+      <div class="carrier"><svg><use href="#mk-1"/></svg><span>Carrier logo</span></div>
+      <div class="carrier"><svg><use href="#mk-2"/></svg><span>Carrier logo</span></div>
+      <div class="carrier"><svg><use href="#mk-3"/></svg><span>Carrier logo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── coverage ── -->
+<section class="section" id="coverage">
+  <div class="wrap">
+    <div class="eyebrow"><span class="inlay"></span><span class="mono">Coverage</span></div>
+    <h2 class="h2">Six lines, one agent, <em>one</em> renewal date to remember.</h2>
+    <p class="lede" style="margin-top:16px">Bundle what makes sense and leave the rest alone. We'll tell you when a bundle doesn't actually save you money — that happens more than you'd think.</p>
+    <div class="grid-3" style="margin-top:40px">
+      <a class="card cover reveal" href="#quote">
+        <span class="cover-ico"><svg><use href="#i-car"/></svg></span>
+        <span class="mono cover-code">AZ Auto · Personal lines</span>
+        <span class="h3">Auto</span>
+        <p>Full coverage, liability-only, SR-22, teen drivers, and the uninsured-motorist limits most Arizona policies quietly set too low.</p>
+        <span class="cover-link">Price my auto <svg><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="card cover reveal" href="#quote">
+        <span class="cover-ico"><svg><use href="#i-house"/></svg></span>
+        <span class="mono cover-code">Form HO-3 · Homeowners</span>
+        <span class="h3">Home &amp; condo</span>
+        <p>Replacement cost that keeps up with Valley rebuild prices, plus the haboob, monsoon and roof-age questions carriers ask here and nowhere else.</p>
+        <span class="cover-link">Price my home <svg><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="card cover reveal" href="#quote">
+        <span class="cover-ico"><svg><use href="#i-heart"/></svg></span>
+        <span class="mono cover-code">Term &amp; whole · Life</span>
+        <span class="h3">Life</span>
+        <p>Enough term to get the youngest kid through college, priced in plain numbers. No pressure, no "wealth strategy" pitch.</p>
+        <span class="cover-link">Price my life cover <svg><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="card cover reveal" href="#quote">
+        <span class="cover-ico"><svg><use href="#i-cross"/></svg></span>
+        <span class="mono cover-code">Medicare Supp · Health</span>
+        <span class="h3">Health &amp; Medicare</span>
+        <p>Turning 65, leaving a group plan, or self-employed. We walk the enrollment windows with you so nothing lapses in between.</p>
+        <span class="cover-link">Talk it through <svg><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="card cover reveal" href="#quote">
+        <span class="cover-ico"><svg><use href="#i-case"/></svg></span>
+        <span class="mono cover-code">BOP · Commercial</span>
+        <span class="h3">Small business</span>
+        <p>General liability, commercial auto, workers' comp and the certificate your GC needs by Friday. Sent same day, usually same hour.</p>
+        <span class="cover-link">Price my BOP <svg><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="card cover reveal" href="#quote">
+        <span class="cover-ico"><svg><use href="#i-umbrella"/></svg></span>
+        <span class="mono cover-code">Personal umbrella · Excess</span>
+        <span class="h3">Umbrella &amp; toys</span>
+        <p>A million over the top of everything, plus the side-by-side, the boat at Pleasant, and the RV that only moves twice a year.</p>
+        <span class="cover-link">Add an umbrella <svg><use href="#i-arrow"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── how it works ── -->
+<section class="section" id="how" style="background:var(--surface-2);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="eyebrow"><span class="inlay"></span><span class="mono">How it works</span></div>
+    <h2 class="h2">Three steps. Most of them are ours.</h2>
+    <div class="steps">
+      <div class="card step reveal"><div class="step-n num">1</div>
+        <h3 class="h3">You give us four fields</h3>
+        <p>ZIP, what you're insuring, your name and a number. Two minutes on a phone, standing in a parking lot.</p></div>
+      <div class="card step reveal"><div class="step-n num">2</div>
+        <h3 class="h3">We run the whole market</h3>
+        <p>Twenty-plus carriers, same coverage, side by side — including the ones that don't advertise during football.</p></div>
+      <div class="card step reveal"><div class="step-n num">3</div>
+        <h3 class="h3">You pick, we handle the rest</h3>
+        <p>Cancellations, refunds from the old carrier, lienholder paperwork, ID cards in your wallet app. Same day.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── monsoon band ── -->
+<section class="band onDark">
+  <div class="wrap">
+    <div class="band-grid">
+      <div>
+        <div class="eyebrow eyebrow--dark"><span class="inlay"></span><span class="mono">Illustrative figures — swap in your real book numbers</span></div>
+        <h2 class="h2">The monsoon doesn't care what your <em>deductible</em> is.</h2>
+        <p class="lede" style="margin-top:16px">Roof claims spike every July. The households that come out fine are the ones whose limits got reviewed in April — which is the boring work we do for free.</p>
+        <div class="stats">
+          <div class="stat reveal"><b class="num">$740</b><span>Typical first-year saving moving a captive policy to a shopped one.</span></div>
+          <div class="stat reveal"><b class="num">2 hrs</b><span>Median time from "send me a quote" to a bindable proposal.</span></div>
+          <div class="stat reveal"><b class="num">1 in 4</b><span>Valley homes we review are underinsured by 20% or more.</span></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="photo photo--wide" style="aspect-ratio:4/3">
+          <div class="photo-in">
+            <svg><use href="#i-camera"/></svg>
+            <b>Wide photo · 1600 × 1200</b>
+            <span>Monsoon storm front over the Valley, or a roof crew working after a storm. Dramatic sky, real weather.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── why us ── -->
+<section class="section" id="why">
+  <div class="wrap">
+    <div class="split">
+      <div class="reveal">
+        <div class="photo photo--tall">
+          <div class="photo-in">
+            <svg><use href="#i-camera"/></svg>
+            <b>Portrait · 900 × 1125</b>
+            <span>Your agent, shot at the office or on a client's porch. Natural light, no stock-photo handshake.</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow"><span class="inlay"></span><span class="mono">Why us</span></div>
+        <h2 class="h2">An 800 number can't <em>drive to your house</em>.</h2>
+        <p class="lede" style="margin-top:16px">We're a small independent shop in Phoenix. You get one agent's cell number, and that agent still knows your name in year six.</p>
+        <div class="reasons">
+          <div class="reason reveal"><span class="reason-ico"><svg><use href="#i-shield"/></svg></span>
+            <div><h3 class="h3">We work for you, not a carrier</h3><p>Independent means we can walk a policy across the street when a carrier gets greedy at renewal. Captive agents can't.</p></div></div>
+          <div class="reason reveal"><span class="reason-ico"><svg><use href="#i-bolt"/></svg></span>
+            <div><h3 class="h3">Claims get a human escort</h3><p>You call us first. We open the claim, chase the adjuster, and tell you plainly whether filing is even worth it.</p></div></div>
+          <div class="reason reveal"><span class="reason-ico"><svg><use href="#i-refresh"/></svg></span>
+            <div><h3 class="h3">A yearly re-shop, automatically</h3><p>Every policy goes back to market before it renews. If nobody beats your price, we tell you that too.</p></div></div>
+          <div class="reason reveal"><span class="reason-ico"><svg><use href="#i-pin"/></svg></span>
+            <div><h3 class="h3">Built for Arizona specifics</h3><p>Monsoon roof claims, SR-22 filings, snowbird garaging, short-term rental endorsements. We've seen your situation before.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── reviews ── -->
+<section class="section" style="background:var(--surface-2);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="eyebrow"><span class="inlay"></span><span class="mono">Sample reviews — replace with real Google reviews</span></div>
+    <h2 class="h2">What it sounds like when it goes right.</h2>
+    <div class="grid-3" style="margin-top:40px">
+      <figure class="card review reveal">
+        <div class="stars" aria-label="5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div>
+        <blockquote>"Same coverage, $61 less a month, and they cancelled the old policy for me. I did roughly nothing."</blockquote>
+        <figcaption class="review-by">
+          <span class="photo"><span class="photo-in"><svg><use href="#i-camera"/></svg></span></span>
+          <span><b>Sample name</b><span>Auto + home · Gilbert</span></span></figcaption>
+      </figure>
+      <figure class="card review reveal">
+        <div class="stars" aria-label="5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div>
+        <blockquote>"Monsoon took half the roof. She had the adjuster scheduled before I'd finished sweeping the driveway."</blockquote>
+        <figcaption class="review-by">
+          <span class="photo"><span class="photo-in"><svg><use href="#i-camera"/></svg></span></span>
+          <span><b>Sample name</b><span>Homeowners claim · Mesa</span></span></figcaption>
+      </figure>
+      <figure class="card review reveal">
+        <div class="stars" aria-label="5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div>
+        <blockquote>"Told me the bundle wouldn't save me anything and to keep my home policy where it was. That's why I moved everything else over."</blockquote>
+        <figcaption class="review-by">
+          <span class="photo"><span class="photo-in"><svg><use href="#i-camera"/></svg></span></span>
+          <span><b>Sample name</b><span>Small business · Tempe</span></span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ── service area ── -->
+<section class="section" id="area">
+  <div class="wrap">
+    <div class="split split--top" style="align-items:center">
+      <div class="map-frame reveal">
+        <svg viewBox="0 0 300 340" style="width:100%;height:auto" aria-label="Map of Arizona with service area pins">
+          <use href="#az-outline" fill="url(#teal)" opacity=".14"/>
+          <use href="#az-outline" fill="none" stroke="url(#teal)" stroke-width="4" stroke-linejoin="round"/>
+          <g fill="var(--brand)" opacity=".2"><circle cx="142" cy="195" r="30"/><circle cx="191" cy="256" r="19"/></g>
+          <g fill="var(--brand)">
+            <circle cx="142" cy="195" r="9"/><circle cx="191" cy="256" r="7"/><circle cx="161" cy="107" r="6"/>
+            <circle cx="124" cy="140" r="6"/><circle cx="30" cy="238" r="5.5"/><circle cx="163" cy="205" r="5"/>
+            <circle cx="176" cy="212" r="5"/><circle cx="155" cy="182" r="5"/></g>
+          <g font-size="12" font-family="IBM Plex Mono, ui-monospace, monospace" fill="var(--ink-2)" letter-spacing=".04em">
+            <text x="158" y="190">Phoenix</text><text x="204" y="260">Tucson</text><text x="172" y="104">Flagstaff</text>
+            <text x="116" y="137" text-anchor="end">Prescott</text><text x="40" y="230">Yuma</text></g>
+        </svg>
+      </div>
+      <div>
+        <div class="eyebrow"><span class="inlay"></span><span class="mono">Service area</span></div>
+        <h2 class="h2">Licensed across Arizona. Based in the Valley.</h2>
+        <p class="lede" style="margin-top:16px">We write policies statewide and meet in person anywhere from Anthem to Ahwatukee. Everywhere else, it's a phone call and an e-signature.</p>
+        <div class="city-list">
+          <span class="city"><i></i>Phoenix</span><span class="city"><i></i>Mesa</span><span class="city"><i></i>Chandler</span>
+          <span class="city"><i></i>Gilbert</span><span class="city"><i></i>Scottsdale</span><span class="city"><i></i>Glendale</span>
+          <span class="city"><i></i>Tucson</span><span class="city"><i></i>Flagstaff</span><span class="city"><i></i>Prescott</span>
+          <span class="city"><i></i>Yuma</span><span class="city"><i></i>Casa Grande</span><span class="city"><i></i>Lake Havasu</span>
+        </div>
+        <a class="btn btn--primary" href="#/contact" data-nav="contact" style="margin-top:28px">Find your agent <svg><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── faq ── -->
+<section class="section" id="faq" style="background:var(--surface-2);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="faq">
+      <div class="eyebrow"><span class="inlay"></span><span class="mono">Questions people actually ask</span></div>
+      <h2 class="h2" style="margin-bottom:30px">Before you call.</h2>
+      <details class="qa" open>
+        <summary>Does switching mid-policy cost me anything?<svg class="qa-plus"><use href="#i-plus"/></svg></summary>
+        <div class="qa-a">Almost never on auto — Arizona carriers refund unearned premium pro-rata, so you get the unused months back. Some home policies carry a short-rate penalty; we check before you commit and tell you the number.</div>
+      </details>
+      <details class="qa">
+        <summary>Will you pull my credit?<svg class="qa-plus"><use href="#i-plus"/></svg></summary>
+        <div class="qa-a">Carriers use an insurance score, which is a soft pull. It doesn't affect your credit score, and we don't run anything until you've seen a price you like.</div>
+      </details>
+      <details class="qa">
+        <summary>I need an SR-22 today. Can you do it?<svg class="qa-plus"><use href="#i-plus"/></svg></summary>
+        <div class="qa-a">Yes. We file electronically with MVD, usually within the hour during business hours. Bring your citation number and the case disposition if you have it.</div>
+      </details>
+      <details class="qa">
+        <summary>My roof is 18 years old. Am I uninsurable?<svg class="qa-plus"><use href="#i-plus"/></svg></summary>
+        <div class="qa-a">No, but your market shrinks and you'll likely be offered actual-cash-value roof coverage instead of replacement cost. We'll show you both prices so you can decide whether a re-roof pays for itself.</div>
+      </details>
+      <details class="qa">
+        <summary>What does it cost to work with you?<svg class="qa-plus"><use href="#i-plus"/></svg></summary>
+        <div class="qa-a">Nothing. We're paid a commission by whichever carrier you choose, at the same rate across carriers — so there's no version of this where we make more by putting you somewhere worse.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ── finale ── -->
+<section class="band onDark">
+  <div class="wrap" style="text-align:center">
+    <div class="eyebrow eyebrow--dark" style="justify-content:center"><span class="inlay"></span><span class="mono">One call does it</span><span class="inlay"></span></div>
+    <h2 class="h2" style="max-width:20ch;margin-inline:auto">Find out in ten minutes whether you're <em>overpaying</em>.</h2>
+    <p class="lede" style="margin:16px auto 0">Bring your current declarations page if you have it. If you don't, bring your address and we'll find the rest.</p>
+    <div class="hero-actions" style="justify-content:center">
+      <a class="btn btn--primary" href="#quote">Get my quote <svg><use href="#i-arrow"/></svg></a>
+      <a class="btn btn--onDark" href="#/contact" data-nav="contact"><svg><use href="#i-chat"/></svg>Other ways to reach us</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════════════════════ CONTACT ═══════════════════════════ -->
+<main class="page" id="page-contact" data-active="false">
+
+<section class="band onDark">
+  <div class="wrap" style="padding-block:clamp(44px,6vw,76px)">
+    <div class="band-grid">
+      <div>
+        <div class="eyebrow eyebrow--dark"><span class="inlay"></span><span class="mono">Contact</span></div>
+        <h2 class="display" style="color:#fff;max-width:14ch">Talk to a <em>person</em>.</h2>
+        <p class="lede" style="margin-top:16px">No phone tree, no chatbot, no ticket number. Three ways in — pick whichever one you'd actually use.</p>
+      </div>
+      <div class="reveal">
+        <div class="photo photo--wide">
+          <div class="photo-in"><svg><use href="#i-camera"/></svg>
+            <b>Wide photo · 1600 × 900</b>
+            <span>The office, or the team at their desks. Somewhere that looks like a real place people walk into.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="grid-3">
+      <a class="card cover reveal" href="tel:+16025550142">
+        <span class="cover-ico"><svg><use href="#i-phone"/></svg></span>
+        <span class="mono cover-code">Fastest</span>
+        <span class="h3">Call the office</span>
+        <span class="num" style="font-size:1.3rem;font-weight:600;color:var(--brand-deep)">(602) 555-0142</span>
+        <p>Mon–Fri 8am–6pm, Sat 9am–1pm. A licensed agent answers, not a queue.</p>
+      </a>
+      <a class="card cover reveal" href="sms:+16025550142">
+        <span class="cover-ico"><svg><use href="#i-chat"/></svg></span>
+        <span class="mono cover-code">Easiest</span>
+        <span class="h3">Text us a photo</span>
+        <span class="num" style="font-size:1.3rem;font-weight:600;color:var(--brand-deep)">(602) 555-0142</span>
+        <p>Snap your current declarations page or your VIN. That's usually enough to quote you.</p>
+      </a>
+      <a class="card cover reveal" href="mailto:hello@azfamilyinsurance.com">
+        <span class="cover-ico"><svg><use href="#i-mail"/></svg></span>
+        <span class="mono cover-code">On your time</span>
+        <span class="h3">Email</span>
+        <span style="font-size:1.02rem;font-weight:600;color:var(--brand-deep);word-break:break-all">hello@azfamilyinsurance.com</span>
+        <p>Answered same business day. Certificates of insurance usually within the hour.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--surface-2);border-top:1px solid var(--line);padding-top:clamp(50px,7vw,90px)">
+  <div class="wrap">
+    <div class="split split--top">
+      <div class="quote-card reveal">
+        <div class="eyebrow" style="margin-bottom:10px"><span class="inlay"></span><span class="mono">Request a quote</span></div>
+        <h2 class="h2" style="font-size:clamp(1.5rem,2.8vw,1.95rem)">Tell us a bit more</h2>
+        <form class="qform" novalidate>
+          <label class="field"><span class="mono">Name</span><input type="text" placeholder="First and last" autocomplete="off"></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start">
+            <label class="field"><span class="mono">Phone</span><input type="tel" placeholder="(602) 555-0142" autocomplete="off"></label>
+            <label class="field"><span class="mono">ZIP</span><input type="text" inputmode="numeric" maxlength="5" placeholder="85014" autocomplete="off"></label>
+          </div>
+          <label class="field"><span class="mono">Email</span><input type="email" placeholder="you@example.com" autocomplete="off"></label>
+          <label class="field"><span class="mono">What can we quote?</span>
+            <select><option>Auto</option><option>Home or condo</option><option>Auto + home bundle</option>
+              <option>Life</option><option>Health / Medicare</option><option>Small business</option>
+              <option>Umbrella, RV, boat or off-road</option><option>Something else</option></select></label>
+          <label class="field"><span class="mono">Anything we should know?</span>
+            <textarea placeholder="Current carrier, renewal date, teen driver, roof age — whatever's on your mind."></textarea></label>
+          <button class="btn btn--primary btn--block" type="submit" style="margin-top:18px">Send it over <svg><use href="#i-arrow"/></svg></button>
+          <p class="form-note">Mockup form — nothing is sent, saved, or stored.</p>
+        </form>
+        <div class="form-done"><strong>Got it.</strong><span class="small">In the real build this routes to the agency inbox and CRM.</span></div>
+      </div>
+      <div>
+        <div class="eyebrow"><span class="inlay"></span><span class="mono">The office</span></div>
+        <h2 class="h2" style="font-size:clamp(1.5rem,2.8vw,1.95rem)">Come by, we make bad coffee</h2>
+        <div class="map-frame reveal" style="margin-top:20px;max-width:420px">
+          <svg viewBox="0 0 300 340" style="width:100%;height:auto" aria-label="Map of Arizona showing the Phoenix office">
+            <use href="#az-outline" fill="url(#teal)" opacity=".14"/>
+            <use href="#az-outline" fill="none" stroke="url(#teal)" stroke-width="4" stroke-linejoin="round"/>
+            <circle cx="142" cy="195" r="30" fill="var(--brand)" opacity=".2"/>
+            <circle cx="142" cy="195" r="10" fill="var(--brand)"/>
+            <text x="142" y="238" text-anchor="middle" font-size="12" font-family="IBM Plex Mono, ui-monospace, monospace" fill="var(--ink-2)" letter-spacing=".04em">Phoenix office</text>
+          </svg>
+        </div>
+        <div class="reasons" style="margin-top:24px">
+          <div class="reason"><span class="reason-ico"><svg><use href="#i-pin"/></svg></span>
+            <div><h3 class="h3">Address</h3><p>1234 E. Camelback Rd, Suite 200<br>Phoenix, AZ 85014<br><span class="mono" style="color:var(--dust)">Placeholder — swap in the real address</span></p></div></div>
+          <div class="reason"><span class="reason-ico"><svg><use href="#i-clock"/></svg></span>
+            <div><h3 class="h3">Hours</h3><p>Monday–Friday · 8:00am – 6:00pm<br>Saturday · 9:00am – 1:00pm<br>Sunday · closed, but claims are 24/7 through your carrier</p></div></div>
+          <div class="reason"><span class="reason-ico"><svg><use href="#i-file"/></svg></span>
+            <div><h3 class="h3">Bring if you have it</h3><p>Current declarations page, driver's licence numbers, VINs, and your renewal date. Missing all of it is fine too.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════════════════════ footer ═══════════════════════════ -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="margin-bottom:12px">
+          <svg class="brand-mark" viewBox="0 0 76 88" style="color:#6C9BFF"><use href="#brandmark"/></svg>
+          <span class="brand-name">AZ Family Insurance<span>Independent · Phoenix</span></span>
+        </div>
+        <p style="font-size:.95rem;max-width:34ch">An independent insurance agency in Phoenix, writing personal and commercial lines across Arizona.</p>
+      </div>
+      <div><h4>Coverage</h4>
+        <ul><li><a href="#coverage">Auto</a></li><li><a href="#coverage">Home &amp; condo</a></li>
+        <li><a href="#coverage">Life</a></li><li><a href="#coverage">Health &amp; Medicare</a></li>
+        <li><a href="#coverage">Small business</a></li><li><a href="#coverage">Umbrella &amp; toys</a></li></ul></div>
+      <div><h4>Agency</h4>
+        <ul><li><a href="#why">Why independent</a></li><li><a href="#how">How it works</a></li>
+        <li><a href="#area">Service area</a></li><li><a href="#faq">FAQ</a></li>
+        <li><a href="#/contact" data-nav="contact">Contact</a></li></ul></div>
+      <div><h4>Reach us</h4>
+        <ul><li><a href="tel:+16025550142">(602) 555-0142</a></li>
+        <li><a href="mailto:hello@azfamilyinsurance.com">hello@azfamilyinsurance.com</a></li>
+        <li>1234 E. Camelback Rd, Suite 200<br>Phoenix, AZ 85014</li>
+        <li>Mon–Fri 8–6 · Sat 9–1</li></ul></div>
+    </div>
+
+    <div class="handoff">
+      <b>Design mockup — what still needs supplying.</b> Layout, type and colour are final; the content marked below is standing in.
+      <ul>
+        <li>Six photographs, at the crops named in each frame: hero portrait, monsoon/roof wide, agent portrait, contact-office wide, and three review headshots.</li>
+        <li>Real carrier logos in place of the six marked slots.</li>
+        <li>Real phone, address, email and producer licence number — the 555-0142 number here is a reserved fictional one.</li>
+        <li>Real Google reviews in place of the three sample quotes, and real book figures for the three statistics.</li>
+      </ul>
+      Both forms are inert and store nothing.
+    </div>
+
+    <div class="legal">
+      <span>© 2026 AZ Family Insurance · AZ Producer Licence #0000000</span>
+      <span>Privacy · Terms · Accessibility</span>
+    </div>
+  </div>
+</footer>
+
+<div class="dock">
+  <a class="btn btn--ghost" href="tel:+16025550142"><svg><use href="#i-phone"/></svg>Call</a>
+  <a class="btn btn--primary" href="#quote">Get my quote</a>
+</div>
+
+<script>
+(function(){
+  var burger = document.getElementById('burger');
+  var sheet  = document.getElementById('sheet');
+  var closeB = document.getElementById('sheet-close');
+
+  function setSheet(open){
+    sheet.dataset.open = open ? 'true' : 'false';
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  burger.addEventListener('click', function(){ setSheet(sheet.dataset.open !== 'true'); });
+  closeB.addEventListener('click', function(){ setSheet(false); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setSheet(false); });
+
+  var pages = { home: document.getElementById('page-home'), contact: document.getElementById('page-contact') };
+  function route(){
+    var name = (location.hash || '#/').indexOf('#/contact') === 0 ? 'contact' : 'home';
+    for(var k in pages){ pages[k].dataset.active = (k === name) ? 'true' : 'false'; }
+    document.querySelectorAll('.nav a[data-nav="contact"]').forEach(function(a){
+      a.setAttribute('aria-current', name === 'contact' ? 'page' : 'false');
+    });
+    observe();
+  }
+  window.addEventListener('hashchange', function(){ setSheet(false); route(); });
+
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if(!a) return;
+    var href = a.getAttribute('href');
+    if(href.indexOf('#/') === 0){
+      if(href === '#/' || href === '#/contact') setTimeout(function(){ window.scrollTo(0, 0); }, 10);
+      return;
+    }
+    var target = document.querySelector(href);
+    if(!target) return;
+    e.preventDefault();
+    setSheet(false);
+    if(pages.contact.dataset.active === 'true' && !pages.contact.contains(target)){
+      location.hash = '#/';
+      route();
+    }
+    setTimeout(function(){
+      target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    }, 20);
+  });
+
+  var io = null;
+  function observe(){
+    if(!('IntersectionObserver' in window)) return;
+    if(!io){
+      io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { rootMargin: '0px 0px -6% 0px', threshold: .06 });
+    }
+    document.querySelectorAll('.reveal:not(.in)').forEach(function(el){ io.observe(el); });
+  }
+
+  document.querySelectorAll('.qform').forEach(function(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var done = form.parentElement.querySelector('.form-done');
+      form.style.display = 'none';
+      if(done){ done.dataset.on = 'true'; done.scrollIntoView({ block: 'nearest' }); }
+    });
+  });
+
+  route();
+  observe();
+})();
+</script>
