@@ -237,11 +237,11 @@ button,select{font-family:inherit}
 .lg i{width:11px;height:11px;border-radius:2px;flex:none}
 .chartbox{position:relative}
 .chartbox svg{display:block;width:100%;height:auto;overflow:visible}
-.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line-2);border-radius:4px;padding:9px 12px;font-size:.8rem;opacity:0;transition:opacity .12s;z-index:5;min-width:150px;box-shadow:var(--shadow-md)}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line-2);border-radius:8px;padding:8px 11px;font-size:.76rem;opacity:0;transition:opacity .12s;z-index:5;white-space:nowrap;box-shadow:var(--shadow-md)}
 .tip.on{opacity:1}
-.tip h6{margin:0 0 7px;font-family:var(--sans);font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
-.tip div{display:flex;align-items:center;gap:8px;justify-content:space-between}
-.tip div+div{margin-top:4px}
+.tip h6{margin:0 0 6px;font-family:var(--sans);font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.tip div{display:flex;align-items:center;gap:14px;justify-content:space-between}
+.tip div+div{margin-top:3px}
 .tip span{display:flex;align-items:center;gap:6px;color:var(--ink-2)}
 .tip s{text-decoration:none;width:9px;height:9px;border-radius:2px;flex:none}
 .tip b{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
@@ -268,25 +268,55 @@ button,select{font-family:inherit}
 .find h4{font-family:var(--display);font-size:1rem;font-weight:600;letter-spacing:-.012em;margin:0 0 5px;line-height:1.4}
 .find p{font-size:.88rem;color:var(--ink-2);margin:0;max-width:70ch;line-height:1.6}
 code{font-family:var(--mono);font-size:.85em;background:var(--panel-3);padding:1px 5px;border-radius:2px;color:var(--brand)}
-.bcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;
-  box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:12px}
-.bhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-  padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel-2)}
-.bq{font-size:.83rem;font-weight:600;color:var(--ink)}
-.bmodels{font-size:.73rem;color:var(--ink-3)}
+.bcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:14px}
+.bcard.crit{border-color:rgba(179,38,30,.22)}
+.bcard.warn{border-color:rgba(154,103,0,.24)}
+.bcard.good{border-color:rgba(15,110,90,.22)}
+
+.bhead{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:13px 18px;border-bottom:1px solid var(--line)}
+.bcard.crit .bhead{background:rgba(179,38,30,.045);border-bottom-color:rgba(179,38,30,.16)}
+.bcard.warn .bhead{background:rgba(154,103,0,.05);border-bottom-color:rgba(154,103,0,.18)}
+.bcard.good .bhead{background:rgba(15,110,90,.04);border-bottom-color:rgba(15,110,90,.16)}
+.bq{display:flex;align-items:center;gap:10px;min-width:0;font-family:var(--display);
+  font-size:.95rem;font-weight:600;letter-spacing:-.012em;color:var(--ink)}
+.bq i{width:7px;height:7px;border-radius:50%;flex:none;background:currentColor}
+.bcard.crit .bq i{color:var(--oxide)} .bcard.warn .bq i{color:var(--amber)} .bcard.good .bq i{color:var(--verd)}
+.bverdict{font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  padding:5px 11px;border-radius:99px;color:#FFF;white-space:nowrap;flex:none}
+.bcard.crit .bverdict{background:var(--oxide)}
+.bcard.warn .bverdict{background:var(--amber)}
+.bcard.good .bverdict{background:var(--verd)}
+
 .bbody{display:grid}
-@media(min-width:740px){.bbody{grid-template-columns:1fr 1fr}}
-.bside{padding:15px 17px;min-width:0}
+@media(min-width:760px){.bbody{grid-template-columns:1fr 1fr}}
+.bside{padding:17px 20px 16px;min-width:0;display:flex;flex-direction:column}
 .bside+.bside{border-top:1px solid var(--line);background:var(--panel-2)}
-@media(min-width:740px){.bside+.bside{border-top:none;border-left:1px solid var(--line)}}
-.blabel{display:block;font-size:.57rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
-.btxt{margin:0;font-size:.86rem;line-height:1.6;color:var(--ink)}
-.btxt.said{font-style:italic;color:var(--ink-2)}
-.bmeta{margin-top:12px;padding-top:10px;border-top:1px solid var(--divider);
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.72rem;color:var(--ink-3)}
-.runs{display:inline-flex;gap:3px;flex:none}
-.runs i{width:7px;height:7px;border-radius:2px;background:var(--panel-3);display:block}
-.runs i.on{background:currentColor}
+@media(min-width:760px){.bside+.bside{border-top:none;border-left:1px solid var(--line)}}
+
+.bsrc{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px}
+.bchip{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;
+  color:var(--ink-2);background:var(--panel-2);border:1px solid var(--line);
+  padding:3px 9px 3px 7px;border-radius:99px;white-space:nowrap}
+.bside+.bside .bchip{background:var(--panel)}
+.bchip i{width:6px;height:6px;border-radius:50%;flex:none;background:currentColor}
+.bchip.truth{color:var(--verd);background:var(--verd-dim);border-color:rgba(15,110,90,.26)}
+.bchip.truth svg{flex:none}
+
+.btxt{margin:0;font-size:.9rem;line-height:1.62;color:var(--ink)}
+.btxt.said{font-style:italic;color:var(--ink-2);padding-left:14px;border-left:2px solid var(--line-2)}
+.bcard.crit .btxt.said{border-left-color:rgba(179,38,30,.34)}
+.bcard.warn .btxt.said{border-left-color:rgba(154,103,0,.36)}
+.bcard.good .btxt.said{border-left-color:rgba(15,110,90,.34)}
+
+.bfoot{margin-top:auto;padding-top:15px}
+.meter{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.meter-bar{display:inline-flex;gap:3px;flex:none}
+.meter-bar i{width:10px;height:5px;border-radius:2px;background:var(--panel-3);display:block}
+.meter-bar i.on{background:currentColor}
+.meter-lbl{font-size:.74rem;color:var(--ink-3)}
+.meter-lbl b{color:var(--ink-2);font-weight:600}
 
 /* ===== tables ===== */
 .scroll{overflow-x:auto}
@@ -595,17 +625,17 @@ var LENDERS={
   belief:[
    {sev:"crit",v:"Contradicted",q:"Which states does Cedar Ridge lend in?",models:"ChatGPT · Gemini · Perplexity",hits:7,runs:10,
     claim:"Cedar Ridge Mortgage is a regional lender operating primarily in Florida and Alabama. I don't have information indicating they lend in Georgia — you may want to look at lenders licensed in that state.",
-    note:"Georgia omitted in 7 of 10 runs · 95% CI 35–93%",
+    note:"95% CI 35–93%",
     truth:"Active licenses in 11 states including Georgia, issued 2019 and in good standing. South Carolina and Tennessee were omitted too.",
     tsrc:"NMLS Consumer Access · verified on scan date"},
    {sev:"crit",v:"Wrong entity",q:"Does Cedar Ridge have a complaint history?",models:"Gemini",hits:4,runs:10,
     claim:"Cedar Ridge Mortgage has faced consumer complaints regarding loan servicing delays and difficulty reaching their servicing department.",
-    note:"Surfaced in 4 of 10 runs",
+    note:"complaints misattributed",
     truth:"Those complaints belong to Cedar Ridge Financial, a separate business with no corporate relationship to you. Your own record carries 2 complaints, below the cohort median.",
     tsrc:"CFPB complaint database"},
    {sev:"warn",v:"No knowledge",q:"What do you know about Cedar Ridge Mortgage?",models:"Claude · Copilot",hits:10,runs:10,
     claim:"I don't have specific information about Cedar Ridge Mortgage.",
-    note:"Returned in 10 of 10 runs on both models",
+    note:"identical on both models",
     truth:"A lender originating in 11 states with 44 loan officers and 412 Google reviews. This is a visibility failure, not a size problem — two of your Tampa competitors are named by both models.",
     tsrc:"NMLS + public profiles"}],
   fixes:[
@@ -651,17 +681,17 @@ var LENDERS={
   belief:[
    {sev:"good",v:"Accurate",q:"What do you know about Suncoast Mortgage Partners?",models:"Claude",hits:10,runs:10,
     claim:"Suncoast Mortgage Partners is a Tampa-based lender licensed in six states, known for first-time buyer and FHA lending, with an active educational YouTube presence.",
-    note:"States, products and market correct in 10 of 10 runs",
+    note:"states, products and market all correct",
     truth:"Active licenses in 6 states, issued 2021, in good standing. Product mix and market match the description exactly.",
     tsrc:"NMLS Consumer Access"},
    {sev:"warn",v:"Unverified claim",q:"What does Suncoast charge?",models:"Perplexity",hits:3,runs:10,
     claim:"They're known for charging no lender fees, which makes them a strong option for cost-sensitive first-time buyers.",
-    note:"Surfaced in 3 of 10 runs",
+    note:"appears nowhere on your site",
     truth:"No such claim appears anywhere on your site or in your disclosures. An AI inventing a pricing promise in a regulated category is a compliance exposure, not just an accuracy problem.",
     tsrc:"Site crawl + published disclosures"},
    {sev:"warn",v:"Understated",q:"How large is Suncoast Mortgage Partners?",models:"Copilot",hits:4,runs:10,
     claim:"Suncoast Mortgage Partners appears to be a smaller regional broker.",
-    note:"Named in only 4 of 10 runs — your weakest model by a wide margin",
+    note:"your weakest model by a wide margin",
     truth:"22 loan officers across 2 branches, licensed in 6 states, and the most-cited lender in the Tampa market on the other four models.",
     tsrc:"NMLS + panel results"}],
   fixes:[
@@ -701,17 +731,17 @@ var LENDERS={
   belief:[
    {sev:"good",v:"Mostly accurate",q:"What do you know about Harborlight Funding?",models:"Perplexity",hits:7,runs:10,
     claim:"Harborlight Funding is a small Tampa-area lender that comes up often in first-time buyer discussions, particularly around FHA and down payment assistance.",
-    note:"Named in 7 of 10 runs · products and market correct",
+    note:"products and market correct",
     truth:"Active licenses in 3 states — Florida, Georgia and Alabama — issued 2022, in good standing. FHA and DPA focus is accurate.",
     tsrc:"NMLS Consumer Access"},
    {sev:"warn",v:"Stale",q:"Where does Harborlight lend?",models:"Gemini",hits:6,runs:10,
     claim:"Harborlight Funding operates in the Tampa Bay area of Florida.",
-    note:"Georgia and Alabama omitted in 6 of 10 runs",
+    note:"Georgia and Alabama omitted",
     truth:"Licensed in Georgia and Alabama since 2022. Neither state has a crawlable page asserting it, which is the likely cause.",
     tsrc:"NMLS Consumer Access"},
    {sev:"warn",v:"Low recall",q:"What do you know about Harborlight Funding?",models:"Copilot",hits:8,runs:10,
     claim:"I don't have detailed information about Harborlight Funding.",
-    note:"Returned in 8 of 10 runs",
+    note:"Bing-indexed models only",
     truth:"Your Reddit presence carries the other four models. Copilot leans on Bing's index, where you hold top-3 map placement in only 1 of 7 grid points.",
     tsrc:"Panel results + Bing Places"}],
   fixes:[
@@ -750,28 +780,38 @@ function linePath(vals,X,Y){
 }
 
 function drawTrend(series,marker){
-  var W0=780,H=250,PL=34,PR=54,PT=16,PB=28;
+  var W0=780,H=212,PL=40,PR=58,PT=16,PB=26;
   var n=series[0].v.length;
+  var all=[];series.forEach(function(s){all=all.concat(s.v);});
+  var lo=Math.min.apply(null,all),hi=Math.max.apply(null,all);
+  var pad=Math.max(3,(hi-lo)*0.28);
+  var mn=Math.max(0,Math.floor((lo-pad)/5)*5),mx=Math.min(100,Math.ceil((hi+pad)/5)*5);
+  if(mx-mn<15){mx=Math.min(100,mn+15);}
+  var step=(mx-mn)>34?10:5;
   var X=function(i){return PL+i*(W0-PL-PR)/(n-1);};
-  var Y=function(v){return PT+(100-v)/100*(H-PT-PB);};
+  var Y=function(v){return PT+(mx-v)/(mx-mn)*(H-PT-PB);};
   var g="";
-  [0,25,50,75,100].forEach(function(t){
-    g+='<line x1="'+PL+'" y1="'+Y(t)+'" x2="'+(W0-PR)+'" y2="'+Y(t)+'" stroke="#E4EBF2" stroke-width="1"/>'
-     + '<text x="'+(PL-9)+'" y="'+(Y(t)+4)+'" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10" fill="#42607A">'+t+'</text>';
-  });
+  for(var t=Math.ceil(mn/step)*step;t<=mx;t+=step){
+    g+='<line x1="'+PL+'" y1="'+Y(t).toFixed(1)+'" x2="'+(W0-PR)+'" y2="'+Y(t).toFixed(1)+'" stroke="#E4EBF2" stroke-width="1"/>'
+     + '<text x="'+(PL-10)+'" y="'+(Y(t)+4).toFixed(1)+'" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10" fill="#42607A">'+t+'</text>';
+  }
   for(var i=0;i<n;i+=3){
     g+='<text x="'+X(i)+'" y="'+(H-6)+'" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#42607A">wk '+(i+1)+'</text>';
   }
   if(marker!=null){
-    g+='<line x1="'+X(marker)+'" y1="'+PT+'" x2="'+X(marker)+'" y2="'+(H-PB)+'" stroke="#C3D0DC" stroke-width="1" stroke-dasharray="3 3"/>';
+    g+='<line x1="'+X(marker)+'" y1="'+PT+'" x2="'+X(marker)+'" y2="'+(H-PB)+'" stroke="#C3D0DC" stroke-width="1" stroke-dasharray="3 4"/>'
+     + '<circle cx="'+X(marker)+'" cy="'+PT+'" r="2.5" fill="#C3D0DC"/>';
   }
-  series.forEach(function(s){
-    g+='<path d="'+linePath(s.v,X,Y)+'" fill="none" stroke="'+s.c+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+  // subject line gets an area wash so it reads as "you"
+  var sub=series[0];
+  g+='<path d="'+linePath(sub.v,X,Y)+' L '+X(n-1).toFixed(1)+' '+(H-PB)+' L '+PL+' '+(H-PB)+' Z" fill="'+sub.c+'" opacity="0.07"/>';
+  series.forEach(function(s,i){
+    g+='<path d="'+linePath(s.v,X,Y)+'" fill="none" stroke="'+s.c+'" stroke-width="'+(i===0?2.6:1.8)+'" stroke-linejoin="round" stroke-linecap="round"'+(i===0?"":' opacity="0.85"')+'/>';
   });
-  series.forEach(function(s){
+  series.forEach(function(s,i){
     var lx=X(n-1),ly=Y(s.v[n-1]);
-    g+='<circle cx="'+lx+'" cy="'+ly+'" r="4.5" fill="'+s.c+'" stroke="#FFFFFF" stroke-width="2"/>'
-     + '<text x="'+(lx+9)+'" y="'+(ly+4)+'" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="600" fill="#0F2438">'+s.v[n-1]+'</text>';
+    g+='<circle cx="'+lx+'" cy="'+ly.toFixed(1)+'" r="'+(i===0?4.5:3.8)+'" fill="'+s.c+'" stroke="#FFFFFF" stroke-width="2"/>'
+     + '<text x="'+(lx+9)+'" y="'+(ly+4).toFixed(1)+'" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="'+(i===0?700:600)+'" fill="#0F2438">'+s.v[n-1]+'</text>';
   });
   g+='<line id="cross" x1="0" y1="'+PT+'" x2="0" y2="'+(H-PB)+'" stroke="#C3D0DC" stroke-width="1" opacity="0"/>';
   return {svg:'<svg viewBox="0 0 '+W0+' '+H+'" role="img" aria-label="Answer Share over the last 12 weeks">'+g+'</svg>',X:X,W0:W0,n:n,PL:PL,PR:PR};
@@ -926,17 +966,25 @@ function wireShowAll(listId,btnId,total,noun){
 function beliefHtml(b){
   var col=b.sev==="crit"?"var(--oxide)":b.sev==="good"?"var(--verd)":"var(--amber)";
   var dots="";for(var i=0;i<b.runs;i++)dots+='<i class="'+(i<b.hits?"on":"")+'"></i>';
-  return '<div class="bcard">'
-   +'<div class="bhead"><span class="bq">'+esc(b.q)+'</span>'
-   +'<span class="sev '+b.sev+'">'+b.v+'</span></div>'
+  var models=b.models.split(" \u00b7 ").map(function(m){
+    return '<span class="bchip" style="color:'+col+'"><i></i><span style="color:var(--ink-2)">'+esc(m)+'</span></span>';
+  }).join("");
+  var tick='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  return '<div class="bcard '+b.sev+'">'
+   +'<div class="bhead"><span class="bq"><i></i>'+esc(b.q)+'</span>'
+   +'<span class="bverdict">'+b.v+'</span></div>'
    +'<div class="bbody">'
-     +'<div class="bside"><span class="blabel" style="color:'+col+'">What the model says</span>'
-       +'<p class="btxt said">&ldquo;'+b.claim+'&rdquo;</p>'
-       +'<div class="bmeta"><span class="runs" style="color:'+col+'">'+dots+'</span><span>'+b.note+'</span></div></div>'
-     +'<div class="bside"><span class="blabel" style="color:var(--verd)">What the record says</span>'
+     +'<div class="bside">'
+       +'<div class="bsrc">'+models+'</div>'
+       +'<p class="btxt said">'+b.claim+'</p>'
+       +'<div class="bfoot"><div class="meter"><span class="meter-bar" style="color:'+col+'">'+dots+'</span>'
+       +'<span class="meter-lbl"><b>'+b.hits+' of '+b.runs+' runs</b>'+(b.note?' &middot; '+esc(b.note):"")+'</span></div></div>'
+     +'</div>'
+     +'<div class="bside">'
+       +'<div class="bsrc"><span class="bchip truth">'+tick+esc(b.tsrc.split(" \u00b7 ")[0])+'</span></div>'
        +'<p class="btxt">'+b.truth+'</p>'
-       +'<div class="bmeta"><span>'+b.tsrc+'</span></div>'
-       +'<div style="margin-top:9px;font-size:.72rem;color:var(--ink-3)">'+esc(b.models)+' &middot; asked '+b.runs+'&times; each</div></div>'
+       +'<div class="bfoot"><div class="meter-lbl">Verified against the public record on scan date</div></div>'
+     +'</div>'
    +'</div></div>';
 }
 function findHtml(f){
