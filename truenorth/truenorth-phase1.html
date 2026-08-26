@@ -1,0 +1,1000 @@
+<title>TrueNorth Phase One</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  --ground:#E9EDF0;
+  --surface:#FFFFFF;
+  --surface-2:#F3F6F8;
+  --surface-3:#E4EAEE;
+  --ink:#0F1F2C;
+  --ink-2:#3C566A;
+  --ink-3:#6A8296;
+  --line:#D0D9DF;
+  --line-2:#BCC9D2;
+  --brass:#1B62C4;
+  --brass-2:#1B62C4;
+  --brass-dim:rgba(27,98,196,.08);
+  --oxide:#AA3A30;
+  --oxide-dim:rgba(170,58,48,.10);
+  --amber:#A5720F;
+  --amber-dim:rgba(165,114,15,.12);
+  --verdigris:#1F6D5C;
+  --verdigris-dim:rgba(31,109,92,.11);
+  --screen:#FFFFFF;
+  --screen-2:#F7F9FB;
+  --screen-3:#E4EBF2;
+  --screen-line:#DCE4EC;
+  --screen-ink:#0F2438;
+  --screen-ink-2:#42607A;
+  --screen-ink-3:#5A7590;
+  --shadow:0 2px 6px rgba(16,40,64,.05),0 12px 28px -6px rgba(16,40,64,.11),0 32px 64px -16px rgba(16,40,64,.15);
+  --shadow-sm:0 1px 2px rgba(16,40,64,.04),0 1px 1px rgba(16,40,64,.03);
+  --shadow-md:0 2px 4px rgba(16,40,64,.04),0 4px 12px -2px rgba(16,40,64,.07),0 12px 32px -8px rgba(16,40,64,.09);
+  --shadow-brand:0 1px 2px rgba(21,80,166,.22),0 6px 16px -4px rgba(21,80,166,.30);
+  --brand-wash:rgba(27,98,196,.06);
+  /* TYPE — same two tokens as the demo. Swap for LenderHomePage's faces. */
+  --display:"Poppins",ui-sans-serif,system-ui,sans-serif;
+  --sans:"Open Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#080F15;
+    --surface:#0F1C26;
+    --surface-2:#152632;
+    --surface-3:#1B3040;
+    --ink:#E8EFF4;
+    --ink-2:#A2B8C7;
+    --ink-3:#6C8494;
+    --line:#1F3444;
+    --line-2:#2A4457;
+    --brass:#5B9BEA;
+    --brass-2:#5B9BEA;
+    --brass-dim:rgba(91,155,234,.14);
+    --oxide:#E0796A;
+    --oxide-dim:rgba(224,121,106,.13);
+    --amber:#DDA640;
+    --amber-dim:rgba(221,166,64,.13);
+    --verdigris:#4FB79D;
+    --verdigris-dim:rgba(79,183,157,.13);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#080F15;
+  --surface:#0F1C26;
+  --surface-2:#152632;
+  --surface-3:#1B3040;
+  --ink:#E8EFF4;
+  --ink-2:#A2B8C7;
+  --ink-3:#6C8494;
+  --line:#1F3444;
+  --line-2:#2A4457;
+  --brass:#5B9BEA;
+  --brass-2:#5B9BEA;
+  --brass-dim:rgba(91,155,234,.14);
+  --oxide:#E0796A;
+  --oxide-dim:rgba(224,121,106,.13);
+  --amber:#DDA640;
+  --amber-dim:rgba(221,166,64,.13);
+  --verdigris:#4FB79D;
+  --verdigris-dim:rgba(79,183,157,.13);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1140px;margin:0 auto;padding:0 28px}
+.narrow{max-width:660px}
+
+h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;letter-spacing:-.022em}
+h1{font-size:clamp(2.1rem,5vw,3.4rem);line-height:1.12;margin:0}
+h2{font-size:clamp(1.6rem,2.9vw,2.2rem);line-height:1.18;margin:0 0 .5rem}
+h3{font-size:1.2rem;font-weight:600;line-height:1.3;margin:0 0 .35rem}
+p{margin:0 0 1rem;color:var(--ink-2);max-width:66ch}
+strong{color:var(--ink);font-weight:600}
+a{color:var(--brass)}
+
+.eyebrow{
+  font-family:var(--mono);
+  font-size:.68rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--brass);margin:0 0 .9rem;display:block;
+}
+.eyebrow.mute{color:var(--ink-3)}
+
+/* ---------- masthead ---------- */
+.masthead{padding:78px 0 56px;border-bottom:1px solid var(--line)}
+.mast-grid{display:grid;grid-template-columns:1fr;gap:34px}
+@media(min-width:900px){.mast-grid{grid-template-columns:1.35fr .85fr;align-items:end;gap:56px}}
+.lede{font-size:1.16rem;line-height:1.62;color:var(--ink-2);max-width:56ch;margin:22px 0 0}
+.lede em{font-style:normal;color:var(--ink);font-weight:500}
+
+.specstrip{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden;
+}
+.specstrip div{background:var(--surface);padding:14px 16px}
+.specstrip dt{
+  font-family:var(--mono);font-size:.63rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 3px;
+}
+.specstrip dd{margin:0;font-size:1.02rem;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+
+.sample-flag{
+  display:inline-flex;align-items:center;gap:9px;margin-top:30px;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;
+  color:var(--amber);background:var(--amber-dim);
+  border:1px solid color-mix(in srgb,var(--amber) 34%,transparent);
+  padding:7px 13px;border-radius:2px;
+}
+.sample-flag::before{content:"";width:6px;height:6px;background:var(--amber);border-radius:50%;flex:none}
+
+/* ---------- sections ---------- */
+section{padding:66px 0}
+section + section{border-top:1px solid var(--line)}
+.sec-head{margin-bottom:34px}
+.sec-head p{margin-top:.7rem}
+
+.stepno{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;
+  color:var(--ink-3);text-transform:uppercase;
+}
+
+/* ---------- screen chrome ---------- */
+.screen{
+  background:var(--screen);color:var(--screen-ink);
+  border-radius:8px;overflow:hidden;
+  border:1px solid var(--screen-line);
+  box-shadow:var(--shadow);
+}
+.screen-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;background:var(--screen-2);border-bottom:1px solid var(--screen-line);
+}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--screen-line);flex:none}
+.screen-url{
+  font-family:var(--mono);font-size:.72rem;color:var(--screen-ink-3);
+  margin-left:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.screen-body{padding:34px}
+@media(max-width:640px){.screen-body{padding:22px 18px}}
+
+.mark{display:flex;align-items:center;gap:10px}
+.mark-glyph{
+  width:27px;height:27px;flex:none;border-radius:8px;position:relative;
+  background:linear-gradient(148deg,#1B62C4 0%,#164F9E 100%);box-shadow:var(--shadow-brand);
+}
+.mark-glyph::after{
+  content:"";position:absolute;inset:0;margin:auto;width:0;height:0;
+  border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-bottom:11px solid #FFF;
+  transform:rotate(36deg) translateY(-.5px);
+}
+.mark-name{
+  font-family:var(--display);font-size:1.02rem;font-weight:700;
+  letter-spacing:-.022em;color:var(--screen-ink);
+}
+
+.live-note{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-size:.86rem;color:var(--ink-3);margin:0 0 14px;max-width:none;
+}
+.live-note a{color:var(--brass);font-weight:600;text-decoration:none;border-bottom:1px solid transparent}
+.live-note a:hover{border-bottom-color:var(--brass)}
+
+/* ---------- scan input ---------- */
+.scanform{max-width:660px;margin:48px auto 8px;text-align:center;position:relative}
+.scanform::before{content:"";position:absolute;left:50%;top:-56px;width:520px;height:240px;
+  transform:translateX(-50%);background:radial-gradient(closest-side,var(--brand-wash),transparent 72%);
+  pointer-events:none;z-index:0}
+.scanform>*{position:relative;z-index:1}
+.hero-eyebrow{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:#1B62C4;background:rgba(27,98,196,.08);
+  padding:6px 14px;border-radius:99px;margin:0 0 18px;max-width:100%;line-height:1.5}
+.scanform h4{
+  font-family:var(--display);font-weight:700;letter-spacing:-.03em;
+  font-size:1.5rem;line-height:1.16;margin:0 0 10px;color:var(--screen-ink);text-wrap:balance;
+}
+.scanform h4 em{display:block;font-style:normal;font-weight:600;color:var(--screen-ink-3);letter-spacing:-.03em;text-wrap:balance}
+.scanform .sub{font-size:.94rem;line-height:1.58;color:var(--screen-ink-2);margin:0 auto 28px;max-width:58ch}
+.fieldrow{
+  display:flex;align-items:stretch;max-width:600px;margin:0 auto;text-align:left;
+  background:var(--screen);border:1px solid var(--screen-line);border-radius:13px;
+  padding:6px;box-shadow:var(--shadow-md);
+}
+.sb-icon{flex:none;display:flex;align-items:center;padding-left:17px;color:var(--screen-ink-3)}
+.field{flex:1 1 auto;min-width:0;padding:15px 14px;display:flex;align-items:center}
+.field b{font-weight:500;color:var(--screen-ink);font-size:1rem;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.btn{
+  flex:none;display:inline-flex;align-items:center;justify-content:center;
+  background:#1B62C4;color:#FFFFFF;border:none;border-radius:9px;
+  padding:0 26px;font-family:var(--sans);font-weight:600;font-size:.95rem;
+  cursor:pointer;letter-spacing:-.005em;box-shadow:var(--shadow-brand);text-decoration:none;
+}
+.btn:hover{background:#164F9E}
+@media(max-width:600px){
+  .fieldrow{flex-wrap:wrap;padding:8px}
+  .field{flex:1 1 100%;padding:12px 10px}
+  .btn{flex:1 1 100%;padding:13px 26px;margin-top:4px}
+}
+.scanform .fineprint{
+  font-family:var(--sans);font-size:.75rem;color:var(--screen-ink-3);
+  margin:24px 0 0;letter-spacing:0;
+}
+
+/* ---------- scanning ---------- */
+.idcard{
+  display:flex;gap:16px;align-items:center;background:var(--screen);border:1px solid var(--screen-line);
+  border-radius:12px;padding:18px 20px;margin:0 auto 20px;max-width:640px;box-shadow:var(--shadow-md);
+}
+.id-mono{
+  flex:none;width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.02em;color:#FFF;
+  background:linear-gradient(148deg,#1B62C4 0%,#164F9E 100%);box-shadow:var(--shadow-brand);
+}
+.id-body{min-width:0;flex:1}
+.id-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.id-top b{font-family:var(--display);font-weight:600;font-size:1.06rem;letter-spacing:-.018em;color:var(--screen-ink)}
+.id-badge{
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#0F6E5A;
+  background:rgba(15,110,90,.09);border:1px solid rgba(15,110,90,.28);padding:3px 8px;border-radius:99px;
+}
+.id-dom{font-size:.85rem;color:var(--screen-ink-3);margin-top:1px}
+.id-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.id-facts span{
+  font-size:.75rem;color:var(--screen-ink-2);background:var(--screen-2);border:1px solid var(--screen-line);
+  padding:4px 10px;border-radius:99px;white-space:nowrap;
+}
+.id-facts span.mkt{color:#1B62C4;background:rgba(27,98,196,.08);border-color:rgba(27,98,196,.24);font-weight:600}
+.checklist{
+  display:grid;gap:1px;background:var(--screen-line);
+  border:1px solid var(--screen-line);border-radius:4px;overflow:hidden;
+  max-width:640px;margin:0 auto;
+}
+.check{
+  display:grid;grid-template-columns:16px 1fr auto;gap:12px;align-items:center;
+  background:var(--screen-2);padding:11px 15px;
+  font-size:.87rem;color:var(--screen-ink-2);
+}
+.check i{
+  width:14px;height:14px;border-radius:50%;border:1.5px solid var(--screen-line);
+  display:block;position:relative;
+}
+.check.done i{border-color:var(--verdigris);background:var(--verdigris)}
+.check.done i::after{
+  content:"";position:absolute;left:4px;top:1.5px;width:3.5px;height:7px;
+  border:solid #FFFFFF;border-width:0 1.6px 1.6px 0;transform:rotate(42deg);
+}
+.check.live i{border-color:var(--brass-2);animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.check.done{color:var(--screen-ink)}
+.check em{
+  font-family:var(--mono);font-style:normal;font-size:.7rem;
+  color:var(--screen-ink-3);letter-spacing:.04em;
+}
+@media(prefers-reduced-motion:reduce){.check.live i{animation:none;opacity:.8}}
+
+/* ---------- report ---------- */
+.report-top{
+  display:grid;gap:28px;padding-bottom:30px;border-bottom:1px solid var(--screen-line);
+}
+@media(min-width:860px){.report-top{grid-template-columns:auto 1fr;gap:44px;align-items:center}}
+
+.dial{position:relative;width:196px;height:196px;flex:none;margin:0 auto}
+.dial svg{transform:rotate(-90deg);display:block}
+.dial-mid{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+}
+.dial-num{
+  font-family:var(--mono);font-size:3.5rem;font-weight:500;line-height:1;
+  color:var(--screen-ink);font-variant-numeric:tabular-nums;letter-spacing:-.03em;
+}
+.dial-lbl{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--screen-ink-3);margin-top:7px;
+}
+
+.rank-line{
+  font-family:var(--display);font-weight:600;letter-spacing:-.018em;font-size:1.45rem;line-height:1.32;
+  color:var(--screen-ink);margin:0 0 6px;
+}
+.rank-line b{color:var(--brass-2);font-weight:700}
+.rank-sub{font-size:.92rem;color:var(--screen-ink-2);margin:0 0 22px;max-width:46ch}
+
+.toggle{
+  display:inline-flex;background:var(--screen-2);border:1px solid var(--screen-line);
+  border-radius:4px;padding:3px;gap:3px;
+}
+.toggle button{
+  background:none;border:none;cursor:pointer;padding:8px 15px;border-radius:3px;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--screen-ink-3);font-weight:500;
+}
+.toggle button[aria-pressed="true"]{background:var(--brass-2);color:#FFFFFF}
+.toggle button:focus-visible{outline:2px solid var(--brass-2);outline-offset:2px}
+.toggle-note{
+  font-family:var(--mono);font-size:.68rem;color:var(--screen-ink-3);
+  margin:11px 0 0;letter-spacing:.03em;
+}
+
+/* surfaces */
+.surfaces{padding:28px 0 30px;border-bottom:1px solid var(--screen-line)}
+.surf-head{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  margin-bottom:16px;flex-wrap:wrap;
+}
+.surf-head h5{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--screen-ink-3);margin:0;font-weight:500;
+}
+.surf{
+  display:grid;grid-template-columns:1fr;gap:5px;padding:11px 0;
+  border-bottom:1px solid color-mix(in srgb,var(--screen-line) 55%,transparent);
+}
+.surf:last-child{border-bottom:none}
+.surf-row{display:flex;align-items:baseline;gap:12px}
+.surf-name{flex:1;font-size:.92rem;color:var(--screen-ink);min-width:0}
+.surf-w{
+  font-family:var(--mono);font-size:.68rem;color:var(--screen-ink-3);
+  font-variant-numeric:tabular-nums;letter-spacing:.03em;flex:none;
+}
+.surf-val{
+  font-family:var(--mono);font-size:1.02rem;font-weight:500;
+  color:var(--screen-ink);font-variant-numeric:tabular-nums;flex:none;width:2.4ch;text-align:right;
+}
+.bar{height:5px;background:var(--screen-3);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+/* findings */
+.findings{padding-top:28px}
+.finding{
+  display:grid;grid-template-columns:auto 1fr;gap:15px;align-items:start;
+  padding:15px 0;border-bottom:1px solid color-mix(in srgb,var(--screen-line) 55%,transparent);
+}
+.finding:last-child{border-bottom:none}
+.finding h6{font-size:.97rem;font-weight:600;margin:0 0 4px;color:var(--screen-ink);line-height:1.4}
+.finding p{font-size:.87rem;color:var(--screen-ink-2);margin:0;max-width:64ch}
+.finding code{
+  font-family:var(--mono);font-size:.82em;
+  background:var(--screen-3);padding:1px 5px;border-radius:2px;color:var(--brass-2);
+}
+
+/* belief audit */
+.bcard{
+  background:var(--screen);border:1px solid var(--screen-line);border-radius:10px;
+  overflow:hidden;margin-bottom:12px;box-shadow:var(--shadow-sm);
+}
+.bhead{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  padding:10px 16px;border-bottom:1px solid var(--screen-line);background:var(--screen-2);
+}
+.bq{font-size:.83rem;font-weight:600;color:var(--screen-ink)}
+.bbody{display:grid}
+@media(min-width:740px){.bbody{grid-template-columns:1fr 1fr}}
+.bside{padding:15px 17px;min-width:0}
+.bside+.bside{border-top:1px solid var(--screen-line);background:var(--screen-2)}
+@media(min-width:740px){.bside+.bside{border-top:none;border-left:1px solid var(--screen-line)}}
+.blabel{display:block;font-size:.57rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
+.btxt{margin:0;font-size:.86rem;line-height:1.6;color:var(--screen-ink)}
+.btxt.said{font-style:italic;color:var(--screen-ink-2)}
+.bmeta{
+  margin-top:12px;padding-top:10px;border-top:1px solid rgba(15,36,56,.08);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.72rem;color:var(--screen-ink-3);
+}
+.runs{display:inline-flex;gap:3px;flex:none}
+.runs i{width:7px;height:7px;border-radius:2px;background:var(--screen-3);display:block}
+.runs i.on{background:currentColor}
+.sev{
+  font-family:var(--sans);font-size:.57rem;letter-spacing:.11em;text-transform:uppercase;
+  padding:4px 8px;border-radius:3px;font-weight:700;white-space:nowrap;flex:none;
+}
+.finding .sev{margin-top:2px}
+.sev.crit{background:rgba(179,38,30,.08);color:#B3261E;border:1px solid rgba(179,38,30,.28)}
+.sev.warn{background:rgba(154,103,0,.10);color:#9A6700;border:1px solid rgba(154,103,0,.30)}
+.sev.good{background:rgba(15,110,90,.09);color:#0F6E5A;border:1px solid rgba(15,110,90,.30)}
+.belief{display:grid;gap:14px}
+@media(min-width:820px){.belief{grid-template-columns:1fr 1fr}}
+.quote{
+  background:var(--screen-2);border:1px solid var(--screen-line);
+  border-left:2px solid var(--oxide);border-radius:4px;padding:18px 20px;
+}
+.quote.truth{border-left-color:var(--verdigris)}
+.qhead{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-family:var(--mono);font-size:.63rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--screen-ink-3);margin-bottom:11px;
+}
+.qhead b{color:var(--oxide);font-weight:600;letter-spacing:.13em}
+.quote.truth .qhead b{color:var(--verdigris)}
+.quote p{margin:0;font-size:.92rem;color:var(--screen-ink);line-height:1.62}
+.quote.said p{font-style:italic;color:var(--screen-ink-2)}
+.freq{
+  font-family:var(--mono);font-size:.7rem;color:var(--screen-ink-3);
+  margin-top:12px;padding-top:11px;border-top:1px solid var(--screen-line);
+  letter-spacing:.03em;
+}
+.freq b{color:var(--oxide);font-weight:600}
+
+/* fix table */
+.fixes{width:100%;border-collapse:collapse;font-size:.9rem}
+.fixes th{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--screen-ink-3);font-weight:500;
+  text-align:left;padding:0 14px 11px 0;border-bottom:1px solid var(--screen-line);
+}
+.fixes th:last-child,.fixes td:last-child{text-align:right;padding-right:0}
+.fixes td{
+  padding:13px 14px 13px 0;color:var(--screen-ink-2);vertical-align:top;
+  border-bottom:1px solid color-mix(in srgb,var(--screen-line) 55%,transparent);
+}
+.fixes tr:last-child td{border-bottom:none}
+.fixes td.act{color:var(--screen-ink);font-weight:450}
+.fixes td.lift{
+  font-family:var(--mono);color:var(--verdigris);font-weight:600;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.fixes td.eff{font-family:var(--mono);font-size:.8rem;white-space:nowrap}
+.scroll{overflow-x:auto}
+
+/* ---------- scope ---------- */
+.two{display:grid;gap:24px}
+@media(min-width:820px){.two{grid-template-columns:1fr 1fr;gap:32px}}
+.panel{
+  background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:26px 28px;
+}
+.panel h3{font-family:var(--sans);font-size:.72rem;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;margin:0 0 16px;color:var(--ink-3)}
+.panel.in h3{color:var(--verdigris)}
+.panel.out h3{color:var(--ink-3)}
+.tick{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.tick li{
+  display:grid;grid-template-columns:15px 1fr;gap:11px;align-items:start;
+  font-size:.93rem;color:var(--ink-2);line-height:1.5;
+}
+.tick li::before{
+  content:"";width:13px;height:13px;border-radius:50%;margin-top:5px;
+  border:1.5px solid var(--verdigris);background:var(--verdigris-dim);
+}
+.panel.out .tick li::before{
+  border-color:var(--line-2);background:none;
+  border-radius:1px;height:1.5px;margin-top:11px;border-width:0 0 1.5px 0;
+}
+.tick li b{color:var(--ink);font-weight:600}
+
+/* timeline */
+.tl{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.tl-row{
+  display:grid;grid-template-columns:1fr;gap:6px;background:var(--surface);padding:17px 20px;
+}
+@media(min-width:760px){
+  .tl-row{grid-template-columns:88px 1.15fr 1fr;gap:22px;align-items:baseline}
+}
+.tl-wk{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;
+  color:var(--brass);font-weight:500;font-variant-numeric:tabular-nums;
+}
+.tl-t{font-weight:600;color:var(--ink);font-size:.97rem}
+.tl-d{font-size:.89rem;color:var(--ink-2);line-height:1.5}
+
+/* cost */
+.cost{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:8px}
+.cost-row{
+  display:grid;grid-template-columns:1fr auto;gap:18px;align-items:baseline;
+  background:var(--surface);padding:13px 18px;font-size:.92rem;
+}
+.cost-row span{color:var(--ink-2)}
+.cost-row b{font-family:var(--mono);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cost-row.total{background:var(--surface-2)}
+.cost-row.total span{color:var(--ink);font-weight:600}
+.cost-row.total b{color:var(--brass)}
+
+.callout{
+  border-left:2px solid var(--brass);background:var(--brass-dim);
+  padding:20px 24px;border-radius:0 4px 4px 0;margin:26px 0 0;
+}
+.callout p{margin:0;color:var(--ink);font-size:1rem}
+.callout p + p{margin-top:.7rem}
+
+.asks{list-style:none;margin:0;padding:0;counter-reset:a;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.asks li{
+  counter-increment:a;background:var(--surface);padding:16px 20px;
+  display:grid;grid-template-columns:26px 1fr;gap:14px;align-items:start;font-size:.95rem;color:var(--ink-2);
+}
+.asks li::before{
+  content:counter(a,decimal-leading-zero);
+  font-family:var(--mono);font-size:.72rem;color:var(--brass);
+  font-weight:600;margin-top:3px;
+}
+.asks li b{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+
+footer{padding:44px 0 66px;border-top:1px solid var(--line)}
+footer p{font-family:var(--mono);font-size:.72rem;color:var(--ink-3);letter-spacing:.04em;max-width:none}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="eyebrow">Mortgage Visibility Score · Phase One Build Proposal</span>
+    <div class="mast-grid">
+      <div>
+        <h1>The mortgage scan that ends the meeting.</h1>
+        <p class="lede">A mortgage loan officer, a mortgage brokerage or a national mortgage lender types one domain. Ninety seconds later they see six surfaces scored, a rank against their real competitors, and the three findings nobody has ever shown them. <em>Free, instant, and self-serve</em> — because the report is the sales call.</p>
+      </div>
+      <dl class="specstrip">
+        <div><dt>Build time</dt><dd>5 weeks</dd></div>
+        <div><dt>Scan duration</dt><dd>~90 sec</dd></div>
+        <div><dt>Checks run</dt><dd>180+</dd></div>
+        <div><dt>Cost per scan</dt><dd>Under $1</dd></div>
+      </dl>
+    </div>
+    <p class="live-note" style="margin:26px 0 0"><a href="https://claude.ai/code/artifact/26ac298f-4089-41e5-b4fa-0a4204a42a20" target="_blank" rel="noopener">Open the working demo &rarr;</a> &nbsp;&mdash;&nbsp; clickable, with four sample mortgage profiles.</p>
+    <div class="sample-flag">All data below is fabricated for demonstration. Cedar Ridge Mortgage and every competitor named are fictional.</div>
+  </header>
+
+  <!-- ============ STEP 1 ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">Step 1 — Input</span>
+      <h2>One field. Nothing else.</h2>
+      <p>Every field you add costs you leads, so there is exactly one. Market, branch count, officer count and licensing all come out of the site and the NMLS record. The same field works whether the domain belongs to one mortgage loan officer, a mortgage brokerage, or a mortgage lender with four hundred originators &mdash; the scanner works out which it is.</p>
+    </div>
+
+    <p class="live-note">The screens on this page are stills. <a href="https://claude.ai/code/artifact/26ac298f-4089-41e5-b4fa-0a4204a42a20" target="_blank" rel="noopener">Open the working demo &rarr;</a></p>
+    <div class="screen">
+      <div class="screen-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="screen-url">truenorth.io/scan</span>
+      </div>
+      <div class="screen-body">
+        <div class="mark"><span class="mark-glyph"></span><span class="mark-name">TrueNorth</span></div>
+        <div class="scanform">
+          <span class="hero-eyebrow">Mortgage loan officers &nbsp;·&nbsp; Mortgage brokers &nbsp;·&nbsp; Mortgage lenders</span>
+          <h4>Know exactly where borrowers find you.<em>And exactly where they don&rsquo;t.</em></h4>
+          <p class="sub">Built for mortgage loan officers, mortgage brokers and mortgage lenders. One score across six surfaces.</p>
+          <div class="fieldrow">
+            <span class="sb-icon" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg></span>
+            <span class="field"><b>cedarridgemortgage.com</b></span>
+            <a class="btn" href="https://claude.ai/code/artifact/26ac298f-4089-41e5-b4fa-0a4204a42a20" target="_blank" rel="noopener">Run scan</a>
+          </div>
+          <p class="fineprint">Any mortgage website &mdash; a loan officer&rsquo;s page, a mortgage brokerage, or a national mortgage lender.</p>
+          <p class="fineprint" style="margin-top:8px">180 checks &nbsp;·&nbsp; Public data only &nbsp;·&nbsp; No account access &nbsp;·&nbsp; ~90 seconds</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STEP 2 ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">Step 2 — Collection</span>
+      <h2>Show the work while it runs.</h2>
+      <p>Ninety seconds is a long wait on a landing page — unless the wait is the demonstration. Streaming each check as it completes does more to establish depth than any claim on the marketing site, and it sets up the findings that follow.</p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="screen-url">truenorth.io/scan/cedarridgemortgage.com</span>
+      </div>
+      <div class="screen-body">
+        <div class="idcard">
+          <div class="id-mono">CR</div>
+          <div class="id-body">
+            <div class="id-top"><b>Cedar Ridge Mortgage</b><span class="id-badge">Identified</span></div>
+            <div class="id-dom">cedarridgemortgage.com</div>
+            <div class="id-facts">
+              <span class="mkt">Tampa, FL</span><span>4 branches</span><span>44 loan officers</span>
+              <span>11 state licenses</span><span>NMLS #——</span>
+            </div>
+          </div>
+        </div>
+        <div class="checklist">
+          <div class="check done"><i></i><span>Crawled 34 pages · schema, render mode, Core Web Vitals</span><em>11.2s</em></div>
+          <div class="check done"><i></i><span>Read robots.txt and WAF rules for AI crawler access</span><em>0.8s</em></div>
+          <div class="check done"><i></i><span>Read location, branches and licenses from the site</span><em>2.4s</em></div>
+          <div class="check done"><i></i><span>Pulled Google Business Profile · 14 completeness fields</span><em>3.1s</em></div>
+          <div class="check done"><i></i><span>Checked NAP consistency across 41 directories</span><em>18.6s</em></div>
+          <div class="check done"><i></i><span>Measured review velocity · Google, Zillow, Experience.com, BBB</span><em>9.4s</em></div>
+          <div class="check live"><i></i><span>Asking 5 models 12 questions, 10 times each — 600 responses</span><em>running</em></div>
+          <div class="check"><i></i><span>Checking paid search for brand-term defense</span><em>queued</em></div>
+          <div class="check"><i></i><span>Locating social and video profiles across 9 platforms</span><em>queued</em></div>
+          <div class="check"><i></i><span>Scoring 3 named competitors on the same 180 checks</span><em>queued</em></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STEP 3 ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">Step 3 — The report</span>
+      <h2>The screen that does the selling.</h2>
+      <p>Score, cohort rank, six weighted surfaces and the three findings nobody has put in front of them — on one screen, in ninety seconds, from nothing but a domain.</p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="screen-url">truenorth.io/report/cedar-ridge-mortgage</span>
+      </div>
+      <div class="screen-body">
+
+        <div class="report-top">
+          <div class="dial">
+            <svg width="196" height="196" viewBox="0 0 196 196" aria-hidden="true">
+              <circle cx="98" cy="98" r="84" fill="none" stroke="#E4EBF2" stroke-width="13"></circle>
+              <circle id="arc" cx="98" cy="98" r="84" fill="none" stroke="#1B62C4" stroke-width="13"
+                      stroke-linecap="round" stroke-dasharray="527.8" stroke-dashoffset="527.8"
+                      style="transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1),stroke .4s"></circle>
+            </svg>
+            <div class="dial-mid">
+              <div class="dial-num" id="score">—</div>
+              <div class="dial-lbl">Answer Share</div>
+            </div>
+          </div>
+
+          <div>
+            <p class="rank-line" id="rankline">—</p>
+            <p class="rank-sub" id="ranksub">—</p>
+          </div>
+        </div>
+
+        <div class="surfaces">
+          <div class="surf-head">
+            <h5>Surface breakdown</h5>
+            <h5>Weight shown per surface</h5>
+          </div>
+          <div id="surflist"></div>
+        </div>
+
+        <div class="findings">
+          <div class="surf-head"><h5>Critical findings · 3 of 11 shown</h5></div>
+
+          <div class="finding">
+            <span class="sev crit">Critical</span>
+            <div>
+              <h6>Your site blocks every AI crawler that matters.</h6>
+              <p><code>robots.txt</code> disallows <code>GPTBot</code>, <code>ClaudeBot</code>, <code>PerplexityBot</code> and <code>CCBot</code>. This was almost certainly switched on by a security setting, not by a person. Until it's reversed, no amount of content work can make you visible in an AI answer — the crawlers can't read the page.</p>
+            </div>
+          </div>
+
+          <div class="finding">
+            <span class="sev crit">Critical</span>
+            <div>
+              <h6>Three of five models believe you don't lend in Georgia.</h6>
+              <p>Your NMLS record lists an active Georgia license. Asked where Cedar Ridge lends, ChatGPT, Gemini and Perplexity all returned a state list with Georgia absent. A borrower asking the obvious question is told to go somewhere else.</p>
+            </div>
+          </div>
+
+          <div class="finding">
+            <span class="sev warn">Warning</span>
+            <div>
+              <h6>A competitor is buying your company name.</h6>
+              <p>Bayfront Home Loans has run paid search against <code>"cedar ridge mortgage"</code> for at least 60 days. You are not bidding to defend it. Every borrower who searches for you by name sees them first.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BELIEF AUDIT ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">Step 3b — Belief audit</span>
+      <h2>What the machine thinks is true.</h2>
+      <p>Everyone else counts mentions. This asks what the models actually <em>know</em>, then puts the answer beside the NMLS record so the disagreement is visible on one line. The filled squares are the run count &mdash; each question is asked ten times, because a single answer from a non-deterministic system tells you nothing.</p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="screen-url">truenorth.io/report/cedar-ridge-mortgage/belief</span>
+      </div>
+      <div class="screen-body">
+        <div class="bcard">
+          <div class="bhead"><span class="bq">Which states does Cedar Ridge lend in?</span><span class="sev crit">Contradicted</span></div>
+          <div class="bbody">
+            <div class="bside"><span class="blabel" style="color:#B3261E">What the model says</span>
+              <p class="btxt said">&ldquo;Cedar Ridge Mortgage is a regional lender operating primarily in Florida and Alabama. I don&rsquo;t have information indicating they lend in Georgia.&rdquo;</p>
+              <div class="bmeta"><span class="runs" style="color:#B3261E"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span><span>Georgia omitted in 7 of 10 runs &middot; 95% CI 35&ndash;93%</span></div></div>
+            <div class="bside"><span class="blabel" style="color:#0F6E5A">What the record says</span>
+              <p class="btxt">Active licenses in 11 states including Georgia, issued 2019 and in good standing. South Carolina and Tennessee were omitted too.</p>
+              <div class="bmeta"><span>NMLS Consumer Access &middot; verified on scan date</span></div>
+              <div style="margin-top:9px;font-size:.72rem;color:var(--screen-ink-3)">ChatGPT &middot; Gemini &middot; Perplexity &middot; asked 10&times; each</div></div>
+          </div>
+        </div>
+        <div class="bcard">
+          <div class="bhead"><span class="bq">Does Cedar Ridge have a complaint history?</span><span class="sev crit">Wrong entity</span></div>
+          <div class="bbody">
+            <div class="bside"><span class="blabel" style="color:#B3261E">What the model says</span>
+              <p class="btxt said">&ldquo;Cedar Ridge Mortgage has faced consumer complaints regarding loan servicing delays&hellip;&rdquo;</p>
+              <div class="bmeta"><span class="runs" style="color:#B3261E"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span><span>Surfaced in 4 of 10 runs</span></div></div>
+            <div class="bside"><span class="blabel" style="color:#0F6E5A">What the record says</span>
+              <p class="btxt">Those complaints belong to Cedar Ridge Financial, a separate business with no corporate relationship to you.</p>
+              <div class="bmeta"><span>CFPB complaint database</span></div>
+              <div style="margin-top:9px;font-size:.72rem;color:var(--screen-ink-3)">Gemini &middot; asked 10&times; each</div></div>
+          </div>
+        </div>
+        <div class="bcard">
+          <div class="bhead"><span class="bq">What do you know about Cedar Ridge Mortgage?</span><span class="sev warn">No knowledge</span></div>
+          <div class="bbody">
+            <div class="bside"><span class="blabel" style="color:#9A6700">What the model says</span>
+              <p class="btxt said">&ldquo;I don&rsquo;t have specific information about Cedar Ridge Mortgage.&rdquo;</p>
+              <div class="bmeta"><span class="runs" style="color:#9A6700"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span>Returned in 10 of 10 runs on both models</span></div></div>
+            <div class="bside"><span class="blabel" style="color:#0F6E5A">What the record says</span>
+              <p class="btxt">A lender originating in 11 states with 44 loan officers and 412 Google reviews. A visibility failure, not a size problem.</p>
+              <div class="bmeta"><span>NMLS + public profiles</span></div>
+              <div style="margin-top:9px;font-size:.72rem;color:var(--screen-ink-3)">Claude &middot; Copilot &middot; asked 10&times; each</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FIXES ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">Step 4 — The fix list</span>
+      <h2>Every lost point has an owner.</h2>
+      <p>If a signal can't be written as an action, it doesn't get scored. That rule is what keeps this from becoming a vanity metric — and it's what converts the free report into paid work.</p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="screen-url">truenorth.io/report/cedar-ridge-mortgage/actions</span>
+      </div>
+      <div class="screen-body">
+        <div class="scroll">
+          <table class="fixes">
+            <thead>
+              <tr><th>Action</th><th>Surface</th><th>Effort</th><th>Est. gain</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="act">Unblock AI crawlers in robots.txt and the WAF</td><td>Owned Property</td><td class="eff">1 hour</td><td class="lift">+9 to +14</td></tr>
+              <tr><td class="act">Publish a machine-readable licensing page, one URL per state</td><td>AI Engines</td><td class="eff">1 week</td><td class="lift">+6 to +11</td></tr>
+              <tr><td class="act">Claim and complete Apple Business Connect</td><td>Search &amp; Maps</td><td class="eff">2 hours</td><td class="lift">+3 to +5</td></tr>
+              <tr><td class="act">Defend your brand term in paid search</td><td>Paid Presence</td><td class="eff">1 day</td><td class="lift">+4 to +6</td></tr>
+              <tr><td class="act">Restart review collection — 3 in 90 days vs. cohort median 34</td><td>Reputation</td><td class="eff">Ongoing</td><td class="lift">+5 to +9</td></tr>
+              <tr><td class="act">Add <code>FinancialService</code> and per-officer <code>Person</code> schema</td><td>Owned Property</td><td class="eff">3 days</td><td class="lift">+3 to +6</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Be honest about the gain column in Phase 1.</strong> These are modelled estimates, and they must be labelled as such in the product. Real measured lift — "median +6.2 points, three-week lag, n=41" — only exists once the intervention log has run against a cohort for a few months.</p>
+      <p>Which is exactly why the <strong>interventions table ships in week one</strong>, months before anything can be computed from it. The data is only ever valuable in hindsight, and you cannot backfill it.</p>
+    </div>
+  </section>
+
+  <!-- ============ SCOPE ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">Scope</span>
+      <h2>What's in, and what's deliberately not.</h2>
+      <p>Phase 1 covers all six surfaces, but at presence-and-integrity depth rather than full rank tracking. That distinction is what holds the build to five weeks and the running cost to near zero.</p>
+    </div>
+
+    <div class="two">
+      <div class="panel in">
+        <h3>Ships in Phase 1</h3>
+        <ul class="tick">
+          <li><b>Owned property audit</b> — render mode, schema, Core Web Vitals, content depth, and the AI-crawler block check</li>
+          <li><b>Belief audit</b> — 5 models × 12 questions × 10 runs, diffed against the NMLS record, with confidence intervals</li>
+          <li><b>Google Business Profile</b> — 14 completeness fields, categories, photos, Q&amp;A, review response rate</li>
+          <li><b>Review velocity</b> — Google, Zillow, Experience.com, BBB. Recency-weighted, not raw count</li>
+          <li><b>NAP consistency</b> across 41 directories, plus mortgage-vertical presence</li>
+          <li><b>Brand defense</b> — who is bidding on their name, via one SERP call per scan</li>
+          <li><b>Social presence</b> across 9 platforms at profile level</li>
+          <li><b>Company and officer scoring</b> — the same six surfaces applied to a mortgage lender, a mortgage brokerage, or one loan officer</li>
+          <li><b>3-competitor comparison</b> on identical checks, ranked in one cohort table</li>
+          <li><b>Intervention logging</b> — no user-facing output yet, but recording from day one</li>
+        </ul>
+      </div>
+      <div class="panel out">
+        <h3>Deliberately deferred</h3>
+        <ul class="tick">
+          <li><b>Full 120-prompt persona panel</b> — Phase 2. The 12-question belief set is enough to sell</li>
+          <li><b>Geo-gridded map rank</b> — expensive per scan, and the free tier can't carry it</li>
+          <li><b>Google organic rank tracking</b> — the single largest cost line. Add it when customers pay</li>
+          <li><b>Citation graph</b> — needs cohort-scale data before it means anything</li>
+          <li><b>Measured lift attribution</b> — needs months of intervention history</li>
+          <li><b>Branch-tier rollups</b> — mortgage loan officer and company scoring both ship; the middle tier can wait</li>
+          <li><b>OAuth social depth</b> — requires an account connection flow, which breaks the no-signup promise</li>
+          <li><b>The public Index</b> — build the engine first, publish the rankings later</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUILD ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">Build</span>
+      <h2>Five weeks, in order of what unblocks what.</h2>
+      <p>Each week ends with something demonstrable. The sequence is deliberate: the free deterministic collectors come first so there is a working report before a single paid API is wired up.</p>
+    </div>
+
+    <div class="tl">
+      <div class="tl-row">
+        <span class="tl-wk">Week 1</span>
+        <span class="tl-t">Spine and crawler</span>
+        <span class="tl-d">Schema, job queue, immutable evidence store, site crawler, AI-crawler block check. Ends with a scored owned-property report.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-wk">Week 2</span>
+        <span class="tl-t">Ground truth and local</span>
+        <span class="tl-d">NMLS matching, Google Business Profile, NAP sweep, review velocity. Ends with four of six surfaces live and still $0 in API spend.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-wk">Week 3</span>
+        <span class="tl-t">Belief audit</span>
+        <span class="tl-d">Five-model runner, N-run statistics, extraction and truth-diffing. The centrepiece. Ends with the first real hallucination caught on a live lender.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-wk">Week 4</span>
+        <span class="tl-t">Scoring and competitors</span>
+        <span class="tl-d">Versioned weight config, cohort ranking, the fix engine. Ends with the report screen you just used.</span>
+      </div>
+      <div class="tl-row">
+        <span class="tl-wk">Week 5</span>
+        <span class="tl-t">Public surface</span>
+        <span class="tl-d">Scan page, streaming progress, shareable report URLs, PDF export, intervention logging. Ends live and taking traffic.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COST ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">Economics</span>
+      <h2>Why the free tier survives.</h2>
+      <p>Order-of-magnitude per scan, at current list pricing — plug real numbers before committing to a price. The point isn't the total, it's the shape: <strong>the expensive channel is the one Phase 1 doesn't use.</strong></p>
+    </div>
+
+    <div class="narrow">
+      <div class="cost">
+        <div class="cost-row"><span>Site crawl, robots, NMLS, NAP, GBP, reviews</span><b>$0.00</b></div>
+        <div class="cost-row"><span>Belief audit — 600 model calls, cheap tiers, web search on</span><b>~$0.40</b></div>
+        <div class="cost-row"><span>Brand-defense SERP — one call</span><b>~$0.01</b></div>
+        <div class="cost-row"><span>Social and video presence — free APIs</span><b>$0.00</b></div>
+        <div class="cost-row"><span>Competitor scoring — 3 lenders, shared queries</span><b>~$0.15</b></div>
+        <div class="cost-row total"><span>Per free scan</span><b>≈ $0.56</b></div>
+      </div>
+      <div class="callout">
+        <p><strong>The architectural decision that makes this work: score by query, not by customer.</strong> One run of "best FHA lender in Tampa" scores every Tampa lender named in the answer, simultaneously. Build the pipeline query-first now and the marginal cost of the eleventh lender in a market is close to zero. Build it customer-first and you will rewrite the whole collection layer somewhere around customer thirty.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ASKS ============ -->
+  <section>
+    <div class="sec-head narrow">
+      <span class="stepno">To start</span>
+      <h2>Six decisions, then I build.</h2>
+    </div>
+    <div class="narrow">
+      <ol class="asks">
+        <li><b>A repository.</b> Not TourCo — that's the Costa Rica tourism app. This needs its own home, and I can scaffold it.</li>
+        <li><b>Twenty seed lenders.</b> Real ones, one metro. Name the market and I'll assemble the list.</li>
+        <li><b>NMLS access method.</b> Scrape Consumer Access or license a data feed. This sets the ceiling on belief-audit accuracy.</li>
+        <li><b>Per-officer scoring — in or out?</b> Answer before week 3. It changes the entity model and retrofitting it is expensive.</li>
+        <li><b>A monthly API ceiling.</b> Sets run count, model tier, and how many free scans you can absorb.</li>
+        <li><b>A name.</b> TrueNorth and "Answer Share" are placeholders I picked to have something to draw with.</li>
+      </ol>
+      <div class="callout">
+        <p>My recommendation on sequencing: <strong>build weeks 1–3 before showing anyone.</strong> The owned-property audit alone is a working lead magnet, but the belief audit is what makes a lender forward the report to their CEO. Launching with the first and without the second spends your one good first impression on a commodity.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Phase One proposal · Sample data throughout · Cedar Ridge Mortgage and all competitors named are fictional</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var SURFACES = [
+    {key:"Search &amp; Maps",            val:78, w:30, color:"#0F6E5A"},
+    {key:"Reputation &amp; Directories", val:76, w:20, color:"#0F6E5A"},
+    {key:"AI Answer Engines",            val:12, w:20, color:"#B3261E"},
+    {key:"Social &amp; Community",       val:44, w:15, color:"#9A6700"},
+    {key:"Owned Property",               val:41, w:10, color:"#9A6700"},
+    {key:"Paid Presence",                val:58, w:5,  color:"#9A6700"}
+  ];
+
+  // Fictional Tampa cohort. Order of scores matches SURFACES.
+  var COHORT = [
+    {n:"Bayfront Home Loans",       s:[88,84,41,72,79,81]},
+    {n:"Meridian Lending Group",    s:[81,79,63,68,74,44]},
+    {n:"Gulf Coast Funding",        s:[79,88,28,81,62,66]},
+    {n:"Cedar Ridge Mortgage",      s:[78,76,12,44,41,58], me:true},
+    {n:"Palmetto Home Finance",     s:[74,68,55,59,71,38]},
+    {n:"Anchor Point Lending",      s:[69,72,38,52,66,29]},
+    {n:"Suncoast Mortgage Partners",s:[66,61,71,63,58,22]},
+    {n:"Tarpon Bay Lending",        s:[64,70,19,47,49,41]},
+    {n:"Verandah Financial",        s:[58,55,44,71,52,18]},
+    {n:"Oakline Mortgage Co.",      s:[55,63,31,38,44,26]},
+    {n:"Harborlight Funding",       s:[51,48,58,55,61,12]}
+  ];
+
+  var CIRC = 2 * Math.PI * 84;
+
+  function weights(){ return SURFACES.map(function(s){ return s.w; }); }
+
+  function composite(scores){
+    var w = weights(), t = 0;
+    for (var i = 0; i < scores.length; i++) t += scores[i] * w[i] / 100;
+    return t;
+  }
+
+  function ordinal(n){
+    var s = ["th","st","nd","rd"], v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  function renderSurfaces(){
+    var w = weights();
+    document.getElementById("surflist").innerHTML = SURFACES.map(function(s, i){
+      return '<div class="surf">' +
+        '<div class="surf-row">' +
+          '<span class="surf-name">' + s.key + '</span>' +
+          '<span class="surf-w">' + w[i] + '% weight</span>' +
+          '<span class="surf-val">' + s.val + '</span>' +
+        '</div>' +
+        '<div class="bar"><i style="width:' + s.val + '%;background:' + s.color + '"></i></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function render(){
+    var ranked = COHORT.map(function(c){
+      return { n:c.n, me:!!c.me, v:composite(c.s) };
+    }).sort(function(a, b){ return b.v - a.v; });
+
+    var pos = 0;
+    for (var i = 0; i < ranked.length; i++) if (ranked[i].me) pos = i + 1;
+
+    var me = ranked[pos - 1];
+    var score = Math.round(me.v);
+    var total = ranked.length;
+
+    document.getElementById("score").textContent = score;
+
+    var arc = document.getElementById("arc");
+    arc.setAttribute("stroke-dashoffset", CIRC - (CIRC * score / 100));
+    arc.setAttribute("stroke", score < 40 ? "#B3261E" : score < 65 ? "#9A6700" : "#0F6E5A");
+
+    document.getElementById("rankline").innerHTML =
+      "Cedar Ridge ranks <b>" + ordinal(pos) + " of " + total + "</b> lenders in Tampa.";
+
+    var above = ranked[pos - 2];
+    document.getElementById("ranksub").textContent =
+      "Strong in search and reputation, effectively absent from AI answers. That gap costs them " +
+      (above ? (Math.round(above.v) - score) + " points against " + above.n + "." : "little.");
+
+    renderSurfaces();
+  }
+
+  render();
+})();
+</script>

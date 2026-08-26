@@ -1,0 +1,1171 @@
+<title>TrueNorth Scan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  /* ================================================================
+     BRAND — swap these five for LenderHomePage's real values.
+     Nothing else in this file needs to change.
+     ================================================================ */
+  --brand:#1B62C4;          /* primary — buttons, active states, subject line */
+  --brand-dark:#164F9E;     /* hover / pressed */
+  --brand-tint:#EAF1FB;     /* pale wash for highlighted rows */
+  --brand-dim:rgba(27,98,196,.08);
+  --on-brand:#FFFFFF;       /* text sitting on a brand-filled surface */
+
+  /* surfaces & ink — blue-biased neutrals, not flat grey */
+  --bg:#F4F7FA; --panel:#FFFFFF; --panel-2:#F7F9FB; --panel-3:#E4EBF2;
+  --line:#DCE4EC; --line-2:#C3D0DC;
+  --ink:#0F2438; --ink-2:#42607A; --ink-3:#5A7590;
+  --divider:rgba(15,36,56,.08);
+  --shadow-sm:0 1px 2px rgba(16,40,64,.04),0 1px 1px rgba(16,40,64,.03);
+  --shadow-md:0 2px 4px rgba(16,40,64,.04),0 4px 12px -2px rgba(16,40,64,.07),0 12px 32px -8px rgba(16,40,64,.09);
+  --shadow-lg:0 2px 6px rgba(16,40,64,.05),0 12px 28px -6px rgba(16,40,64,.11),0 32px 64px -16px rgba(16,40,64,.15);
+  --shadow-brand:0 1px 2px rgba(21,80,166,.22),0 6px 16px -4px rgba(21,80,166,.30);
+  --brand-wash:rgba(27,98,196,.07);
+
+  /* status — reserved, never used for a data series */
+  --oxide:#B3261E; --oxide-dim:rgba(179,38,30,.08);
+  --amber:#9A6700; --amber-dim:rgba(154,103,0,.10);
+  --verd:#0F6E5A;  --verd-dim:rgba(15,110,90,.09);
+
+  /* categorical series — validated for a white surface */
+  --s1:#1B62C4; --s2:#C4761E; --s3:#9B3FA8;
+
+  /* ================================================================
+     TYPE — swap these two for LenderHomePage's real faces.
+     --display carries headings; --sans carries everything else.
+     ================================================================ */
+  --display:"Poppins",ui-sans-serif,system-ui,sans-serif;
+  --display-weight:700; --display-weight-2:600; --display-track:-.035em;
+  --sans:"Open Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;   /* numerals only */
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{font-size:15px}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:1rem;line-height:1.58;
+  -webkit-font-smoothing:antialiased;min-height:100vh}
+button,select{font-family:inherit}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:2px}
+.shell{max-width:1060px;margin:0 auto;padding:0 22px}
+
+/* ===== topbar ===== */
+.topbar{border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:30;box-shadow:var(--shadow-sm)}
+.topbar-in{max-width:1060px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px}
+.mark{display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:none;padding:0}
+.mark-glyph{width:24px;height:24px;flex:none;border-radius:8px;position:relative;
+  background:linear-gradient(148deg,var(--brand) 0%,var(--brand-dark) 100%);box-shadow:var(--shadow-brand)}
+.mark-glyph::after{content:"";position:absolute;inset:0;margin:auto;width:0;height:0;
+  border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-bottom:11px solid #FFF;
+  transform:rotate(36deg) translateY(-.5px)}
+.mark-name{font-family:var(--display);font-size:1.02rem;font-weight:var(--display-weight);letter-spacing:var(--display-track);color:var(--ink)}
+.demo-tag{margin-left:auto;font-family:var(--sans);font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;color:var(--amber);background:var(--amber-dim);border:1px solid rgba(154,103,0,.28);padding:5px 10px;border-radius:2px}
+
+.view{display:none}
+.view.on{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.view.on{animation:none}}
+
+/* ===== scan ===== */
+#v-scan{background:radial-gradient(78% 56% at 50% -6%,var(--brand-wash) 0%,transparent 60%)}
+.scan-wrap{max-width:900px;margin:0 auto;padding:74px 0 92px;text-align:center}
+.hero-eyebrow{display:inline-block;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--brand);background:var(--brand-dim);
+  padding:6px 14px;border-radius:99px;margin:0 0 20px;max-width:100%;line-height:1.5}
+@media(max-width:560px){.hero-eyebrow{font-size:.6rem;letter-spacing:.1em}}
+.scan-wrap h1{font-family:var(--display);font-weight:var(--display-weight);font-size:clamp(1.72rem,4vw,2.55rem);
+  line-height:1.14;letter-spacing:var(--display-track);margin:0 0 16px;text-wrap:balance;color:var(--ink)}
+.scan-wrap h1 em{display:block;font-style:normal;font-weight:var(--display-weight-2);color:var(--ink-3);
+  letter-spacing:var(--display-track);text-wrap:balance}
+.scan-wrap .sub{color:var(--ink-2);font-size:1.02rem;line-height:1.62;margin:0 auto 34px;max-width:64ch}
+.searchbar{display:flex;align-items:stretch;max-width:620px;margin:0 auto;text-align:left;
+  background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:6px;
+  box-shadow:var(--shadow-md);transition:box-shadow .22s,border-color .22s}
+.searchbar:focus-within{border-color:var(--brand);box-shadow:var(--shadow-lg),0 0 0 4px var(--brand-dim)}
+.sb-icon{flex:none;display:flex;align-items:center;padding-left:17px;color:var(--ink-3);transition:color .2s}
+.searchbar:focus-within .sb-icon{color:var(--brand)}
+.inp{flex:1 1 auto;border:none;background:none;padding:16px 14px;width:100%;min-width:0;
+  font-family:inherit;font-size:1.02rem;font-weight:500;color:var(--ink);text-overflow:ellipsis}
+.inp:focus{outline:none}
+.inp::placeholder{color:var(--ink-3);font-weight:400}
+.sb-hint{min-height:38px;margin:14px auto 0;font-size:.82rem;line-height:1.5;color:var(--ink-3);max-width:58ch}
+.sb-hint b{color:var(--brand);font-weight:600}
+.go{flex:none;border:none;border-radius:9px;background:var(--brand);color:var(--on-brand);
+  padding:0 26px;font-weight:600;font-size:.95rem;cursor:pointer;letter-spacing:-.005em;
+  box-shadow:var(--shadow-brand);transition:background .16s,transform .16s}
+.go:hover{background:var(--brand-dark);transform:translateY(-1px)}
+.go:active{transform:none}
+@media(max-width:600px){
+  .searchbar{flex-wrap:wrap;padding:8px}
+  .sb-icon{padding-left:10px}
+  .inp{flex:1 1 0;width:auto;min-width:0;padding:13px 10px}
+  .go{flex:1 1 100%;padding:14px 26px;margin-top:6px}
+}
+.chips{margin-top:22px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;align-items:center}
+.chips>span{font-family:var(--sans);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:4px}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--ink-2);border-radius:99px;
+  padding:6px 13px;font-size:.8rem;font-weight:500;cursor:pointer;box-shadow:var(--shadow-sm);
+  white-space:nowrap;transition:border-color .16s,color .16s,transform .16s}
+.chip:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
+.chip em{font-style:normal;color:var(--ink-3);font-weight:400;margin-left:5px;font-size:.72rem}
+.chip:hover em{color:var(--brand)}
+.fineprint{font-family:var(--sans);font-size:.76rem;color:var(--ink-3);margin-top:36px;letter-spacing:0}
+
+/* ===== running ===== */
+.run-wrap{max-width:680px;margin:0 auto;padding:76px 0 110px}
+.run-head{text-align:center;margin-bottom:34px}
+.run-head h2{font-family:var(--display);font-weight:var(--display-weight-2);font-size:1.72rem;letter-spacing:var(--display-track);margin:0 0 6px;line-height:1.2}
+.run-head p{color:var(--ink-3);font-family:var(--sans);font-size:.78rem;letter-spacing:.05em;margin:0}
+.idcard{display:flex;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:18px 20px;margin-bottom:22px;box-shadow:var(--shadow-md);
+  opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease}
+.idcard.on{opacity:1;transform:none}
+.id-mono{flex:none;width:46px;height:46px;border-radius:11px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.02em;
+  color:var(--on-brand);background:linear-gradient(148deg,var(--brand) 0%,var(--brand-dark) 100%);
+  box-shadow:var(--shadow-brand)}
+.id-body{min-width:0;flex:1}
+.id-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.id-top b{font-family:var(--display);font-weight:600;font-size:1.06rem;letter-spacing:-.018em;color:var(--ink)}
+.id-badge{font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--verd);
+  background:var(--verd-dim);border:1px solid rgba(15,110,90,.28);padding:3px 8px;border-radius:99px}
+.id-dom{font-size:.85rem;color:var(--ink-3);margin-top:1px}
+.id-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.id-facts span{font-size:.75rem;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--line);
+  padding:4px 10px;border-radius:99px;white-space:nowrap}
+.id-facts span.mkt{color:var(--brand);background:var(--brand-dim);border-color:rgba(27,98,196,.24);font-weight:600}
+@media(prefers-reduced-motion:reduce){.idcard{transition:none}}
+.prog{height:2px;background:var(--panel-3);border-radius:2px;overflow:hidden;margin-bottom:26px}
+.prog i{display:block;height:100%;background:var(--brand);width:0;transition:width .4s linear}
+.checks{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.ck{display:grid;grid-template-columns:16px 1fr auto;gap:13px;align-items:center;background:var(--panel);padding:12px 16px;font-size:.88rem;color:var(--ink-3);transition:color .3s}
+.ck i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line-2);display:block;position:relative}
+.ck em{font-family:var(--mono);font-style:normal;font-size:.7rem;color:var(--ink-3);letter-spacing:.04em}
+.ck.live{color:var(--ink)}
+.ck.live i{border-color:var(--brand);animation:pl 1.1s ease-in-out infinite}
+@keyframes pl{0%,100%{opacity:.3}50%{opacity:1}}
+.ck.done{color:var(--ink-2)}
+.ck.done i{border-color:var(--verd);background:var(--verd)}
+.ck.done i::after{content:"";position:absolute;left:4px;top:1.5px;width:3.5px;height:7px;border:solid var(--panel);border-width:0 1.6px 1.6px 0;transform:rotate(42deg)}
+.ck.done em{color:var(--verd)}
+@media(prefers-reduced-motion:reduce){.ck.live i{animation:none;opacity:.85}}
+
+/* ===== report ===== */
+.rpt{padding:22px 0 72px}
+.crumb{font-family:var(--sans);font-size:.7rem;letter-spacing:.08em;color:var(--ink-3);margin-bottom:10px;display:none}
+.crumb.on{display:block}
+.crumb button{background:none;border:none;color:var(--brand);cursor:pointer;font-family:inherit;font-size:inherit;padding:0;text-decoration:underline;text-underline-offset:3px}
+.rpt-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+.rpt-head>div{flex:1 1 auto;min-width:0}
+.rpt-head h2{overflow:hidden;text-overflow:ellipsis}
+.rpt-head h2{font-family:var(--display);font-weight:var(--display-weight);font-size:1.42rem;letter-spacing:var(--display-track);margin:0;line-height:1.2}
+.rpt-meta{font-family:var(--sans);font-size:.78rem;color:var(--ink-3);display:flex;align-items:center;
+  gap:8px;flex-wrap:wrap;margin-top:5px}
+.mkt-pill{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:600;color:var(--brand);
+  background:var(--brand-dim);border:1px solid rgba(27,98,196,.24);padding:3px 9px;border-radius:99px}
+.rescan{background:var(--panel);border:1px solid var(--line-2);color:var(--ink-2);border-radius:7px;padding:8px 14px;font-size:.82rem;font-weight:500;cursor:pointer;flex:none;box-shadow:var(--shadow-sm)}
+.rescan:hover{border-color:var(--brand);color:var(--ink)}
+.tabsrow{display:flex;justify-content:center;margin:0 0 22px;padding:2px 0}
+.tabs{display:inline-flex;gap:3px;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:12px;padding:4px;box-shadow:var(--shadow-sm);max-width:100%}
+.tab{background:none;border:none;border-radius:8px;color:var(--ink-3);padding:8px 20px;
+  font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap;letter-spacing:-.005em;
+  display:inline-flex;align-items:center;gap:7px;transition:color .15s,background .15s}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--shadow-sm)}
+.tab b{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;
+  padding:0 5px;border-radius:99px;background:var(--oxide);color:#FFF;
+  font-family:var(--sans);font-size:.62rem;font-weight:700;line-height:1}
+.tab b:empty{display:none}
+@media(max-width:640px){
+  .tabs{width:100%;padding:3px}
+  .tab{flex:1 1 0;padding:9px 4px;font-size:.75rem;justify-content:center;gap:4px}
+  .tab b{min-width:16px;height:16px;font-size:.58rem}
+}
+.tab.hide{display:none}
+.pane{display:none}
+.pane.on{display:block;animation:fade .3s ease}
+
+.ovcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow-sm);overflow:hidden;display:grid;margin-bottom:8px}
+@media(min-width:820px){.ovcard{grid-template-columns:300px 1fr}}
+.ov-left{padding:22px 20px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;
+  justify-content:center;border-bottom:1px solid var(--line);background:var(--panel-2)}
+@media(min-width:820px){.ov-left{border-bottom:none;border-right:1px solid var(--line)}}
+.ov-right{padding:14px 20px 6px;min-width:0}
+.dial{position:relative;width:146px;height:146px;flex:none}
+.dial svg{transform:rotate(-90deg);display:block;width:100%;height:100%}
+.dial-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dial-num{font-family:var(--mono);font-size:2.5rem;font-weight:500;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.dial-lbl{font-family:var(--sans);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);margin-top:6px;font-weight:600}
+.rankline{font-family:var(--display);font-weight:var(--display-weight-2);font-size:1.04rem;letter-spacing:var(--display-track);line-height:1.35;margin:15px 0 5px;text-wrap:balance}
+.rankline b{color:var(--brand);font-weight:700}
+.ranksub{color:var(--ink-3);font-size:.82rem;line-height:1.5;margin:0;max-width:30ch}
+
+.sect-lbl{font-family:var(--sans);font-size:.62rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+.surf{border-bottom:1px solid var(--divider)}
+.surf:last-child{border-bottom:none}
+.surf-btn{width:100%;background:none;border:none;cursor:pointer;text-align:left;color:inherit;
+  display:grid;grid-template-columns:12px minmax(0,1fr) 150px 2.6ch;gap:12px;align-items:center;padding:9px 0}
+@media(max-width:660px){.surf-btn{grid-template-columns:12px minmax(0,1fr) 74px 2.6ch;gap:9px}}
+.surf-btn:hover .surf-name{color:var(--brand)}
+.surf-caret{color:var(--ink-3);font-family:var(--mono);font-size:.66rem;transition:transform .2s;line-height:1}
+.surf.open .surf-caret{transform:rotate(90deg)}
+.surf-name{font-size:.88rem;font-weight:500;color:var(--ink);min-width:0;transition:color .2s;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.surf-name em{font-style:normal;color:var(--ink-3);font-weight:400;font-size:.76rem;margin-left:7px}
+.surf-val{font-family:var(--mono);font-size:.95rem;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.bar{height:5px;background:var(--panel-3);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+.subs{display:none;padding:2px 0 13px 21px}
+.surf.open .subs{display:grid;gap:7px}
+.sub-ck{display:grid;grid-template-columns:13px 1fr auto;gap:10px;align-items:baseline;font-size:.8rem;color:var(--ink-2)}
+.sub-ck s{text-decoration:none;font-family:var(--mono);font-size:.9rem;line-height:1.4}
+.sub-ck s.p{color:var(--verd)} .sub-ck s.w{color:var(--amber)} .sub-ck s.f{color:var(--oxide)}
+.sub-ck em{font-style:normal;font-family:var(--mono);font-size:.74rem;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ===== charts ===== */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;box-shadow:var(--shadow-sm)}
+.card h4{font-family:var(--display);font-size:1.02rem;font-weight:600;letter-spacing:-.012em;margin:0 0 3px}
+.card .cap{font-size:.85rem;color:var(--ink-3);margin:0 0 18px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+.lg{display:flex;align-items:center;gap:7px;font-size:.83rem;color:var(--ink-2)}
+.lg i{width:11px;height:11px;border-radius:2px;flex:none}
+.chartbox{position:relative}
+.chartbox svg{display:block;width:100%;height:auto;overflow:visible}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line-2);border-radius:4px;padding:9px 12px;font-size:.8rem;opacity:0;transition:opacity .12s;z-index:5;min-width:150px;box-shadow:var(--shadow-md)}
+.tip.on{opacity:1}
+.tip h6{margin:0 0 7px;font-family:var(--sans);font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.tip div{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.tip div+div{margin-top:4px}
+.tip span{display:flex;align-items:center;gap:6px;color:var(--ink-2)}
+.tip s{text-decoration:none;width:9px;height:9px;border-radius:2px;flex:none}
+.tip b{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.sparks{display:grid;gap:14px;margin-top:20px}
+@media(min-width:700px){.sparks{grid-template-columns:repeat(3,1fr)}}
+.sp{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 15px;box-shadow:var(--shadow-sm)}
+.sp-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:9px}
+.sp-n{font-size:.84rem;color:var(--ink-2)}
+.sp-v{font-family:var(--mono);font-size:1.1rem;font-weight:600;font-variant-numeric:tabular-nums}
+.sp-d{font-family:var(--mono);font-size:.72rem;font-variant-numeric:tabular-nums}
+.sp-d.up{color:var(--verd)} .sp-d.dn{color:var(--oxide)} .sp-d.fl{color:var(--ink-3)}
+
+/* ===== findings / belief ===== */
+.findcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:2px 20px;box-shadow:var(--shadow-sm)}
+.find{display:grid;grid-template-columns:auto 1fr;gap:13px;align-items:start;padding:13px 0;border-bottom:1px solid var(--divider)}
+.find:last-child{border-bottom:none}
+.sev{font-family:var(--mono);font-size:.57rem;letter-spacing:.11em;text-transform:uppercase;padding:4px 8px;border-radius:2px;font-weight:600;white-space:nowrap;margin-top:2px}
+.sev.crit{background:var(--oxide-dim);color:var(--oxide);border:1px solid rgba(179,38,30,.28)}
+.sev.warn{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(154,103,0,.30)}
+.sev.note{background:rgba(66,96,122,.07);color:var(--ink-2);border:1px solid rgba(66,96,122,.24)}
+.sev.good{background:var(--verd-dim);color:var(--verd);border:1px solid rgba(15,110,90,.30)}
+.sev.warn,.sev.crit,.sev.good,.sev.note{flex:none}
+.find h4{font-family:var(--display);font-size:1rem;font-weight:600;letter-spacing:-.012em;margin:0 0 5px;line-height:1.4}
+.find p{font-size:.88rem;color:var(--ink-2);margin:0;max-width:70ch;line-height:1.6}
+code{font-family:var(--mono);font-size:.85em;background:var(--panel-3);padding:1px 5px;border-radius:2px;color:var(--brand)}
+.bcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:12px}
+.bhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+.bq{font-size:.83rem;font-weight:600;color:var(--ink)}
+.bmodels{font-size:.73rem;color:var(--ink-3)}
+.bbody{display:grid}
+@media(min-width:740px){.bbody{grid-template-columns:1fr 1fr}}
+.bside{padding:15px 17px;min-width:0}
+.bside+.bside{border-top:1px solid var(--line);background:var(--panel-2)}
+@media(min-width:740px){.bside+.bside{border-top:none;border-left:1px solid var(--line)}}
+.blabel{display:block;font-size:.57rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
+.btxt{margin:0;font-size:.86rem;line-height:1.6;color:var(--ink)}
+.btxt.said{font-style:italic;color:var(--ink-2)}
+.bmeta{margin-top:12px;padding-top:10px;border-top:1px solid var(--divider);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.72rem;color:var(--ink-3)}
+.runs{display:inline-flex;gap:3px;flex:none}
+.runs i{width:7px;height:7px;border-radius:2px;background:var(--panel-3);display:block}
+.runs i.on{background:currentColor}
+
+/* ===== tables ===== */
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th{font-family:var(--sans);font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);font-weight:500;text-align:left;padding:0 14px 11px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px 10px 0;color:var(--ink-2);vertical-align:middle;border-bottom:1px solid var(--divider)}
+tr:last-child td{border-bottom:none}
+th:last-child,td:last-child{text-align:right;padding-right:0}
+td.act{color:var(--ink);font-weight:450}
+td.lift{font-family:var(--mono);color:var(--verd);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.eff{font-family:var(--mono);font-size:.8rem;white-space:nowrap}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.me td{background:var(--brand-tint)}
+tr.me td.act{color:var(--brand);font-weight:600}
+tr.row-link{cursor:pointer}
+tr.row-link:hover td{background:var(--panel-2)}
+tr.row-link:hover td.act{color:var(--brand)}
+.who{display:flex;flex-direction:column;gap:1px}
+.who b{color:var(--ink);font-weight:600;font-size:.92rem}
+.who span{font-size:.78rem;color:var(--ink-3)}
+
+.pane-cap{font-size:.85rem;color:var(--ink-3);margin:-4px 0 12px;max-width:74ch;line-height:1.55}
+.pane-cap b{color:var(--ink-2);font-weight:600}
+.listcard{padding:0}
+.acts,.roster{list-style:none;margin:0;padding:0}
+.acts.collapsed>li:nth-child(n+6),.roster.collapsed>li:nth-child(n+6){display:none}
+.showall{display:block;margin:10px auto 0;background:var(--panel);border:1px solid var(--line);
+  color:var(--ink-2);border-radius:99px;padding:7px 18px;font-size:.8rem;font-weight:600;
+  cursor:pointer;box-shadow:var(--shadow-sm)}
+.showall:hover{border-color:var(--brand);color:var(--brand)}
+.act-row{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:14px;align-items:center;
+  padding:12px 20px;border-bottom:1px solid var(--divider)}
+.act-row:last-child{border-bottom:none}
+.act-n{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--ink-3);text-align:center}
+.act-t{font-size:.9rem;font-weight:500;color:var(--ink);line-height:1.4}
+.act-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+.act-meta span{font-size:.7rem;color:var(--ink-3);background:var(--panel-2);
+  border:1px solid var(--line);border-radius:99px;padding:2px 9px;white-space:nowrap}
+.act-gain{font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--verd);
+  white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+.act-gain em{font-style:normal;font-family:var(--sans);font-size:.66rem;font-weight:600;
+  color:var(--ink-3);margin-left:3px}
+.ros-row{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:14px;align-items:center;
+  padding:11px 20px;border-bottom:1px solid var(--divider);cursor:pointer}
+.ros-row:last-child{border-bottom:none}
+.ros-row:hover{background:var(--panel-2)}
+.ros-row:hover .ros-name{color:var(--brand)}
+.ros-n{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--ink-3);text-align:center}
+.ros-name{font-size:.9rem;font-weight:600;color:var(--ink);transition:color .15s;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ros-sub{font-size:.74rem;color:var(--ink-3);margin-top:1px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ros-right{display:flex;align-items:center;gap:14px}
+.ros-weak{font-size:.72rem;color:var(--ink-3);text-align:right;white-space:nowrap}
+.ros-weak b{display:block;color:var(--ink-2);font-weight:600;font-size:.76rem}
+.ros-score{display:flex;align-items:center;gap:9px}
+.ros-score .bar{width:64px;flex:none}
+.ros-score b{font-family:var(--mono);font-size:.95rem;font-weight:700;width:2.4ch;text-align:right;
+  font-variant-numeric:tabular-nums}
+@media(max-width:660px){
+  .ros-weak{display:none}
+  .ros-score .bar{width:44px}
+  .act-row,.ros-row{padding-left:14px;padding-right:14px;gap:10px}
+}
+.note-box{border-left:2px solid var(--brand);background:var(--brand-dim);padding:15px 18px;border-radius:0 8px 8px 0;margin-top:20px}
+.note-box p{margin:0;font-size:.86rem;line-height:1.55;color:var(--ink-2)}
+.note-box p b{color:var(--ink)}
+.note-box p+p{margin-top:.7rem}
+
+.pickrow{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:22px}
+.pickrow label{font-family:var(--sans);font-size:.66rem;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+select{background:var(--panel);border:1px solid var(--line-2);color:var(--ink);border-radius:4px;padding:9px 12px;font-size:.9rem;cursor:pointer}
+select:focus{border-color:var(--brand);outline:none}
+
+.h2h{display:grid;gap:11px}
+.h2h-row{display:grid;grid-template-columns:1fr;gap:7px;padding:13px 0;border-bottom:1px solid var(--divider)}
+.h2h-row:last-child{border-bottom:none}
+.h2h-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.h2h-name{font-size:.93rem;color:var(--ink)}
+.h2h-gap{font-family:var(--mono);font-size:.8rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.h2h-gap.win{color:var(--verd)} .h2h-gap.lose{color:var(--oxide)} .h2h-gap.tie{color:var(--ink-3)}
+.h2h-bars{display:grid;gap:2px}
+.h2h-b{display:grid;grid-template-columns:52px 1fr 2.6ch;gap:9px;align-items:center}
+.h2h-b span{font-family:var(--sans);font-size:.66rem;color:var(--ink-3);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h2h-b em{font-family:var(--mono);font-style:normal;font-size:.78rem;color:var(--ink-2);font-variant-numeric:tabular-nums;text-align:right}
+.h2h-t{height:9px;background:var(--panel-3);border-radius:2px;overflow:hidden}
+.h2h-t i{display:block;height:100%;border-radius:2px}
+
+.seg-row{display:grid;grid-template-columns:1fr;gap:6px;padding:12px 0;border-bottom:1px solid var(--divider)}
+.seg-row:last-child{border-bottom:none}
+.seg-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.seg-n{font-size:.93rem;color:var(--ink)}
+.seg-v{font-family:var(--mono);font-size:.95rem;font-weight:600;font-variant-numeric:tabular-nums;flex:none}
+.seg-t{position:relative;height:9px;background:var(--panel-3);border-radius:2px}
+.seg-t i{position:absolute;left:0;top:0;bottom:0;border-radius:2px}
+.seg-t u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink-2);text-decoration:none}
+.seg-d{font-family:var(--mono);font-size:.72rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+footer{border-top:1px solid var(--line);margin-top:70px}
+footer p{font-family:var(--mono);font-size:.7rem;color:var(--ink-3);letter-spacing:.04em;padding:24px 0;margin:0}
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <button class="mark" id="home" type="button"><span class="mark-glyph"></span><span class="mark-name">TrueNorth</span></button>
+    <span class="demo-tag">Demo · sample data</span>
+  </div>
+</div>
+
+<div class="view on" id="v-scan">
+  <div class="shell"><div class="scan-wrap">
+    <span class="hero-eyebrow">Mortgage loan officers &nbsp;·&nbsp; Mortgage brokers &nbsp;·&nbsp; Mortgage lenders</span>
+    <h1>Know exactly where borrowers find you.<em>And exactly where they don&rsquo;t.</em></h1>
+    <p class="sub">Built for mortgage loan officers, mortgage brokers and mortgage lenders. One score across search, maps, reviews, social and paid &mdash; plus what AI assistants tell borrowers about you.</p>
+    <div class="searchbar">
+      <span class="sb-icon" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg></span>
+      <input class="inp" id="domain" type="text" value="cedarridgemortgage.com" placeholder="yourcompany.com" aria-label="Your website">
+      <button class="go" id="run" type="button">Run scan</button>
+    </div>
+    <p class="sb-hint" id="hint">Scan any mortgage website &mdash; a loan officer&rsquo;s personal page, a mortgage brokerage, or a national mortgage lender. We read your market, licensing and team from the site itself.</p>
+    <div class="chips">
+      <span>Try</span>
+      <button class="chip" data-l="cedar" type="button">Cedar Ridge <em>Mortgage lender</em></button>
+      <button class="chip" data-l="suncoast" type="button">Suncoast <em>Mortgage broker</em></button>
+      <button class="chip" data-l="harbor" type="button">Harborlight <em>Mortgage broker</em></button>
+      <button class="chip" data-l="cedar" data-lo="0" type="button">Marisol Vega <em>Mortgage loan officer</em></button>
+    </div>
+    <p class="fineprint">180 checks &nbsp;·&nbsp; Public data only &nbsp;·&nbsp; No account access &nbsp;·&nbsp; ~90 seconds</p>
+  </div></div>
+</div>
+
+<div class="view" id="v-run">
+  <div class="shell"><div class="run-wrap">
+    <div class="run-head"><h2 id="run-name">Scanning…</h2><p id="run-dom">—</p></div>
+    <div class="idcard" id="idcard">
+      <div class="id-mono" id="id-mono">—</div>
+      <div class="id-body">
+        <div class="id-top"><b id="id-name">—</b><span class="id-badge">Identified</span></div>
+        <div class="id-dom" id="id-dom">—</div>
+        <div class="id-facts" id="id-facts"></div>
+      </div>
+    </div>
+    <div class="prog"><i id="prog"></i></div>
+    <div class="checks" id="checks"></div>
+  </div></div>
+</div>
+
+<div class="view" id="v-rpt">
+  <div class="shell"><div class="rpt">
+    <div class="crumb" id="crumb"></div>
+    <div class="rpt-head">
+      <div><h2 id="r-name">—</h2><div class="rpt-meta" id="r-meta">—</div></div>
+      <button class="rescan" id="rescan" type="button">New scan</button>
+    </div>
+
+    <div class="tabsrow">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-p="ov">Overview</button>
+        <button class="tab" role="tab" aria-selected="false" data-p="dx">Diagnosis<b id="fcount"></b></button>
+        <button class="tab" role="tab" aria-selected="false" data-p="cp">Competition</button>
+        <button class="tab" role="tab" aria-selected="false" data-p="ap">Action plan</button>
+      </div>
+    </div>
+
+    <div class="pane on" id="p-ov">
+      <div class="ovcard">
+        <div class="ov-left">
+        <div class="dial">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="85" fill="none" stroke="#E4EBF2" stroke-width="13"></circle>
+            <circle id="arc" cx="100" cy="100" r="85" fill="none" stroke="#1B62C4" stroke-width="13" stroke-linecap="round" stroke-dasharray="534.07" stroke-dashoffset="534.07" style="transition:stroke-dashoffset .65s cubic-bezier(.4,0,.2,1),stroke .4s"></circle>
+          </svg>
+          <div class="dial-mid"><div class="dial-num" id="score">&mdash;</div><div class="dial-lbl">Answer Share</div></div>
+        </div>
+          <p class="rankline" id="rankline">&mdash;</p>
+          <p class="ranksub" id="ranksub">&mdash;</p>
+        </div>
+        <div class="ov-right">
+          <div class="sect-lbl"><span>Surface breakdown</span><span>Click any row</span></div>
+          <div id="surfs"></div>
+        </div>
+      </div>
+      <div class="sect-lbl" style="margin-top:22px"><span>Needs attention</span><span id="ov-more"></span></div>
+      <div class="findcard" id="ov-finds"></div>
+      <div class="sect-lbl" id="sp-lbl" style="margin-top:24px"><span>Your movement &mdash; last 12 weeks</span></div>
+      <div class="sparks" id="sparks"></div>
+    </div>
+
+    <div class="pane" id="p-dx">
+      <div id="belief-wrap">
+        <div class="sect-lbl"><span>What the models believe, checked against the record</span></div>
+        <div id="belief"></div>
+        <div class="note-box"><p><b>How this is measured.</b> Every question is asked ten times per model, because a single response tells you nothing &mdash; these systems are non-deterministic. What is reported is a frequency with a confidence interval, and a change is only flagged once the intervals stop overlapping.</p></div>
+      </div>
+      <div class="sect-lbl" style="margin-top:26px"><span id="flabel">Findings</span></div>
+      <div class="findcard" id="finds"></div>
+    </div>
+
+    <div class="pane" id="p-cp">
+      <div class="card">
+        <h4 id="tr-title">Answer Share, last 12 weeks</h4>
+        <p class="cap" id="tr-cap">&mdash;</p>
+        <div class="legend" id="tr-leg"></div>
+        <div class="chartbox" id="tr-box"><div class="tip" id="tr-tip"></div></div>
+      </div>
+      <div class="note-box"><p id="tr-note">&mdash;</p></div>
+
+      <div class="sect-lbl" style="margin-top:26px"><span>Head to head</span></div>
+      <div class="pickrow">
+        <label for="rival">Compare against</label>
+        <select id="rival"></select>
+      </div>
+      <div class="legend" id="cm-leg"></div>
+      <div class="findcard"><div class="h2h" id="h2h"></div></div>
+
+      <div class="sect-lbl" style="margin-top:26px"><span>Full cohort &mdash; all 11 on the same 180 checks</span></div>
+      <div class="findcard" style="padding:10px 20px">
+        <div class="scroll"><table><thead><tr><th>#</th><th>Lender</th><th>Search</th><th>Reput.</th><th>AI</th><th>Social</th><th>Owned</th><th>Paid</th><th>Score</th></tr></thead><tbody id="cohort"></tbody></table></div>
+      </div>
+      <div class="note-box"><p id="cmp-note">&mdash;</p></div>
+
+      <div class="sect-lbl" style="margin-top:26px"><span>By borrower segment</span><span>Bar = you &middot; line = cohort median</span></div>
+      <div class="findcard"><div id="segs"></div></div>
+      <div class="note-box"><p id="sg-note">&mdash;</p></div>
+    </div>
+
+    <div class="pane" id="p-ap">
+      <div class="sect-lbl"><span>Do these, in this order</span><span id="act-count"></span></div>
+      <p class="pane-cap">Ranked by points gained per hour of work. <b>Gain is points added to your Answer Share</b>, which is <span id="cap-score">&mdash;</span> today.</p>
+      <div class="findcard listcard"><ol class="acts collapsed" id="fixes"></ol></div>
+      <button class="showall" id="act-more" type="button"></button>
+      <div class="note-box"><p><b>These are modelled estimates, and the product says so.</b> Measured lift &mdash; &ldquo;median +6.2 points, three-week lag, n=41&rdquo; &mdash; only exists once the intervention log has run against a cohort for months. That table records from day one so the number can exist later.</p></div>
+
+      <div id="team-wrap">
+        <div class="sect-lbl" style="margin-top:28px"><span id="tm-lbl">Mortgage loan officers</span></div>
+        <p class="pane-cap">Each officer scored on the same six surfaces as the company. <b>Click any name for their own report.</b></p>
+        <div class="findcard listcard"><ol class="roster collapsed" id="team"></ol></div>
+        <button class="showall" id="team-more" type="button"></button>
+        <div class="note-box"><p id="tm-note">&mdash;</p></div>
+      </div>
+    </div>
+
+  </div></div>
+  <footer><div class="shell"><p>Demo build · All lenders, officers, scores and quotes are fabricated for demonstration</p></div></footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var SURF=[{n:"Search &amp; Maps",w:30},{n:"Reputation &amp; Directories",w:20},{n:"AI Answer Engines",w:20},{n:"Social &amp; Community",w:15},{n:"Owned Property",w:10},{n:"Paid Presence",w:5}];
+var SHORT=["Search","Reputation","AI","Social","Owned","Paid"];
+
+var COHORT=[
+ {n:"Bayfront Home Loans",s:[88,84,41,72,79,81],id:"bay"},
+ {n:"Meridian Lending Group",s:[81,79,63,68,74,44],id:"mer"},
+ {n:"Gulf Coast Funding",s:[79,88,28,81,62,66],id:"gulf"},
+ {n:"Cedar Ridge Mortgage",s:[78,76,12,44,41,58],id:"cedar"},
+ {n:"Palmetto Home Finance",s:[74,68,55,59,71,38],id:"palm"},
+ {n:"Anchor Point Lending",s:[69,72,38,52,66,29],id:"anch"},
+ {n:"Suncoast Mortgage Partners",s:[66,61,71,63,58,22],id:"suncoast"},
+ {n:"Tarpon Bay Lending",s:[64,70,19,47,49,41],id:"tarp"},
+ {n:"Verandah Financial",s:[58,55,44,71,52,18],id:"vera"},
+ {n:"Oakline Mortgage Co.",s:[55,63,31,38,44,26],id:"oak"},
+ {n:"Harborlight Funding",s:[51,48,58,55,61,12],id:"harbor"}
+];
+
+var SEGNAMES=["FHA first-timer, sub-620","Conventional move-up","VA","Jumbo / self-employed","Refi / HELOC","DSCR investor","Non-QM / ITIN","Reverse / senior"];
+var SEGMED=[55,58,49,46,47,38,31,35];
+
+var TREND={
+ cedar:{comp:[61,60,60,58,59,57,57,56,56,55,55,55],
+   surf:[[80,80,79,79,79,78,78,78,78,78,78,78],[82,81,81,80,79,79,78,78,77,77,76,76],[18,17,17,16,15,14,14,13,13,12,12,12],[48,48,47,47,46,46,45,45,44,44,44,44],[43,43,42,42,42,41,41,41,41,41,41,41],[62,61,61,60,60,59,59,58,58,58,58,58]]},
+ suncoast:{comp:[54,55,56,57,58,58,59,60,61,62,62,63],
+   surf:[[62,62,63,63,64,64,65,65,66,66,66,66],[52,53,54,55,56,57,58,59,60,60,61,61],[58,59,61,62,64,65,67,68,69,70,71,71],[55,56,57,58,59,60,61,62,62,63,63,63],[54,55,55,56,56,57,57,58,58,58,58,58],[22,22,22,22,22,22,22,22,22,22,22,22]]},
+ harbor:{comp:[48,48,49,49,50,50,50,51,51,51,51,51],
+   surf:[[49,49,50,50,50,51,51,51,51,51,51,51],[44,44,45,45,46,46,47,47,47,48,48,48],[48,49,50,51,52,53,54,55,56,57,58,58],[51,52,52,53,53,54,54,55,55,55,55,55],[58,58,59,59,60,60,60,61,61,61,61,61],[12,12,12,12,12,12,12,12,12,12,12,12]]},
+ bay:{comp:[68,68,69,69,70,70,73,73,74,74,74,74]}
+};
+
+var LENDERS={
+ cedar:{
+  mono:"CR",branches:4,officers:44,states:11,
+  name:"Cedar Ridge Mortgage",dom:"cedarridgemortgage.com",city:"Tampa, FL",
+  meta:"Scanned today",
+  segs:[61,68,44,12,51,19,8,33],
+  subs:[
+   [["p","Organic presence on all 12 panel queries","12/12"],["w","Map pack top-3","4 of 7 grid points"],["w","Google Business Profile complete","11/14 fields"],["p","Bing local listing verified","—"],["f","Apple Business Connect","unclaimed"],["f","Google Knowledge Panel","absent"]],
+   [["p","Google rating","4.7 · 412 reviews"],["f","Review velocity","3 in 90d · median 34"],["p","Zillow lender profile","4.9 · claimed"],["p","Experience.com profile","listed"],["p","BBB rating","A+"],["w","NAP consistency","37 of 41 directories"],["p","CFPB complaints","2 · below cohort"]],
+   [["f","ChatGPT mention rate","10% of runs"],["f","Claude mention rate","0% of runs"],["f","Gemini mention rate","20% of runs"],["w","Perplexity mention rate","30% of runs"],["f","Copilot mention rate","0% of runs"],["f","Google AI Overview","not cited"],["f","Entity facts correct","4 of 11"]],
+   [["p","Facebook page complete","—"],["w","Last Facebook post","71 days ago"],["p","Instagram active","3.1k followers"],["w","LinkedIn employees listed","34 of ~90"],["f","YouTube channel","none found"],["f","TikTok presence","none found"],["f","Nextdoor business page","unclaimed"],["w","Reddit mentions, 12mo","2"]],
+   [["f","AI crawler access","GPTBot, ClaudeBot blocked"],["p","Server-side rendered","yes"],["f","FinancialService schema","missing"],["w","Largest Contentful Paint","3.9s mobile"],["p","Mobile rendering","passes"],["f","Per-state landing pages","3 of 11 states"],["p","Loan officer bio pages","44 published"]],
+   [["f","Brand term defended","no bid"],["f","Competitor bidding your brand","Bayfront · 60+ days"],["p","Active Meta ads","4 running"],["w","Paid share of voice","12%"]]],
+  finds:[
+   ["crit","Your site blocks every AI crawler that matters.","<code>robots.txt</code> disallows <code>GPTBot</code>, <code>ClaudeBot</code>, <code>PerplexityBot</code> and <code>CCBot</code>. This was almost certainly switched on by a security setting, not by a person. Until it's reversed, no amount of content work can make you visible in an AI answer — the crawlers cannot read the page."],
+   ["crit","Three of five models believe you don't lend in Georgia.","Your NMLS record lists an active Georgia license issued in 2019. Asked where Cedar Ridge lends, ChatGPT, Gemini and Perplexity all returned a state list with Georgia absent. A borrower asking the obvious question is told to go somewhere else."],
+   ["crit","You are effectively absent from the jumbo and self-employed segment.","You score 12 against a cohort median of 46 for borrowers describing themselves as self-employed or asking about jumbo financing. This is your highest-margin business and you are invisible in it."],
+   ["crit","You are invisible on iPhone \"near me\" searches.","Apple Business Connect is unclaimed. Apple Maps has no verified record for any of your four branches, so every iPhone user searching maps for a local lender sees your competitors and not you. Claiming it takes about two hours."],
+   ["warn","A competitor is buying your company name.","Bayfront Home Loans has run paid search against <code>\"cedar ridge mortgage\"</code> for at least 60 days. You are not bidding to defend it. Every borrower who searches for you by name sees them above you."],
+   ["warn","Review collection has effectively stopped.","3 new Google reviews in the last 90 days against a cohort median of 34. Your 4.7 average rests on reviews that are mostly two years old, and recency is weighted heavily in both local ranking and AI summarisation."],
+   ["warn","Gemini confuses you with an unrelated company.","In 4 of 10 runs Gemini attributed loan servicing complaints to Cedar Ridge Mortgage. The complaints trace to Cedar Ridge Financial, a separate business with no relationship to you. Entity disambiguation markup would resolve this."],
+   ["warn","Thirty-one of your 44 loan officers score below 40.","Borrowers search for individuals more often than for companies. Your team's median officer score is 42, and your strongest officer outscores your weakest by 58 points."],
+   ["warn","No YouTube presence at all.","YouTube is the second largest search engine and is cited disproportionately often in AI answers about mortgages. Three of your Tampa competitors have channels; the strongest is cited in 6 of 12 panel queries."],
+   ["note","Business details disagree across four directories.","Your suite number appears three different ways and one listing still carries a disconnected phone number. Inconsistent name, address and phone data weakens every local ranking signal you have."],
+   ["note","Only 3 of your 11 licensed states have a page.","There is no crawlable page asserting that you lend in Georgia, South Carolina, Tennessee or five other licensed states — very likely the root cause of the belief failure above."]],
+  belief:[
+   {sev:"crit",v:"Contradicted",q:"Which states does Cedar Ridge lend in?",models:"ChatGPT · Gemini · Perplexity",hits:7,runs:10,
+    claim:"Cedar Ridge Mortgage is a regional lender operating primarily in Florida and Alabama. I don't have information indicating they lend in Georgia — you may want to look at lenders licensed in that state.",
+    note:"Georgia omitted in 7 of 10 runs · 95% CI 35–93%",
+    truth:"Active licenses in 11 states including Georgia, issued 2019 and in good standing. South Carolina and Tennessee were omitted too.",
+    tsrc:"NMLS Consumer Access · verified on scan date"},
+   {sev:"crit",v:"Wrong entity",q:"Does Cedar Ridge have a complaint history?",models:"Gemini",hits:4,runs:10,
+    claim:"Cedar Ridge Mortgage has faced consumer complaints regarding loan servicing delays and difficulty reaching their servicing department.",
+    note:"Surfaced in 4 of 10 runs",
+    truth:"Those complaints belong to Cedar Ridge Financial, a separate business with no corporate relationship to you. Your own record carries 2 complaints, below the cohort median.",
+    tsrc:"CFPB complaint database"},
+   {sev:"warn",v:"No knowledge",q:"What do you know about Cedar Ridge Mortgage?",models:"Claude · Copilot",hits:10,runs:10,
+    claim:"I don't have specific information about Cedar Ridge Mortgage.",
+    note:"Returned in 10 of 10 runs on both models",
+    truth:"A lender originating in 11 states with 44 loan officers and 412 Google reviews. This is a visibility failure, not a size problem — two of your Tampa competitors are named by both models.",
+    tsrc:"NMLS + public profiles"}],
+  fixes:[
+   ["Unblock AI crawlers in robots.txt and the WAF","Owned Property","1 hour","+9 to +14"],
+   ["Publish a machine-readable licensing page, one URL per state","AI Engines","1 week","+6 to +11"],
+   ["Build out self-employed and jumbo content","AI Engines","2 weeks","+5 to +10"],
+   ["Restart review collection at point of closing","Reputation","Ongoing","+5 to +9"],
+   ["Claim and complete Apple Business Connect","Search &amp; Maps","2 hours","+3 to +5"],
+   ["Defend your brand term in paid search","Paid Presence","1 day","+4 to +6"],
+   ["Add <code>FinancialService</code> and per-officer <code>Person</code> schema","Owned Property","3 days","+3 to +6"],
+   ["Bring the bottom 20 officers above a score of 40","Social","1 quarter","+4 to +7"]],
+  team:[
+   {n:"Marisol Vega",dom:"marisolvega.com",t:"Senior Loan Officer · Westshore",s:[74,82,58,79,62,44],d:"Your strongest officer by a wide margin, and the only one any model names unprompted. She is cited in 3 of 12 panel queries — more than the company itself.",a:["Feature her on the jumbo and self-employed pages","Add Person schema linking her to the company entity","Use her review flow as the template for the rest of the team"]},
+   {n:"Dev Ramanathan",t:"Branch Manager · Westshore",s:[68,71,44,66,58,38],d:"Solid across the board with no single weak surface. His AI score is held back by having no content anywhere outside the company site.",a:["Publish two borrower-education pieces under his byline","Complete his LinkedIn profile and link the branch","Claim his Zillow officer profile"]},
+   {n:"Tanya Brooks",t:"Loan Officer · Brandon",s:[61,64,38,71,54,22],d:"The strongest social presence on the team and almost no search footprint to convert it. Traffic is arriving and landing nowhere.",a:["Build out her officer page with a booking link","Point her social bios at the officer page","Start review collection at closing"]},
+   {n:"Colin Achebe",t:"Senior Loan Officer · Tampa",s:[55,58,22,49,48,31],d:"Fifteen years of production and effectively no digital footprint. Nothing about him is crawlable beyond a stub bio page.",a:["Rewrite the bio page with specialties and service area","Collect reviews from past borrowers","Add him to the VA and first-time buyer pages"]},
+   {n:"Priya Nandakumar",t:"Loan Officer · Brandon",s:[48,44,18,41,44,19],d:"Below the team median on every surface. The bio page exists but carries no specialty, no photo and no contact path.",a:["Complete the bio page","Claim Zillow and Experience.com officer profiles","Collect the first 10 reviews"]},
+   {n:"Jesse Okonkwo",t:"Loan Officer · Tampa",s:[39,36,12,38,39,14],d:"New to the team and starting from close to zero, which is expected — but nothing has been set up to change it.",a:["Publish a bio page","Create the officer profiles on Zillow and LinkedIn","Set up review collection from day one"]},
+   {n:"Renata Silva",t:"Loan Officer · Westshore",s:[31,28,8,29,32,9],d:"Bilingual and the only Spanish-language capability on the team, which appears nowhere online. That is a findable niche going unclaimed.",a:["Publish a Spanish-language officer page","Target Spanish-language first-time buyer queries","Claim the officer directory profiles"]},
+   {n:"Bill Traynor",t:"Senior Loan Officer · Tampa",s:[18,14,2,11,21,4],d:"No model, search engine or directory has any record of him. For a senior producer this is the largest single gap on the team.",a:["Publish a bio page — none currently exists","Claim NMLS, Zillow and LinkedIn officer profiles","Collect reviews from the existing book"]}]
+ },
+
+ suncoast:{
+  mono:"SM",branches:2,officers:22,states:6,
+  name:"Suncoast Mortgage Partners",dom:"suncoastmortgagepartners.com",city:"Tampa, FL",
+  meta:"Scanned today",
+  segs:[82,66,71,38,54,41,44,29],
+  subs:[
+   [["w","Organic presence on panel queries","7/12"],["f","Map pack top-3","2 of 7 grid points"],["w","Google Business Profile complete","8/14 fields"],["p","Bing local listing verified","—"],["f","Apple Business Connect","unclaimed"],["f","Google Knowledge Panel","absent"]],
+   [["w","Google rating","4.8 · 61 reviews"],["p","Review velocity","19 in 90d"],["f","Zillow lender profile","not claimed"],["w","Experience.com profile","incomplete"],["p","BBB rating","A"],["w","NAP consistency","29 of 41 directories"],["p","CFPB complaints","0"]],
+   [["p","ChatGPT mention rate","70% of runs"],["p","Claude mention rate","60% of runs"],["p","Gemini mention rate","80% of runs"],["p","Perplexity mention rate","90% of runs"],["w","Copilot mention rate","40% of runs"],["p","Google AI Overview","cited 4 of 12"],["p","Entity facts correct","10 of 11"]],
+   [["p","Facebook page complete","—"],["p","Last Facebook post","3 days ago"],["p","Instagram active","11.4k followers"],["w","LinkedIn employees listed","9 of ~22"],["p","YouTube channel","148 videos · 62k subs"],["p","TikTok presence","8.9k followers"],["f","Nextdoor business page","unclaimed"],["p","Reddit mentions, 12mo","134"]],
+   [["p","AI crawler access","all permitted"],["p","Server-side rendered","yes"],["p","FinancialService schema","present"],["w","Largest Contentful Paint","2.9s mobile"],["p","Mobile rendering","passes"],["p","Per-state landing pages","6 of 6 states"],["w","Loan officer bio pages","4 published"]],
+   [["f","Brand term defended","no bid"],["p","Competitor bidding your brand","none detected"],["f","Active Meta ads","none running"],["f","Paid share of voice","0%"]]],
+  finds:[
+   ["good","You are the most cited lender in your market.","Across 12 panel queries you are named more often than any of the other ten Tampa lenders, on four of five models. Your YouTube channel is the source cited in 6 of those queries. This is a real asset and it is currently undefended."],
+   ["crit","Your reputation footprint cannot support your visibility.","61 Google reviews against a cohort median of 240, and no claimed Zillow lender profile. AI systems name you today on the strength of content; the moment a competitor matches your content, review depth becomes the tiebreak and you lose it."],
+   ["crit","You are absent from the map pack in most of your own city.","Top-3 map placement in only 2 of 7 grid points across Tampa. Your Google Business Profile is missing categories, service areas and hours. This is the cheapest fix on this page and the largest single point gain available to you."],
+   ["warn","Nobody is defending your brand name.","You have no paid presence of any kind, and your brand term is unprotected. You are the most talked-about lender in the market with no floor under that traffic — a competitor can buy your name tomorrow for very little."],
+   ["warn","Perplexity states a fee policy you never published.","In 3 of 10 runs Perplexity told borrowers you charge no lender fees. Nothing on your site makes that claim. An AI inventing a pricing promise in a regulated category is a compliance exposure, not just an accuracy problem."],
+   ["warn","Eighteen of your 22 officers have no bio page.","Your company visibility is excellent and almost none of it reaches the individuals borrowers actually search for."],
+   ["note","Reverse and senior lending is your weakest segment.","You score 29 against a cohort median of 35 — the only segment where you sit below the middle of the market."]],
+  belief:[
+   {sev:"good",v:"Accurate",q:"What do you know about Suncoast Mortgage Partners?",models:"Claude",hits:10,runs:10,
+    claim:"Suncoast Mortgage Partners is a Tampa-based lender licensed in six states, known for first-time buyer and FHA lending, with an active educational YouTube presence.",
+    note:"States, products and market correct in 10 of 10 runs",
+    truth:"Active licenses in 6 states, issued 2021, in good standing. Product mix and market match the description exactly.",
+    tsrc:"NMLS Consumer Access"},
+   {sev:"warn",v:"Unverified claim",q:"What does Suncoast charge?",models:"Perplexity",hits:3,runs:10,
+    claim:"They're known for charging no lender fees, which makes them a strong option for cost-sensitive first-time buyers.",
+    note:"Surfaced in 3 of 10 runs",
+    truth:"No such claim appears anywhere on your site or in your disclosures. An AI inventing a pricing promise in a regulated category is a compliance exposure, not just an accuracy problem.",
+    tsrc:"Site crawl + published disclosures"},
+   {sev:"warn",v:"Understated",q:"How large is Suncoast Mortgage Partners?",models:"Copilot",hits:4,runs:10,
+    claim:"Suncoast Mortgage Partners appears to be a smaller regional broker.",
+    note:"Named in only 4 of 10 runs — your weakest model by a wide margin",
+    truth:"22 loan officers across 2 branches, licensed in 6 states, and the most-cited lender in the Tampa market on the other four models.",
+    tsrc:"NMLS + panel results"}],
+  fixes:[
+   ["Complete Google Business Profile — categories, service areas, hours","Search &amp; Maps","3 hours","+8 to +13"],
+   ["Launch review collection at closing, target 25/month","Reputation","Ongoing","+7 to +12"],
+   ["Claim and complete the Zillow lender profile","Reputation","2 hours","+4 to +7"],
+   ["Defend your brand term in paid search","Paid Presence","1 day","+4 to +6"],
+   ["Publish bio pages for all 22 team members","Social","1 week","+3 to +5"],
+   ["Publish an explicit fees and costs page","AI Engines","2 days","+2 to +5"],
+   ["Claim Apple Business Connect and Nextdoor","Search &amp; Maps","3 hours","+2 to +4"]],
+  team:[
+   {n:"Ana Beltrán",t:"Founder · Tampa",s:[71,64,88,91,66,24],d:"The single most-cited individual in the Tampa market. Her YouTube channel is the source behind most of the company's AI visibility.",a:["Add Person schema linking her to the company entity","Publish a fees explainer to close the Perplexity gap","Name a second on-camera presenter to reduce key-person risk"]},
+   {n:"Owen Castellanos",t:"Loan Officer · Tampa",s:[58,54,49,61,52,18],d:"Appears in video content regularly but has no page of his own to convert the attention.",a:["Publish a bio page","Claim Zillow and Experience.com profiles","Start review collection"]},
+   {n:"Delphine Rousseau",t:"Loan Officer · Tampa",s:[52,48,38,55,49,14],d:"Solid social presence, no search footprint, no reviews.",a:["Publish a bio page","Collect the first 15 reviews","Claim officer directory profiles"]},
+   {n:"Marcus Idowu",t:"Loan Officer · St. Pete",s:[44,39,28,42,44,11],d:"No bio page and no directory profiles. Every signal he has comes from the company entity.",a:["Publish a bio page","Claim NMLS and Zillow profiles","Set up review collection"]}]
+ },
+
+ harbor:{
+  mono:"HF",branches:1,officers:5,states:3,
+  name:"Harborlight Funding",dom:"harborlightfunding.com",city:"Tampa, FL",
+  meta:"Scanned today",
+  segs:[71,52,48,21,44,33,39,24],
+  subs:[
+   [["w","Organic presence on panel queries","5/12"],["f","Map pack top-3","1 of 7 grid points"],["f","Google Business Profile complete","6/14 fields"],["f","Bing local listing","unverified"],["f","Apple Business Connect","unclaimed"],["f","Google Knowledge Panel","absent"]],
+   [["f","Google rating","4.9 · 19 reviews"],["w","Review velocity","6 in 90d"],["f","Zillow lender profile","not listed"],["f","Experience.com profile","not listed"],["w","BBB rating","not accredited"],["f","NAP consistency","18 of 41 directories"],["p","CFPB complaints","0"]],
+   [["p","ChatGPT mention rate","50% of runs"],["w","Claude mention rate","40% of runs"],["p","Gemini mention rate","60% of runs"],["p","Perplexity mention rate","70% of runs"],["f","Copilot mention rate","20% of runs"],["w","Google AI Overview","cited 1 of 12"],["w","Entity facts correct","7 of 11"]],
+   [["w","Facebook page complete","partial"],["w","Last Facebook post","22 days ago"],["w","Instagram active","840 followers"],["f","LinkedIn company page","none found"],["w","YouTube channel","11 videos · 900 subs"],["f","TikTok presence","none found"],["f","Nextdoor business page","unclaimed"],["p","Reddit mentions, 12mo","88"]],
+   [["p","AI crawler access","all permitted"],["p","Server-side rendered","yes"],["p","FinancialService schema","present"],["p","Largest Contentful Paint","1.8s mobile"],["p","Mobile rendering","passes"],["p","Per-state landing pages","3 of 3 states"],["w","Loan officer bio pages","2 published"]],
+   [["f","Brand term defended","no bid"],["p","Competitor bidding your brand","none detected"],["f","Active Meta ads","none running"],["f","Paid share of voice","0%"]]],
+  finds:[
+   ["crit","Your Google Business Profile is barely filled in.","6 of 14 fields complete, no service areas, no categories beyond the default, no photos in 14 months. You hold top-3 map placement in 1 of 7 grid points across Tampa. Nothing else on this list will move your score as far for as little work."],
+   ["crit","19 reviews is not enough to be chosen.","Your 4.9 rating is excellent and almost invisible. The cohort median is 240 reviews. Below roughly 50, review count reads as an absence of evidence rather than as quality — to ranking systems and to borrowers alike."],
+   ["warn","You are absent from every mortgage directory that matters.","No Zillow lender profile, no Experience.com listing, no BBB accreditation. These are the pages AI systems cite when they compare lenders, and you are not on any of them."],
+   ["warn","Your Reddit presence is doing all the work.","88 mentions in 12 months, almost entirely from your founder answering questions in r/FirstTimeHomeBuyer. That single channel is carrying your entire AI visibility score. It is genuine and it is fragile — one person, one platform, no redundancy."],
+   ["warn","No LinkedIn company page.","For a lender that depends on realtor referral, having no LinkedIn entity removes you from the network where those relationships are actually formed."],
+   ["note","Your website is the best-built in the cohort.","Fast, server-rendered, correct schema, every licensed state covered. You have the strongest technical foundation of any lender scanned here and the least presence off it."]],
+  belief:[
+   {sev:"good",v:"Mostly accurate",q:"What do you know about Harborlight Funding?",models:"Perplexity",hits:7,runs:10,
+    claim:"Harborlight Funding is a small Tampa-area lender that comes up often in first-time buyer discussions, particularly around FHA and down payment assistance.",
+    note:"Named in 7 of 10 runs · products and market correct",
+    truth:"Active licenses in 3 states — Florida, Georgia and Alabama — issued 2022, in good standing. FHA and DPA focus is accurate.",
+    tsrc:"NMLS Consumer Access"},
+   {sev:"warn",v:"Stale",q:"Where does Harborlight lend?",models:"Gemini",hits:6,runs:10,
+    claim:"Harborlight Funding operates in the Tampa Bay area of Florida.",
+    note:"Georgia and Alabama omitted in 6 of 10 runs",
+    truth:"Licensed in Georgia and Alabama since 2022. Neither state has a crawlable page asserting it, which is the likely cause.",
+    tsrc:"NMLS Consumer Access"},
+   {sev:"warn",v:"Low recall",q:"What do you know about Harborlight Funding?",models:"Copilot",hits:8,runs:10,
+    claim:"I don't have detailed information about Harborlight Funding.",
+    note:"Returned in 8 of 10 runs",
+    truth:"Your Reddit presence carries the other four models. Copilot leans on Bing's index, where you hold top-3 map placement in only 1 of 7 grid points.",
+    tsrc:"Panel results + Bing Places"}],
+  fixes:[
+   ["Complete the Google Business Profile end to end","Search &amp; Maps","4 hours","+11 to +16"],
+   ["Launch review collection at closing","Reputation","Ongoing","+9 to +14"],
+   ["Create Zillow and Experience.com lender profiles","Reputation","3 hours","+5 to +8"],
+   ["Create a LinkedIn company page and link the team","Social","2 hours","+3 to +6"],
+   ["Publish the Georgia and Alabama licensing pages","AI Engines","2 days","+3 to +5"],
+   ["Defend your brand term in paid search","Paid Presence","1 day","+2 to +4"],
+   ["Claim Apple Business Connect and Bing Places","Search &amp; Maps","2 hours","+2 to +4"]],
+  team:[
+   {n:"Nils Bergström",t:"Founder · Tampa",s:[58,52,79,71,64,16],d:"Carries the firm's entire AI visibility through Reddit alone. Genuine authority, zero redundancy.",a:["Republish the best Reddit answers as site content","Claim Zillow and Experience.com officer profiles","Bring a second voice into the community work"]},
+   {n:"Camille Oyelaran",t:"Loan Officer · Tampa",s:[46,41,31,44,52,9],d:"Bio page exists and is thin. No directory profiles anywhere.",a:["Expand the bio page with specialties","Claim officer directory profiles","Start review collection"]},
+   {n:"Theo Marchetti",t:"Loan Officer · Tampa",s:[34,29,14,31,41,6],d:"Almost no findable footprint outside the company site.",a:["Publish a bio page","Claim NMLS and LinkedIn profiles","Collect the first 10 reviews"]}]
+ }
+};
+
+var CHECKS=[["Crawling site · schema, render mode, Core Web Vitals",1500],["Reading robots.txt and WAF rules for AI crawler access",700],["Reading location, branches and licenses from the site",900],["Pulling Google Business Profile · 14 completeness fields",1000],["Checking name, address and phone across 41 directories",1400],["Measuring review velocity · Google, Zillow, Experience.com, BBB",1100],["Asking 5 models 12 questions, 10 times each — 600 responses",2400],["Diffing model answers against the NMLS record",900],["Scoring 8 borrower segments separately",800],["Checking paid search for brand-term defense",700],["Locating social and video profiles across 9 platforms",900],["Scoring loan officers individually",1000],["Scoring 10 competitors on the same 180 checks",1200]];
+
+var CIRC=2*Math.PI*85, cur="cedar", loIdx=-1, rivalId="bay";
+var $=function(i){return document.getElementById(i);};
+var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function W(){return SURF.map(function(s){return s.w;});}
+function comp(s){var w=W(),t=0;for(var i=0;i<s.length;i++)t+=s[i]*w[i]/100;return t;}
+function ord(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+function ranked(){return COHORT.map(function(c){return{n:c.n,id:c.id,s:c.s,v:comp(c.s)};}).sort(function(a,b){return b.v-a.v;});}
+function posOf(l,id){for(var i=0;i<l.length;i++)if(l[i].id===id)return i+1;return 0;}
+function tone(v){return v<40?"#B3261E":v<65?"#9A6700":"#0F6E5A";}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function show(v){["v-scan","v-run","v-rpt"].forEach(function(x){$(x).classList.toggle("on",x===v);});window.scrollTo(0,0);}
+
+/* ---------- charts ---------- */
+function linePath(vals,X,Y){
+  return vals.map(function(v,i){return (i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1);}).join(" ");
+}
+
+function drawTrend(series,marker){
+  var W0=780,H=250,PL=34,PR=54,PT=16,PB=28;
+  var n=series[0].v.length;
+  var X=function(i){return PL+i*(W0-PL-PR)/(n-1);};
+  var Y=function(v){return PT+(100-v)/100*(H-PT-PB);};
+  var g="";
+  [0,25,50,75,100].forEach(function(t){
+    g+='<line x1="'+PL+'" y1="'+Y(t)+'" x2="'+(W0-PR)+'" y2="'+Y(t)+'" stroke="#E4EBF2" stroke-width="1"/>'
+     + '<text x="'+(PL-9)+'" y="'+(Y(t)+4)+'" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10" fill="#42607A">'+t+'</text>';
+  });
+  for(var i=0;i<n;i+=3){
+    g+='<text x="'+X(i)+'" y="'+(H-6)+'" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#42607A">wk '+(i+1)+'</text>';
+  }
+  if(marker!=null){
+    g+='<line x1="'+X(marker)+'" y1="'+PT+'" x2="'+X(marker)+'" y2="'+(H-PB)+'" stroke="#C3D0DC" stroke-width="1" stroke-dasharray="3 3"/>';
+  }
+  series.forEach(function(s){
+    g+='<path d="'+linePath(s.v,X,Y)+'" fill="none" stroke="'+s.c+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+  });
+  series.forEach(function(s){
+    var lx=X(n-1),ly=Y(s.v[n-1]);
+    g+='<circle cx="'+lx+'" cy="'+ly+'" r="4.5" fill="'+s.c+'" stroke="#FFFFFF" stroke-width="2"/>'
+     + '<text x="'+(lx+9)+'" y="'+(ly+4)+'" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="600" fill="#0F2438">'+s.v[n-1]+'</text>';
+  });
+  g+='<line id="cross" x1="0" y1="'+PT+'" x2="0" y2="'+(H-PB)+'" stroke="#C3D0DC" stroke-width="1" opacity="0"/>';
+  return {svg:'<svg viewBox="0 0 '+W0+' '+H+'" role="img" aria-label="Answer Share over the last 12 weeks">'+g+'</svg>',X:X,W0:W0,n:n,PL:PL,PR:PR};
+}
+
+function spark(vals,c){
+  var W0=200,H=40,n=vals.length;
+  var lo=Math.min.apply(null,vals),hi=Math.max.apply(null,vals),pad=Math.max(3,(hi-lo)*.3);
+  var mn=Math.max(0,lo-pad),mx=Math.min(100,hi+pad),rg=(mx-mn)||1;
+  var X=function(i){return i*W0/(n-1);};
+  var Y=function(v){return H-4-((v-mn)/rg)*(H-10);};
+  var d=linePath(vals,X,Y);
+  var area=d+" L "+W0+" "+H+" L 0 "+H+" Z";
+  return '<svg viewBox="0 0 '+W0+' '+H+'" preserveAspectRatio="none" style="height:40px" aria-hidden="true">'
+    +'<path d="'+area+'" fill="'+c+'" opacity="0.14"/>'
+    +'<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
+    +'<circle cx="'+X(n-1)+'" cy="'+Y(vals[n-1])+'" r="3.5" fill="'+c+'" stroke="#FFFFFF" stroke-width="2"/></svg>';
+}
+
+/* ---------- scan ---------- */
+function initials(nm){return nm.split(/\s+/).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase();}
+function start(id,lo){
+  cur=id;loIdx=(lo==null?-1:lo);
+  var L=LENDERS[id], o=(loIdx>=0?L.team[loIdx]:null), dom=(o&&o.dom)?o.dom:L.dom;
+  $("run-name").textContent="Scanning "+(o?o.n:L.name);
+  $("run-dom").textContent=dom+" · "+L.city;
+  $("domain").value=dom;
+  if($("market"))$("market").value=L.city;
+  $("checks").innerHTML=CHECKS.map(function(c,i){return '<div class="ck" id="ck'+i+'"><i></i><span>'+c[0]+'</span><em>queued</em></div>';}).join("");
+  $("prog").style.width="0%";
+  $("idcard").classList.remove("on");
+  $("id-mono").textContent=o?initials(o.n):L.mono;
+  $("id-name").textContent=o?o.n:L.name;
+  $("id-dom").textContent=dom;
+  $("id-facts").innerHTML='<span class="mkt">'+esc(L.city)+'</span>'
+    +(o?'<span>'+esc(o.t.split(" · ")[0])+'</span><span>'+esc(L.name)+'</span><span>Individual NMLS #——</span>'
+       :'<span>'+L.branches+(L.branches===1?" branch":" branches")+'</span>'
+        +'<span>'+L.officers+' loan officers</span>'
+        +'<span>'+L.states+' state licenses</span><span>NMLS #——</span>');
+  show("v-run");
+  if(reduce){$("idcard").classList.add("on");build();show("v-rpt");return;}
+  var i=0;
+  (function step(){
+    if(i>=CHECKS.length){setTimeout(function(){build();show("v-rpt");},400);return;}
+    var el=$("ck"+i);
+    el.className="ck live";el.querySelector("em").textContent="running";
+    var dur=CHECKS[i][1];
+    setTimeout(function(){
+      el.className="ck done";el.querySelector("em").textContent=(dur/1000).toFixed(1)+"s";
+      i++;$("prog").style.width=(i/CHECKS.length*100)+"%";
+      if(i===3)$("idcard").classList.add("on");
+      step();
+    },dur*0.38);
+  })();
+}
+
+/* ---------- report shell ---------- */
+function subject(){
+  var L=LENDERS[cur];
+  if(loIdx<0)return{name:L.name,s:COHORT.filter(function(c){return c.id===cur;})[0].s,lo:false};
+  var o=L.team[loIdx];
+  return{name:o.n,s:o.s,lo:true,o:o};
+}
+
+function build(){
+  var L=LENDERS[cur],sub=subject();
+  $("crumb").classList.toggle("on",sub.lo);
+  if(sub.lo)$("crumb").innerHTML='<button type="button" id="back">'+esc(L.name)+'</button> &nbsp;/&nbsp; '+esc(sub.name);
+  $("r-name").textContent=sub.name;
+  var tick='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  $("r-meta").innerHTML=sub.lo
+    ? esc(sub.o.t)+" &middot; "+esc(L.name)
+    : '<span>'+esc(L.dom)+'</span><span class="mkt-pill">'+tick+esc(L.city)+' &middot; detected</span><span>'+esc(L.meta)+'</span>';
+
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(t){
+    t.classList.toggle("hide", sub.lo && t.getAttribute("data-p")==="cp");
+  });
+  $("belief-wrap").style.display=sub.lo?"none":"";
+  $("team-wrap").style.display=sub.lo?"none":"";
+
+  if(!sub.lo){
+    $("fcount").textContent=L.finds.filter(function(f){return f[0]==="crit";}).length||"";
+    $("flabel").textContent=L.finds.length+" findings · "+L.finds.filter(function(f){return f[0]==="crit";}).length+" critical";
+    $("belief").innerHTML=L.belief.map(beliefHtml).join("");
+    var cards=L.finds.map(findHtml);
+    $("finds").innerHTML=cards.join("");
+    $("ov-finds").innerHTML=cards.slice(0,3).join("");
+    $("ov-more").textContent=L.finds.length+" findings in total";
+    renderActs(L.fixes);
+    if(rivalId===cur)rivalId=COHORT.filter(function(c){return c.id!==cur;})[0].id;
+    $("rival").innerHTML=COHORT.filter(function(c){return c.id!==cur;}).map(function(c){
+      return '<option value="'+c.id+'"'+(c.id===rivalId?" selected":"")+'>'+esc(c.n)+'</option>';
+    }).join("");
+  }else{
+    $("fcount").textContent="";
+    $("flabel").textContent="What is holding this officer back";
+    var med=SURF.map(function(_,i){return Math.round(median(L.team.map(function(t){return t.s[i];})));});
+    var gaps=sub.s.map(function(v,i){return{v:v,i:i,d:v-med[i]};})
+                  .filter(function(x){return x.d<0;})
+                  .sort(function(a,b){return a.d-b.d;}).slice(0,3);
+    var loCards=['<div class="find"><span class="sev '+(comp(sub.s)<40?"crit":"warn")+'">Diagnosis</span><div><h4>'+esc(sub.name)+'</h4><p>'+sub.o.d+'</p></div></div>'];
+    if(gaps.length){
+      loCards=loCards.concat(gaps.map(function(x){
+        return '<div class="find"><span class="sev '+(x.d<=-15?"crit":"warn")+'">'+SHORT[x.i]+'</span>'
+          +'<div><h4>'+Math.abs(x.d)+' points behind the team on '+SURF[x.i].n+'</h4>'
+          +'<p>Scores '+x.v+' against a team median of '+med[x.i]+'. '
+          +(x.v<40?'Below 40 on any surface means borrowers are unlikely to find them there at all.':'Closing this gap alone would move them up the roster.')
+          +'</p></div></div>';
+      }));
+    }else{
+      var low=sub.s.map(function(v,i){return{v:v,i:i};}).sort(function(a,b){return a.v-b.v;})[0];
+      loCards.push('<div class="find"><span class="sev good">Ahead</span><div>'
+        +'<h4>Ahead of the team median on all six surfaces.</h4>'
+        +'<p>Their own lowest is '+SURF[low.i].n+' at '+low.v+', still above the team median of '+med[low.i]
+        +'. The opportunity here is the rest of the roster, not this officer.</p></div></div>');
+    }
+    $("finds").innerHTML=loCards.join("");
+    $("ov-finds").innerHTML=loCards.slice(0,3).join("");
+    $("ov-more").textContent=loCards.length+" findings in total";
+    renderActs(sub.o.a.map(function(a){return [a,"Officer profile","",""];}));
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(x,i){x.setAttribute("aria-selected",i===0?"true":"false");});
+  Array.prototype.forEach.call(document.querySelectorAll(".pane"),function(x,i){x.classList.toggle("on",i===0);});
+  if(sub.lo)$("back").addEventListener("click",function(){loIdx=-1;build();});
+  paint();
+}
+
+function gainText(g){ return g.replace(/\s*to\s*\+/,"\u2013"); }
+function renderActs(rows){
+  $("fixes").innerHTML=rows.map(function(f,i){
+    var meta='<span>'+f[1]+'</span>'+(f[2]?'<span>'+f[2]+'</span>':"");
+    var gain=f[3]?'<span class="act-gain">'+gainText(f[3])+'<em>pts</em></span>'
+                 :'<span class="act-gain" style="color:var(--ink-3)">&mdash;</span>';
+    return '<li class="act-row"><span class="act-n">'+(i+1)+'</span>'
+      +'<div><div class="act-t">'+f[0]+'</div><div class="act-meta">'+meta+'</div></div>'+gain+'</li>';
+  }).join("");
+  $("act-count").textContent=rows.length+" actions";
+  wireShowAll("fixes","act-more",rows.length,"action");
+}
+function wireShowAll(listId,btnId,total,noun){
+  var list=$(listId),btn=$(btnId);
+  if(total<=5){btn.style.display="none";list.classList.remove("collapsed");return;}
+  btn.style.display="";
+  list.classList.add("collapsed");
+  btn.textContent="Show all "+total+" "+noun+"s";
+  btn.onclick=function(){
+    var open=list.classList.toggle("collapsed");
+    btn.textContent=open?("Show all "+total+" "+noun+"s"):"Show fewer";
+  };
+}
+function beliefHtml(b){
+  var col=b.sev==="crit"?"var(--oxide)":b.sev==="good"?"var(--verd)":"var(--amber)";
+  var dots="";for(var i=0;i<b.runs;i++)dots+='<i class="'+(i<b.hits?"on":"")+'"></i>';
+  return '<div class="bcard">'
+   +'<div class="bhead"><span class="bq">'+esc(b.q)+'</span>'
+   +'<span class="sev '+b.sev+'">'+b.v+'</span></div>'
+   +'<div class="bbody">'
+     +'<div class="bside"><span class="blabel" style="color:'+col+'">What the model says</span>'
+       +'<p class="btxt said">&ldquo;'+b.claim+'&rdquo;</p>'
+       +'<div class="bmeta"><span class="runs" style="color:'+col+'">'+dots+'</span><span>'+b.note+'</span></div></div>'
+     +'<div class="bside"><span class="blabel" style="color:var(--verd)">What the record says</span>'
+       +'<p class="btxt">'+b.truth+'</p>'
+       +'<div class="bmeta"><span>'+b.tsrc+'</span></div>'
+       +'<div style="margin-top:9px;font-size:.72rem;color:var(--ink-3)">'+esc(b.models)+' &middot; asked '+b.runs+'&times; each</div></div>'
+   +'</div></div>';
+}
+function findHtml(f){
+  var lbl={crit:"Critical",warn:"Warning",note:"Note",good:"Strength"}[f[0]];
+  return '<div class="find"><span class="sev '+f[0]+'">'+lbl+'</span><div><h4>'+f[1]+'</h4><p>'+f[2]+'</p></div></div>';
+}
+function median(a){var b=a.slice().sort(function(x,y){return x-y;});var m=b.length>>1;return b.length%2?b[m]:(b[m-1]+b[m])/2;}
+function chunk(a,n){var o=[];for(var i=0;i<a.length;i+=n)o.push(a.slice(i,i+n));return o;}
+
+/* ---------- paint ---------- */
+function paint(){
+  var L=LENDERS[cur],sub=subject();
+  var sc,pos,total,inTeam=sub.lo;
+
+  if(inTeam){
+    var team=L.team.map(function(o,i){return{i:i,v:comp(o.s)};}).sort(function(a,b){return b.v-a.v;});
+    pos=team.map(function(t,i){return t.i===loIdx?i+1:0;}).filter(Boolean)[0];
+    total=L.team.length;
+    sc=Math.round(comp(sub.s));
+    $("rankline").innerHTML=esc(sub.name.split(" ")[0])+" ranks <b>"+ord(pos)+" of "+total+"</b> on this team.";
+    $("ranksub").textContent="Individual visibility, scored on the same six surfaces as the company. Borrowers search for people more often than for companies.";
+  }else{
+    var list=ranked();pos=posOf(list,cur);total=list.length;sc=Math.round(list[pos-1].v);
+    $("rankline").innerHTML=esc(L.name.split(" ")[0])+" ranks <b>"+ord(pos)+" of "+total+"</b> in Tampa.";
+    $("ranksub").textContent="Scored across six surfaces and ranked against the ten other lenders competing in this market.";
+  }
+
+  $("score").textContent=sc;
+  if($("cap-score"))$("cap-score").textContent=sc;
+  $("score").style.color=tone(sc);
+  $("arc").setAttribute("stroke-dashoffset",CIRC-(CIRC*sc/100));
+  $("arc").setAttribute("stroke",tone(sc));
+
+
+  var w=W();
+  $("surfs").innerHTML=SURF.map(function(s,i){
+    var subsHtml=inTeam?"":L.subs[i].map(function(c){
+      return '<div class="sub-ck"><s class="'+c[0]+'">'+(c[0]==="p"?"&#10003;":c[0]==="w"?"&#9679;":"&#10005;")+'</s><span>'+c[1]+'</span><em>'+c[2]+'</em></div>';
+    }).join("");
+    return '<div class="surf" data-i="'+i+'"><button class="surf-btn" type="button" aria-expanded="false"'+(inTeam?' disabled style="cursor:default"':'')+'>'
+      +(inTeam?'<span class="surf-caret"></span>':'<span class="surf-caret">&#9656;</span>')
+      +'<span class="surf-name">'+s.n+'<em>'+w[i]+'%</em></span>'
+      +'<span class="bar"><i style="width:'+sub.s[i]+'%;background:'+tone(sub.s[i])+'"></i></span>'
+      +'<span class="surf-val" style="color:'+tone(sub.s[i])+'">'+sub.s[i]+'</span></button>'
+      +'<div class="subs">'+subsHtml+'</div></div>';
+  }).join("");
+  Array.prototype.forEach.call(document.querySelectorAll(".surf-btn"),function(b){
+    if(b.disabled)return;
+    b.addEventListener("click",function(){var p=b.parentNode,o=p.classList.toggle("open");b.setAttribute("aria-expanded",String(o));});
+  });
+
+  paintTrend();
+  if(!inTeam){paintSeg();paintCompare();paintTeam();}
+}
+
+/* ---------- trend ---------- */
+function paintTrend(){
+  var L=LENDERS[cur],sub=subject(),T=TREND[cur];
+  var mySeries,legend,marker=null,cap,note;
+
+  if(sub.lo){
+    var base=T.surf,scale=comp(sub.s)/comp(COHORT.filter(function(c){return c.id===cur;})[0].s);
+    var v=T.comp.map(function(x){return Math.max(0,Math.min(100,Math.round(x*scale)));});
+    mySeries=[{n:sub.name,v:v,c:"#1B62C4"}];
+    cap="Individual Answer Share, weeks 1–12.";
+    note="<b>Officer history is what makes this a per-seat product.</b> An officer who can watch their own number move has a reason to log in every week — and a reason to care that three of their colleagues are above them.";
+  }else{
+    var rival=COHORT.filter(function(c){return c.id===rivalId;})[0];
+    mySeries=[{n:L.name,v:T.comp,c:"#1B62C4"}];
+    if(TREND.bay&&cur!=="bay")mySeries.push({n:"Bayfront Home Loans",v:TREND.bay.comp,c:"#C4761E"});
+    if(cur!=="suncoast")mySeries.push({n:"Suncoast Mortgage Partners",v:TREND.suncoast.comp,c:"#9B3FA8"});
+    else mySeries.push({n:"Harborlight Funding",v:TREND.harbor.comp,c:"#9B3FA8"});
+    marker=5;
+    cap="Answer Share, weeks 1–12. Dashed line marks week 6, when Bayfront claimed their Apple Maps listings.";
+    note=cur==="cedar"
+      ?"<b>This is the screen that sells the subscription.</b> A one-time audit gets fixed once and forgotten. A line that keeps falling while a named competitor's climbs through it is a reason to renew — and once the intervention log has run for a few months, the week-6 marker stops being an annotation and becomes measured lift."
+      :"<b>The marker at week 6 is the mechanic that matters.</b> Log what a lender changed and when, then watch the line respond three weeks later. Do that across a few hundred lenders and every recommendation in the Actions tab gets a real number attached instead of an estimate.";
+  }
+
+  $("tr-title").textContent=(sub.lo?sub.name:L.name)+" — Answer Share, last 12 weeks";
+  $("tr-cap").textContent=cap;
+  $("tr-note").innerHTML=note;
+  $("tr-leg").innerHTML=mySeries.map(function(s){return '<span class="lg"><i style="background:'+s.c+'"></i>'+esc(s.n)+'</span>';}).join("");
+
+  var out=drawTrend(mySeries,marker);
+  var box=$("tr-box");
+  box.innerHTML=out.svg+'<div class="tip" id="tr-tip"></div>';
+  var svg=box.querySelector("svg"),tip=$("tr-tip"),cross=box.querySelector("#cross");
+
+  function move(e){
+    var r=svg.getBoundingClientRect();
+    var px=(e.clientX-r.left)/r.width*out.W0;
+    var t=(px-out.PL)/(out.W0-out.PL-out.PR)*(out.n-1);
+    var i=Math.max(0,Math.min(out.n-1,Math.round(t)));
+    cross.setAttribute("x1",out.X(i));cross.setAttribute("x2",out.X(i));cross.setAttribute("opacity","1");
+    tip.innerHTML='<h6>Week '+(i+1)+'</h6>'+mySeries.map(function(s){
+      return '<div><span><s style="background:'+s.c+'"></s>'+esc(s.n)+'</span><b>'+s.v[i]+'</b></div>';
+    }).join("");
+    tip.classList.add("on");
+    var lp=out.X(i)/out.W0*r.width;
+    tip.style.left=Math.max(0,Math.min(r.width-tip.offsetWidth,lp-tip.offsetWidth/2))+"px";
+    tip.style.top="4px";
+  }
+  svg.addEventListener("mousemove",move);
+  svg.addEventListener("mouseleave",function(){tip.classList.remove("on");cross.setAttribute("opacity","0");});
+
+  var sp=sub.lo?null:T.surf;
+  $("sparks").innerHTML=!sp?"":SURF.map(function(s,i){
+    var v=sp[i],d=v[v.length-1]-v[0];
+    var cls=d>0?"up":d<0?"dn":"fl",sign=d>0?"+":"";
+    return '<div class="sp"><div class="sp-h"><span class="sp-n">'+s.n+'</span>'
+      +'<span><span class="sp-v" style="color:'+tone(v[v.length-1])+'">'+v[v.length-1]+'</span> '
+      +'<span class="sp-d '+cls+'">'+sign+d+'</span></span></div>'
+      +spark(v,tone(v[v.length-1]))+'</div>';
+  }).join("");
+  $("sparks").style.display=sp?"":"none";
+  $("sp-lbl").style.display=sp?"":"none";
+}
+
+/* ---------- segments ---------- */
+function paintSeg(){
+  var L=LENDERS[cur];
+  var worst=L.segs.map(function(v,i){return{v:v,i:i,gap:v-SEGMED[i]};}).sort(function(a,b){return a.gap-b.gap;})[0];
+  $("segs").innerHTML=L.segs.map(function(v,i){
+    var gap=v-SEGMED[i],cls=gap>4?"up":gap<-4?"dn":"fl";
+    return '<div class="seg-row"><div class="seg-top"><span class="seg-n">'+SEGNAMES[i]+'</span>'
+      +'<span class="seg-v" style="color:'+tone(v)+'">'+v+'</span></div>'
+      +'<div class="seg-t"><i style="width:'+v+'%;background:'+tone(v)+'"></i><u style="left:'+SEGMED[i]+'%"></u></div>'
+      +'<div class="seg-d">Cohort median '+SEGMED[i]+' · '+(gap>=0?"+":"")+gap+'</div></div>';
+  }).join("");
+  $("sg-note").innerHTML="<b>This is the tab a horizontal competitor cannot build.</b> "+esc(L.name)+" scores "+worst.v
+    +" in "+SEGNAMES[worst.i].toLowerCase()+" against a cohort median of "+SEGMED[worst.i]
+    +". A single company-level number hides that completely — and a generic visibility tool has no idea what non-QM or DSCR even are, let alone that they carry the margin.";
+}
+
+/* ---------- compare ---------- */
+function paintCompare(){
+  var me=COHORT.filter(function(c){return c.id===cur;})[0];
+  var ri=COHORT.filter(function(c){return c.id===rivalId;})[0];
+  if(!ri)return;
+  $("cm-leg").innerHTML='<span class="lg"><i style="background:#1B62C4"></i>'+esc(me.n)+'</span>'
+    +'<span class="lg"><i style="background:#C4761E"></i>'+esc(ri.n)+'</span>';
+  $("h2h").innerHTML=SURF.map(function(s,i){
+    var a=me.s[i],b=ri.s[i],g=a-b;
+    var cls=g>3?"win":g<-3?"lose":"tie";
+    return '<div class="h2h-row"><div class="h2h-top"><span class="h2h-name">'+s.n+'</span>'
+      +'<span class="h2h-gap '+cls+'">'+(g>0?"+":"")+g+'</span></div>'
+      +'<div class="h2h-bars">'
+      +'<div class="h2h-b"><span>'+esc(me.n.split(" ")[0])+'</span><div class="h2h-t"><i style="width:'+a+'%;background:#1B62C4"></i></div><em>'+a+'</em></div>'
+      +'<div class="h2h-b"><span>'+esc(ri.n.split(" ")[0])+'</span><div class="h2h-t"><i style="width:'+b+'%;background:#C4761E"></i></div><em>'+b+'</em></div>'
+      +'</div></div>';
+  }).join("");
+
+  var list=ranked();
+  $("cohort").innerHTML=list.map(function(c,i){
+    return '<tr class="'+(c.id===cur?"me":"")+'"><td class="num">'+(i+1)+'</td><td class="act">'+esc(c.n)+'</td>'
+      +c.s.map(function(v){return '<td class="num" style="color:'+tone(v)+'">'+v+'</td>';}).join("")
+      +'<td class="num" style="color:var(--ink)">'+Math.round(c.v)+'</td></tr>';
+  }).join("");
+
+  var mc=Math.round(comp(me.s)),rc=Math.round(comp(ri.s)),diff=mc-rc;
+  var gaps=SURF.map(function(x,i){return{i:i,g:me.s[i]-ri.s[i]};}).sort(function(a,b){return a.g-b.g;});
+  var worst=gaps[0],best=gaps[gaps.length-1];
+  var nm=function(i){return SURF[i].n.replace(/&amp;/g,"&");};
+  $("cmp-note").innerHTML="<b>"+esc(me.n)+" "+mc+" · "+esc(ri.n)+" "+rc+".</b> "
+    +(diff>0?"You lead by "+diff+" points overall":diff<0?"You trail by "+(-diff)+" points overall":"Dead level overall")
+    +". Your widest gap is "+nm(worst.i)+", where you trail by "+Math.abs(worst.g)+""
+    +(best.g>0?"; your strongest lead is "+nm(best.i)+" by "+best.g+".":".");
+}
+
+/* ---------- team ---------- */
+function paintTeam(){
+  var L=LENDERS[cur];
+  var rows=L.team.map(function(o,i){return{o:o,i:i,v:comp(o.s)};}).sort(function(a,b){return b.v-a.v;});
+  $("tm-lbl").textContent="Mortgage loan officers · "+L.team.length+" scored";
+  $("team").innerHTML=rows.map(function(r,i){
+    var sc=Math.round(r.v);
+    var weak=r.o.s.map(function(v,j){return{v:v,j:j};}).sort(function(a,b){return a.v-b.v;})[0];
+    return '<li class="ros-row" data-lo="'+r.i+'"><span class="ros-n">'+(i+1)+'</span>'
+      +'<div><div class="ros-name">'+esc(r.o.n)+'</div><div class="ros-sub">'+esc(r.o.t)+'</div></div>'
+      +'<div class="ros-right"><div class="ros-weak">Weakest<b>'+SHORT[weak.j]+' '+weak.v+'</b></div>'
+      +'<div class="ros-score"><span class="bar"><i style="width:'+sc+'%;background:'+tone(sc)+'"></i></span>'
+      +'<b style="color:'+tone(sc)+'">'+sc+'</b></div></div></li>';
+  }).join("");
+  Array.prototype.forEach.call($("team").querySelectorAll(".ros-row"),function(li){
+    li.addEventListener("click",function(){loIdx=+li.getAttribute("data-lo");build();});
+  });
+  wireShowAll("team","team-more",rows.length,"officer");
+  var med=Math.round(median(L.team.map(function(o){return comp(o.s);})));
+  var spread=Math.round(rows[0].v-rows[rows.length-1].v);
+  $("tm-note").innerHTML="<b>Median officer scores "+med+"; the spread across the team is "+spread+" points.</b> "
+    +"This is the screen that turns one company subscription into a seat for every officer — and it is why the entity model has to support company, branch and individual from the first schema migration rather than being retrofitted later.";
+}
+
+/* ---------- wiring ---------- */
+Array.prototype.forEach.call(document.querySelectorAll(".chip"),function(c){
+  c.addEventListener("click",function(){
+    var lo=c.getAttribute("data-lo");
+    start(c.getAttribute("data-l"), lo==null?null:+lo);
+  });
+});
+$("run").addEventListener("click",function(){
+  var d=$("domain").value.toLowerCase().trim();
+  if(d.indexOf("marisol")>-1||d.indexOf("vega")>-1){
+    $("hint").textContent="Scan any mortgage website — a loan officer's personal page, a mortgage brokerage, or a national mortgage lender.";
+    start("cedar",0); return;
+  }
+  var id=d.indexOf("suncoast")>-1?"suncoast":d.indexOf("harbor")>-1?"harbor":d.indexOf("cedar")>-1?"cedar":null;
+  if(!id){
+    $("hint").innerHTML='This demo carries four sample mortgage profiles &mdash; showing <b>Cedar Ridge Mortgage</b>. Live scanning of any mortgage website arrives with the Phase 1 build.';
+    id="cedar";
+  }else{
+    $("hint").textContent="Scan any mortgage website — a loan officer's personal page, a mortgage brokerage, or a national mortgage lender.";
+  }
+  start(id);
+});
+$("domain").addEventListener("keydown",function(e){if(e.key==="Enter")$("run").click();});
+$("rescan").addEventListener("click",function(){show("v-scan");});
+$("home").addEventListener("click",function(){show("v-scan");});
+$("rival").addEventListener("change",function(){rivalId=$("rival").value;paintCompare();paintTrend();});
+Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(t){
+  t.addEventListener("click",function(){
+    Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(x){x.setAttribute("aria-selected","false");});
+    Array.prototype.forEach.call(document.querySelectorAll(".pane"),function(x){x.classList.remove("on");});
+    t.setAttribute("aria-selected","true");
+    $("p-"+t.getAttribute("data-p")).classList.add("on");
+  });
+});
+
+build();
+})();
+</script>
