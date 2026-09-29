@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { c, FONT, grad, radius, shadow } from "../theme.js";
 import { CRM_CSS } from "./crm-ui.jsx";
+import { gmailComposeHref } from "./email.js";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import {
   approveApplication, getTeamAccess, inviteExistingOperator, loadApplications,
@@ -107,7 +108,7 @@ function ApplicationDetail({ application, busy, onAction }) {
 
     <div className="approval-detail-grid">
       <DetailRow icon={UsersRound} label="Primary contact" value={application.contact_name}/>
-      <DetailRow icon={Mail} label="Account email" value={application.email} href={`mailto:${application.email}`}/>
+      <DetailRow icon={Mail} label="Account email" value={application.email} href={application.email?gmailComposeHref({ to: application.email }):null}/>
       <DetailRow icon={Building2} label="Phone" value={application.phone} href={application.phone?`tel:${application.phone}`:null}/>
       <DetailRow icon={MessageSquareText} label="WhatsApp" value={application.whatsapp} href={application.whatsapp?`https://wa.me/${application.whatsapp.replace(/\D/g,"")}`:null}/>
       <DetailRow icon={ExternalLink} label="Website" value={application.website} href={application.website}/>
