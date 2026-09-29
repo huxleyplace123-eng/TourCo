@@ -90,6 +90,7 @@ export function mergedOperators(overlay) {
       notes: ov.notes ?? [],
       checklist: ov.checklist ?? {},
       takeRate: ov.takeRate ?? seed.targetTakeRate,
+      meetingPoint: ov.meetingPoint ?? null,
       contactOverrides: ov.contactOverrides ?? {},
       custom: false,
     };
@@ -130,6 +131,7 @@ export function mergedOperators(overlay) {
       notes: ov.notes ?? [],
       checklist: ov.checklist ?? {},
       takeRate: ov.takeRate ?? null,
+      meetingPoint: ov.meetingPoint ?? null,
       contactOverrides: {},
       custom: true,
     }));
@@ -176,11 +178,17 @@ export function operatorsToCsv(list) {
     ["regions", "Regions"], ["destinations", "Destinations"], ["categories", "Categories"],
     ["takeRate", "Referral fee"], ["phone", "Phone"], ["whatsapp", "WhatsApp"],
     ["email", "Email"], ["website", "Website"], ["owner", "Owner"],
+    ["meetingPointName", "Meeting point"], ["meetingPointLat", "Meeting latitude"], ["meetingPointLng", "Meeting longitude"],
+    ["meetingInstructions", "Meeting instructions"],
     ["nextFollowUp", "Next follow-up"], ["lastContacted", "Last contacted"],
   ];
   const cell = (o, k) => {
     if (k === "categories") return Array.isArray(o[k]) ? o[k].join("; ") : (o[k] || "");
     if (k === "takeRate") return o[k] === null || o[k] === undefined ? "" : `${Math.round(o[k] * 100)}%`;
+    if (k === "meetingPointName") return o.meetingPoint?.name || "";
+    if (k === "meetingPointLat") return o.meetingPoint?.lat ?? "";
+    if (k === "meetingPointLng") return o.meetingPoint?.lng ?? "";
+    if (k === "meetingInstructions") return o.meetingPoint?.instructions || "";
     return o[k] ?? "";
   };
   const header = cols.map(([, l]) => opCsvEscape(l)).join(",");
@@ -210,6 +218,10 @@ const OP_ALIASES = {
   takeRate: ["referralfee", "takerate", "fee", "commission", "targettakerate", "feepercent", "feepct", "targetrate"],
   temperature: ["heat", "temperature", "temp", "priority", "leadheat"],
   owner: ["owner", "assignedto", "assignee", "rep", "accountowner"],
+  meetingPointName: ["meetingpoint", "meetingpointname", "pickupname", "meetinglocation"],
+  meetingPointLat: ["meetinglatitude", "meetinglat", "latitude", "lat"],
+  meetingPointLng: ["meetinglongitude", "meetinglng", "longitude", "lng", "lon"],
+  meetingInstructions: ["meetinginstructions", "pickupinstructions", "meetingdetails", "pickupdetails"],
   notes: ["notes", "note", "comments", "remarks", "commercial", "pricingask"],
 };
 
@@ -273,6 +285,12 @@ export function importOperatorsCsv(text, existing) {
       takeRate: parseRate(get("takeRate")),
       temperature: opHeatFromText(get("temperature")),
       owner: get("owner"),
+      meetingPoint: {
+        name: get("meetingPointName"),
+        lat: get("meetingPointLat") === "" ? "" : Number(get("meetingPointLat")),
+        lng: get("meetingPointLng") === "" ? "" : Number(get("meetingPointLng")),
+        instructions: get("meetingInstructions"),
+      },
       stage: "Not contacted",
       notes: notesText ? [{ id: `n_${Math.random().toString(36).slice(2, 9)}`, at: new Date().toISOString(), text: notesText }] : [],
       checklist: {},

@@ -97,6 +97,7 @@ function DetailRow({ icon: Icon, label, value, href }) {
 function ApplicationDetail({ application, busy, onAction }) {
   const [notes, setNotes] = useState(application.review_notes || "");
   const agreementSigned = Boolean(application.agreement_accepted_at && application.agreement_signature);
+  const meetingPinned = Number.isFinite(Number(application.meeting_point_lat)) && Number.isFinite(Number(application.meeting_point_lng));
   useEffect(()=>setNotes(application.review_notes || ""),[application.id,application.review_notes]);
   const submitted = application.status !== "draft";
   const action = (status) => onAction(application, status, notes);
@@ -116,6 +117,7 @@ function ApplicationDetail({ application, busy, onAction }) {
     </div>
 
     <div className="approval-section"><div className="approval-label">Service regions</div><div className="approval-chips">{(application.regions||[]).length?(application.regions||[]).map((x)=><span key={x}><MapPin size={12}/>{x}</span>):<em>Not provided</em>}</div></div>
+    <div className="approval-section" style={{ borderColor:meetingPinned?"rgba(34,211,238,.32)":"rgba(248,113,113,.3)",background:meetingPinned?"rgba(34,211,238,.045)":"rgba(248,113,113,.055)" }}><div style={{ display:"flex",gap:11,alignItems:"flex-start" }}><div className="approval-detail-icon" style={{ color:meetingPinned?c.teal:"#FCA5A5" }}><MapPin size={17}/></div><div><div className="approval-label">Guest meeting point</div><div style={{ fontWeight:850,fontSize:13.5,color:meetingPinned?c.charcoal:"#FCA5A5" }}>{meetingPinned?(application.meeting_point_name||"Pinned meeting location"):"Exact meeting pin required"}</div>{meetingPinned&&<div style={{ color:c.stone,fontSize:11.5,marginTop:4 }}>{Number(application.meeting_point_lat).toFixed(5)}, {Number(application.meeting_point_lng).toFixed(5)}</div>}{application.meeting_instructions&&<div style={{ color:c.stone,fontSize:12,marginTop:7,lineHeight:1.55 }}>{application.meeting_instructions}</div>}</div></div></div>
     <div className="approval-section"><div className="approval-label">Services</div><div className="approval-chips">{(application.categories||[]).length?(application.categories||[]).map((x)=><span key={x}>{x}</span>):<em>Not provided</em>}</div></div>
     <div className="approval-section"><div className="approval-label">Languages</div><div className="approval-chips">{(application.languages||[]).length?(application.languages||[]).map((x)=><span key={x}>{x}</span>):<em>Not provided</em>}</div></div>
     <div className="approval-section"><div className="approval-label">About the company</div><p style={{ margin:"7px 0 0",color:application.description?c.charcoal:c.stone,fontSize:13.5,lineHeight:1.7,whiteSpace:"pre-wrap" }}>{application.description || "No company description yet."}</p></div>
@@ -128,7 +130,7 @@ function ApplicationDetail({ application, busy, onAction }) {
     {submitted && application.status!=="approved" && application.status!=="declined" && <div className="approval-actions">
       <button disabled={busy} onClick={()=>action("declined")} className="approval-btn danger"><X size={16}/> Decline</button>
       <button disabled={busy} onClick={()=>action("needs_changes")} className="approval-btn secondary"><MessageSquareText size={16}/> Request changes</button>
-      <button disabled={busy||!agreementSigned} title={!agreementSigned?"A signed agreement is required before approval":""} onClick={()=>action("approved")} className="approval-btn primary" style={{ opacity:agreementSigned?1:.45,cursor:agreementSigned?"pointer":"not-allowed" }}>{busy?<LoaderCircle className="approval-spin" size={17}/>:<Check size={18}/>} Approve partner</button>
+      <button disabled={busy||!agreementSigned||!meetingPinned} title={!agreementSigned?"A signed agreement is required before approval":!meetingPinned?"An exact guest meeting pin is required before approval":""} onClick={()=>action("approved")} className="approval-btn primary" style={{ opacity:agreementSigned&&meetingPinned?1:.45,cursor:agreementSigned&&meetingPinned?"pointer":"not-allowed" }}>{busy?<LoaderCircle className="approval-spin" size={17}/>:<Check size={18}/>} Approve partner</button>
     </div>}
     {(application.status==="approved"||application.status==="declined") && <div className="approval-final"><StatusPill status={application.status}/><span>{application.review_notes || (application.status==="approved"?"Partner account activated.":"Application closed.")}</span></div>}
   </section>;

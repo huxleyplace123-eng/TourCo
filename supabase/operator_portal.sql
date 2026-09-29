@@ -67,6 +67,10 @@ create table if not exists public.operator_applications (
   languages          text[] not null default '{}',
   years_in_business  integer,
   description        text default '',
+  meeting_point_name text default '',
+  meeting_point_lat  double precision,
+  meeting_point_lng  double precision,
+  meeting_instructions text default '',
   status             text not null default 'draft' check (status in ('draft','pending','needs_changes','approved','declined')),
   review_notes       text,
   submitted_at       timestamptz,
@@ -82,6 +86,14 @@ alter table public.operator_applications add column if not exists agreement_sign
 alter table public.operator_applications add column if not exists agreement_signer_title text;
 alter table public.operator_applications add column if not exists agreement_legal_name text;
 alter table public.operator_applications add column if not exists agreement_signature text;
+alter table public.operator_applications add column if not exists meeting_point_name text default '';
+alter table public.operator_applications add column if not exists meeting_point_lat double precision;
+alter table public.operator_applications add column if not exists meeting_point_lng double precision;
+alter table public.operator_applications add column if not exists meeting_instructions text default '';
+alter table public.operators add column if not exists meeting_point_name text default '';
+alter table public.operators add column if not exists meeting_point_lat double precision;
+alter table public.operators add column if not exists meeting_point_lng double precision;
+alter table public.operators add column if not exists meeting_instructions text default '';
 
 -- Compatibility layer for the portal UI already in the repository. Moving
 -- tours/messages/availability to normalized tables later does not change auth.
@@ -250,11 +262,14 @@ begin
   if app.agreement_accepted_at is null or app.agreement_signature not like 'data:image/png;base64,%' then
     raise exception 'Signed operator agreement required';
   end if;
+  if app.meeting_point_lat is null or app.meeting_point_lng is null then
+    raise exception 'Exact guest meeting point required';
+  end if;
 
   new_operator_id := regexp_replace(lower(app.company_name), '[^a-z0-9]+', '-', 'g') || '-' || substr(app.id::text, 1, 8);
-  insert into public.operators (id,name,status,email,phone,whatsapp,website,regions,categories)
-  values (new_operator_id,app.company_name,'active',app.email,app.phone,app.whatsapp,app.website,array_to_string(app.regions,', '),app.categories)
-  on conflict (id) do update set status='active', updated_at=now();
+  insert into public.operators (id,name,status,email,phone,whatsapp,website,regions,categories,meeting_point_name,meeting_point_lat,meeting_point_lng,meeting_instructions)
+  values (new_operator_id,app.company_name,'active',app.email,app.phone,app.whatsapp,app.website,array_to_string(app.regions,', '),app.categories,app.meeting_point_name,app.meeting_point_lat,app.meeting_point_lng,app.meeting_instructions)
+  on conflict (id) do update set status='active',meeting_point_name=excluded.meeting_point_name,meeting_point_lat=excluded.meeting_point_lat,meeting_point_lng=excluded.meeting_point_lng,meeting_instructions=excluded.meeting_instructions,updated_at=now();
   insert into public.operator_memberships (operator_id,user_id,role) values (new_operator_id,app.user_id,'owner') on conflict do nothing;
   insert into public.operator_portal_state (operator_id,state) values (new_operator_id,jsonb_build_object('profile',jsonb_build_object('name',app.company_name,'email',app.email,'phone',app.phone,'whatsapp',app.whatsapp,'website',app.website,'blurb',app.description))) on conflict do nothing;
   update public.operator_applications set status='approved',review_notes=coalesce(notes,''),reviewed_at=now(),reviewed_by=auth.uid(),updated_at=now() where id=application_id;

@@ -84,6 +84,12 @@ function normalizeOperator(row) {
     email: row.email || "",
     website: row.website || "",
     takeRate: row.referral_fee ?? null,
+    meetingPoint: {
+      name: row.meeting_point_name || "",
+      lat: row.meeting_point_lat ?? "",
+      lng: row.meeting_point_lng ?? "",
+      instructions: row.meeting_instructions || "",
+    },
     stage: row.status === "active" ? "Active partner" : "In talks",
   };
 }
@@ -169,6 +175,10 @@ export async function saveApplication(user, values, submit = false, agreement = 
     languages: values.languages,
     years_in_business: values.yearsInBusiness ? Number(values.yearsInBusiness) : null,
     description: values.description.trim(),
+    meeting_point_name: values.meetingPoint?.name?.trim() || "",
+    meeting_point_lat: Number.isFinite(Number(values.meetingPoint?.lat)) ? Number(values.meetingPoint.lat) : null,
+    meeting_point_lng: Number.isFinite(Number(values.meetingPoint?.lng)) ? Number(values.meetingPoint.lng) : null,
+    meeting_instructions: values.meetingPoint?.instructions?.trim() || "",
     status: submit ? "pending" : "draft",
     submitted_at: submit ? new Date().toISOString() : null,
     updated_at: new Date().toISOString(),

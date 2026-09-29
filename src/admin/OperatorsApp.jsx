@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle, BadgeCheck, ExternalLink, Globe, Mail, MessageCircle, Phone,
-  Plus, Search, X, ChevronDown, ChevronUp, Star, Eye, Send, Upload, Link2,
+  Plus, Search, X, ChevronDown, ChevronUp, Star, Eye, Send, Upload, Link2, MapPinned,
 } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import { addDaysIso, daysFromToday, fmtDate, normPhone, todayIso } from "./store.js";
@@ -21,6 +21,7 @@ import { loadPortal, addMessage } from "./portal-store.js";
 import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import { loadConnectedOperatorOverlay, loadConnectedOperatorPortal, saveConnectedOperatorOverlay, saveConnectedOperatorPortal } from "./operator-data.js";
+import { hasMeetingPoint, MeetingPointPicker, OperatorMapView } from "./OperatorMeetingMap.jsx";
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
@@ -146,6 +147,11 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const setStage = (id, stage) => {
     const op = operators.find((x) => x.id === id);
     if (!op || op.stage === stage) return;
+    if (stage === "Active partner" && !hasMeetingPoint(op)) {
+      window.alert("Add the exact guest meeting point before activating this partner.");
+      setSelectedId(id);
+      return;
+    }
     patch(id, {
       stage,
       notes: [...(op.notes || []), { id: `n_${Math.random().toString(36).slice(2, 9)}`, at: new Date().toISOString(), text: `Stage: ${op.stage} → ${stage}` }],
@@ -363,7 +369,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
               placeholder="Search operators, regions, notes…" style={{ ...inputBase, paddingLeft: 34 }} />
           </div>
           <div style={{ display: "flex", gap: 2, background: "rgba(255,255,255,.06)", border: `1px solid ${c.line}`, borderRadius: radius.sm, padding: 3 }}>
-            {[["directory", "Directory"], ["pipeline", "Pipeline"], ["tours", "Tours & pricing"]].map(([k, label]) => (
+            {[["directory", "Directory"], ["map", "Map"], ["pipeline", "Pipeline"], ["tours", "Tours & pricing"]].map(([k, label]) => (
               <button key={k} onClick={() => setView(k)} style={{
                 padding: "7px 14px", borderRadius: radius.sm - 4, border: "none", cursor: "pointer",
                 fontFamily: FONT, fontSize: 13, fontWeight: 700,
@@ -467,6 +473,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
             <Directory operators={filtered} sel={sel} sortKey={sortKey} sortDir={sortDir} onSort={onSort} onOpen={setSelectedId} onStage={setStage} onLog={logTouch} onTemp={setTemp} onPreferred={togglePreferred} />
           </>
         )}
+        {view === "map" && <OperatorMapView operators={filtered} onOpen={setSelectedId} />}
         {view === "pipeline" && <OpsPipeline operators={filtered} onOpen={setSelectedId} onStage={setStage} />}
         {view === "tours" && <ToursView categories={categories} regions={[...new Set(TOUR_SEED.map((t) => t.region))].sort()} onOpenOperator={(oid) => { const op = operators.find((o) => o.id === oid); if (op) setSelectedId(op.id); }} />}
       </div>
@@ -998,6 +1005,12 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
             </div>
           </div>
 
+          {/* real guest rendezvous—not the operator's office */}
+          <div style={{ display: "grid", gap: 10, padding: 13, borderRadius: radius.md, border: `1px solid ${op.meetingPoint?.lat ? "rgba(34,211,238,.32)" : c.line}`, background: "rgba(255,255,255,.03)" }}>
+            <div style={{ ...label, display: "flex", alignItems: "center", gap: 7 }}><MapPinned size={14} color={c.teal} /> Guest meeting location</div>
+            <MeetingPointPicker compact value={op.meetingPoint || {}} onChange={(meetingPoint) => patch(op.id, { meetingPoint })} />
+          </div>
+
           {/* checklist */}
           <div>
             <div style={{ ...label, display: "flex", justifyContent: "space-between" }}>
@@ -1082,7 +1095,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
 
 // ── Add operator ──────────────────────────────────────────────────────────────
 function AddOperatorModal({ onClose, onSave }) {
-  const [f, setF] = useState({ name: "", type: "tours", temperature: "", regions: "", categories: "", phone: "", whatsapp: "", email: "", website: "" });
+  const [f, setF] = useState({ name: "", type: "tours", temperature: "", regions: "", categories: "", phone: "", whatsapp: "", email: "", website: "", meetingPoint: {} });
   const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }));
   const canSave = f.name.trim().length > 0;
   const label = { fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 5 };
@@ -1109,6 +1122,9 @@ function AddOperatorModal({ onClose, onSave }) {
             <label><div style={label}>Email</div><input value={f.email} onChange={set("email")} style={inputBase} /></label>
             <label><div style={label}>Website</div><input value={f.website} onChange={set("website")} style={inputBase} /></label>
           </div>
+          <div style={{ marginTop: 4, paddingTop: 14, borderTop: `1px solid ${c.line}` }}>
+            <MeetingPointPicker value={f.meetingPoint} onChange={(meetingPoint) => setF((x) => ({ ...x, meetingPoint }))} />
+          </div>
         </div>
         <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", padding: "14px 20px", borderTop: `1px solid ${c.line}` }}>
           <button onClick={onClose} style={{ padding: "10px 16px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "transparent", color: c.stone, fontFamily: FONT, fontWeight: 700, fontSize: 13.5, cursor: "pointer" }}>Cancel</button>
@@ -1126,6 +1142,7 @@ function AddOperatorModal({ onClose, onSave }) {
                 whatsapp: f.whatsapp.trim(),
                 email: f.email.trim(),
                 website: f.website.trim(),
+                meetingPoint: f.meetingPoint,
                 stage: "Not contacted",
                 notes: [],
                 checklist: {},

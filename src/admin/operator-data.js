@@ -12,9 +12,34 @@ async function isTeamMember() {
 export async function loadConnectedOperatorOverlay(local = {}) {
   try {
     if (!(await isTeamMember())) return { connected: false, overlay: local };
-    const { data, error } = await withTimeout(supabase.from("crm_operator_overlays").select("operator_id,overlay"), 12000, "Operator CRM");
-    if (error) throw error;
-    const remote = Object.fromEntries((data || []).map((row) => [row.operator_id, row.overlay || {}]));
+    const [overlayResult, partnerResult] = await Promise.all([
+      withTimeout(supabase.from("crm_operator_overlays").select("operator_id,overlay"), 12000, "Operator CRM"),
+      withTimeout(supabase.from("operators").select("*"), 12000, "Active partners"),
+    ]);
+    if (overlayResult.error) throw overlayResult.error;
+    if (partnerResult.error) throw partnerResult.error;
+    const partners = Object.fromEntries((partnerResult.data || []).map((row) => [row.id, {
+      custom: true,
+      name: row.name,
+      type: row.type || "tours",
+      stage: row.status === "active" ? "Active partner" : "In talks",
+      email: row.email || "",
+      phone: row.phone || "",
+      whatsapp: row.whatsapp || "",
+      website: row.website || "",
+      regions: row.regions || "",
+      destinations: row.destinations || "",
+      categories: row.categories || [],
+      takeRate: row.referral_fee ?? null,
+      meetingPoint: {
+        name: row.meeting_point_name || "",
+        lat: row.meeting_point_lat ?? "",
+        lng: row.meeting_point_lng ?? "",
+        instructions: row.meeting_instructions || "",
+      },
+    }]));
+    const remote = { ...partners };
+    for (const row of overlayResult.data || []) remote[row.operator_id] = { ...(remote[row.operator_id] || {}), ...(row.overlay || {}) };
     return { connected: true, overlay: { ...local, ...remote } };
   } catch (error) {
     throw friendlyBackendError(error, "The operator CRM could not sync.");

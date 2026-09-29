@@ -4,13 +4,14 @@ import { Logo } from "../components/Logo.jsx";
 import { AGREEMENT_VERSION, OperatorAgreement } from "../components/OperatorAgreement.jsx";
 import { c, FONT, grad, radius, shadow } from "../theme.js";
 import { saveApplication } from "./partnerData.js";
+import { MeetingPointPicker, hasMeetingPoint } from "../admin/OperatorMeetingMap.jsx";
 
 const REGIONS = ["Guanacaste", "Central Pacific", "South Pacific", "Northern Plains", "Central Valley", "Caribbean"];
 const CATEGORIES = ["Adventure", "Wildlife", "Water", "Fishing", "Surfing", "Wellness", "Transport", "Hotels", "Food & dining", "Other"];
 const LANGUAGES = ["English", "Spanish", "French", "German", "Portuguese", "Italian"];
 
 const field = { width:"100%", padding:"12px 13px", borderRadius:12, border:`1px solid ${c.line}`, background:"rgba(255,255,255,.05)", color:c.charcoal, outline:"none", fontSize:14 };
-const blank = { companyName:"", contactName:"", phone:"", whatsapp:"", website:"", regions:[], categories:[], languages:["English","Spanish"], yearsInBusiness:"", description:"" };
+const blank = { companyName:"", contactName:"", phone:"", whatsapp:"", website:"", regions:[], categories:[], languages:["English","Spanish"], yearsInBusiness:"", description:"", meetingPoint:{} };
 
 function websiteDraft() {
   try {
@@ -37,6 +38,12 @@ function valuesFrom(application, email) {
     languages: application.languages || [],
     yearsInBusiness: application.years_in_business || "",
     description: application.description || "",
+    meetingPoint: {
+      name: application.meeting_point_name || "",
+      lat: application.meeting_point_lat ?? "",
+      lng: application.meeting_point_lng ?? "",
+      instructions: application.meeting_instructions || "",
+    },
     email,
   };
 }
@@ -63,12 +70,12 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
   const [error, setError] = useState("");
   const set = (key) => (event) => setValues((v) => ({ ...v, [key]: event.target.value }));
   const toggle = (key, value) => setValues((v) => ({ ...v, [key]: v[key].includes(value) ? v[key].filter((x) => x !== value) : [...v[key], value] }));
-  const complete = useMemo(() => [values.companyName, values.contactName, values.phone, values.regions.length, values.categories.length, values.description].filter(Boolean).length, [values]);
+  const complete = useMemo(() => [values.companyName, values.contactName, values.phone, values.regions.length, values.categories.length, hasMeetingPoint({ meetingPoint: values.meetingPoint }), values.description].filter(Boolean).length, [values]);
 
   const next = () => {
     setError("");
     if (step === 1 && (!values.companyName.trim() || !values.contactName.trim() || !values.phone.trim())) return setError("Add your company, primary contact, and phone number to continue.");
-    if (step === 2 && (!values.regions.length || !values.categories.length)) return setError("Choose at least one region and one service category.");
+    if (step === 2 && (!values.regions.length || !values.categories.length || !hasMeetingPoint({ meetingPoint: values.meetingPoint }))) return setError("Choose a region, service category, and the exact place where guests meet you.");
     if (step === 3 && !values.description.trim()) return setError("Add a short company description before continuing to the agreement.");
     setStep((s) => Math.min(4, s + 1));
   };
@@ -105,8 +112,8 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
               <div style={{ fontSize:13,fontWeight:800 }}>{label}</div>
             </div>;
           })}
-          <div style={{ marginTop:18,height:5,borderRadius:999,background:"rgba(255,255,255,.06)",overflow:"hidden" }}><div style={{ width:`${(complete/6)*100}%`,height:"100%",background:grad.ocean }}/></div>
-          <div style={{ marginTop:7,color:c.stone,fontSize:11 }}>{complete} of 6 essentials complete</div>
+          <div style={{ marginTop:18,height:5,borderRadius:999,background:"rgba(255,255,255,.06)",overflow:"hidden" }}><div style={{ width:`${(complete/7)*100}%`,height:"100%",background:grad.ocean }}/></div>
+          <div style={{ marginTop:7,color:c.stone,fontSize:11 }}>{complete} of 7 essentials complete</div>
         </aside>
 
         <main className="onboard-card" style={{ padding:"clamp(20px,4vw,34px)" }}>
@@ -128,11 +135,12 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
             <Choice label="Services" help="What should TicoWild send your way?" items={CATEGORIES} selected={values.categories} onToggle={(v)=>toggle('categories',v)}/>
             <Choice label="Languages" help="Languages your team can use with guests." items={LANGUAGES} selected={values.languages} onToggle={(v)=>toggle('languages',v)}/>
             <Field label="Years in business"><input type="number" min="0" max="100" style={{ ...field,maxWidth:190 }} value={values.yearsInBusiness} onChange={set('yearsInBusiness')} placeholder="e.g. 8"/></Field>
+            <div style={{ padding:16,borderRadius:18,border:`1px solid ${c.line}`,background:"rgba(255,255,255,.025)" }}><MeetingPointPicker value={values.meetingPoint} onChange={(meetingPoint)=>setValues((current)=>({...current,meetingPoint}))}/></div>
           </div>}
 
           {step===3 && <div style={{ display:"grid",gap:16 }}>
             <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10 }}>
-              <Review icon={Building2} label="Company" value={values.companyName}/><Review icon={MapPin} label="Regions" value={values.regions.join(', ')}/><Review icon={Globe2} label="Services" value={values.categories.join(', ')}/>
+              <Review icon={Building2} label="Company" value={values.companyName}/><Review icon={MapPin} label="Meeting point" value={values.meetingPoint?.name || (hasMeetingPoint({ meetingPoint: values.meetingPoint }) ? `${Number(values.meetingPoint.lat).toFixed(4)}, ${Number(values.meetingPoint.lng).toFixed(4)}` : "Not pinned")}/><Review icon={Globe2} label="Services" value={values.categories.join(', ')}/>
             </div>
             <Field label="Company description"><textarea style={{ ...field,minHeight:120,resize:"vertical",lineHeight:1.6 }} value={values.description} onChange={set('description')} placeholder="Describe what you offer, where you operate, and what makes the guest experience special."/></Field>
             <div style={{ display:"flex",gap:10,alignItems:"flex-start",padding:14,borderRadius:14,border:"1px solid rgba(52,211,153,.25)",background:"rgba(52,211,153,.07)" }}><ShieldCheck size={19} color="#34D399"/><div style={{ fontSize:12.5,lineHeight:1.55,color:c.stone }}><b style={{ color:c.charcoal }}>Nothing is published automatically.</b> The TicoWild team will review your application, verify the business, and activate your full partner portal.</div></div>
@@ -154,7 +162,7 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
           </div>
         </main>
       </div>
-      {showAgreement && <OperatorAgreement delivery="record" initialValues={{ legalName:values.companyName,signerName:values.contactName,email:user.email,phone:values.whatsapp||values.phone,category:values.categories.join(', '),location:values.regions.join(', ') }} onSigned={signedAgreement} onClose={()=>setShowAgreement(false)}/>}
+      {showAgreement && <OperatorAgreement delivery="record" initialValues={{ legalName:values.companyName,signerName:values.contactName,email:user.email,phone:values.whatsapp||values.phone,category:values.categories.join(', '),location:values.meetingPoint?.name || values.regions.join(', ') }} onSigned={signedAgreement} onClose={()=>setShowAgreement(false)}/>}
     </Shell>
   );
 }
