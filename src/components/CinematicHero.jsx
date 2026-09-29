@@ -69,6 +69,7 @@ export function CinematicHero({ go }) {
         .tn-hero-content { max-width: 1280px !important; }
         .tn-hero-content > * { min-width: 0; }
         .tn-hero-copy { max-width: 780px; }
+        .tn-hero-mobile-copy { display: none; }
         .tn-hero-title-line { display: block; }
         .tn-hero-accent-line {
           position: relative;
@@ -78,6 +79,9 @@ export function CinematicHero({ go }) {
           margin-top: 4px;
           padding-bottom: 11px;
         }
+        .tn-hero-accent-lead,
+        .tn-hero-accent-finish { display: inline-block; }
+        .tn-hero-accent-finish { margin-left: .22em; }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
         @media (min-width: 980px){
           .tn-hero-content { padding: 100px 28px 128px !important; }
@@ -91,15 +95,35 @@ export function CinematicHero({ go }) {
           .tn-hero { min-height: auto !important; }
           .tn-hero-scene { display: none !important; }
           .tn-hero-content { padding: 60px clamp(24px,5vw,40px) 72px !important; }
+          .tn-hero-image {
+            object-position: var(--mobile-position) !important;
+            transform: none !important;
+          }
         }
         @media (max-width: 520px){
-          .tn-hero-content { padding: 44px 24px 64px !important; }
+          .tn-hero-content { padding: 40px 18px 48px !important; }
+          .tn-hero-copy { width: 100%; max-width: none; overflow: visible; }
           .tn-hero .tn-h1 {
-            font-size: clamp(34px,9vw,36px) !important;
-            line-height: 1.1 !important;
-            letter-spacing: -1.2px !important;
+            width: 100%;
+            max-width: none;
+            font-size: clamp(31px,9.4vw,37px) !important;
+            line-height: 1.04 !important;
+            letter-spacing: -1.1px !important;
           }
-          .tn-hero .tn-h1 + p { font-size: 16.5px !important; margin-top: 28px !important; }
+          .tn-hero-accent-line { width: 100%; max-width: none; }
+          .tn-hero-accent-finish { display: block; margin-left: 0; }
+          .tn-hero-desktop-copy { display: none; }
+          .tn-hero-mobile-copy {
+            display: block;
+            margin-top: 22px !important;
+            max-width: 31ch !important;
+            font-size: 15.5px !important;
+            line-height: 1.55 !important;
+          }
+          .tn-hero-trust { margin-top: 20px !important; gap: 11px !important; }
+          .tn-hero-trust > span:first-child { display: none !important; }
+          .tn-hero-actions { margin-top: 23px !important; }
+          .tn-hero-actions > div:last-child { display: none !important; }
         }
         @media (max-width: 360px){
           .tn-hero-actions > div,
@@ -114,8 +138,9 @@ export function CinematicHero({ go }) {
           a light mouse/scroll parallax drift, no compounding scale. */}
       <div style={{ position: "absolute", inset: 0, transform: `translate3d(${mouse.x * 8}px, ${mouse.y * 6 + scrollY * 0.06}px, 0)`, transition: "transform .18s cubic-bezier(.2,.7,.2,1)" }}>
         {SLIDES.map((s, i) => (
-          <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center",
+          <img key={s.src} className="tn-hero-image" src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: s.desktopPosition,
+              "--mobile-position": s.mobilePosition,
               opacity: (i === slide ? 1 : 0) * (1 - scrub * 0.5),
               transform: `scale(${1 + scrub * 0.12})`,
               transition: "opacity 1.6s ease, transform 6s ease" }} />
@@ -161,16 +186,20 @@ export function CinematicHero({ go }) {
           <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,4.2vw,62px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: "clamp(-1.8px,-.13vw,-1.1px)", margin: "28px 0 0", animationDelay: ".08s", textWrap: "balance" }}>
             <span className="tn-hero-title-line">We don't list <span className="tn-title-keep">every tour.</span></span>
             <span className="tn-hero-accent-line">
-              <span style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>We find the <span className="tn-title-keep">right one.</span></span>
+              <span className="tn-hero-accent-lead" style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>We find the</span>
+              <span className="tn-hero-accent-finish" style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>right one.</span>
               <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 3, borderRadius: 999, background: `linear-gradient(90deg,${c.teal},${c.gold})`, opacity: 0.5 }} />
             </span>
           </h1>
-          <p className="rise" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
+          <p className="rise tn-hero-desktop-copy" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
             Costa Rica is full of good options. TicoWild helps you turn them into one trip that feels like yours, flows naturally and is clear before you commit.
+          </p>
+          <p className="rise tn-hero-mobile-copy" style={{ color: "rgba(243,247,255,.82)", animationDelay: ".16s" }}>
+            Tell us the trip you want. We’ll shape the days and confirm the real details.
           </p>
 
           {/* refined trust row */}
-          <div className="rise" style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 24, animationDelay: ".2s" }}>
+          <div className="rise tn-hero-trust" style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 24, animationDelay: ".2s" }}>
             {[[Sparkles, "A smaller, curated selection"], [Route, "Built around your route"], [ShieldCheck, "Details confirmed first"]].map(([Icon, t]) => (
               <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "rgba(243,247,255,.72)", fontSize: 13.5, fontWeight: 600 }}>
                 <Icon size={15} color={c.teal} />{t}

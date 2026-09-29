@@ -70,16 +70,16 @@ const HERO_SETS = {
   // Costa Rica (marine life, wildlife, coastline, sky) rather than the same
   // action shots. Marine life leads — turtles, reef fish, the sea.
   home: [
-    { id: "photo-1437622368342-7a3d73a34c8f", label: "Sea turtles of the Pacific" }, // sea turtle
-    { id: "photo-1745208746272-8d3b979d5f92", label: "Arenal volcano" },        // volcano (shared w/ activities — the icon)
-    { id: "photo-1524704796725-9fc3044a58b2", label: "Reefs full of color" },   // vivid reef fish
-    { id: "photo-1512100356356-de1b84283e18", label: "Island-hop by air" },     // seaplane over turquoise
-    { id: "photo-1444464666168-49d633b86797", label: "Cloud-forest wildlife" },    // tropical bird on a branch (wide, not a feather close-up)
-    { id: "photo-1468413253725-0d5181091126", label: "Jungle-backed beaches" }, // beach + jungle
-    { id: "photo-1553284965-83fd3e82fa5a", label: "Ride the shoreline" },       // horseback
-    { id: "photo-1591025207163-942350e47db2", label: "Swim with turtles" },     // underwater turtle
-    { id: "photo-1519046904884-53103b34b206", label: "Hidden coves" },          // secluded palm cove
-    { id: "photo-1505142468610-359e7d316be0", label: "Turquoise water" },       // aerial waves
+    { id: "photo-1437622368342-7a3d73a34c8f", label: "Sea turtles of the Pacific", mobilePosition: "72% center", desktopPosition: "62% center" },
+    { id: "photo-1745208746272-8d3b979d5f92", label: "Arenal volcano", mobilePosition: "50% center" },
+    { id: "photo-1524704796725-9fc3044a58b2", label: "Reefs full of color", mobilePosition: "58% center" },
+    { id: "photo-1512100356356-de1b84283e18", label: "Island-hop by air", mobilePosition: "55% center" },
+    { id: "photo-1444464666168-49d633b86797", label: "Cloud-forest wildlife", mobilePosition: "62% center" },
+    { id: "photo-1468413253725-0d5181091126", label: "Jungle-backed beaches", mobilePosition: "56% center" },
+    { id: "photo-1620658927695-c33df6fb8130", label: "Wild blue waterfalls", mobilePosition: "50% center" },
+    { id: "photo-1591025207163-942350e47db2", label: "Swim with turtles", mobilePosition: "64% center" },
+    { id: "photo-1519046904884-53103b34b206", label: "Hidden coves", mobilePosition: "54% center" },
+    { id: "photo-1505142468610-359e7d316be0", label: "Turquoise water", mobilePosition: "50% center" },
   ],
   // Activities — the FULL adventure reel: every kind of tour you can book in
   // Costa Rica, most exciting first, no two similar scenes back to back.
@@ -135,7 +135,12 @@ const HERO_SETS = {
 
 // Return a themed slide set as {src,label}[] (falls back to the default heroSlides).
 export const themedSlides = (key, w = 1900) =>
-  (HERO_SETS[key] || HERO_SLIDES).map((s) => ({ src: cdn(s.id, w), label: s.label }));
+  (HERO_SETS[key] || HERO_SLIDES).map((s) => ({
+    src: cdn(s.id, w),
+    label: s.label,
+    mobilePosition: s.mobilePosition || "center",
+    desktopPosition: s.desktopPosition || "center",
+  }));
 
 // Cinematic hero photo per curated package (by package id).
 const BY_PACKAGE = {
