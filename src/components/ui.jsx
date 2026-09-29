@@ -47,7 +47,7 @@ export function Badge({ children, bg = "rgba(11,26,46,.55)", color = c.teal, ico
 // ── Eyebrow label ──
 export function Eyebrow({ children }) {
   return (
-    <div style={{ color: c.teal, fontWeight: 800, letterSpacing: 1.5, fontSize: 13, textTransform: "uppercase", marginBottom: 10 }}>
+    <div className="tico-eyebrow" style={{ color: c.teal, fontWeight: 850, letterSpacing: 1.5, fontSize: 12, textTransform: "uppercase", marginBottom: 12 }}>
       {children}
     </div>
   );

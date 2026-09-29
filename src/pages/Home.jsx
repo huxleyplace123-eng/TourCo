@@ -189,7 +189,7 @@ export function Home({ go, viewActivity, browseActivities }) {
       <style>{`
         .home-shell{width:min(1240px,calc(100% - 48px));margin:0 auto}
         .home-kicker{display:inline-flex;align-items:center;gap:9px;color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
-        .home-kicker:before{content:"";width:26px;height:1px;background:${c.teal}}
+        .home-kicker:before{content:"";width:30px;height:5px;border-top:1px solid ${c.teal};border-bottom:1px solid rgba(34,211,238,.38);box-shadow:0 5px 18px -8px rgba(34,211,238,.8)}
         .home-text-link{display:inline-flex;align-items:center;gap:9px;margin-top:20px;padding:0;border:0;background:transparent;color:#fff;font:inherit;font-size:14px;font-weight:850;cursor:pointer}
         .home-text-link svg{color:${c.gold};transition:transform .2s ease}.home-text-link:hover svg{transform:translateX(4px)}
 

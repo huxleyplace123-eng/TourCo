@@ -102,8 +102,8 @@ export function CinematicHero({ go, onSearch }) {
         .tn-search-field { min-width:0;display:grid;grid-template-columns:28px minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:10px 18px; }
         .tn-search-field + .tn-search-field { border-left:1px solid rgba(11,26,46,.14); }
         .tn-search-field > svg { grid-row:1 / 3;color:#058da1; }
-        .tn-search-field label { color:${c.ink};font-size:11px;font-weight:900;letter-spacing:.02em; }
-        .tn-search-field input { min-width:0;width:100%;border:0;outline:0;background:transparent;color:${c.ink};font:inherit;font-size:15px;padding:3px 0 0; }
+        .tn-search-field label { color:${c.ink};font-size:13.5px;font-weight:900;letter-spacing:.01em; }
+        .tn-search-field input { min-width:0;width:100%;border:0;outline:0;background:transparent;color:${c.ink};font:inherit;font-size:17px;padding:4px 0 0; }
         .tn-search-field input::placeholder { color:rgba(11,26,46,.5); }
         .tn-hero-search button { width:56px;height:56px;display:grid;place-items:center;border:0;border-radius:50%;background:${c.gold};color:${c.ink};cursor:pointer;box-shadow:0 12px 28px -12px rgba(255,208,0,.9);transition:transform .18s ease,box-shadow .18s ease; }
         .tn-hero-search button:hover { transform:scale(1.05);box-shadow:0 16px 36px -12px rgba(255,208,0,1); }
@@ -155,8 +155,8 @@ export function CinematicHero({ go, onSearch }) {
           .tn-search-field:first-child { grid-column:1 / -1;padding:10px 13px 12px;border-bottom:1px solid rgba(11,26,46,.12); }
           .tn-search-field + .tn-search-field { border-left:0; }
           .tn-search-field > svg { width:17px; }
-          .tn-search-field label { font-size:9.5px; }
-          .tn-search-field input { font-size:13px; }
+          .tn-search-field label { font-size:12px; }
+          .tn-search-field input { font-size:15px; }
           .tn-hero-search button { width:48px;height:48px;justify-self:end; }
           .tn-hero-trust { margin-top: 20px !important; gap: 11px !important; }
           .tn-hero-trust > span:first-child { display: none !important; }
