@@ -177,11 +177,7 @@ export function CinematicHero({ go }) {
       {/* ── Content ── */}
       <div className="hero-grid tn-hero-content" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "88px 20px 116px", display: "grid", gridTemplateColumns: "1fr", gap: 56, alignItems: "center" }}>
         <div className="tn-hero-copy" style={{ transform: `translateY(${scrollY * -0.08}px)`, opacity: 1 - scrub * 0.6 }}>
-          <span className="rise" style={{ display: "inline-flex", alignItems: "center", gap: 8, ...glass, color: "#fff", fontWeight: 600, fontSize: 12.5, padding: "8px 15px", borderRadius: 999, letterSpacing: 0.2 }}>
-            <span style={{ width: 7, height: 7, borderRadius: 999, background: g.accent, boxShadow: `0 0 12px ${g.accent}` }} />
-            {g.label} · Costa Rica, planned with care
-          </span>
-          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,4.2vw,62px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: "clamp(-1.8px,-.13vw,-1.1px)", margin: "28px 0 0", animationDelay: ".08s", textWrap: "balance" }}>
+          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,4.2vw,62px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: "clamp(-1.8px,-.13vw,-1.1px)", margin: 0, animationDelay: ".08s", textWrap: "balance" }}>
             <span className="tn-hero-title-line">Costa Rica,</span>
             <span className="tn-hero-accent-line">
               <span className="tn-hero-accent-lead" style={{ color: "#fff", textShadow: "0 8px 30px rgba(0,0,0,.35)" }}>made</span>
