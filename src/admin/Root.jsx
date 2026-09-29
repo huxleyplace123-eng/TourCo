@@ -3,6 +3,7 @@ import Login, { AUTH_KEY } from "./Login.jsx";
 import App from "./App.jsx";
 import OperatorsApp from "./OperatorsApp.jsx";
 import ApplicationsApp from "./ApplicationsApp.jsx";
+import TemplatesApp from "./TemplatesApp.jsx";
 
 const WS_KEY = "ticowild_crm_workspace";
 
@@ -22,7 +23,9 @@ export default function Root() {
   };
 
   if (!signedIn) return <Login onSuccess={() => setSignedIn(true)} />;
-  return workspace === "applications" ? (
+  return workspace === "templates" ? (
+    <TemplatesApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
+  ) : workspace === "applications" ? (
     <ApplicationsApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
   ) : workspace === "operators" ? (
     <OperatorsApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />

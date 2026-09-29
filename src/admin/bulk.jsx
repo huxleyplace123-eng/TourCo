@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import { addDaysIso, todayIso } from "./store.js";
+import { allEmailTemplates } from "./email-templates.js";
 
 // ── Selection hook ────────────────────────────────────────────────────────────
 // `visibleIds` is the id list of the currently filtered/sorted rows. `resetKey`
@@ -156,6 +157,8 @@ export function ComposeModal({ mode, entityLabel = "recipient", recipients, onCl
   const isEmail = mode === "email";
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
+  const [templateId, setTemplateId] = useState("");
+  const templates = useMemo(() => isEmail ? allEmailTemplates().filter((t) => t.audience === entityLabel) : [], [isEmail, entityLabel]);
 
   const channelOf = (r) => (isEmail ? r.email : r.phone);
   const included = recipients.filter((r) => channelOf(r));
@@ -198,6 +201,21 @@ export function ComposeModal({ mode, entityLabel = "recipient", recipients, onCl
           <div style={{ fontSize: 12.5, color: c.charcoal, maxHeight: 76, overflowY: "auto", lineHeight: 1.5 }}>
             {included.map((r) => r.name).join(", ") || <span style={{ color: "#F87171" }}>No {isEmail ? "email addresses" : "phone numbers"} in this selection.</span>}
           </div>
+
+          {isEmail && (
+            <label>
+              <div style={label}>Start from a template</div>
+              <select value={templateId} onChange={(e) => {
+                const id = e.target.value;
+                setTemplateId(id);
+                const template = templates.find((t) => t.id === id);
+                if (template) { setSubject(template.subject); setBody(template.body); }
+              }} style={field}>
+                <option value="">Blank email</option>
+                {templates.map((template) => <option key={template.id} value={template.id}>{template.category} — {template.name}</option>)}
+              </select>
+            </label>
+          )}
 
           {isEmail && (
             <label>
