@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown, ShieldCheck, Sparkles, Route } from "lucide-react";
-import { c, glass, gradText } from "../theme.js";
+import { c, glass } from "../theme.js";
 import { themedSlides } from "../images.js";
 import { Button } from "./ui.jsx";
 import { Magnetic } from "../motion.jsx";
@@ -186,9 +186,9 @@ export function CinematicHero({ go }) {
           <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,4.2vw,62px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: "clamp(-1.8px,-.13vw,-1.1px)", margin: "28px 0 0", animationDelay: ".08s", textWrap: "balance" }}>
             <span className="tn-hero-title-line">We don't list <span className="tn-title-keep">every tour.</span></span>
             <span className="tn-hero-accent-line">
-              <span className="tn-hero-accent-lead" style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>We find the</span>
-              <span className="tn-hero-accent-finish" style={{ ...gradText(`linear-gradient(100deg,${c.teal} 10%,${c.gold})`), filter: `drop-shadow(0 0 28px ${g.accent}44)` }}>right one.</span>
-              <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 3, borderRadius: 999, background: `linear-gradient(90deg,${c.teal},${c.gold})`, opacity: 0.5 }} />
+              <span className="tn-hero-accent-lead" style={{ color: "#fff", textShadow: "0 8px 30px rgba(0,0,0,.35)" }}>We find the</span>
+              <span className="tn-hero-accent-finish" style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.2)" }}>right one.</span>
+              <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 2, borderRadius: 999, background: c.teal, boxShadow: "0 0 18px rgba(34,211,238,.24)", opacity: 0.72 }} />
             </span>
           </h1>
           <p className="rise tn-hero-desktop-copy" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
