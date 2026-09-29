@@ -1,180 +1,173 @@
 import React from "react";
-import { ArrowRight, CalendarCheck, Check, Compass, Heart, MapPin, MessageCircle, ShieldCheck, Sparkles, Sun, Waves } from "lucide-react";
+import { ArrowRight, Check, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { c } from "../theme.js";
-import { Button, Section } from "../components/ui.jsx";
+import { Button } from "../components/ui.jsx";
 import { Reveal } from "../motion.jsx";
 import { CinematicHero } from "../components/CinematicHero.jsx";
-import { useConversion } from "../components/ConversionCenter.jsx";
 import { themedSlides } from "../images.js";
 import { activities } from "../data.js";
 import { activityPath } from "../routing.js";
 
-const STEPS = [
-  { icon: Heart, number: "01", title: "Start with the feeling", body: "Tell us who is traveling and how you want Costa Rica to feel." },
-  { icon: MapPin, number: "02", title: "Then shape the route", body: "Once the trip has direction, add where you’ll be and when." },
-  { icon: CalendarCheck, number: "03", title: "Confirm before you pay", body: "We check current availability, timing and the final price first." },
-];
-
-const SAMPLE_DAYS = [
-  { day: "Day 1", icon: Waves, label: "Settle into the coast", title: "Easy arrival + sunset on the water", note: "A relaxed first day with enough room for delays and check-in." },
-  { day: "Day 2", icon: Compass, label: "Go wild early", title: "Rainforest and wildlife in the morning", note: "The bigger outing goes first, before the heat and afternoon rain." },
-  { day: "Day 3", icon: Sun, label: "Keep one day flexible", title: "Choose the ocean or a waterfall", note: "We confirm conditions and match the day to what feels best." },
-];
-
-const JOURNEY = [
-  { number: "01", label: "Picture it", detail: "Who is going and how it should feel" },
-  { number: "02", label: "Shape it", detail: "Add the route once the trip has direction" },
-  { number: "03", label: "Confirm", detail: "Availability, details and final price" },
-];
-
 const HOME_STORY_ACTIVITY_IDS = ["a7", "a12", "a10"];
-const HOME_STORY_IMAGES = themedSlides("activities", 1000).slice(0, 3).map((image, index) => ({
+const HOME_STORY_IMAGES = themedSlides("activities", 1400).slice(0, 3).map((image, index) => ({
   ...image,
   activity: activities.find((item) => item.id === HOME_STORY_ACTIVITY_IDS[index]),
 }));
+const HOME_CLOSE_IMAGE = themedSlides("home", 1800)[8];
 
-function Chapter({ number, label }) {
-  return (
-    <div className="home-chapter" aria-hidden="true">
-      <span>{number}</span>
-      <i />
-      <strong>{label}</strong>
-    </div>
-  );
-}
+const PROMISES = [
+  { icon: MapPin, title: "A route that flows", body: "The right experiences, in the right order, without zig-zagging the country." },
+  { icon: ShieldCheck, title: "Real details, checked", body: "Availability, timing and operator details are confirmed before you decide." },
+  { icon: Check, title: "One clear plan", body: "Your days, pricing and next steps stay together instead of scattered across tabs." },
+];
 
 export function Home({ go, viewActivity }) {
-  const { openConcierge } = useConversion();
-
   return (
     <>
       <CinematicHero go={go} />
 
-      <div className="home-journey" aria-label="How planning works">
-        <div className="home-journey-inner">
-          {JOURNEY.map((item, index) => (
-            <React.Fragment key={item.number}>
-              <div className="home-journey-step">
-                <span>{item.number}</span>
-                <div><strong>{item.label}</strong><small>{item.detail}</small></div>
+      <section className="home-showcase">
+        <div className="home-shell">
+          <Reveal>
+            <div className="home-showcase-head">
+              <div>
+                <span className="home-kicker">Built for the way Costa Rica actually feels</span>
+                <h2>Less searching.<br /><em>More living.</em></h2>
               </div>
-              {index < JOURNEY.length - 1 && <ArrowRight className="home-journey-arrow" size={18} aria-hidden="true" />}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      <Section className="home-band home-band-how" bg={c.canvas2} pad={84}>
-        <Chapter number="01" label="Start simply" />
-        <Reveal>
-          <div className="home-intro" style={{ display: "grid", gridTemplateColumns: "minmax(0,.8fr) minmax(0,1.2fr)", gap: "clamp(30px,6vw,78px)", alignItems: "start" }}>
-            <div className="home-support-copy">
-              <div className="home-support-label">How it works</div>
-              <h2>Here’s what happens next.</h2>
-              <p>Start with the kind of trip you want. TicoWild turns that feeling into one plan, then uses your route and dates to make it practical.</p>
-            </div>
-            <div className="home-steps" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
-              {STEPS.map(({ icon: Icon, number, title, body }) => (
-                <div className="home-step-line" key={number}>
-                  <div className="home-step-number"><Icon size={18} /><span>{number}</span></div>
-                  <h3>{title}</h3>
-                  <p>{body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-      </Section>
-
-      <Section className="home-band home-band-plan" bg={c.sand} pad={92}>
-        <Chapter number="02" label="See the whole trip" />
-        <div className="sample-plan">
-          <div className="sample-plan-grid" style={{ display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "clamp(36px,7vw,86px)", alignItems: "center" }}>
-            <Reveal>
-              <div className="sample-plan-story">
-                <span className="sample-plan-eyebrow" style={{ color: c.teal, fontWeight: 800, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase" }}>One plan, built around you</span>
-                <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.4vw,46px)", lineHeight: 1.05, letterSpacing: -1.4, margin: "10px 0 16px" }}>Three days that feel like a trip, not a checklist.</h2>
-                <p style={{ color: c.stone, lineHeight: 1.7, fontSize: 16, margin: "0 0 24px" }}>Instead of choosing isolated tours, you see how the days work together around your route, pace and actual dates.</p>
-                <Button variant="primary" size="lg" onClick={() => go("build")}><Sparkles size={17} />Build my version</Button>
-                <div className="home-story-images" aria-label="Costa Rica trip inspiration">
-                  {HOME_STORY_IMAGES.map((image, index) => image.activity && (
-                    <a
-                      key={image.activity.id}
-                      className="home-story-link"
-                      href={activityPath(image.activity)}
-                      aria-label={`View ${image.activity.title}`}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        viewActivity(image.activity.id);
-                      }}
-                    >
-                      <img src={image.src} alt={image.activity.title} loading={index === 0 ? "eager" : "lazy"} fetchpriority="low" decoding="async" />
-                      <span className="home-story-caption">{image.activity.title}<ArrowRight size={13} aria-hidden="true" /></span>
-                    </a>
-                  ))}
-                </div>
+              <div className="home-showcase-intro">
+                <p>Start with the feeling you want. We connect the coast, rainforest and wild days into one trip that makes sense.</p>
+                <button className="home-text-link" onClick={() => go("build")}>Shape my trip <ArrowRight size={17} /></button>
               </div>
-            </Reveal>
-            <div className="sample-plan-timeline">
-              {SAMPLE_DAYS.map(({ day, icon: Icon, label, title, note }, index) => (
-                <Reveal key={day} delay={index * 80}>
-                  <div className="sample-day">
-                    <span className="sample-day-icon"><Icon size={19} /></span>
-                    <div>
-                      <div>{day} · {label}</div>
-                      <h3>{title}</h3>
-                      <p>{note}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
             </div>
-          </div>
-        </div>
-      </Section>
+          </Reveal>
 
-      <Section className="home-band home-band-close" bg={c.canvas2} pad={88}>
-        <Chapter number="03" label="Confirm with confidence" />
-        <div className="home-final-grid">
-          <div className="home-final-copy">
-            <div style={{ display: "flex", alignItems: "center", gap: 10, color: c.teal, fontWeight: 800, marginBottom: 10 }}><ShieldCheck size={20} />Clear before you commit</div>
-            <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.5vw,48px)", lineHeight: 1.04, fontWeight: 800, letterSpacing: -1.3, margin: 0 }}>Your trip should feel exciting before you even land.</h2>
-            <p style={{ color: c.stone, fontSize: 17, lineHeight: 1.65, margin: "16px 0 0", maxWidth: 610 }}>Start with two quick choices. TicoWild shapes the days, then confirms availability, timing and the final price before you decide.</p>
-            <div className="home-final-proof">
-              {["Free to plan", "No payment in the planner", "Real details confirmed first"].map((item) => <span key={item}><Check size={15} />{item}</span>)}
-            </div>
-            <div className="mobile-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
-              <Button variant="primary" size="lg" onClick={() => go("build")}>Plan my Costa Rica days <ArrowRight size={18} /></Button>
-              <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask Rico</Button>
-            </div>
+          <div className="home-image-stage" aria-label="Costa Rica trip inspiration">
+            {HOME_STORY_IMAGES.map((image, index) => image.activity && (
+              <Reveal key={image.activity.id} delay={index * 70}>
+                <a
+                  className={`home-image-card home-image-card-${index + 1}`}
+                  href={activityPath(image.activity)}
+                  aria-label={`View ${image.activity.title}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    viewActivity(image.activity.id);
+                  }}
+                >
+                  <img src={image.src} alt={image.activity.title} loading={index === 0 ? "eager" : "lazy"} fetchpriority="low" decoding="async" />
+                  <span className="home-image-wash" />
+                  <span className="home-image-copy">
+                    <small>{index === 0 ? "Into the canopy" : index === 1 ? "Above the Pacific" : "Follow the river"}</small>
+                    <strong>{image.activity.title}</strong>
+                    <i><ArrowRight size={18} /></i>
+                  </span>
+                </a>
+              </Reveal>
+            ))}
           </div>
-          <div className="home-final-mark" aria-hidden="true"><Compass size={84} /></div>
         </div>
-      </Section>
+      </section>
+
+      <section className="home-concierge">
+        <div className="home-shell home-concierge-grid">
+          <Reveal>
+            <div className="home-concierge-copy">
+              <span className="home-kicker">The TicoWild difference</span>
+              <h2>You imagine the trip.<br />We make the days work.</h2>
+              <p>No giant catalog. No planning maze. Tell us what matters, and we’ll turn it into a practical Costa Rica plan with the real details checked.</p>
+              <Button variant="primary" size="lg" onClick={() => go("build")}><Sparkles size={17} />Start my plan</Button>
+            </div>
+          </Reveal>
+
+          <div className="home-promise-panel">
+            <span className="home-promise-label">What you get</span>
+            {PROMISES.map(({ icon: Icon, title, body }, index) => (
+              <Reveal key={title} delay={index * 70}>
+                <div className="home-promise-row">
+                  <span className="home-promise-icon"><Icon size={20} /></span>
+                  <div><h3>{title}</h3><p>{body}</p></div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="home-closing" style={{ "--home-close-image": `url(${HOME_CLOSE_IMAGE.src})` }}>
+        <div className="home-closing-wash" />
+        <div className="home-closing-content">
+          <Reveal>
+            <span className="home-kicker">Your Costa Rica starts here</span>
+            <h2>A trip this beautiful<br />should feel simple.</h2>
+            <p>Two quick choices are enough to begin. We’ll shape the rest around you.</p>
+            <Button variant="primary" size="lg" onClick={() => go("build")}>Plan my Costa Rica trip <ArrowRight size={18} /></Button>
+          </Reveal>
+        </div>
+      </section>
 
       <style>{`
-        .home-journey{position:relative;background:#081525;border-bottom:1px solid rgba(127,166,232,.18);padding:0 20px}
-        .home-journey-inner{max-width:1180px;margin:0 auto;min-height:108px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:22px}
-        .home-journey-step{display:flex;align-items:center;gap:14px;min-width:0}
-        .home-journey-step>span{width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:grid;place-items:center;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.26);color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.08em}
-        .home-journey-step div{display:grid;gap:3px;min-width:0}.home-journey-step strong{color:#fff;font-size:14px}.home-journey-step small{color:${c.stone};font-size:11.5px;line-height:1.35}
-        .home-journey-arrow{color:rgba(127,166,232,.45)}
-        .home-band{position:relative;isolation:isolate;border-bottom:1px solid rgba(127,166,232,.13)}
-        .home-band:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
-        .home-band-how:before{background:radial-gradient(55% 70% at 0% 35%,rgba(34,211,238,.08),transparent 70%)}
-        .home-band-plan:before{background:linear-gradient(180deg,rgba(255,255,255,.015),transparent 28%,rgba(34,211,238,.025))}
-        .home-band-close:before{background:radial-gradient(55% 90% at 100% 50%,rgba(34,211,238,.14),transparent 68%),radial-gradient(40% 65% at 0% 100%,rgba(255,208,0,.08),transparent 70%)}
-        .home-chapter{display:grid;grid-template-columns:auto minmax(34px,72px) auto;align-items:center;gap:12px;width:max-content;margin-bottom:34px;color:${c.stone};text-transform:uppercase;letter-spacing:.13em;font-size:10px;font-weight:900}
-        .home-chapter span{color:${c.teal}}.home-chapter i{height:1px;background:linear-gradient(90deg,${c.teal},rgba(34,211,238,.08))}.home-chapter strong{font:inherit;color:${c.stone}}
-        .home-step-line{padding:4px 20px 4px 0;border-right:1px solid rgba(127,166,232,.18)}.home-step-line:last-child{border-right:0}.home-step-number{display:flex;align-items:center;gap:10px;color:${c.teal}}.home-step-number span{font-size:11px;font-weight:900;letter-spacing:.1em}.home-step-line h3{color:#fff;font-size:17px;line-height:1.25;margin:18px 0 7px}.home-step-line p{color:${c.stone};font-size:13.5px;line-height:1.55;margin:0}
-        .home-support-label{color:${c.stone};font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase}.home-support-copy h2{color:#fff;font-size:clamp(26px,3vw,38px);line-height:1.08;letter-spacing:-1px;margin:9px 0 13px}.home-support-copy p{color:${c.stone};line-height:1.7;font-size:16px;margin:0}
-        .sample-plan{border-top:1px solid rgba(127,166,232,.18);border-bottom:1px solid rgba(127,166,232,.18);padding:clamp(32px,5vw,54px) 0}
-        .home-story-images{display:grid;grid-template-columns:1.35fr .85fr;grid-template-rows:repeat(2,86px);gap:8px;margin-top:26px}.home-story-link{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:${c.canvas2};text-decoration:none;cursor:pointer;isolation:isolate;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}.home-story-link:first-child{grid-row:1 / 3}.home-story-link img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}.home-story-link:hover{border-color:rgba(34,211,238,.55);box-shadow:0 12px 30px rgba(4,12,28,.32)}.home-story-link:hover img{transform:scale(1.045)}.home-story-link:active{transform:scale(.985)}.home-story-link:focus-visible{outline:3px solid ${c.teal};outline-offset:3px}.home-story-link:after{content:"";position:absolute;z-index:0;inset:38% 0 0;background:linear-gradient(transparent,rgba(5,15,33,.82));pointer-events:none}.home-story-caption{position:absolute;z-index:1;left:10px;right:10px;bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;font-size:10.5px;font-weight:800;line-height:1.18;text-shadow:0 1px 8px rgba(0,0,0,.7)}.home-story-caption svg{flex:0 0 auto;color:${c.teal}}
-        .sample-plan-timeline{position:relative}.sample-plan-timeline:before{content:"";position:absolute;left:21px;top:24px;bottom:24px;width:1px;background:linear-gradient(${c.teal},rgba(127,166,232,.18),${c.gold})}
-        .sample-day{position:relative;display:grid;grid-template-columns:44px 1fr;gap:18px;padding:18px 0}.sample-day+.sample-day{border-top:1px solid rgba(127,166,232,.12)}.sample-day-icon{position:relative;z-index:1;width:42px;height:42px;border-radius:50%;background:${c.canvas2};border:1px solid rgba(34,211,238,.35);color:${c.teal};display:grid;place-items:center}.sample-day>div>div{color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.sample-day h3{color:#fff;font-size:17px;margin:4px 0}.sample-day p{color:${c.stone};font-size:13px;line-height:1.5;margin:0}
-        .home-final-grid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:clamp(36px,7vw,96px);align-items:center}.home-final-proof{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:22px;color:${c.stone};font-size:13.5px}.home-final-proof span{display:inline-flex;align-items:center;gap:7px}.home-final-proof svg{color:${c.teal}}.home-final-mark{width:240px;height:240px;border-radius:50%;display:grid;place-items:center;color:#fff;background:radial-gradient(circle at 35% 30%,rgba(255,208,0,.85),rgba(34,211,238,.48) 44%,rgba(11,26,46,.18) 72%);box-shadow:0 40px 100px -42px rgba(34,211,238,.9)}
-        @media(max-width:980px){.home-intro,.sample-plan-grid,.home-final-grid{grid-template-columns:1fr!important}.home-journey-inner{gap:12px}.home-journey-step small{display:none}.home-final-mark{display:none}}
-        @media(max-width:720px){.home-journey{padding:0 16px}.home-journey-inner{min-height:78px;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px}.home-journey-step{display:grid;justify-items:center;text-align:center;gap:5px}.home-journey-step>span{width:28px;height:28px;flex-basis:28px;border-radius:9px}.home-journey-step strong{font-size:10.5px;line-height:1.15}.home-journey-arrow{width:12px}.home-band-how{display:none}.home-band-how .home-chapter{display:none}.home-band-plan{padding-top:0!important;padding-bottom:50px!important}.home-band-plan .home-chapter{display:none}.sample-plan{border:0;padding:0}.sample-plan-grid{gap:28px!important}.sample-plan-story{display:grid}.sample-plan-eyebrow{order:2;margin-top:23px}.sample-plan-story h2{order:3;font-size:29px!important;line-height:1.08!important;letter-spacing:-.8px!important;margin:8px 0 11px!important}.sample-plan-story>p{order:4;font-size:14.5px!important;line-height:1.58!important;margin:0 0 18px!important}.sample-plan-story>.tico-button{order:5;width:100%;justify-content:center}.home-story-images{order:1;display:block;margin:0 calc(var(--mobile-gutter) * -1);height:clamp(250px,72vw,330px)}.home-story-link{display:none}.home-story-link:first-child{display:block;height:100%;border:0;border-radius:0}.home-story-link:first-child:after{inset:24% 0 0;background:linear-gradient(transparent,rgba(5,15,33,.88))}.home-story-caption{left:18px;right:18px;bottom:16px;font-size:13px}.sample-plan-timeline{padding:2px 0}.sample-plan-timeline:before{left:19px}.sample-day{grid-template-columns:38px 1fr;gap:13px;padding:13px 0}.sample-day-icon{width:38px;height:38px}.sample-day h3{font-size:15.5px;margin:3px 0}.sample-day p{display:none}.home-band-close{padding-top:52px!important;padding-bottom:78px!important}.home-band-close .home-chapter{display:none}.home-final-copy>p{display:none}.home-final-copy h2{font-size:29px!important;line-height:1.08!important}.home-final-proof{display:flex;gap:8px 14px;margin-top:18px;font-size:12.5px}.home-final-proof span:first-child{display:none}.home-band-close .mobile-cta-row{margin-top:22px!important}.home-band-close .mobile-cta-row>.tico-button:last-child{display:none!important}}
+        .home-shell{width:min(1240px,calc(100% - 48px));margin:0 auto}
+        .home-kicker{display:inline-flex;align-items:center;gap:9px;color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+        .home-kicker:before{content:"";width:26px;height:1px;background:${c.teal}}
+
+        .home-showcase{position:relative;padding:112px 0 118px;background:#071524;overflow:hidden}
+        .home-showcase:before{content:"";position:absolute;width:620px;height:620px;right:-280px;top:-260px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.12),transparent 68%);pointer-events:none}
+        .home-showcase-head{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.65fr);gap:clamp(52px,10vw,150px);align-items:end;margin-bottom:54px}
+        .home-showcase h2{margin:15px 0 0;color:#fff;font-size:clamp(50px,6.2vw,86px);font-weight:830;letter-spacing:-.055em;line-height:.91}
+        .home-showcase h2 em{font:inherit;color:${c.gold};font-style:normal}
+        .home-showcase-intro{padding-bottom:5px}
+        .home-showcase-intro p{margin:0;color:rgba(225,235,250,.72);font-size:17px;line-height:1.7;max-width:500px}
+        .home-text-link{display:inline-flex;align-items:center;gap:9px;margin-top:22px;padding:0;border:0;background:transparent;color:#fff;font:inherit;font-size:14px;font-weight:850;cursor:pointer}
+        .home-text-link svg{color:${c.gold};transition:transform .2s ease}.home-text-link:hover svg{transform:translateX(4px)}
+
+        .home-image-stage{display:grid;grid-template-columns:1.45fr .72fr;grid-template-rows:repeat(2,260px);gap:14px}
+        .home-image-stage>div:nth-child(1){grid-column:1;grid-row:1 / 3}
+        .home-image-stage>div:nth-child(2){grid-column:2;grid-row:1}
+        .home-image-stage>div:nth-child(3){grid-column:2;grid-row:2}
+        .home-image-stage>div{min-width:0;min-height:0}
+        .home-image-card{position:relative;display:block;width:100%;height:100%;overflow:hidden;border-radius:24px;border:1px solid rgba(255,255,255,.13);background:${c.canvas2};isolation:isolate;text-decoration:none;box-shadow:0 28px 80px -44px rgba(0,0,0,.9)}
+        .home-image-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .4s ease}
+        .home-image-card:hover img{transform:scale(1.045);filter:saturate(1.08)}
+        .home-image-card:focus-visible{outline:3px solid ${c.teal};outline-offset:4px}
+        .home-image-wash{position:absolute;inset:28% 0 0;background:linear-gradient(transparent,rgba(3,10,20,.9));pointer-events:none}
+        .home-image-copy{position:absolute;z-index:2;left:28px;right:24px;bottom:25px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:4px 20px;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.7)}
+        .home-image-copy small{grid-column:1;color:${c.teal};font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+        .home-image-copy strong{font-size:clamp(18px,2.2vw,30px);line-height:1.08;letter-spacing:-.035em}
+        .home-image-copy i{grid-column:2;grid-row:1 / 3;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(12px);color:#fff;font-style:normal}
+        .home-image-card-2 .home-image-copy,.home-image-card-3 .home-image-copy{left:20px;right:18px;bottom:18px}.home-image-card-2 .home-image-copy strong,.home-image-card-3 .home-image-copy strong{font-size:19px}
+
+        .home-concierge{position:relative;padding:126px 0;background:${c.sand};overflow:hidden;border-top:1px solid rgba(127,166,232,.12);border-bottom:1px solid rgba(127,166,232,.12)}
+        .home-concierge:after{content:"";position:absolute;width:520px;height:520px;left:-300px;bottom:-330px;border-radius:50%;border:1px solid rgba(34,211,238,.18);box-shadow:0 0 0 90px rgba(34,211,238,.025),0 0 0 180px rgba(34,211,238,.018);pointer-events:none}
+        .home-concierge-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(460px,1fr);gap:clamp(70px,10vw,150px);align-items:center}
+        .home-concierge-copy h2{margin:18px 0 22px;color:#fff;font-size:clamp(42px,5.1vw,68px);font-weight:830;letter-spacing:-.052em;line-height:.98}
+        .home-concierge-copy>p{margin:0 0 31px;color:${c.stone};font-size:17px;line-height:1.72;max-width:590px}
+        .home-promise-panel{position:relative;padding:19px 34px 12px;border:1px solid rgba(127,166,232,.18);border-radius:28px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(9,24,43,.72));box-shadow:0 36px 100px -58px rgba(0,0,0,.9);backdrop-filter:blur(18px)}
+        .home-promise-label{display:block;padding:5px 0 12px;color:${c.gold};font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+        .home-promise-row{display:grid;grid-template-columns:50px 1fr;gap:18px;align-items:start;padding:24px 0;border-top:1px solid rgba(127,166,232,.14)}
+        .home-promise-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:${c.teal};background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.2)}
+        .home-promise-row h3{margin:1px 0 6px;color:#fff;font-size:18px;letter-spacing:-.02em}.home-promise-row p{margin:0;color:${c.stone};font-size:13.5px;line-height:1.58}
+
+        .home-closing{position:relative;min-height:570px;display:grid;place-items:center;overflow:hidden;background-image:var(--home-close-image);background-size:cover;background-position:center 56%;isolation:isolate}
+        .home-closing:before{content:"";position:absolute;inset:0;z-index:-1;background:inherit;background-size:cover;background-position:center 56%;transform:scale(1.02)}
+        .home-closing-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,16,31,.93) 0%,rgba(5,16,31,.75) 46%,rgba(5,16,31,.2) 100%),linear-gradient(0deg,rgba(5,16,31,.5),transparent 45%)}
+        .home-closing-content{position:relative;z-index:1;width:min(1240px,calc(100% - 48px));margin:0 auto;padding:92px 0}
+        .home-closing-content h2{margin:16px 0 18px;color:#fff;font-size:clamp(48px,6vw,80px);font-weight:830;letter-spacing:-.055em;line-height:.94;max-width:820px}
+        .home-closing-content p{margin:0 0 30px;color:rgba(239,245,255,.8);font-size:18px;line-height:1.65;max-width:560px}
+
+        @media(max-width:900px){
+          .home-showcase{padding:82px 0 86px}.home-showcase-head{grid-template-columns:1fr;gap:26px;margin-bottom:38px}.home-showcase-intro{max-width:600px}
+          .home-image-stage{grid-template-columns:1.2fr .8fr;grid-template-rows:repeat(2,210px)}
+          .home-concierge{padding:88px 0}.home-concierge-grid{grid-template-columns:1fr;gap:52px}.home-promise-panel{max-width:680px}
+        }
+        @media(max-width:620px){
+          .home-shell,.home-closing-content{width:calc(100% - 36px)}
+          .home-showcase{padding:64px 0 72px}.home-showcase h2{font-size:clamp(43px,13vw,58px);line-height:.94}.home-showcase-head{margin-bottom:30px}.home-showcase-intro p{font-size:15px;line-height:1.6}.home-text-link{margin-top:18px}
+          .home-image-stage{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:320px 148px;gap:9px;margin-inline:-18px}
+          .home-image-stage>div:nth-child(1){grid-column:1 / 3;grid-row:1}.home-image-stage>div:nth-child(2){grid-column:1;grid-row:2}.home-image-stage>div:nth-child(3){grid-column:2;grid-row:2}.home-image-card{border-radius:0;border-left:0;border-right:0}.home-image-stage>div:nth-child(2) .home-image-card{border-radius:0 14px 14px 0}.home-image-stage>div:nth-child(3) .home-image-card{border-radius:14px 0 0 14px}
+          .home-image-copy{left:18px;right:16px;bottom:18px}.home-image-copy strong{font-size:23px}.home-image-copy i{width:38px;height:38px}.home-image-card-2 .home-image-copy,.home-image-card-3 .home-image-copy{left:12px;right:10px;bottom:11px}.home-image-card-2 .home-image-copy small,.home-image-card-3 .home-image-copy small{display:none}.home-image-card-2 .home-image-copy strong,.home-image-card-3 .home-image-copy strong{font-size:12.5px}.home-image-card-2 .home-image-copy i,.home-image-card-3 .home-image-copy i{display:none}
+          .home-concierge{padding:74px 0}.home-concierge-grid{gap:38px}.home-concierge-copy h2{font-size:clamp(36px,10.7vw,46px);line-height:1}.home-concierge-copy>p{font-size:15px;line-height:1.62;margin-bottom:26px}.home-concierge-copy .tico-button{width:100%}
+          .home-promise-panel{margin:0 -4px;padding:16px 20px 8px;border-radius:22px}.home-promise-row{grid-template-columns:42px 1fr;gap:13px;padding:19px 0}.home-promise-icon{width:40px;height:40px;border-radius:13px}.home-promise-row h3{font-size:16px}.home-promise-row p{font-size:12.5px;line-height:1.5}
+          .home-closing{min-height:500px;background-position:66% center}.home-closing:before{background-position:66% center}.home-closing-wash{background:linear-gradient(90deg,rgba(5,16,31,.94),rgba(5,16,31,.66)),linear-gradient(0deg,rgba(5,16,31,.55),transparent)}.home-closing-content{padding:74px 0}.home-closing-content h2{font-size:clamp(42px,12vw,54px);line-height:.98}.home-closing-content p{font-size:15.5px}.home-closing-content .tico-button{width:100%}
+        }
       `}</style>
     </>
   );
