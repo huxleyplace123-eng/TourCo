@@ -109,10 +109,15 @@ export function CinematicHero({ go, onSearch }) {
         .tn-hero-search button:hover { transform:scale(1.05);box-shadow:0 16px 36px -12px rgba(255,208,0,1); }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
         @media (min-width: 980px){
-          .tn-hero-content { padding: 74px 28px 92px !important; }
+          .tn-hero-content { padding: 58px 28px 72px !important; }
+          .tn-hero .tn-h1 { font-size: clamp(48px,4.7vw,68px) !important; }
+          .tn-hero-desktop-copy { font-size: 16px !important; margin-top: 24px !important; }
+          .tn-hero-search { width: min(720px,100%); margin-top: 24px; }
+          .tn-hero-trust { margin-top: 19px !important; }
         }
         @media (min-width: 821px) and (max-width: 979px){
-          .tn-hero-content { padding: 64px 28px 84px !important; gap: 44px !important; }
+          .tn-hero-content { padding: 52px 28px 68px !important; gap: 36px !important; }
+          .tn-hero .tn-h1 { font-size: clamp(46px,6.1vw,60px) !important; }
         }
         /* ── Mobile hero polish ── hide the desktop sun/bird blob, preserve
            readable line lengths, and give the stacked layout room to breathe. */

@@ -338,9 +338,9 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-marquee-pill{display:inline-flex;align-items:center;gap:7px;flex-shrink:0;background:rgba(11,26,46,.58);backdrop-filter:blur(9px);border:1px solid rgba(255,255,255,.13);color:#fff;font-weight:750;font-size:12.5px;padding:8px 13px;border-radius:999px}
         .activity-mosaic-heading{max-width:700px;margin-bottom:30px}
         .activity-mosaic-label{color:${c.stone};font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
-        .activity-mosaic-heading h2{color:#fff;font-size:clamp(26px,3vw,38px);line-height:1.1;letter-spacing:-.9px;margin:7px 0 0;text-wrap:balance}
-        .activity-mosaic-heading p{color:${c.stone};font-size:16px;line-height:1.65;margin:14px 0 0;max-width:680px}
-        .activity-worlds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:320px;gap:20px}
+        .activity-mosaic-heading h2{color:#fff;font-size:clamp(25px,2.55vw,32px);line-height:1.1;letter-spacing:-.8px;margin:7px 0 0;text-wrap:balance}
+        .activity-mosaic-heading p{color:${c.stone};font-size:15px;line-height:1.62;margin:12px 0 0;max-width:650px}
+        .activity-worlds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:270px;gap:18px}
         .activity-world-card{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:26px;padding:0;cursor:pointer;text-align:left;background:${c.white};color:#fff;isolation:isolate;box-shadow:0 28px 70px -34px rgba(0,0,0,.85);transition:transform .3s cubic-bezier(.2,.75,.2,1),border-color .3s ease,box-shadow .3s ease}
         .activity-world-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.75,.2,1)}
         .activity-world-wash{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,12,28,.12),rgba(5,15,33,.35) 38%,rgba(5,15,33,.96));z-index:1}
@@ -350,7 +350,7 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-world-number{font-size:11px;font-weight:900;letter-spacing:1.4px;color:rgba(255,255,255,.76)}
         .activity-world-copy{position:absolute;z-index:2;left:22px;right:22px;bottom:20px;display:flex;flex-direction:column;align-items:flex-start}
         .activity-world-kicker{color:var(--collection-accent);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
-        .activity-world-copy strong{font-size:clamp(23px,3vw,36px);letter-spacing:-1px;line-height:1.04;margin-top:5px;text-wrap:balance}
+        .activity-world-copy strong{font-size:clamp(22px,2.4vw,30px);letter-spacing:-.8px;line-height:1.04;margin-top:5px;text-wrap:balance}
         .activity-world-copy>span:nth-of-type(2){color:rgba(243,247,255,.75);font-size:13.5px;line-height:1.48;max-width:540px;margin-top:8px}
         .activity-world-cta{display:inline-flex;align-items:center;gap:6px;color:#fff!important;font-weight:850!important;font-size:12.5px!important;margin-top:13px!important}
         .activity-world-card:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--collection-accent) 56%,transparent);box-shadow:0 34px 90px -34px rgba(0,0,0,.95)}
@@ -379,7 +379,7 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-collection-mark{width:58px;height:58px;border-radius:19px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--collection-accent);background:color-mix(in srgb,var(--collection-accent) 10%,rgba(19,41,74,.9));border:1px solid color-mix(in srgb,var(--collection-accent) 35%,transparent)}
         .activity-collection-mark span{font-size:9.5px;font-weight:900;letter-spacing:1px;color:${c.stone}}
         .activity-collection-eyebrow{color:var(--collection-accent);font-size:11.5px;text-transform:uppercase;letter-spacing:1.05px;font-weight:900}
-        .activity-collection-heading h2{color:#fff;font-size:clamp(29px,4vw,46px);line-height:1.03;letter-spacing:-1.3px;margin:6px 0 0;text-wrap:balance}
+        .activity-collection-heading h2{color:#fff;font-size:clamp(27px,3.25vw,38px);line-height:1.04;letter-spacing:-1.05px;margin:6px 0 0;text-wrap:balance}
         .activity-collection-heading p{color:${c.stone};font-size:15px;line-height:1.6;margin:9px 0 0;max-width:660px}
         .activity-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
         .activity-empty{max-width:720px;margin:64px auto 10px;padding:62px 28px;text-align:center;border:1px solid ${c.line};border-radius:28px;background:rgba(255,255,255,.035)}

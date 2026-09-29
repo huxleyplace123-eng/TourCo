@@ -12,10 +12,33 @@
    their own imagery and composition, while the title proportions remain part
    of the same TicoWild visual system. */
 .tico-page-title {
-  font-size: clamp(54px, 5.8vw, 82px) !important;
-  line-height: .97 !important;
-  letter-spacing: -.055em !important;
+  font-size: clamp(44px, 4.7vw, 66px) !important;
+  line-height: .99 !important;
+  letter-spacing: -.048em !important;
   text-wrap: balance;
+}
+
+/* Desktop is intentionally a little quieter than the original cinematic
+   treatment. The imagery still feels immersive, but the page now reads like
+   a premium travel product instead of an oversized presentation. */
+@media (min-width: 821px) {
+  .tn-hero { min-height: 570px !important; }
+  .page-hero { min-height: 340px !important; }
+  .guide-hero { min-height: 340px !important; }
+  .map-hero { min-height: 360px !important; }
+  .build-hero { min-height: 380px !important; }
+  .trips-hero { min-height: 290px !important; }
+  .insider-hero { min-height: 460px !important; }
+  .meet-tico-hero { min-height: min(72vh, 630px) !important; }
+
+  .tn-activity-browse-card.is-featured,
+  .tn-activity-browse-card.is-featured .tn-activity-browse-card__media {
+    min-height: 350px !important;
+  }
+
+  .tn-activity-browse-card.is-featured .tn-activity-browse-card__heading {
+    font-size: clamp(25px, 2.55vw, 35px) !important;
+  }
 }
 
 .tico-eyebrow {
