@@ -38,8 +38,9 @@ assert.match(home, /Your trip should feel exciting before you even land/);
 
 const hero = read("src/components/CinematicHero.jsx");
 assert.equal(hero.includes("Where are you staying?"), false, "the homepage must earn the planning ask before requesting a city");
-assert.match(hero, /Start with the trip you want/);
-assert.match(hero, /No city, dates or signup required to begin/);
+assert.equal(hero.includes("tn-hero-plan"), false, "the homepage hero must not repeat its message in a second planning panel");
+assert.match(hero, /See how it comes together/);
+assert.match(hero, /Browse activities/);
 
 const builder = read("src/pages/Build.jsx");
 assert.match(builder, /The feeling/);
