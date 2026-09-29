@@ -28,7 +28,7 @@ assert.equal(home.includes("home-feeling-wrap"), false, "homepage must not inser
 assert.equal(/0[1-4] ·/.test(home), false, "homepage sections must not use a forced numbered chapter system");
 assert.match(home, /Popular Costa Rica/);
 assert.match(home, /Explore activities/);
-assert.match(home, /Build your Costa Rica/);
+assert.match(home, /Plan your Costa Rica/);
 assert.equal(home.includes("FEATURED_IDS"), false, "homepage must not repeat a disconnected featured catalog before the visual story");
 assert.equal(home.includes("home-featured-track"), false, "homepage must not duplicate activity discovery in a second rail");
 assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage story scenes need real destinations");
