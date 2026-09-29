@@ -46,8 +46,6 @@ export function CinematicHero({ go }) {
   // Scroll-scrub: image scales up + fades as you scroll past the hero.
   const scrub = Math.min(1, scrollY / 700);
 
-  const showHow = () => document.querySelector(window.matchMedia("(max-width: 720px)").matches ? ".home-band-plan" : ".home-band-how")?.scrollIntoView({ behavior: "smooth", block: "start" });
-
   return (
     <div
       ref={wrapRef}
@@ -181,21 +179,21 @@ export function CinematicHero({ go }) {
         <div className="tn-hero-copy" style={{ transform: `translateY(${scrollY * -0.08}px)`, opacity: 1 - scrub * 0.6 }}>
           <span className="rise" style={{ display: "inline-flex", alignItems: "center", gap: 8, ...glass, color: "#fff", fontWeight: 600, fontSize: 12.5, padding: "8px 15px", borderRadius: 999, letterSpacing: 0.2 }}>
             <span style={{ width: 7, height: 7, borderRadius: 999, background: g.accent, boxShadow: `0 0 12px ${g.accent}` }} />
-            {g.label} · curated Costa Rica, without the guesswork
+            {g.label} · Costa Rica, planned with care
           </span>
           <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,4.2vw,62px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: "clamp(-1.8px,-.13vw,-1.1px)", margin: "28px 0 0", animationDelay: ".08s", textWrap: "balance" }}>
-            <span className="tn-hero-title-line">We don't list <span className="tn-title-keep">every tour.</span></span>
+            <span className="tn-hero-title-line">Costa Rica,</span>
             <span className="tn-hero-accent-line">
-              <span className="tn-hero-accent-lead" style={{ color: "#fff", textShadow: "0 8px 30px rgba(0,0,0,.35)" }}>We find the</span>
-              <span className="tn-hero-accent-finish" style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.2)" }}>right one.</span>
+              <span className="tn-hero-accent-lead" style={{ color: "#fff", textShadow: "0 8px 30px rgba(0,0,0,.35)" }}>made</span>
+              <span className="tn-hero-accent-finish" style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.2)" }}>simple.</span>
               <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 2, borderRadius: 999, background: c.teal, boxShadow: "0 0 18px rgba(34,211,238,.24)", opacity: 0.72 }} />
             </span>
           </h1>
           <p className="rise tn-hero-desktop-copy" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
-            Costa Rica is full of good options. TicoWild helps you turn them into one trip that feels like yours, flows naturally and is clear before you commit.
+            Tell us how you want the trip to feel. We’ll shape the days around your route and confirm the real details before you decide.
           </p>
           <p className="rise tn-hero-mobile-copy" style={{ color: "rgba(243,247,255,.82)", animationDelay: ".16s" }}>
-            Tell us the trip you want. We’ll shape the days and confirm the real details.
+            Tell us how you want it to feel. We’ll shape the days and confirm the real details.
           </p>
 
           {/* refined trust row */}
@@ -208,7 +206,7 @@ export function CinematicHero({ go }) {
           </div>
 
           <div className="rise tn-hero-actions" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28, animationDelay: ".24s" }}>
-            <Magnetic><Button variant="primary" size="lg" onClick={showHow}>See how it comes together <ArrowRight size={18} /></Button></Magnetic>
+            <Magnetic><Button variant="primary" size="lg" onClick={() => go("build")}>Start my trip <ArrowRight size={18} /></Button></Magnetic>
             <Magnetic strength={0.25}><Button variant="glass" size="lg" onClick={() => go("activities")}>Browse activities</Button></Magnetic>
           </div>
 
