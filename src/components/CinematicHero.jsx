@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowRight, ChevronDown, Compass, Heart, ShieldCheck, Sparkles, Route } from "lucide-react";
-import { c, grad, glass, gradText } from "../theme.js";
+import { ArrowRight, ChevronDown, Heart, ShieldCheck, Sparkles, Route } from "lucide-react";
+import { c, glass, gradText } from "../theme.js";
 import { themedSlides } from "../images.js";
 import { Button } from "./ui.jsx";
 import { Magnetic } from "../motion.jsx";
@@ -46,7 +46,7 @@ export function CinematicHero({ go }) {
   // Scroll-scrub: image scales up + fades as you scroll past the hero.
   const scrub = Math.min(1, scrollY / 700);
 
-  const showHow = () => document.querySelector(".home-band-how")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const showHow = () => document.querySelector(window.matchMedia("(max-width: 720px)").matches ? ".home-band-plan" : ".home-band-how")?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
     <div
@@ -69,7 +69,8 @@ export function CinematicHero({ go }) {
         .tn-hero-content { max-width: 1280px !important; }
         .tn-hero-content > * { min-width: 0; }
         .tn-hero-copy { max-width: 780px; }
-        .tn-hero-plan { width: 100%; max-width: 680px; box-sizing: border-box; }
+        .tn-hero-plan { position:relative; overflow:hidden; width:100%; max-width:680px; min-height:330px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-end; }
+        .tn-plan-art{position:absolute;inset:0 0 auto;height:155px;pointer-events:none}.tn-plan-art svg{width:100%;height:100%;display:block;overflow:visible}.tn-plan-copy{position:relative;z-index:2}
         .tn-hero-plan-grid,
         .tn-hero-plan-grid > * { min-width: 0; }
         .tn-hero-title-line { display: block; }
@@ -94,10 +95,14 @@ export function CinematicHero({ go }) {
         @media (max-width: 820px){
           .tn-hero { min-height: auto !important; }
           .tn-hero-scene { display: none !important; }
-          .tn-hero-content { padding: 60px clamp(24px,5vw,40px) 96px !important; gap: 36px !important; }
+          .tn-hero-content { padding: 60px clamp(24px,5vw,40px) 78px !important; gap: 24px !important; }
+          .tn-hero-plan { min-height:0!important; animation:none!important; padding:17px!important; border-radius:20px!important; }
+          .tn-plan-art{display:none!important}
+          .tn-hero-plan h2 { font-size: 18px !important; }
+          .tn-hero-reassurance { display: none !important; }
         }
         @media (max-width: 520px){
-          .tn-hero-content { padding: 48px 24px 84px !important; gap: 32px !important; }
+          .tn-hero-content { padding: 44px 24px 70px !important; gap: 22px !important; }
           .tn-hero .tn-h1 {
             font-size: clamp(34px,9vw,36px) !important;
             line-height: 1.1 !important;
@@ -190,25 +195,29 @@ export function CinematicHero({ go }) {
 
         </div>
 
-        {/* Value preview — earn the planning ask before showing a form. */}
-        <div className="rise tn-hero-plan" style={{ ...glass, background: "rgba(14,21,38,.72)", borderRadius: 26, padding: 24, boxShadow: "0 50px 100px -34px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.08)", alignSelf: "start", animation: "tnFloat 7s ease-in-out infinite", animationDelay: ".3s", transform: `translate(${mouse.x * -10}px, ${mouse.y * -8}px)` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <Heart size={20} color={c.gold} />
-            <span style={{ fontWeight: 800, color: c.charcoal, fontSize: 18 }}>Start with the trip you want</span>
+        {/* One clear next step. The hero already explains the rest. */}
+        <div className="rise tn-hero-plan" style={{ ...glass, background: "linear-gradient(155deg,rgba(16,37,64,.94),rgba(7,18,36,.9))", borderRadius: 28, padding: 28, boxShadow: "0 44px 100px -35px rgba(0,0,0,.95),inset 0 1px rgba(255,255,255,.08),0 0 0 1px rgba(62,211,235,.12)", alignSelf: "center", animation: "tnFloat 7s ease-in-out infinite", animationDelay: ".3s", transform: `translate(${mouse.x * -10}px, ${mouse.y * -8}px)` }}>
+          <div className="tn-plan-art" aria-hidden="true">
+            <div style={{ position: "absolute", width: 120, height: 120, borderRadius: 999, right: -16, top: -24, background: "radial-gradient(circle,rgba(255,208,0,.3),rgba(34,211,238,.08) 48%,transparent 72%)", filter: "blur(2px)" }} />
+            <svg viewBox="0 0 400 155" preserveAspectRatio="none">
+              <defs><linearGradient id="tnPlanRoute" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor={c.teal} /><stop offset="1" stopColor={c.gold} /></linearGradient></defs>
+              <path d="M-20 126 C55 94 90 130 145 82 S246 96 305 46 S375 68 430 25" fill="none" stroke="rgba(127,166,232,.12)" strokeWidth="18" />
+              <path d="M-20 126 C55 94 90 130 145 82 S246 96 305 46 S375 68 430 25" fill="none" stroke="url(#tnPlanRoute)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="2 8" />
+              {[[72,108],[145,82],[232,82],[305,46],[373,50]].map(([x,y],index)=><g key={x}><circle cx={x} cy={y} r={index===3?7:5} fill={index===3?c.gold:c.teal} stroke="#0a1d35" strokeWidth="3"/><circle cx={x} cy={y} r={index===3?13:10} fill="none" stroke={index===3?"rgba(255,208,0,.28)":"rgba(34,211,238,.2)"} strokeWidth="1"/></g>)}
+            </svg>
           </div>
-          <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.55, margin: "0 0 18px" }}>We begin with how you want Costa Rica to feel. Your route and dates come after there is a reason to ask.</p>
-          {[
-            [Heart, "Choose the feeling", "Adventure, wildlife, water or an easy pace"],
-            [Route, "See the days take shape", "Experiences arranged around a trip that flows"],
-            [Compass, "Add your route when it matters", "Then we tailor the plan to where and when"],
-          ].map(([Icon, title, body], index) => (
-            <div key={title} className="tn-hero-preview-step" style={{ display: "grid", gridTemplateColumns: "38px 1fr", gap: 12, padding: "13px 0", borderTop: index ? `1px solid ${c.line}` : "none" }}>
-              <span style={{ width: 36, height: 36, borderRadius: 12, display: "grid", placeItems: "center", color: index === 2 ? c.gold : c.teal, background: index === 2 ? "rgba(255,208,0,.11)" : "rgba(34,211,238,.1)" }}><Icon size={17} /></span>
-              <div><strong style={{ display: "block", color: "#fff", fontSize: 14 }}>{title}</strong><span style={{ display: "block", color: c.stone, fontSize: 12.5, lineHeight: 1.45, marginTop: 3 }}>{body}</span></div>
+          <div className="tn-plan-copy">
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+              <span style={{ width: 40, height: 40, flex: "0 0 40px", borderRadius: 14, display: "grid", placeItems: "center", color: c.gold, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.26)" }}><Heart size={18} /></span>
+              <div>
+                <span style={{ color: c.teal, fontSize: 10.5, fontWeight: 900, letterSpacing: ".11em", textTransform: "uppercase" }}>Start with the trip you want</span>
+                <h2 style={{ color: "#fff", fontSize: 22, lineHeight: 1.14, letterSpacing: -.45, margin: "4px 0 5px" }}>What kind of trip feels like you?</h2>
+                <p style={{ color: c.stone, fontSize: 13, lineHeight: 1.45, margin: 0 }}>Two quick choices. Rico shapes the first draft.</p>
+              </div>
             </div>
-          ))}
-          <Button variant="dark" full size="lg" onClick={() => go("build")} style={{ marginTop: 14 }}>Find my kind of trip <ArrowRight size={18} /></Button>
-          <p style={{ textAlign: "center", color: c.stone, fontSize: 12, marginTop: 12 }}>No city, dates or signup required to begin</p>
+            <Button variant="dark" full size="lg" onClick={() => go("build")} style={{ marginTop: 18 }}>Find my kind of trip <ArrowRight size={18} /></Button>
+            <p className="tn-hero-reassurance" style={{ textAlign: "center", color: c.stone, fontSize: 11.5, margin: "10px 0 0" }}>No city, dates or signup required to begin</p>
+          </div>
         </div>
       </div>
 
