@@ -47,6 +47,9 @@ assert.match(builder, /The shape/);
 assert.match(builder, /Final touches/);
 assert.ok(builder.indexOf("What should this trip feel like?") < builder.indexOf("Where does this trip take shape?"), "the planning flow must ask about the desired experience before route logistics");
 assert.match(builder, /result\.brief\?\.month/, "the planner must not invent a travel month when dates are blank");
+assert.match(builder, /Want us to confirm this trip\?/, "the completed planner must visibly ask for contact information");
+assert.match(builder, /Send my plan to TicoWild/, "the completed planner needs a direct CRM handoff");
+assert.match(builder, /deliverInquiry/, "the completed planner contact form must use the live inquiry pipeline");
 
 const fullDayPlan = planTrip([activities.find((activity) => activity.id === "a15"), activities.find((activity) => activity.id === "a8")], { maxPerDay: 2, pax: 2 });
 assert.equal(fullDayPlan.days.length, 2, "a full-day experience must never be stacked with another activity");

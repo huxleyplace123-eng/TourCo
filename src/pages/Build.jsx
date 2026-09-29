@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Sparkles, Heart, Users, Calendar, Car, Mountain, Waves, RotateCcw, Plus, MessageCircle, ArrowDown, ArrowUp, ArrowRight, ChevronLeft, MapPinned, Trash2 } from "lucide-react";
+import { Sparkles, Heart, Users, Calendar, Car, Mountain, Waves, RotateCcw, Plus, MessageCircle, ArrowDown, ArrowUp, ArrowRight, ChevronLeft, MapPinned, Trash2, Send, Check } from "lucide-react";
 import { c, grad, glass } from "../theme.js";
 import { Section, Button, Field, Select } from "../components/ui.jsx";
 import { BuildHero } from "../components/BuildHero.jsx";
@@ -7,6 +7,7 @@ import { SmartPlan } from "../components/SmartPlan.jsx";
 import { buildMyCostaRica } from "../intelligence/index.js";
 import { Reveal } from "../motion.jsx";
 import { useConversion } from "../components/ConversionCenter.jsx";
+import { deliverInquiry } from "../conversion.js";
 
 const REGIONS = ["San José", "La Fortuna", "Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste", "Not sure yet"];
 const DAY_MS = 86_400_000;
@@ -71,7 +72,68 @@ function solIntro(form, result) {
   if (form.youngKids) bits.push("everything's paced and safe for the little ones");
   if (form.fears.length) bits.push(`and I steered clear of ${form.fears.join(" & ")}`);
   const tail = bits.length ? ` — ${bits.join(", ")}.` : ".";
-  return `I sequenced each day using TicoWild's route and timing model${tail} Save it to your trip and TicoWild will confirm the current timing, conditions, operator and availability.`;
+  return `I sequenced each day using TicoWild's route and timing model${tail} Enter your contact details below and TicoWild will confirm the current timing, conditions, operator and availability.`;
+}
+
+const contactInput = { width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,.07)", border: `1.5px solid ${c.line}`, borderRadius: 12, color: "#fff", padding: "12px 13px", fontSize: 14, outline: "none" };
+
+function PlanContactCard({ plannerForm, result }) {
+  const [contact, setContact] = useState({ name: "", email: "", phone: "", notes: "", website: "" });
+  const [status, setStatus] = useState("editing");
+  const [fallbackHref, setFallbackHref] = useState("");
+  const setContactField = (key) => (event) => setContact((current) => ({ ...current, [key]: event.target.value }));
+
+  const submit = async (event) => {
+    event.preventDefault();
+    if (contact.website) return setStatus("sent");
+    setStatus("sending");
+    const activities = result.plan.days.flatMap((day) => day.activities);
+    const response = await deliverInquiry({
+      ...contact,
+      intent: "planning",
+      destination: plannerForm.stops.map((stop) => stop.region).join(", "),
+      arrival: plannerForm.arrival,
+      departure: plannerForm.departure,
+      travelers: plannerForm.pax,
+      activity_ids: activities.map((activity) => activity.id),
+      activity_titles: activities.map((activity) => activity.title),
+    });
+    if (response.delivered) setStatus("sent");
+    else {
+      setFallbackHref(response.fallbackHref);
+      setStatus("error");
+    }
+  };
+
+  if (status === "sent") return (
+    <Reveal>
+      <div className="plan-contact-card plan-contact-success" role="status">
+        <span><Check size={22} /></span>
+        <div><h2>Your plan is with TicoWild.</h2><p>We’ll use your itinerary and contact details to confirm availability, exact pricing and the best next step.</p></div>
+      </div>
+    </Reveal>
+  );
+
+  return (
+    <Reveal>
+      <form className="plan-contact-card" onSubmit={submit}>
+        <div className="plan-contact-heading">
+          <div><span>Next step</span><h2>Want us to confirm this trip?</h2></div>
+          <p>Add your contact information and this complete plan will go directly into the TicoWild CRM. No payment or obligation.</p>
+        </div>
+        <div className="plan-contact-grid">
+          <Field label="Name"><input required autoComplete="name" maxLength={120} value={contact.name} onChange={setContactField("name")} style={contactInput} placeholder="Your name" /></Field>
+          <Field label="Email"><input required type="email" autoComplete="email" maxLength={320} value={contact.email} onChange={setContactField("email")} style={contactInput} placeholder="you@email.com" /></Field>
+          <Field label="Phone / WhatsApp (optional)"><input autoComplete="tel" maxLength={50} value={contact.phone} onChange={setContactField("phone")} style={contactInput} placeholder="Best number to reach you" /></Field>
+          <Field label="Anything else? (optional)"><input maxLength={5000} value={contact.notes} onChange={setContactField("notes")} style={contactInput} placeholder="Hotel, timing or special needs" /></Field>
+        </div>
+        <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}><label>Website<input tabIndex={-1} autoComplete="off" value={contact.website} onChange={setContactField("website")} /></label></div>
+        {status === "error" && <p role="alert" className="plan-contact-error">We couldn’t save the request automatically. <a href={fallbackHref}>Open a ready-to-send email instead.</a></p>}
+        <Button type="submit" variant="primary" size="lg" disabled={status === "sending"}>{status === "sending" ? "Sending your plan…" : <><Send size={17} />Send my plan to TicoWild</>}</Button>
+        <small>No payment. We confirm availability and exact details first.</small>
+      </form>
+    </Reveal>
+  );
 }
 
 export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consumePlannerDraft }) {
@@ -256,6 +318,8 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
               </div>
             </Reveal>
 
+            <PlanContactCard plannerForm={form} result={result} />
+
             <SmartPlan chosen={result.plan.days.flatMap((d) => d.activities)} pax={parseInt(form.pax, 10) || 2} planOverride={result.plan} />
 
             <div className="mobile-cta-row" style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
@@ -270,7 +334,8 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
       <style>{`
         .planner-progress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:32px}.planner-progress>div{position:relative;display:flex;align-items:center;gap:8px;color:${c.stone};font-size:11px}.planner-progress>div:after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:2px;border-radius:99px;background:${c.line}}.planner-progress>div.is-active{color:#fff}.planner-progress>div.is-active:after{background:linear-gradient(90deg,${c.teal},${c.gold})}.planner-progress span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(127,166,232,.12);font-weight:900}.planner-progress .is-active span{background:${c.teal};color:${c.ink}}
         .planner-stage{display:grid;gap:22px}.planner-stage-heading{max-width:630px}.planner-stage-heading>span{display:inline-flex;align-items:center;gap:6px;color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.planner-stage-heading h2{color:#fff;font-size:clamp(27px,4vw,38px);line-height:1.05;letter-spacing:-1px;margin:10px 0}.planner-stage-heading p{color:${c.stone};font-size:15px;line-height:1.6;margin:0;max-width:590px}.planner-stage-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:4px}.planner-reassurance{text-align:center;color:${c.stone};font-size:12.5px;margin:0}.planner-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 16px;border-radius:14px;background:rgba(34,211,238,.07);border:1px solid rgba(34,211,238,.2)}.planner-summary strong{color:#fff;text-transform:capitalize}.planner-summary span{color:${c.stone};font-size:12.5px}
-        @media(max-width:680px){.planner-progress strong{font-size:10px}.planner-progress>div{gap:5px}.planner-stage-actions{display:grid;grid-template-columns:auto minmax(0,1fr)}.planner-stage-actions .tico-button:last-child{width:100%}.trip-date-grid{grid-template-columns:1fr!important}.route-stop-grid{grid-template-columns:36px minmax(0,1fr)!important}.route-stop-grid>div:last-child{grid-column:2}.route-stop-grid>div:nth-child(3){grid-column:2}}
+        .plan-contact-card{position:relative;margin:0 0 26px;padding:clamp(20px,4vw,30px);border-radius:22px;background:linear-gradient(135deg,rgba(16,48,82,.98),rgba(10,31,57,.98));border:1px solid rgba(34,211,238,.28);box-shadow:0 22px 60px rgba(0,0,0,.25);display:grid;gap:18px}.plan-contact-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.75fr);gap:24px;align-items:end}.plan-contact-heading span{color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}.plan-contact-heading h2{margin:6px 0 0;color:#fff;font-size:clamp(24px,3.2vw,34px);letter-spacing:-.8px}.plan-contact-heading p{margin:0;color:rgba(243,247,255,.76);font-size:14px;line-height:1.6}.plan-contact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.plan-contact-card>.tico-button{justify-self:start}.plan-contact-card small{color:${c.stone};font-size:12px}.plan-contact-error{margin:0;padding:10px 12px;border-radius:12px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:#FCA5A5;font-size:13px}.plan-contact-error a{color:${c.gold};font-weight:800}.plan-contact-success{grid-template-columns:auto minmax(0,1fr);align-items:center}.plan-contact-success>span{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(52,211,153,.14);color:#34D399}.plan-contact-success h2{color:#fff;margin:0 0 5px;font-size:23px}.plan-contact-success p{color:${c.stone};margin:0;line-height:1.55}
+        @media(max-width:680px){.planner-progress strong{font-size:10px}.planner-progress>div{gap:5px}.planner-stage-actions{display:grid;grid-template-columns:auto minmax(0,1fr)}.planner-stage-actions .tico-button:last-child{width:100%}.trip-date-grid{grid-template-columns:1fr!important}.route-stop-grid{grid-template-columns:36px minmax(0,1fr)!important}.route-stop-grid>div:last-child{grid-column:2}.route-stop-grid>div:nth-child(3){grid-column:2}.plan-contact-heading,.plan-contact-grid{grid-template-columns:1fr}.plan-contact-heading{gap:10px}.plan-contact-card>.tico-button{width:100%;justify-self:stretch}.plan-contact-success{grid-template-columns:auto minmax(0,1fr)}}
         @media(max-width:380px){.planner-progress strong{display:none}.planner-progress>div{justify-content:center}.planner-stage-actions{grid-template-columns:1fr}.planner-stage-actions .tico-button{width:100%}}
       `}</style>
     </>
