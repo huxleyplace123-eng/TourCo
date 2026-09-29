@@ -7,7 +7,7 @@ import { c, FONT, radius, shadow } from "../theme.js";
 // a static site — it keeps the tool private from casual visitors; it is not
 // server-grade auth.
 const USER_HASH = "64250640ac13ad3004878b0a8c8851a5ec1c15c4e7b604d76fe8c81b8a5f1563";
-const PASS_HASH = "6d99a8a8c25a4f11c2f3b417fdf09e5058a05868354026a37bcdcac12ea9bdb0";
+const PASS_HASH = "6da1276c22cfb693e48b3277934a47dc483788ac78c1f7590868e4600ec511aa";
 
 export const AUTH_KEY = "ticowild_crm_signed_in";
 
