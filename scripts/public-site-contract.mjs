@@ -40,7 +40,7 @@ const hero = read("src/components/CinematicHero.jsx");
 assert.equal(hero.includes("Where are you staying?"), false, "the homepage must earn the planning ask before requesting a city");
 assert.equal(hero.includes("tn-hero-plan"), false, "the homepage hero must not repeat its message in a second planning panel");
 assert.match(hero, /Start my trip/);
-assert.match(hero, /Browse activities/);
+assert.equal(hero.includes("Browse activities"), false, "the homepage hero should present one clear primary CTA");
 
 const builder = read("src/pages/Build.jsx");
 assert.match(builder, /The feeling/);

@@ -52,7 +52,7 @@ export function CinematicHero({ go }) {
       onMouseMove={onMove}
       onMouseLeave={() => setMouse({ x: 0, y: 0 })}
       className="tn-hero"
-      style={{ position: "relative", overflow: "hidden", background: c.sand, minHeight: 720 }}
+      style={{ position: "relative", overflow: "hidden", background: c.sand, minHeight: 610 }}
     >
       <style>{`
         @keyframes tnFloat { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-10px) } }
@@ -80,12 +80,13 @@ export function CinematicHero({ go }) {
         .tn-hero-accent-lead,
         .tn-hero-accent-finish { display: inline-block; }
         .tn-hero-accent-finish { margin-left: .22em; }
+        .tn-hero-actions button { min-width: 226px; }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
         @media (min-width: 980px){
-          .tn-hero-content { padding: 100px 28px 128px !important; }
+          .tn-hero-content { padding: 74px 28px 92px !important; }
         }
         @media (min-width: 821px) and (max-width: 979px){
-          .tn-hero-content { padding: 72px 28px 104px !important; gap: 44px !important; }
+          .tn-hero-content { padding: 64px 28px 84px !important; gap: 44px !important; }
         }
         /* ── Mobile hero polish ── hide the desktop sun/bird blob, preserve
            readable line lengths, and give the stacked layout room to breathe. */
@@ -120,8 +121,9 @@ export function CinematicHero({ go }) {
           }
           .tn-hero-trust { margin-top: 20px !important; gap: 11px !important; }
           .tn-hero-trust > span:first-child { display: none !important; }
-          .tn-hero-actions { margin-top: 23px !important; }
-          .tn-hero-actions > div:last-child { display: none !important; }
+          .tn-hero-actions { margin-top: 30px !important; }
+          .tn-hero-actions > div,
+          .tn-hero-actions button { width: 100%; box-sizing: border-box; }
         }
         @media (max-width: 360px){
           .tn-hero-actions > div,
@@ -201,9 +203,8 @@ export function CinematicHero({ go }) {
             ))}
           </div>
 
-          <div className="rise tn-hero-actions" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28, animationDelay: ".24s" }}>
+          <div className="rise tn-hero-actions" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 36, animationDelay: ".24s" }}>
             <Magnetic><Button variant="primary" size="lg" onClick={() => go("build")}>Start my trip <ArrowRight size={18} /></Button></Magnetic>
-            <Magnetic strength={0.25}><Button variant="glass" size="lg" onClick={() => go("activities")}>Browse activities</Button></Magnetic>
           </div>
 
         </div>
