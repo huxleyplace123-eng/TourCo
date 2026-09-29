@@ -11,7 +11,6 @@ const LINKS = [
   ["insider", "Insider Guide"],
   ["map", "Explore Map"],
   ["deals", "Deals"],
-  ["portal", "My Trips"],
 ];
 
 export function Nav({ page, go, tripCount, openTrip }) {
@@ -30,10 +29,17 @@ export function Nav({ page, go, tripCount, openTrip }) {
           ))}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={openTrip} style={{ position: "relative", background: "rgba(255,255,255,.06)", border: `1px solid ${c.line}`, cursor: "pointer", width: 40, height: 40, borderRadius: 999, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Compass size={18} color={c.emerald} />
+          <button
+            className="nav-trip-button"
+            onClick={openTrip}
+            aria-label={`My trip${tripCount > 0 ? `, ${tripCount} saved experience${tripCount === 1 ? "" : "s"}` : ""}`}
+            aria-current={page === "portal" ? "page" : undefined}
+            style={{ background: page === "portal" ? "rgba(34,211,238,.13)" : "rgba(255,255,255,.06)", border: `1px solid ${page === "portal" ? "rgba(34,211,238,.46)" : c.line}`, color: page === "portal" ? c.teal : "#fff", cursor: "pointer", minHeight: 40, padding: "0 13px", borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, fontWeight: 800, fontSize: 13.5, whiteSpace: "nowrap" }}
+          >
+            <Compass size={17} color={page === "portal" ? c.teal : c.emerald} />
+            <span>My Trip</span>
             {tripCount > 0 && (
-              <span style={{ position: "absolute", top: -4, right: -4, background: c.coral, color: c.charcoal, fontSize: 11, fontWeight: 800, minWidth: 18, height: 18, borderRadius: 999, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 3px" }}>
+              <span style={{ background: c.gold, color: c.ink, fontSize: 10.5, fontWeight: 900, minWidth: 19, height: 19, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>
                 {tripCount}
               </span>
             )}
@@ -56,6 +62,13 @@ export function Nav({ page, go, tripCount, openTrip }) {
           <Button variant="primary" full style={{ marginTop: 8 }} onClick={() => { go("build"); setOpen(false); }}>Plan my trip</Button>
         </nav>
       )}
+      <style>{`
+        .nav-trip-button{transition:background .2s ease,border-color .2s ease,transform .2s ease}
+        .nav-trip-button:hover{background:rgba(34,211,238,.11)!important;border-color:rgba(34,211,238,.4)!important;transform:translateY(-1px)}
+        .nav-trip-button:focus-visible{outline:3px solid rgba(34,211,238,.42);outline-offset:2px}
+        @media(max-width:380px){.nav-trip-button{padding:0 10px!important;font-size:12.5px!important;gap:5px!important}}
+        @media(prefers-reduced-motion:reduce){.nav-trip-button{transition:none!important}}
+      `}</style>
     </header>
   );
 }

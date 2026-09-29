@@ -160,7 +160,7 @@ export default function App() {
       <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 0, background: grad.aurora, pointerEvents: "none", animation: "tnAurora 24s ease-in-out infinite alternate" }} />
       <style>{`@keyframes tnAurora{0%{opacity:.75;transform:translateY(0)}100%{opacity:1;transform:translateY(-14px)}}`}</style>
       <div style={{ position: "relative", zIndex: 1 }}>
-      <Nav page={page} go={go} tripCount={trip.length} openTrip={() => (trip.length ? go("portal") : setCartOpen(true))} />
+      <Nav page={page} go={go} tripCount={trip.length} openTrip={() => go("portal")} />
 
       {/* keyed wrapper → every page fade-rises in on navigation */}
       <main className={`public-page public-page-${page}`} key={page + (page === "detail" ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>
