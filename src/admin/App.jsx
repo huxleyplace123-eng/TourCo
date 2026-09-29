@@ -160,7 +160,7 @@ const sortVal = (cust, key) => {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function App({ workspace, onWorkspace, onSignOut }) {
   const [customers, setCustomers] = useState(() => loadCustomers());
-  const [view, setView] = useState("today");
+  const [view, setView] = useState("table");
   const [query, setQuery] = useState("");
   const [stageFilter, setStageFilter] = useState("");
   const [assigneeFilter, setAssigneeFilter] = useState("");
@@ -427,7 +427,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           </div>
 
           <div style={{ display: "flex", gap: 2, background: "rgba(255,255,255,.06)", border: `1px solid ${c.line}`, borderRadius: radius.sm, padding: 3 }}>
-            {[["today", "Today"], ["table", "Table"], ["pipeline", "Pipeline"], ["followups", "Follow-ups"]].map(([k, label]) => (
+            {[["table", "Directory"], ["pipeline", "Pipeline"], ["followups", "Follow-ups"], ["today", "Today"]].map(([k, label]) => (
               <button key={k} onClick={() => setView(k)}
                 style={{
                   padding: "7px 14px", borderRadius: radius.sm - 4, border: "none", cursor: "pointer",
@@ -594,7 +594,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         <AddModal
           customers={customers}
           onClose={() => setShowAdd(false)}
-          onSave={(rec) => { setCustomers((cs) => [...cs, rec]); setShowAdd(false); setSelectedId(rec.id); }}
+          onSave={(rec) => { setCustomers((cs) => [...cs, rec]); setShowAdd(false); setView("table"); setSelectedId(rec.id); }}
           onOpenExisting={(id) => { setShowAdd(false); setSelectedId(id); }}
         />
       )}

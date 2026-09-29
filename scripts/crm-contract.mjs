@@ -11,6 +11,8 @@ const [app, store, login, conversion, queue] = await Promise.all([
 
 assert.match(app, /function TodayView/);
 assert.match(app, /What needs attention today/);
+assert.match(app, /useState\("table"\)/);
+assert.match(app, /\["table", "Directory"\]/);
 assert.match(app, /function QuoteBuilder/);
 assert.match(app, /Gross margin/);
 assert.match(app, /function CustomerTemplateComposer/);
