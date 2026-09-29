@@ -17,7 +17,7 @@ const TERMS = [
   { h: "5. The experiences", p: "Any confirmed provider is independently owned and responsible for the safety, quality, staffing, equipment, licensing and delivery of its services. Provider identity and the details TicoWild has checked are shared during confirmation." },
   { h: "6. Limitation of liability", p: "To the fullest extent permitted by law, TicoWild is not liable for indirect or consequential damages, or for injury, loss or damage arising from the operator services themselves. Our total liability for any booking is limited to the fees we retained for that booking. Nothing here limits liability that cannot be limited by law." },
   { h: "7. Content & conduct", p: "Reviews, photos and content you submit may be displayed by TicoWild. Don't post anything false, unlawful, or that infringes others' rights. We may edit or remove content and suspend accounts that abuse the platform." },
-  { h: "8. Changes & contact", p: "We may update these terms; material changes will be posted here with a new date. Questions can be sent to hello@ticowild.com. Any additional governing terms will be stated in the written confirmation supplied before payment." },
+  { h: "8. Changes & contact", p: "We may update these terms; material changes will be posted here with a new date. Questions can be sent to ticowildtours@gmail.com. Any additional governing terms will be stated in the written confirmation supplied before payment." },
 ];
 
 const PRIVACY = [
@@ -28,7 +28,7 @@ const PRIVACY = [
   { h: "5. Cookies & analytics", p: "We use essential cookies to make the site work and limited analytics to understand what's useful. You can control cookies in your browser. Images on the site load from third-party image CDNs, which may log standard request data." },
   { h: "6. Your choices & rights", p: "You can request access to, correction of, or deletion of your personal information, and opt out of non-essential messages, by contacting us. Because your trip data lives in your browser, you can clear it anytime via your browser settings." },
   { h: "7. Data retention & security", p: "We keep personal information only as long as needed to provide our services and meet legal obligations, and we use reasonable safeguards to protect it. No method of transmission is 100% secure, but we work to keep your data safe." },
-  { h: "8. Contact", p: "Questions about privacy can be sent to privacy@ticowild.com. We'll post material changes to this policy here with an updated date." },
+  { h: "8. Contact", p: "Questions about privacy can be sent to ticowildtours@gmail.com. We'll post material changes to this policy here with an updated date." },
 ];
 
 export function LegalModal({ kind, onClose }) {

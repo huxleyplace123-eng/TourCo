@@ -3,7 +3,7 @@ import { X, PenLine, Download, Check, RotateCcw, FileText, Mail } from "lucide-r
 import { c, glass } from "../theme.js";
 
 // TicoWild's email — where signed agreements are sent.
-const TICOWILD_EMAIL = "partners@ticowild.com";
+const TICOWILD_EMAIL = "ticowildtours@gmail.com";
 export const AGREEMENT_VERSION = "2026-07-operator-partner-v1";
 
 // The agreement, section by section (condensed from the PDF for on-screen review).

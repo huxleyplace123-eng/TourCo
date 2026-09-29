@@ -29,7 +29,7 @@ I would also be happy to answer questions or schedule a short introduction.
 Pura vida,
 John Robinson
 Co-Founder and Chief Operator, TicoWild
-john@ticowild.com
+ticowildtours@gmail.com
 WhatsApp: 8672-3132`,
   },
   {
