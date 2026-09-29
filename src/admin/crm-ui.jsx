@@ -3,6 +3,7 @@
 import { MessageCircle, Mail, Phone, Globe } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import { normPhone } from "./store.js";
+import { gmailComposeHref, TICO_GMAIL } from "./email.js";
 import {
   TEMPERATURES, TEMPERATURE_META, OPERATOR_TYPES, operatorType,
 } from "./crm-shared.js";
@@ -25,7 +26,7 @@ export function CustomerContacts({ cust, onLog, size = 15 }) {
   return (
     <span className="crm-contacts" onClick={(e) => e.stopPropagation()}>
       <Slot on={!!phone} href={`https://wa.me/${phone}`} title="WhatsApp" color="#25D366" onClick={() => onLog(cust.id, "whatsapp")}><MessageCircle size={size} /></Slot>
-      <Slot on={!!cust.email} href={`mailto:${cust.email}`} title="Email" color={c.stone} onClick={() => onLog(cust.id, "email")}><Mail size={size} /></Slot>
+      <Slot on={!!cust.email} href={gmailComposeHref({ to: cust.email })} title={`Email from ${TICO_GMAIL}`} color={c.stone} onClick={() => onLog(cust.id, "email")}><Mail size={size} /></Slot>
       <Slot on={!!phone} href={`tel:${cust.phone}`} title="Call" color={c.stone} onClick={() => onLog(cust.id, "call")}><Phone size={size} /></Slot>
     </span>
   );
@@ -36,7 +37,7 @@ export function OperatorContacts({ op, onLog, size = 15 }) {
   return (
     <span className="crm-contacts" onClick={(e) => e.stopPropagation()}>
       <Slot on={!!wa} href={`https://wa.me/${wa}`} title="WhatsApp" color="#25D366" onClick={() => onLog(op.id, "WhatsApp opened")}><MessageCircle size={size} /></Slot>
-      <Slot on={!!op.email} href={`mailto:${op.email}`} title={op.email} color={c.stone} onClick={() => onLog(op.id, "Email opened")}><Mail size={size} /></Slot>
+      <Slot on={!!op.email} href={gmailComposeHref({ to: op.email })} title={`Email ${op.email} from ${TICO_GMAIL}`} color={c.stone} onClick={() => onLog(op.id, "Email opened in TicoWild Gmail")}><Mail size={size} /></Slot>
       <Slot on={!!op.phone} href={`tel:${op.phone}`} title={op.phone} color={c.stone} onClick={() => onLog(op.id, "Call started")}><Phone size={size} /></Slot>
       <Slot on={!!op.website} href={op.website} title="Website" color={c.stone}><Globe size={size} /></Slot>
     </span>

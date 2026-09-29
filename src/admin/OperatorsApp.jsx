@@ -16,6 +16,7 @@ import {
 } from "./crm-shared.js";
 import { TempBadge, TempPicker, TypeBadge, TypeSelect, OperatorContacts, CRM_CSS } from "./crm-ui.jsx";
 import { useSelection, SelectCheckbox, BulkBar, ComposeModal, WhatsAppSendModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
+import { gmailComposeHref } from "./email.js";
 import { loadPortal, addMessage } from "./portal-store.js";
 import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
@@ -260,7 +261,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
         if (!op.email) continue;
         next = patchOperator(next, op.id, {
           lastContacted: todayIso(),
-          notes: [...(op.notes || []), { id: noteId(), at: new Date().toISOString(), text: `Bulk email sent${subject ? `: ${subject}` : ""}` }],
+          notes: [...(op.notes || []), { id: noteId(), at: new Date().toISOString(), text: `Bulk email draft opened in TicoWild Gmail${subject ? `: ${subject}` : ""}` }],
         });
       }
       return next;
@@ -862,8 +863,8 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
               style={bigAction("rgba(37,211,102,.12)", "#25D366", "rgba(37,211,102,.4)", !!wa)}>
               <MessageCircle size={15} /> WhatsApp
             </a>
-            <a href={op.email ? `mailto:${op.email}` : undefined}
-              onClick={() => op.email && logTouch(op.id, "Email opened")}
+            <a href={op.email ? gmailComposeHref({ to: op.email }) : undefined} target="_blank" rel="noreferrer"
+              onClick={() => op.email && logTouch(op.id, "Email opened in TicoWild Gmail")}
               style={bigAction("rgba(34,211,238,.1)", c.teal, "rgba(34,211,238,.35)", !!op.email)}>
               <Mail size={15} /> Email
             </a>

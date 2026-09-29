@@ -10,6 +10,7 @@ import {
 import { c, FONT, radius, shadow } from "../theme.js";
 import { addDaysIso, todayIso } from "./store.js";
 import { allEmailTemplates } from "./email-templates.js";
+import { gmailComposeHref, TICO_GMAIL } from "./email.js";
 
 // ── Selection hook ────────────────────────────────────────────────────────────
 // `visibleIds` is the id list of the currently filtered/sorted rows. `resetKey`
@@ -151,8 +152,8 @@ export function BulkBar({
 }
 
 // ── Email / Text compose modal ────────────────────────────────────────────────
-// `recipients`: [{ id, name, email, phone }]. Email mode builds a mailto with
-// everyone BCC'd; text mode is fully built but inert (no SMS provider yet).
+// `recipients`: [{ id, name, email, phone }]. Email mode opens the dedicated
+// TicoWild Gmail composer with everyone BCC'd; text mode is inert for now.
 export function ComposeModal({ mode, entityLabel = "recipient", recipients, onClose, onSend }) {
   const isEmail = mode === "email";
   const [subject, setSubject] = useState("");
@@ -184,6 +185,12 @@ export function ComposeModal({ mode, entityLabel = "recipient", recipients, onCl
           {!isEmail && (
             <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "10px 13px", borderRadius: radius.sm, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.35)", color: c.gold, fontSize: 12.5, fontWeight: 700 }}>
               <AlertTriangle size={15} /> SMS isn't connected yet — this will send once texting is wired up.
+            </div>
+          )}
+
+          {isEmail && (
+            <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "10px 13px", borderRadius: radius.sm, background: "rgba(52,211,153,.09)", border: "1px solid rgba(52,211,153,.3)", color: "#34D399", fontSize: 12.5, fontWeight: 700 }}>
+              <Mail size={15} /> Sending account: {TICO_GMAIL}
             </div>
           )}
 
@@ -242,7 +249,7 @@ export function ComposeModal({ mode, entityLabel = "recipient", recipients, onCl
               background: canSend ? c.gold : "rgba(255,255,255,.12)", color: canSend ? c.ink : c.stone,
               fontFamily: FONT, fontWeight: 800, fontSize: 13.5, cursor: canSend ? "pointer" : "not-allowed",
             }}>
-            <Send size={15} /> {isEmail ? "Open in mail app" : "Send text"}
+            <Send size={15} /> {isEmail ? "Open TicoWild Gmail" : "Send text"}
           </button>
         </div>
       </div>
@@ -419,15 +426,12 @@ export function downloadCsv(text, filename) {
   URL.revokeObjectURL(a.href);
 }
 
-// Build a mailto: with every address BCC'd (so recipients can't see each other)
-// and open the OS mail client. Returns the count actually addressed.
+// Open the dedicated business Gmail account with every address BCC'd so
+// recipients cannot see one another. Returns the count actually addressed.
 export function openBulkEmail(emails, subject, body) {
   const list = [...new Set(emails.filter(Boolean))];
   if (!list.length) return 0;
-  const url = `mailto:?bcc=${encodeURIComponent(list.join(","))}`
-    + `&subject=${encodeURIComponent(subject || "")}`
-    + `&body=${encodeURIComponent(body || "")}`;
-  window.location.href = url;
+  window.open(gmailComposeHref({ bcc: list.join(","), subject, body }), "_blank", "noopener,noreferrer");
   return list.length;
 }
 
