@@ -24,21 +24,24 @@ assert.equal(home.includes("TodaySection"), false, "homepage should not repeat t
 assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a second ranked catalog");
 assert.equal(home.includes("home-journey"), false, "homepage must not repeat a numbered journey strip below the hero");
 assert.equal(home.includes("SAMPLE_DAYS"), false, "homepage must not repeat another three-step timeline");
-assert.match(home, /What sounds like you\?/);
-assert.match(home, /Days worth building/);
-assert.match(home, /Follow the feeling\./);
-assert.match(home, /You imagine the trip\./);
-assert.match(home, /A trip this beautiful/);
-assert.match(home, /FEATURED_IDS = \["a15", "a16", "a4", "a11"\]/, "homepage must use a restrained curated experience set");
-assert.match(home, /className="home-featured-track"/, "homepage needs a mobile-friendly curated experience rail");
-assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage experience cards need real destinations");
-assert.match(home, /viewActivity\(activity\.id\)/, "homepage experience cards should use in-app activity navigation");
+assert.match(home, /01 · Begin with you/);
+assert.match(home, /What should Costa Rica/);
+assert.match(home, /02 · Find the spark/);
+assert.match(home, /03 · Give it a place/);
+assert.match(home, /04 · Bring it together/);
+assert.equal(home.includes("FEATURED_IDS"), false, "homepage must not repeat a disconnected featured catalog before the visual story");
+assert.equal(home.includes("home-featured-track"), false, "homepage must not duplicate activity discovery in a second rail");
+assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage story scenes need real destinations");
+assert.match(home, /viewActivity\(activity\.id\)/, "homepage story scenes should use in-app activity navigation");
 assert.match(home, /className="home-regions"/, "homepage needs a cinematic regional discovery chapter");
 assert.match(home, /className="home-action"/, "homepage needs a vivid, activity-led visual chapter");
 for (const actionId of ["a7", "a10", "a6", "a9"]) assert.ok(home.includes(`"${actionId}"`), `homepage action reel is missing ${actionId}`);
 assert.match(home, /go\("map"\)/, "regional discovery must connect to the live map");
 assert.match(home, /className="home-concierge"/, "homepage needs one concise planning explanation");
 assert.match(home, /className="home-closing"/, "homepage needs a cinematic destination close");
+const homeStoryOrder = ["home-feeling-wrap", "home-action", "home-regions", "home-concierge", "home-closing"].map((token) => home.indexOf(token));
+assert.ok(homeStoryOrder.every((position) => position >= 0), "homepage story is missing a required chapter");
+assert.deepEqual([...homeStoryOrder].sort((a, b) => a - b), homeStoryOrder, "homepage chapters must progress from feeling to experience to place to plan to action");
 
 const hero = read("src/components/CinematicHero.jsx");
 assert.equal(hero.includes("Where are you staying?"), false, "the homepage must earn the planning ask before requesting a city");
@@ -120,6 +123,9 @@ assert.equal(insider.includes("without throwing away the depth"), false, "intern
 
 const why = read("src/pages/Why.jsx");
 assert.equal(why.includes("TicoWild should win"), false, "internal positioning language must not appear on the public site");
+const dealsPage = read("src/pages/Deals.jsx");
+assert.match(dealsPage, /title="Spend smarter\. Do more\."/, "the deals page needs one clear, non-repeating promise");
+assert.equal(dealsPage.includes('title="Spend less on the right things" accentWord="less"'), false, "the deals hero must not duplicate its accent word");
 const legal = read("src/components/LegalModal.jsx");
 assert.equal(legal.includes("counsel-reviewed"), false, "the legal modal must not claim an unavailable governing document");
 
