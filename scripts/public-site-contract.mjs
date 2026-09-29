@@ -42,8 +42,8 @@ assert.match(home, /className="home-closing"/, "homepage needs a cinematic desti
 for (const [label, buttonMarkup] of [["Explore the map", "Explore the map <"], ["Build my trip", "Build my trip</Button>"], ["Start planning", ">Start planning <"]]) {
   assert.equal(home.includes(buttonMarkup), false, `homepage must not use a competing primary CTA: ${label}`);
 }
-assert.equal((home.match(/Plan my trip/g) || []).length, 2, "homepage planning buttons must repeat one clear primary CTA");
-assert.equal((home.match(/onClick=\{\(\) => go\("build"\)\}/g) || []).length, 2, "every homepage primary CTA must open the same planner");
+assert.equal((home.match(/Plan my trip/g) || []).length, 1, "homepage content must present one clear primary CTA");
+assert.equal((home.match(/onClick=\{\(\) => go\("build"\)\}/g) || []).length, 1, "the homepage primary CTA must open the planner");
 const homeStoryOrder = ["home-action", "home-regions", "home-concierge", "home-closing"].map((token) => home.indexOf(token));
 assert.ok(homeStoryOrder.every((position) => position >= 0), "homepage story is missing a required chapter");
 assert.deepEqual([...homeStoryOrder].sort((a, b) => a - b), homeStoryOrder, "homepage must progress from vivid experiences to route to plan to action");
