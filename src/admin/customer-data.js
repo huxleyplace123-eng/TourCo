@@ -3,6 +3,27 @@ import { blankCustomer, normalizeCustomer, todayIso } from "./store.js";
 
 const noteId = () => `n_${crypto.randomUUID()}`;
 
+function customerFingerprint(customer) {
+  const email = String(customer?.email || "").trim().toLowerCase();
+  const start = customer?.travelStart || "";
+  return email ? `${email}|${start}` : `id:${customer?.id || ""}`;
+}
+
+function mergeLocalIntoRemote(remote, local) {
+  const notes = [...(remote.notes || []), ...(local.notes || [])];
+  const uniqueNotes = [...new Map(notes.map((note) => [note.id || `${note.at}|${note.text}`, note])).values()];
+  return normalizeCustomer({
+    ...remote,
+    ...local,
+    id: remote.id,
+    inquiryId: remote.inquiryId || local.inquiryId,
+    createdAt: [remote.createdAt, local.createdAt].filter(Boolean).sort()[0],
+    updatedAt: [remote.updatedAt, local.updatedAt].filter(Boolean).sort().at(-1),
+    notes: uniqueNotes,
+    tags: [...new Set([...(remote.tags || []), ...(local.tags || [])])],
+  });
+}
+
 function inquiryToCustomer(row) {
   const created = row.created_at || new Date().toISOString();
   return normalizeCustomer({
@@ -19,7 +40,7 @@ function inquiryToCustomer(row) {
     travelers: row.travelers || "",
     region: row.destination || "",
     activities: (row.activity_titles || []).join(", "),
-    source: "Website",
+    source: row.source_path === "/admin/migration" ? "Manual" : "Website",
     temperature: "Hot",
     nextFollowUp: todayIso(),
     nextAction: "Respond to new website inquiry",
@@ -53,15 +74,20 @@ export async function loadConnectedCustomers(localCustomers = []) {
     if (inquiriesResult.error) throw inquiriesResult.error;
 
     const remote = (customersResult.data || []).map((row) => normalizeCustomer({ ...row.record, id: row.id }));
-    const known = new Set([...remote, ...localCustomers].map((item) => `${String(item.email || "").trim().toLowerCase()}|${item.travelStart || ""}`));
+    const remoteByFingerprint = new Map(remote.map((item) => [customerFingerprint(item), item]));
+    const mergedRemote = remote.map((item) => {
+      const local = localCustomers.find((candidate) => customerFingerprint(candidate) === customerFingerprint(item));
+      return local ? mergeLocalIntoRemote(item, local) : item;
+    });
+    const localOnly = localCustomers.filter((item) => !remoteByFingerprint.has(customerFingerprint(item)));
+    const known = new Set([...mergedRemote, ...localOnly].map(customerFingerprint));
     const fresh = (inquiriesResult.data || []).map(inquiryToCustomer).filter((item) => {
-      const fingerprint = `${String(item.email || "").trim().toLowerCase()}|${item.travelStart || ""}`;
+      const fingerprint = customerFingerprint(item);
       if (known.has(fingerprint)) return false;
       known.add(fingerprint);
       return true;
     });
-    const mergedById = new Map(localCustomers.map((item) => [item.id, normalizeCustomer(item)]));
-    remote.forEach((item) => mergedById.set(item.id, item));
+    const mergedById = new Map([...mergedRemote, ...localOnly].map((item) => [item.id, normalizeCustomer(item)]));
     fresh.forEach((item) => mergedById.set(item.id, item));
     if (fresh.length) {
       await saveConnectedCustomers(fresh);
