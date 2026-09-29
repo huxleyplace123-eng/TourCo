@@ -17,6 +17,22 @@ create table if not exists public.crm_operator_overlays (
 alter table public.crm_customers enable row level security;
 alter table public.crm_operator_overlays enable row level security;
 
+drop policy if exists "public can create inquiries" on public.public_inquiries;
+create policy "public can create inquiries" on public.public_inquiries for insert with check (
+  true
+);
+
+alter table public.public_inquiries drop constraint if exists public_inquiries_safe_input;
+alter table public.public_inquiries add constraint public_inquiries_safe_input check (
+  length(trim(coalesce(name, ''))) between 1 and 120
+  and length(trim(coalesce(email, ''))) between 3 and 320
+  and length(coalesce(phone, '')) <= 50
+  and length(coalesce(destination, '')) <= 160
+  and length(coalesce(notes, '')) <= 5000
+  and coalesce(cardinality(activity_ids), 0) <= 20
+  and coalesce(status, 'new') in ('new', 'imported', 'archived', 'qa')
+);
+
 drop policy if exists "team manages crm customers" on public.crm_customers;
 create policy "team manages crm customers" on public.crm_customers for all
   using (public.is_team_member()) with check (public.is_team_member());

@@ -89,14 +89,19 @@ create policy "own trips"     on public.trips    for all using (auth.uid() = use
 create policy "own bookings"  on public.bookings for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own messages"  on public.messages for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 drop policy if exists "public can create inquiries" on public.public_inquiries;
-create policy "public can create inquiries" on public.public_inquiries for insert to anon, authenticated with check (
-  length(trim(name)) between 1 and 120
-  and length(trim(email)) between 3 and 320
-  and length(phone) <= 50
-  and length(destination) <= 160
-  and length(notes) <= 5000
-  and cardinality(activity_ids) <= 20
-  and status = 'new'
+create policy "public can create inquiries" on public.public_inquiries for insert with check (
+  true
+);
+
+alter table public.public_inquiries drop constraint if exists public_inquiries_safe_input;
+alter table public.public_inquiries add constraint public_inquiries_safe_input check (
+  length(trim(coalesce(name, ''))) between 1 and 120
+  and length(trim(coalesce(email, ''))) between 3 and 320
+  and length(coalesce(phone, '')) <= 50
+  and length(coalesce(destination, '')) <= 160
+  and length(coalesce(notes, '')) <= 5000
+  and coalesce(cardinality(activity_ids), 0) <= 20
+  and coalesce(status, 'new') in ('new', 'imported', 'archived', 'qa')
 );
 
 -- Auto-create a profile row on signup.
