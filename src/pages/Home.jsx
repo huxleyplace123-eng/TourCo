@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Bird, Check, Heart, MapPin, ShieldCheck, Sparkles, UtensilsCrossed, Waves, Zap } from "lucide-react";
+import { ArrowRight, Check, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { c } from "../theme.js";
 import { Button } from "../components/ui.jsx";
 import { Reveal } from "../motion.jsx";
@@ -7,14 +7,6 @@ import { CinematicHero } from "../components/CinematicHero.jsx";
 import { activityImage, themedSlides } from "../images.js";
 import { activities, regions } from "../data.js";
 import { activityPath } from "../routing.js";
-
-const FEELINGS = [
-  { icon: Waves, title: "Beach days", note: "Warm water and a slower pace." },
-  { icon: Bird, title: "Wildlife", note: "Rainforest, rivers and rare encounters." },
-  { icon: Zap, title: "Adventure", note: "Zip lines, rapids and stories worth telling." },
-  { icon: Heart, title: "Time together", note: "Private, romantic and unhurried." },
-  { icon: UtensilsCrossed, title: "Food & nights", note: "Local flavors and memorable evenings." },
-];
 
 const ACTION_IDS = ["a7", "a10", "a6", "a9"];
 const ACTION_COPY = {
@@ -40,28 +32,9 @@ export function Home({ go, viewActivity, browseActivities }) {
     <>
       <CinematicHero go={go} onSearch={browseActivities} />
 
-      <section className="home-discovery">
-        <div className="home-shell home-feeling-wrap">
-          <div className="home-feeling-head">
-            <span className="home-kicker">01 · Start with what you love</span>
-            <h2>What do you want more of?</h2>
-            <p>Pick what sounds best. We’ll show you the experiences and places that fit.</p>
-          </div>
-          <div className="home-feeling-track">
-            {FEELINGS.map(({ icon: Icon, title, note }) => (
-              <button key={title} className="home-feeling" onClick={() => go("build")}>
-                <span><Icon size={19} /></span>
-                <div><strong>{title}</strong><small>{note}</small></div>
-                <ArrowRight size={15} />
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="home-action" aria-labelledby="home-action-title">
         <div className="home-shell home-action-head">
-          <span className="home-kicker">02 · Find the spark</span>
+          <span className="home-kicker">Costa Rica in motion</span>
           <h2 id="home-action-title">See the kind of day<br /><em>that pulls you in.</em></h2>
           <p>Turn that feeling into something real: canopy air, white water, warm waves or wildlife.</p>
         </div>
@@ -92,7 +65,7 @@ export function Home({ go, viewActivity, browseActivities }) {
         <div className="home-regions-wash" />
         <div className="home-shell home-regions-content">
           <Reveal>
-            <span className="home-kicker">03 · Give it a place</span>
+            <span className="home-kicker">Make it fit your route</span>
             <h2>Now shape the route.<br /><em>We’ll keep it practical.</em></h2>
             <p>Once you know what excites you, we place it where the geography, drive time and pace make sense.</p>
             <Button variant="primary" size="lg" onClick={() => go("map")}>See where it fits <ArrowRight size={18} /></Button>
@@ -111,7 +84,7 @@ export function Home({ go, viewActivity, browseActivities }) {
         <div className="home-shell home-concierge-grid">
           <Reveal>
             <div className="home-concierge-copy">
-              <span className="home-kicker">04 · Bring it together</span>
+              <span className="home-kicker">The TicoWild difference</span>
               <h2>You choose the feeling.<br />We make the days work.</h2>
               <p>Now TicoWild connects the experiences, route and real details into one trip you can understand.</p>
               <Button variant="primary" size="lg" onClick={() => go("build")}><Sparkles size={17} />Start my plan</Button>
@@ -148,14 +121,6 @@ export function Home({ go, viewActivity, browseActivities }) {
         .home-shell{width:min(1240px,calc(100% - 48px));margin:0 auto}
         .home-kicker{display:inline-flex;align-items:center;gap:9px;color:${c.teal};font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
         .home-kicker:before{content:"";width:30px;height:5px;border-top:1px solid ${c.teal};border-bottom:1px solid rgba(34,211,238,.38);box-shadow:0 5px 18px -8px rgba(34,211,238,.8)}
-        .home-discovery{position:relative;background:#071524;overflow:hidden}
-        .home-discovery:before{content:"";position:absolute;width:760px;height:760px;right:-330px;top:20px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.1),transparent 68%);pointer-events:none}
-        .home-feeling-wrap{position:relative;z-index:2;padding:84px 0 90px}
-        .home-feeling-head{display:grid;justify-items:center;text-align:center;margin:0 auto 34px;max-width:820px}.home-feeling-head>.home-kicker{margin-bottom:16px}.home-feeling-head h2{margin:0;color:#fff;font-size:clamp(46px,5.2vw,70px);font-weight:830;letter-spacing:-.055em;line-height:.96}.home-feeling-head p{margin:17px auto 0;color:${c.stone};font-size:17px;line-height:1.62;max-width:570px}
-        .home-feeling-track{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-        .home-feeling{position:relative;display:grid;align-content:start;gap:0;min-width:0;min-height:156px;padding:20px;border:1px solid rgba(127,166,232,.17);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(9,24,43,.84));color:#fff;text-align:left;cursor:pointer;box-shadow:0 24px 50px -42px rgba(0,0,0,.95);transition:transform .2s ease,border-color .2s ease,background .2s ease}
-        .home-feeling:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.42);background:rgba(34,211,238,.08)}.home-feeling>span{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:${c.teal};background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.15)}.home-feeling div{display:grid;gap:6px;min-width:0;margin-top:16px}.home-feeling strong{font-size:16px;letter-spacing:-.015em}.home-feeling small{color:${c.stone};font-size:12px;line-height:1.45}.home-feeling>svg{position:absolute;right:18px;top:33px;color:rgba(127,166,232,.68)}
-
         .home-regions{position:relative;min-height:760px;display:flex;align-items:center;overflow:hidden;background-image:var(--home-region-image);background-size:cover;background-position:center;isolation:isolate}
         .home-regions:before{content:"";position:absolute;inset:0;z-index:-1;background:inherit;background-size:cover;background-position:center;transform:scale(1.025)}
         .home-regions-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,15,30,.94) 0%,rgba(5,15,30,.68) 47%,rgba(5,15,30,.14) 100%),linear-gradient(0deg,rgba(5,15,30,.8) 0%,transparent 44%)}
@@ -172,10 +137,9 @@ export function Home({ go, viewActivity, browseActivities }) {
 
         .home-closing{position:relative;min-height:570px;display:grid;place-items:center;overflow:hidden;background-image:var(--home-close-image);background-size:cover;background-position:center 56%;isolation:isolate}.home-closing:before{content:"";position:absolute;inset:0;z-index:-1;background:inherit;background-size:cover;background-position:center 56%;transform:scale(1.02)}.home-closing-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,16,31,.88) 0%,rgba(5,16,31,.58) 50%,rgba(5,16,31,.36) 100%),linear-gradient(0deg,rgba(5,16,31,.5),transparent 45%)}.home-closing-content{position:relative;z-index:1;width:min(1240px,calc(100% - 48px));margin:0 auto;padding:92px 0;text-align:center}.home-closing-content .home-kicker{justify-content:center}.home-closing-content h2{margin:16px auto 18px;color:#fff;font-size:clamp(48px,6vw,80px);font-weight:830;letter-spacing:-.055em;line-height:.94;max-width:820px}.home-closing-content p{margin:0 auto 30px;color:rgba(239,245,255,.8);font-size:18px;line-height:1.65;max-width:560px}
 
-        @media(max-width:1050px){.home-feeling-track{grid-template-columns:repeat(5,minmax(205px,1fr));overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:3px}.home-feeling{scroll-snap-align:start}.home-concierge-grid{grid-template-columns:1fr;gap:52px}.home-promise-panel{max-width:680px}}
+        @media(max-width:1050px){.home-concierge-grid{grid-template-columns:1fr;gap:52px}.home-promise-panel{max-width:680px}}
         @media(max-width:760px){
           .home-shell,.home-closing-content{width:calc(100% - 36px)}
-          .home-feeling-wrap{width:100%;padding:64px 0 68px}.home-feeling-head{display:block;padding:0 18px;margin-bottom:26px;text-align:left}.home-feeling-head>.home-kicker{margin-bottom:13px}.home-feeling-head h2{font-size:clamp(39px,11vw,49px);line-height:.97}.home-feeling-head p{margin:15px 0 0;font-size:15px;line-height:1.58}.home-feeling-track{padding:0 18px 5px;grid-template-columns:repeat(5,72vw);gap:10px;scroll-padding-left:18px}.home-feeling{min-height:148px;padding:18px}
           .home-regions{min-height:730px;align-items:flex-start;background-position:60% center}.home-regions:before{background-position:60% center}.home-regions-wash{background:linear-gradient(180deg,rgba(5,15,30,.88) 0%,rgba(5,15,30,.55) 52%,rgba(5,15,30,.94) 100%)}.home-regions-content{padding-top:72px;padding-bottom:190px}.home-regions-content h2{font-size:clamp(44px,12.8vw,60px);line-height:.95}.home-regions-content p{font-size:15px;line-height:1.62}.home-regions-content .tico-button{width:100%}.home-region-dock{left:0;right:0;bottom:18px;transform:none;width:100%;display:flex;overflow-x:auto;border-left:0;border-right:0;border-radius:0;padding:9px 18px;scroll-snap-type:x mandatory}.home-region-dock button{flex:0 0 225px;scroll-snap-align:start;border-right:1px solid rgba(127,166,232,.16)}
           .home-action{padding:76px 0 88px}.home-action-head{display:block;margin-bottom:28px}.home-action-head>.home-kicker{margin-bottom:13px}.home-action-head h2{font-size:clamp(42px,12vw,56px);line-height:.95}.home-action-head p{margin-top:18px;font-size:15px;line-height:1.6}.home-action-grid{width:100%;height:480px;display:flex;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 18px 8px;scroll-padding-left:18px}.home-action-scene{flex:0 0 84vw;height:100%;border-radius:22px;scroll-snap-align:start}.home-action-copy{left:21px;right:18px;bottom:84px}.home-action-copy strong{font-size:38px}.home-action-copy small{font-size:9px}
           .home-concierge{padding:78px 0}.home-concierge-grid{gap:38px}.home-concierge-grid>div:first-child{order:1}.home-concierge-copy{text-align:left}.home-concierge-copy .home-kicker{justify-content:flex-start}.home-concierge-copy h2{font-size:clamp(36px,10.7vw,46px);line-height:1}.home-concierge-copy>p{font-size:15px;line-height:1.62;margin:0 0 26px}.home-concierge-copy .tico-button{width:100%}.home-promise-panel{order:2;margin:0 -4px;padding:16px 20px 8px;border-radius:22px}.home-promise-row{grid-template-columns:42px 1fr;gap:13px;padding:19px 0}.home-promise-icon{width:40px;height:40px;border-radius:13px}.home-promise-row h3{font-size:16px}.home-promise-row p{font-size:12.5px;line-height:1.5}

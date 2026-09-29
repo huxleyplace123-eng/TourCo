@@ -24,11 +24,11 @@ assert.equal(home.includes("TodaySection"), false, "homepage should not repeat t
 assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a second ranked catalog");
 assert.equal(home.includes("home-journey"), false, "homepage must not repeat a numbered journey strip below the hero");
 assert.equal(home.includes("SAMPLE_DAYS"), false, "homepage must not repeat another three-step timeline");
-assert.match(home, /01 · Start with what you love/);
-assert.match(home, /What do you want more of\?/);
-assert.match(home, /02 · Find the spark/);
-assert.match(home, /03 · Give it a place/);
-assert.match(home, /04 · Bring it together/);
+assert.equal(home.includes("home-feeling-wrap"), false, "homepage must not insert a redundant preference chooser after the hero");
+assert.equal(/0[1-4] ·/.test(home), false, "homepage sections must not use a forced numbered chapter system");
+assert.match(home, /Costa Rica in motion/);
+assert.match(home, /Make it fit your route/);
+assert.match(home, /The TicoWild difference/);
 assert.equal(home.includes("FEATURED_IDS"), false, "homepage must not repeat a disconnected featured catalog before the visual story");
 assert.equal(home.includes("home-featured-track"), false, "homepage must not duplicate activity discovery in a second rail");
 assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage story scenes need real destinations");
@@ -39,9 +39,9 @@ for (const actionId of ["a7", "a10", "a6", "a9"]) assert.ok(home.includes(`"${ac
 assert.match(home, /go\("map"\)/, "regional discovery must connect to the live map");
 assert.match(home, /className="home-concierge"/, "homepage needs one concise planning explanation");
 assert.match(home, /className="home-closing"/, "homepage needs a cinematic destination close");
-const homeStoryOrder = ["home-feeling-wrap", "home-action", "home-regions", "home-concierge", "home-closing"].map((token) => home.indexOf(token));
+const homeStoryOrder = ["home-action", "home-regions", "home-concierge", "home-closing"].map((token) => home.indexOf(token));
 assert.ok(homeStoryOrder.every((position) => position >= 0), "homepage story is missing a required chapter");
-assert.deepEqual([...homeStoryOrder].sort((a, b) => a - b), homeStoryOrder, "homepage chapters must progress from feeling to experience to place to plan to action");
+assert.deepEqual([...homeStoryOrder].sort((a, b) => a - b), homeStoryOrder, "homepage must progress from vivid experiences to route to plan to action");
 
 const hero = read("src/components/CinematicHero.jsx");
 assert.equal(hero.includes("Where are you staying?"), false, "the homepage must earn the planning ask before requesting a city");
