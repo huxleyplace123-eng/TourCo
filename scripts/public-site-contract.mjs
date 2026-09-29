@@ -41,7 +41,10 @@ assert.match(home, /className="home-closing"/, "homepage needs a cinematic desti
 const hero = read("src/components/CinematicHero.jsx");
 assert.equal(hero.includes("Where are you staying?"), false, "the homepage must earn the planning ask before requesting a city");
 assert.equal(hero.includes("tn-hero-plan"), false, "the homepage hero must not repeat its message in a second planning panel");
-assert.match(hero, /Start my trip/);
+assert.match(hero, /hero-where/, "the hero needs a destination or activity search field");
+assert.match(hero, /hero-when/, "the hero needs an optional travel date field");
+assert.match(hero, /onSearch\(query, date\)/, "the hero search needs to carry both pieces of context into discovery");
+assert.equal(hero.includes("Start my trip"), false, "the search-first hero should not compete with a second planning CTA");
 assert.equal(hero.includes("Browse activities"), false, "the homepage hero should present one clear primary CTA");
 
 const builder = read("src/pages/Build.jsx");
@@ -62,7 +65,14 @@ const app = read("src/App.jsx");
 assert.match(app, /routeFromPath\(window\.location\.pathname\)/, "public pages must restore state from a real URL");
 assert.match(app, /window\.history\[replace \? "replaceState" : "pushState"\]/, "public navigation must update browser history");
 assert.match(app, /ticowild\.trip\.v1/, "saved consumer trips must survive a refresh");
+assert.match(app, /ticowild\.activitySearch/, "hero discovery terms must carry into the activity catalog");
+assert.match(app, /ticowild\.activityDate/, "hero travel dates must carry into the activity catalog");
 assert.match(app, /mobile-plan-bar/, "mobile visitors need a persistent planning action after the hero");
+
+const activitiesPage = read("src/pages/Activities.jsx");
+assert.match(activitiesPage, /ticowild\.activitySearch/, "the activity catalog must receive the hero search term");
+assert.match(activitiesPage, /ticowild\.activityDate/, "the activity catalog must receive the hero travel date");
+assert.match(activitiesPage, /Planning for/, "the selected travel date must remain visible after searching");
 
 const trips = read("src/pages/MyTrips.jsx");
 assert.match(trips, /Ideas saved/);

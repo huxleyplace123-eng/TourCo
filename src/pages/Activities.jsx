@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowRight,
+  CalendarDays,
   ChevronDown,
   Compass,
   Fish,
@@ -175,7 +176,8 @@ function CollectionMosaic({ onChoose }) {
 }
 
 export function Activities({ addToTrip, trip, viewActivity }) {
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(() => window.sessionStorage.getItem("ticowild.activitySearch") || "");
+  const [travelDate] = useState(() => window.sessionStorage.getItem("ticowild.activityDate") || "");
   const [collection, setCollection] = useState("all");
   const [category, setCategory] = useState("All");
   const [region, setRegion] = useState("All");
@@ -184,6 +186,11 @@ export function Activities({ addToTrip, trip, viewActivity }) {
   const [privateOnly, setPrivateOnly] = useState(false);
   const [sort, setSort] = useState("Featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  useEffect(() => {
+    window.sessionStorage.removeItem("ticowild.activitySearch");
+    window.sessionStorage.removeItem("ticowild.activityDate");
+  }, []);
 
   const chooseCollection = (id) => {
     setCollection(id);
@@ -247,6 +254,7 @@ export function Activities({ addToTrip, trip, viewActivity }) {
               );
             })}
           </div>
+          {travelDate && <span className="activity-date-context"><CalendarDays size={14} />Planning for {new Date(`${travelDate}T12:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>}
           <button
             type="button"
             className="activity-filter-trigger"
@@ -350,7 +358,7 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-world-card:hover img{transform:scale(1.045)}
         .activity-world-card:focus-visible{outline:3px solid var(--collection-accent);outline-offset:3px}
         .activity-discovery-bar{position:sticky;top:64px;z-index:45;background:rgba(7,18,39,.94);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-        .activity-discovery-inner{max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}
+        .activity-discovery-inner{max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}.activity-date-context{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:7px 10px;border-radius:999px;background:rgba(255,208,0,.1);border:1px solid rgba(255,208,0,.24);color:${c.gold};font-size:11px;font-weight:850}
         .activity-collection-pills{display:flex;align-items:center;gap:7px;overflow-x:auto;scrollbar-width:none;flex:1}.activity-collection-pills::-webkit-scrollbar{display:none}
         .activity-collection-pills button,.activity-filter-trigger{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;border:1px solid ${c.line};border-radius:999px;background:rgba(255,255,255,.045);color:#fff;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;transition:background .2s ease,border-color .2s ease,color .2s ease}
         .activity-collection-pills button[aria-pressed="true"]{background:rgba(34,211,238,.13);border-color:rgba(34,211,238,.48);color:${c.teal}}
@@ -396,7 +404,8 @@ export function Activities({ addToTrip, trip, viewActivity }) {
           .activity-world-copy strong{font-size:23px;line-height:1.04;margin-top:5px;letter-spacing:-.65px}
           .activity-world-copy>span:nth-of-type(2){display:none}
           .activity-world-cta{width:auto;min-height:0;margin-top:11px!important;padding:0;border:0;background:transparent;justify-content:flex-start;font-size:11.5px!important;letter-spacing:0}
-          .activity-discovery-inner{padding-inline:14px}
+          .activity-discovery-inner{padding-inline:14px;flex-wrap:wrap}
+          .activity-date-context{order:3;width:100%;justify-content:center;margin-top:-2px}
           .activity-filter-panel{padding:4px 14px 14px}
           .activity-filter-fields{grid-template-columns:1fr}
           .activity-filter-options{align-items:flex-start;flex-direction:column;gap:10px}

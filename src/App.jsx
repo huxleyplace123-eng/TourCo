@@ -144,6 +144,12 @@ export default function App() {
     if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
   }, [page, activeId]);
   const viewActivity = (id) => navigate("detail", id);
+  const browseActivities = (query = "", date = "") => {
+    window.sessionStorage.setItem("ticowild.activitySearch", query.trim());
+    if (date) window.sessionStorage.setItem("ticowild.activityDate", date);
+    else window.sessionStorage.removeItem("ticowild.activityDate");
+    navigate("activities");
+  };
   const startPlan = (draft = null) => { setPlannerDraft(draft); go("build"); };
   const consumePlannerDraft = () => setPlannerDraft(null);
   const addToTrip = (id) => { setTrip((t) => (t.some((x) => x.id === id) ? t : [...t, { id, pax: 2 }])); setCartOpen(true); };
@@ -151,7 +157,7 @@ export default function App() {
   const showMobilePlanBar = trip.length === 0 && ["home", "today", "why"].includes(page);
   const showStickyTripBar = trip.length > 0 && ["home", "today", "activities", "packages", "why"].includes(page);
 
-  const shared = { go, addToTrip, trip, viewActivity, removeFromTrip, startPlan, consumePlannerDraft };
+  const shared = { go, addToTrip, trip, viewActivity, browseActivities, removeFromTrip, startPlan, consumePlannerDraft };
 
   return (
     <ConversionCenter>

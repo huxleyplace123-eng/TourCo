@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowRight, ChevronDown, ShieldCheck, Sparkles, Route } from "lucide-react";
+import { CalendarDays, ChevronDown, MapPin, Search, ShieldCheck, Sparkles, Route } from "lucide-react";
 import { c, glass } from "../theme.js";
 import { themedSlides } from "../images.js";
-import { Button } from "./ui.jsx";
-import { Magnetic } from "../motion.jsx";
 
 // Vivid, fishing-forward home backdrop — distinct from the Meet Tico hero.
 const SLIDES = themedSlides("home", 1900);
@@ -16,11 +14,13 @@ function timeGrade(hour) {
   return { accent: "#7DD3FC", label: "Good evening" };
 }
 
-export function CinematicHero({ go }) {
+export function CinematicHero({ go, onSearch }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
   const [hour, setHour] = useState(12);
   const [slide, setSlide] = useState(0);
+  const [query, setQuery] = useState("");
+  const [date, setDate] = useState("");
   const wrapRef = useRef(null);
 
   useEffect(() => {
@@ -45,6 +45,11 @@ export function CinematicHero({ go }) {
   });
   // Scroll-scrub: image scales up + fades as you scroll past the hero.
   const scrub = Math.min(1, scrollY / 700);
+  const submitSearch = (event) => {
+    event.preventDefault();
+    if (onSearch) onSearch(query, date);
+    else go("activities");
+  };
 
   return (
     <div
@@ -52,7 +57,7 @@ export function CinematicHero({ go }) {
       onMouseMove={onMove}
       onMouseLeave={() => setMouse({ x: 0, y: 0 })}
       className="tn-hero"
-      style={{ position: "relative", overflow: "hidden", background: c.sand, minHeight: 610 }}
+      style={{ position: "relative", overflow: "hidden", background: c.sand, minHeight: 700 }}
     >
       <style>{`
         @keyframes tnFloat { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-10px) } }
@@ -66,7 +71,7 @@ export function CinematicHero({ go }) {
         .tn-hero .hero-grid { grid-template-columns: 1fr !important; }
         .tn-hero-content { max-width: 1280px !important; }
         .tn-hero-content > * { min-width: 0; }
-        .tn-hero-copy { max-width: 780px; }
+        .tn-hero-copy { max-width: 880px; }
         .tn-hero-mobile-copy { display: none; }
         .tn-hero-title-line { display: block; }
         .tn-hero-accent-line {
@@ -80,7 +85,28 @@ export function CinematicHero({ go }) {
         .tn-hero-accent-lead,
         .tn-hero-accent-finish { display: inline-block; }
         .tn-hero-accent-finish { margin-left: .22em; }
-        .tn-hero-actions button { min-width: 226px; }
+        .tn-hero-search {
+          width: min(820px,100%);
+          display: grid;
+          grid-template-columns: minmax(0,1.35fr) minmax(190px,.65fr) 60px;
+          align-items: center;
+          gap: 0;
+          margin-top: 30px;
+          padding: 8px;
+          border: 1px solid rgba(255,255,255,.6);
+          border-radius: 28px;
+          background: rgba(251,253,255,.94);
+          box-shadow: 0 30px 80px -34px rgba(0,0,0,.9), 0 0 42px -22px rgba(34,211,238,.8);
+          backdrop-filter: blur(18px);
+        }
+        .tn-search-field { min-width:0;display:grid;grid-template-columns:28px minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:10px 18px; }
+        .tn-search-field + .tn-search-field { border-left:1px solid rgba(11,26,46,.14); }
+        .tn-search-field > svg { grid-row:1 / 3;color:#058da1; }
+        .tn-search-field label { color:${c.ink};font-size:11px;font-weight:900;letter-spacing:.02em; }
+        .tn-search-field input { min-width:0;width:100%;border:0;outline:0;background:transparent;color:${c.ink};font:inherit;font-size:15px;padding:3px 0 0; }
+        .tn-search-field input::placeholder { color:rgba(11,26,46,.5); }
+        .tn-hero-search button { width:56px;height:56px;display:grid;place-items:center;border:0;border-radius:50%;background:${c.gold};color:${c.ink};cursor:pointer;box-shadow:0 12px 28px -12px rgba(255,208,0,.9);transition:transform .18s ease,box-shadow .18s ease; }
+        .tn-hero-search button:hover { transform:scale(1.05);box-shadow:0 16px 36px -12px rgba(255,208,0,1); }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
         @media (min-width: 980px){
           .tn-hero-content { padding: 74px 28px 92px !important; }
@@ -105,9 +131,9 @@ export function CinematicHero({ go }) {
           .tn-hero .tn-h1 {
             width: 100%;
             max-width: none;
-            font-size: clamp(31px,9.4vw,37px) !important;
-            line-height: 1.04 !important;
-            letter-spacing: -1.1px !important;
+            font-size: clamp(42px,12vw,50px) !important;
+            line-height: .98 !important;
+            letter-spacing: -1.7px !important;
           }
           .tn-hero-accent-line { width: 100%; max-width: none; }
           .tn-hero-accent-finish { display: block; margin-left: 0; }
@@ -119,16 +145,21 @@ export function CinematicHero({ go }) {
             font-size: 15.5px !important;
             line-height: 1.55 !important;
           }
+          .tn-hero-search {
+            grid-template-columns:minmax(0,1fr) 58px;
+            margin-top:26px;
+            padding:7px;
+            border-radius:22px;
+          }
+          .tn-search-field { grid-template-columns:22px minmax(0,1fr);column-gap:9px;padding:9px 11px; }
+          .tn-search-field:first-child { grid-column:1 / -1;padding:10px 13px 12px;border-bottom:1px solid rgba(11,26,46,.12); }
+          .tn-search-field + .tn-search-field { border-left:0; }
+          .tn-search-field > svg { width:17px; }
+          .tn-search-field label { font-size:9.5px; }
+          .tn-search-field input { font-size:13px; }
+          .tn-hero-search button { width:48px;height:48px;justify-self:end; }
           .tn-hero-trust { margin-top: 20px !important; gap: 11px !important; }
           .tn-hero-trust > span:first-child { display: none !important; }
-          .tn-hero-actions { margin-top: 30px !important; }
-          .tn-hero-actions > div,
-          .tn-hero-actions button { width: 100%; box-sizing: border-box; }
-        }
-        @media (max-width: 360px){
-          .tn-hero-actions > div,
-          .tn-hero-actions button { width: 100%; box-sizing: border-box; }
-          .tn-hero-actions button { padding-inline: 18px !important; font-size: 16px !important; }
         }
       `}</style>
 
@@ -179,7 +210,7 @@ export function CinematicHero({ go }) {
       {/* ── Content ── */}
       <div className="hero-grid tn-hero-content" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "88px 20px 116px", display: "grid", gridTemplateColumns: "1fr", gap: 56, alignItems: "center" }}>
         <div className="tn-hero-copy" style={{ transform: `translateY(${scrollY * -0.08}px)`, opacity: 1 - scrub * 0.6 }}>
-          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(40px,4.2vw,62px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: "clamp(-1.8px,-.13vw,-1.1px)", margin: 0, animationDelay: ".08s", textWrap: "balance" }}>
+          <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(58px,5.8vw,84px)", lineHeight: .98, fontWeight: 800, letterSpacing: "clamp(-3.8px,-.22vw,-2px)", margin: 0, animationDelay: ".08s", textWrap: "balance" }}>
             <span className="tn-hero-title-line">Costa Rica,</span>
             <span className="tn-hero-accent-line">
               <span className="tn-hero-accent-lead" style={{ color: "#fff", textShadow: "0 8px 30px rgba(0,0,0,.35)" }}>made</span>
@@ -194,6 +225,20 @@ export function CinematicHero({ go }) {
             Tell us how you want it to feel. We’ll shape the days and confirm the real details.
           </p>
 
+          <form className="rise tn-hero-search" onSubmit={submitSearch} role="search" style={{ animationDelay: ".19s" }}>
+            <span className="tn-search-field">
+              <MapPin size={20} aria-hidden="true" />
+              <label htmlFor="hero-where">Where to?</label>
+              <input id="hero-where" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Place or activity" />
+            </span>
+            <span className="tn-search-field">
+              <CalendarDays size={20} aria-hidden="true" />
+              <label htmlFor="hero-when">When</label>
+              <input id="hero-when" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+            </span>
+            <button type="submit" aria-label="Search experiences"><Search size={22} /></button>
+          </form>
+
           {/* refined trust row */}
           <div className="rise tn-hero-trust" style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 24, animationDelay: ".2s" }}>
             {[[Sparkles, "A smaller, curated selection"], [Route, "Built around your route"], [ShieldCheck, "Details confirmed first"]].map(([Icon, t]) => (
@@ -201,10 +246,6 @@ export function CinematicHero({ go }) {
                 <Icon size={15} color={c.teal} />{t}
               </span>
             ))}
-          </div>
-
-          <div className="rise tn-hero-actions" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 36, animationDelay: ".24s" }}>
-            <Magnetic><Button variant="primary" size="lg" onClick={() => go("build")}>Start my trip <ArrowRight size={18} /></Button></Magnetic>
           </div>
 
         </div>
