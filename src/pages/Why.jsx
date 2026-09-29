@@ -8,9 +8,9 @@ import { Reveal } from "../motion.jsx";
 import { useConversion } from "../components/ConversionCenter.jsx";
 
 const STEPS = [
-  { icon: MapPin, title: "Share the shape of your trip", body: "Where you are staying, your dates, who is traveling and the kind of day you want." },
-  { icon: Route, title: "We narrow the choices", body: "TicoWild uses the route, pace and season to suggest a smaller set of experiences that fit together." },
-  { icon: CalendarCheck, title: "We confirm the real details", body: "Availability, starting time, pickup, operator and final price are checked before you are asked to pay." },
+  { icon: MapPin, title: "Tell us about your trip", body: "Add your destinations, dates, group size and preferred activities." },
+  { icon: Route, title: "Review recommended activities", body: "TicoWild suggests activities based on your route, schedule and preferences." },
+  { icon: CalendarCheck, title: "Confirm availability and price", body: "We check availability, start time, pickup, operator and final price before payment." },
 ];
 
 const CLEAR = [
@@ -25,8 +25,8 @@ export function Why({ go }) {
       <PageHero
         image={pageHero("why")}
         eyebrow="How TicoWild works"
-        title="Less searching. Better Costa Rica days."
-        sub="TicoWild helps you turn a giant list of possible tours into a smaller plan that fits where you are staying, how you travel and how much time you actually have."
+        title="How TicoWild trip planning works"
+        sub="Tell us where you are staying, your dates and the activities you want. TicoWild organizes the options and confirms the details before payment."
       >
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 22 }}>
           <Button variant="primary" size="lg" onClick={() => go("build")}>Start my plan <ArrowRight size={18} /></Button>
@@ -36,8 +36,8 @@ export function Why({ go }) {
 
       <Section bg={c.sand} pad={68}>
         <div style={{ textAlign: "center", maxWidth: 670, margin: "0 auto 36px" }}>
-          <span style={{ color: c.teal, fontWeight: 800, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase" }}>Three simple steps</span>
-          <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.6vw,46px)", lineHeight: 1.06, letterSpacing: -1.3, margin: "9px 0 12px" }}>From “what should we do?” to a plan that makes sense.</h2>
+          <span style={{ color: c.teal, fontWeight: 800, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase" }}>Planning process</span>
+          <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.6vw,46px)", lineHeight: 1.06, letterSpacing: -1.3, margin: "9px 0 12px" }}>Plan your trip in three steps.</h2>
           <p style={{ color: c.stone, fontSize: 16, lineHeight: 1.7, margin: 0 }}>The planner is free. Adding something to a trip does not reserve it or charge you.</p>
         </div>
         <div className="why-step-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
@@ -77,7 +77,7 @@ export function Why({ go }) {
             </div>
             <div>
               <span style={{ color: c.gold, fontSize: 12, fontWeight: 800, letterSpacing: ".09em", textTransform: "uppercase" }}>The real difference</span>
-              <h2 style={{ color: "#fff", fontSize: "clamp(29px,4.4vw,45px)", lineHeight: 1.05, letterSpacing: -1.2, margin: "9px 0 14px" }}>We are not trying to show you everything.</h2>
+              <h2 style={{ color: "#fff", fontSize: "clamp(29px,4.4vw,45px)", lineHeight: 1.05, letterSpacing: -1.2, margin: "9px 0 14px" }}>What TicoWild shows and confirms.</h2>
               <p style={{ color: c.stone, fontSize: 16.5, lineHeight: 1.72, margin: 0 }}>Instead of scrolling through hundreds of nearly identical listings, you get a smaller set of experiences that fit your route, pace and available time.</p>
               <div style={{ marginTop: 22 }}><Button variant="primary" onClick={() => go("activities")}><Sparkles size={16} />Explore the curated list</Button></div>
             </div>
@@ -87,8 +87,8 @@ export function Why({ go }) {
 
       <Section bg={c.sand} pad={68}>
         <div style={{ borderRadius: 28, background: grad.hero, padding: "clamp(28px,5vw,54px)", textAlign: "center" }}>
-          <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", margin: 0, letterSpacing: -1.2 }}>Start with the trip you want to remember.</h2>
-          <p style={{ color: "rgba(255,255,255,.75)", fontSize: 16.5, lineHeight: 1.65, maxWidth: 560, margin: "13px auto 24px" }}>Choose the feeling first. Your destination and dates come next, once the plan has a direction.</p>
+          <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", margin: 0, letterSpacing: -1.2 }}>Start planning your Costa Rica trip.</h2>
+          <p style={{ color: "rgba(255,255,255,.75)", fontSize: 16.5, lineHeight: 1.65, maxWidth: 560, margin: "13px auto 24px" }}>Enter your travelers, destinations, dates and activity preferences.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
             <Button variant="primary" size="lg" onClick={() => go("build")}>Build my plan <ArrowRight size={18} /></Button>
             <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask Rico</Button>

@@ -26,9 +26,9 @@ assert.equal(home.includes("home-journey"), false, "homepage must not repeat a n
 assert.equal(home.includes("SAMPLE_DAYS"), false, "homepage must not repeat another three-step timeline");
 assert.equal(home.includes("home-feeling-wrap"), false, "homepage must not insert a redundant preference chooser after the hero");
 assert.equal(/0[1-4] ·/.test(home), false, "homepage sections must not use a forced numbered chapter system");
-assert.match(home, /Costa Rica in motion/);
-assert.match(home, /Make it fit your route/);
-assert.match(home, /The TicoWild difference/);
+assert.match(home, /Popular Costa Rica/);
+assert.match(home, /Explore activities/);
+assert.match(home, /Build your Costa Rica/);
 assert.equal(home.includes("FEATURED_IDS"), false, "homepage must not repeat a disconnected featured catalog before the visual story");
 assert.equal(home.includes("home-featured-track"), false, "homepage must not duplicate activity discovery in a second rail");
 assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage story scenes need real destinations");
@@ -57,10 +57,10 @@ assert.match(nav, /tripCount > 0 \? "My trip" : "Plan my trip"/, "the navigation
 assert.equal(nav.includes("nav-cta"), false, "the navigation must not show separate My Trip and Plan my trip controls");
 
 const builder = read("src/pages/Build.jsx");
-assert.match(builder, /The feeling/);
-assert.match(builder, /The shape/);
-assert.match(builder, /Final touches/);
-assert.ok(builder.indexOf("What should this trip feel like?") < builder.indexOf("Where does this trip take shape?"), "the planning flow must ask about the desired experience before route logistics");
+assert.match(builder, /Travelers and interests/);
+assert.match(builder, /Destinations and dates/);
+assert.match(builder, /Budget and needs/);
+assert.ok(builder.indexOf("Who is traveling and what do you want to do?") < builder.indexOf("Where are you going and when?"), "the planning flow must ask about travelers and interests before route logistics");
 assert.match(builder, /result\.brief\?\.month/, "the planner must not invent a travel month when dates are blank");
 assert.match(builder, /Want us to confirm this trip\?/, "the completed planner must visibly ask for contact information");
 assert.match(builder, /Send my plan to TicoWild/, "the completed planner needs a direct CRM handoff");
@@ -89,7 +89,7 @@ assert.match(trips, /Availability check/);
 assert.match(trips, /Confirm and pay/);
 
 const detail = read("src/pages/Detail.jsx");
-assert.match(detail, /What you’ll know before you pay/);
+assert.match(detail, /Availability, operator and pricing/);
 assert.match(detail, /Cancellation terms/);
 assert.match(detail, /const HERO_GLASS = "rgba\(5,15,33,\.86\)"/, "activity hero controls need a high-contrast dark surface");
 assert.match(detail, /className="detail-back-button"/, "the activity back control needs explicit contrast styling");
@@ -124,8 +124,11 @@ assert.equal(insider.includes("without throwing away the depth"), false, "intern
 const why = read("src/pages/Why.jsx");
 assert.equal(why.includes("TicoWild should win"), false, "internal positioning language must not appear on the public site");
 const dealsPage = read("src/pages/Deals.jsx");
-assert.match(dealsPage, /title="Spend smarter\. Do more\."/, "the deals page needs one clear, non-repeating promise");
+assert.match(dealsPage, /title="Costa Rica deals and promo codes"/, "the deals page needs a direct descriptive title");
 assert.equal(dealsPage.includes('title="Spend less on the right things" accentWord="less"'), false, "the deals hero must not duplicate its accent word");
+for (const phrase of ["Now shape the route", "We’ll keep it practical", "See the kind of day", "Choose your kind of wild", "Less searching. Better Costa Rica days.", "Spend smarter. Do more.", "Where does this trip take shape?", "What should this trip feel like?", "Private Signature Days"]) {
+  assert.equal(publicSource.includes(phrase), false, `public copy must use direct language instead of: ${phrase}`);
+}
 const legal = read("src/components/LegalModal.jsx");
 assert.equal(legal.includes("counsel-reviewed"), false, "the legal modal must not claim an unavailable governing document");
 

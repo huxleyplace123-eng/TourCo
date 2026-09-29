@@ -219,10 +219,10 @@ export function CinematicHero({ go, onSearch }) {
             </span>
           </h1>
           <p className="rise tn-hero-desktop-copy" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
-            Tell us how you want the trip to feel. We’ll shape the days around your route and confirm the real details before you decide.
+            Search by place or activity. Add your travel date if you know it.
           </p>
           <p className="rise tn-hero-mobile-copy" style={{ color: "rgba(243,247,255,.82)", animationDelay: ".16s" }}>
-            Tell us how you want it to feel. We’ll shape the days and confirm the real details.
+            Search by place or activity. Add your date if you know it.
           </p>
 
           <form className="rise tn-hero-search" onSubmit={submitSearch} role="search" style={{ animationDelay: ".19s" }}>

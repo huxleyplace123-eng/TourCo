@@ -65,7 +65,7 @@ export function Today({ go, addToTrip, trip, viewActivity }) {
             {t.greeting} from <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>{region}</span>.
           </h1>
           <p style={{ color: "rgba(243,247,255,.85)", fontSize: 17, marginTop: 10, maxWidth: 560 }}>
-            Here's what looks best today — picked by TicoWild's local brain around the weather, the tides, and where you are.
+            Activity suggestions for today based on the weather, tides and selected region.
           </p>
 
           {/* region + sun row */}
@@ -132,9 +132,9 @@ export function Today({ go, addToTrip, trip, viewActivity }) {
           <div style={{ marginTop: 30, position: "relative", overflow: "hidden", borderRadius: 24, border: `1px solid ${c.line}`, background: c.canvas2, padding: "28px 24px", textAlign: "center" }}>
             <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 90% at 80% 20%, rgba(34,211,238,.16), transparent 55%)` }} />
             <div style={{ position: "relative" }}>
-              <h2 style={{ color: "#fff", fontSize: "clamp(22px,3vw,30px)", fontWeight: 800, letterSpacing: -0.5, margin: 0 }}>Want the whole day planned?</h2>
-              <p style={{ color: "rgba(243,247,255,.8)", fontSize: 15.5, margin: "10px auto 20px", maxWidth: 480 }}>Rico builds a full personalized day-by-day around {region} — drive times, tides, and season handled.</p>
-              <Button variant="primary" size="lg" onClick={() => go("build")}>Build my Costa Rica <ArrowRight size={18} /></Button>
+              <h2 style={{ color: "#fff", fontSize: "clamp(22px,3vw,30px)", fontWeight: 800, letterSpacing: -0.5, margin: 0 }}>Create a full-day activity plan</h2>
+              <p style={{ color: "rgba(243,247,255,.8)", fontSize: 15.5, margin: "10px auto 20px", maxWidth: 480 }}>Create a schedule for {region} using activity times, driving time, tides and seasonal information.</p>
+              <Button variant="primary" size="lg" onClick={() => go("build")}>Create activity plan <ArrowRight size={18} /></Button>
             </div>
           </div>
         </Reveal>

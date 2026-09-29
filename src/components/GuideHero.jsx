@@ -69,10 +69,10 @@ export function GuideHero({ go }) {
       <div className="guide-hero-content" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "34px 20px 30px", width: "100%" }}>
         <div style={{ animation: "guideRise .6s ease both" }}><Eyebrow><span style={{ color: c.gold }}>Local's Guide</span></Eyebrow></div>
         <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "4px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)", animation: "guideRise .6s .06s both" }}>
-          Costa Rica, <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>region by region</span>
+          Costa Rica <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>regional guide</span>
         </h1>
         <p style={{ color: "rgba(243,247,255,.85)", fontSize: 15.5, lineHeight: 1.55, maxWidth: 540, margin: "10px 0 0", animation: "guideRise .6s .12s both" }}>
-          Where to go for what — written by the people who actually live and guide here. Tap the map, follow the trail.
+          Compare regions, activities, beaches and travel information.
         </p>
         {/* live "now exploring" chip synced to the carousel */}
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 16, background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", border: `1px solid ${c.line}`, padding: "7px 13px", borderRadius: 999, animation: "guideRise .6s .18s both" }}>

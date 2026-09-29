@@ -76,7 +76,7 @@ function InquiryModal({ request, onClose }) {
         ) : (
           <form onSubmit={submit}>
             <div style={{ color: c.teal, fontSize: 12, fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", marginTop: 6 }}>Request current availability</div>
-            <h2 style={{ color: "#fff", fontSize: "clamp(25px,5vw,34px)", letterSpacing: -1, margin: "7px 58px 8px 0" }}>{activityTitles.length ? activityTitles.join(" + ") : "Let’s shape your Costa Rica days"}</h2>
+            <h2 style={{ color: "#fff", fontSize: "clamp(25px,5vw,34px)", letterSpacing: -1, margin: "7px 58px 8px 0" }}>{activityTitles.length ? activityTitles.join(" + ") : "Request Costa Rica trip planning"}</h2>
             <p style={{ color: c.stone, margin: "0 0 22px", lineHeight: 1.6 }}>Send the basics. We’ll confirm what is available, the exact price and what happens next. No payment is taken here.</p>
             <div className="inquiry-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <Field label="Name"><input required autoFocus maxLength={120} value={form.name} onChange={set("name")} style={inputStyle} autoComplete="name" /></Field>

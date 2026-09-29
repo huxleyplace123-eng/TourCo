@@ -88,7 +88,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
 
             <div className="detail-decision-block" style={{ padding: "clamp(22px,4vw,30px)", borderRadius: 22, background: c.canvas2, border: `1px solid ${c.line}` }}>
               <div style={{ color: c.teal, fontSize: 11.5, fontWeight: 900, letterSpacing: ".09em", textTransform: "uppercase" }}>No surprises at checkout</div>
-              <h2 style={{ color: "#fff", fontSize: "clamp(22px,3vw,30px)", letterSpacing: -.6, margin: "7px 0 8px" }}>What you’ll know before you pay</h2>
+              <h2 style={{ color: "#fff", fontSize: "clamp(22px,3vw,30px)", letterSpacing: -.6, margin: "7px 0 8px" }}>Availability, operator and pricing</h2>
               <p style={{ color: c.stone, fontSize: 14, lineHeight: 1.55, margin: "0 0 20px" }}>These details arrive with the availability confirmation, so you can make the decision with the full picture.</p>
               <div className="detail-decision-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 10 }}>
                 {[
@@ -168,7 +168,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
 
         {/* Related */}
         <div style={{ marginTop: 46 }}>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: c.charcoal, marginBottom: 20 }}>You might also like</h2>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: c.charcoal, marginBottom: 20 }}>Related activities</h2>
           <div className="responsive-card-grid" style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
             {alsoLike.map((x, i) => (
               <Reveal key={x.id} delay={(i % 3) * 70}>

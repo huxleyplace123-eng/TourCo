@@ -75,7 +75,7 @@ export function Restaurants({ go, embedded = false }) {
   return (
     <>
       {!embedded && (
-        <PageHero slides={themedSlides("eat")} eyebrow="Where to eat & drink" title="Dining & nightlife, in context"
+        <PageHero slides={themedSlides("eat")} eyebrow="Restaurants and bars" title="Costa Rica restaurants and nightlife"
           sub="Not a directory — the right spot for the moment. Best after a tour, best for sunset, best local sodas, and best happy hours." />
       )}
 

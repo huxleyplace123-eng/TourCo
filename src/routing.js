@@ -18,7 +18,7 @@ const PAGE_PATHS = {
 };
 
 const PAGE_META = {
-  home: ["TicoWild | Curated Costa Rica Experiences", "Start with how you want Costa Rica to feel. TicoWild turns that vision into a trip that flows, then tailors it to your route and dates."],
+  home: ["TicoWild | Costa Rica Activities and Trip Planning", "Browse Costa Rica activities by region and build an activity plan around your destinations and dates."],
   activities: ["Costa Rica Experiences | TicoWild", "Explore curated Costa Rica experiences by region, pace and travel style."],
   packages: ["Costa Rica Experience Collections | TicoWild", "Explore simple Costa Rica experience collections for couples, families, groups and adventure travelers."],
   build: ["Plan My Costa Rica Experiences | TicoWild", "Build a simple Costa Rica activity plan around your dates, route, group and travel style."],

@@ -26,9 +26,9 @@ const COLLECTIONS = [
   {
     id: "ocean-coast",
     number: "01",
-    title: "Ocean & Coast",
-    kicker: "Saltwater days",
-    body: "Surf, sailing, snorkeling, and marine life—curated around the Pacific.",
+    title: "Ocean activities",
+    kicker: "Surf, sailing and snorkeling",
+    body: "Surf lessons, sailing, snorkeling and marine wildlife tours.",
     icon: Waves,
     accent: c.teal,
     heroId: "a4",
@@ -37,9 +37,9 @@ const COLLECTIONS = [
   {
     id: "jungle-thrills",
     number: "02",
-    title: "Jungle, Wildlife & Thrills",
-    kicker: "Costa Rica turned up",
-    body: "Canopy, rapids, waterfalls, wildlife, and big-air adventures with approved guides.",
+    title: "Adventure and wildlife",
+    kicker: "Zip lines, rafting and wildlife",
+    body: "Zip lining, rafting, waterfalls and wildlife tours with approved guides.",
     icon: Mountain,
     accent: "#67E8A5",
     heroId: "a7",
@@ -48,9 +48,9 @@ const COLLECTIONS = [
   {
     id: "signature-days",
     number: "03",
-    title: "Private Signature Days",
-    kicker: "Made around your people",
-    body: "Honeymoons, private yachts, and polished group days that feel entirely your own.",
+    title: "Private tours",
+    kicker: "Private and special occasions",
+    body: "Private yachts, honeymoon activities and tours for private groups.",
     icon: Sparkles,
     accent: c.gold,
     heroId: "a16",
@@ -60,8 +60,8 @@ const COLLECTIONS = [
     id: "fishing",
     number: "04",
     title: "Fishing",
-    kicker: "Go where the bite is",
-    body: "Offshore sportfishing and relaxed inshore trips with approved local captains.",
+    kicker: "Offshore and inshore fishing",
+    body: "Offshore sport fishing and inshore trips with approved local captains.",
     icon: Fish,
     accent: c.blue,
     heroId: "a1",
@@ -135,9 +135,9 @@ function CollectionMosaic({ onChoose }) {
   return (
     <Section bg={c.sand} pad={52}>
       <div className="activity-mosaic-heading">
-        <div className="activity-mosaic-label">Four ways into Costa Rica</div>
-        <h2>Browse by the kind of day you want.</h2>
-        <p>Choose a world below, then let Rico narrow it to the experiences most likely to fit your route, pace and travel style.</p>
+        <div className="activity-mosaic-label">Activity categories</div>
+        <h2>Browse activities by category.</h2>
+        <p>Choose a category, then filter by region, difficulty, family options and private tours.</p>
       </div>
       <div className="activity-worlds" aria-label="Activity collections">
         {COLLECTIONS.map((collection) => {
@@ -159,7 +159,6 @@ function CollectionMosaic({ onChoose }) {
               <span className="activity-world-wash" aria-hidden />
               <span className="activity-world-topline">
                 <span className="activity-world-icon"><Icon size={19} /></span>
-                <span className="activity-world-number">{collection.number}</span>
               </span>
               <span className="activity-world-copy">
                 <span className="activity-world-kicker">{collection.kicker}</span>
@@ -232,9 +231,9 @@ export function Activities({ addToTrip, trip, viewActivity }) {
       <PageHero
         slides={themedSlides("activities")}
         height={380}
-        eyebrow="Curated TicoWild experiences"
-        title="Choose your kind of wild"
-        sub="Four distinct ways to experience Costa Rica—organized by feeling and ranked with Rico’s honest take. Availability and operating details are confirmed before payment."
+        eyebrow="Activities and tours"
+        title="Costa Rica activities and tours"
+        sub="Browse activities by category and region. Availability, operating details and final pricing are confirmed before payment."
       >
         <ActivityMarquee />
       </PageHero>

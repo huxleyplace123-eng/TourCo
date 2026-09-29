@@ -13,8 +13,8 @@ import { useConversion } from "../components/ConversionCenter.jsx";
 
 // How the trip works — three simple, reassuring steps.
 const STEPS = [
-  { icon: PlusCircle, number: "01", title: "Save your favorites", body: "Keep the experiences that feel right." },
-  { icon: Route, number: "02", title: "We shape the trip", body: "Rico arranges the best order and timing." },
+  { icon: PlusCircle, number: "01", title: "Save activities", body: "Keep the activities you want to review." },
+  { icon: Route, number: "02", title: "Review the suggested schedule", body: "Activities are arranged by location and timing." },
   { icon: CalendarCheck, number: "03", title: "Confirm when ready", body: "We verify every detail before you pay." },
 ];
 
@@ -32,9 +32,9 @@ function EmptyState({ go }) {
       {/* how it works */}
       <Reveal>
         <div className="trip-start-intro">
-          <span>Simple from the start</span>
-          <h2>From inspiration to a confirmed trip.</h2>
-          <p>Save what excites you. We’ll make the pieces fit.</p>
+          <span>How saved trips work</span>
+          <h2>Save activities and request availability.</h2>
+          <p>Save activities here, review the suggested schedule and request confirmed details when ready.</p>
         </div>
         <ol className="trip-start-progress" aria-label="Three steps from inspiration to confirmation">
           {STEPS.map((s) => (
@@ -57,8 +57,8 @@ function EmptyState({ go }) {
         <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16 }}>
           <TicoFace size={42} mood="happy" />
           <div>
-            <h2 style={{ margin: 0, color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.4 }}>What a great Costa Rica day feels like</h2>
-            <p style={{ margin: "3px 0 0", color: c.stone, fontSize: 14 }}><b style={{ color: c.teal }}>Rico:</b> <span style={{ fontStyle: "italic" }}>"Don't over-schedule. The best days have a rhythm — go hard early, then let the coast slow you down."</span></p>
+            <h2 style={{ margin: 0, color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.4 }}>Example Costa Rica day</h2>
+            <p style={{ margin: "3px 0 0", color: c.stone, fontSize: 14 }}>Schedule more active tours in the morning and leave time for meals, travel and rest.</p>
           </div>
         </div>
       </Reveal>
@@ -84,10 +84,10 @@ function EmptyState({ go }) {
       {/* CTA */}
       <Reveal>
         <div style={{ ...glass, borderRadius: 22, padding: "26px 24px", textAlign: "center" }}>
-          <h3 style={{ color: "#fff", fontWeight: 800, fontSize: 20, margin: "0 0 6px" }}>Ready to build yours?</h3>
-          <p style={{ color: c.stone, fontSize: 14.5, margin: "0 0 18px" }}>Add your first experience and watch the plan come together.</p>
+          <h3 style={{ color: "#fff", fontWeight: 800, fontSize: 20, margin: "0 0 6px" }}>Create an activity plan</h3>
+          <p style={{ color: c.stone, fontSize: 14.5, margin: "0 0 18px" }}>Add an activity or enter your trip details to get started.</p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Button variant="primary" size="lg" onClick={() => go("build")}>Build my adventure <ArrowRight size={18} /></Button>
+            <Button variant="primary" size="lg" onClick={() => go("build")}>Plan my trip <ArrowRight size={18} /></Button>
             <Button variant="ghost" size="lg" onClick={() => go("activities")}>Browse activities</Button>
           </div>
         </div>
@@ -143,7 +143,7 @@ export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
         {chosen.length > 0 && view === "story" ? (
           <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 30, alignItems: "start" }}>
             <div>
-              <h2 style={{ fontSize: 22, fontWeight: 800, color: c.charcoal, margin: "0 0 20px" }}>Your smart day-by-day</h2>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: c.charcoal, margin: "0 0 20px" }}>Suggested activity schedule</h2>
               <SmartPlan chosen={chosen} pax={chosen[0]?.pax || 2} />
               <div style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
                 <Button variant="primary" onClick={() => openInquiry(inquiryDetails)}>

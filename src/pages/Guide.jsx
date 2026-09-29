@@ -103,7 +103,7 @@ export function Guide({ go, embedded = false }) {
       {!embedded && <GuideHero go={go} />}
 
       <Section bg={c.sand}>
-        <SectionHead eyebrow="Explore" title="Pick your corner of the coast" accent />
+        <SectionHead eyebrow="Regions" title="Compare Costa Rica regions" accent />
         <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
           {regions.map((r, i) => (
             <Reveal key={r.name} delay={(i % 3) * 70}>
@@ -140,7 +140,7 @@ export function Guide({ go, embedded = false }) {
       </Section>
 
       <Section bg={c.sand}>
-        <SectionHead eyebrow="Insider tips" title="Know before you go" center />
+        <SectionHead eyebrow="Travel information" title="Costa Rica travel tips" center />
         <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
           {TIPS.map((t) => (
             <div key={t.title} style={{ background: c.surface2, borderRadius: 18, padding: 24 }}>
@@ -156,8 +156,8 @@ export function Guide({ go, embedded = false }) {
 
       {/* ── The Local's Playbook — real, researched insider knowledge ── */}
       <Section bg={c.sand} pad={40}>
-        <SectionHead eyebrow="The Local's Playbook" title="What locals wish you knew" center accent
-          sub="Straight talk from the ground — the stuff that saves your trip." />
+        <SectionHead eyebrow="Local advice" title="Practical Costa Rica travel advice" center accent
+          sub="Transportation, timing, safety and regional advice for your trip." />
         <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
           {PLAYBOOK.map((p, i) => (
             <Reveal key={p.title} delay={(i % 3) * 70}>
@@ -180,7 +180,7 @@ export function Guide({ go, embedded = false }) {
           ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 36 }}>
-          <Button variant="dark" size="lg" onClick={() => go("build")}>Plan a trip with a local <ArrowRight size={18} /></Button>
+          <Button variant="dark" size="lg" onClick={() => go("build")}>Plan my trip <ArrowRight size={18} /></Button>
         </div>
       </Section>
     </>

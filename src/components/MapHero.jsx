@@ -58,10 +58,10 @@ export function MapHero() {
             <Eyebrow><span style={{ color: c.gold }}>Explore the map</span></Eyebrow>
           </div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "mhRise .6s .12s both" }}>
-            All of Costa Rica,<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>one living map.</span>
+            Explore Costa Rica<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>by region.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 480, margin: "16px 0 0", animation: "mhRise .6s .2s both" }}>
-            Real geography, real coordinates. Every tour, beach, kitchen, national park, waterfall and hidden cove — exactly where it is. Tap a pin, plan the route.
+            Find activities, beaches, restaurants, national parks, waterfalls and airports on the map.
           </p>
           <div style={{ display: "flex", gap: 26, marginTop: 24, flexWrap: "wrap", animation: "mhRise .6s .28s both" }}>
             <Stat to={120} suffix="+" label="mapped spots" delay={500} />

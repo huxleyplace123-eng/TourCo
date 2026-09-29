@@ -206,7 +206,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
         {!result ? (
           <div className="trip-builder-form" style={{ maxWidth: 760, margin: "0 auto", ...glass, borderRadius: 24, padding: "clamp(22px,4vw,36px)" }}>
             <div className="planner-progress" aria-label={`Planning step ${stage + 1} of 3`}>
-              {["The feeling", "The shape", "Final touches"].map((label, index) => (
+              {["Travelers and interests", "Destinations and dates", "Budget and needs"].map((label, index) => (
                 <div key={label} className={index <= stage ? "is-active" : ""}><span>{index + 1}</span><strong>{label}</strong></div>
               ))}
             </div>
@@ -214,9 +214,9 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
             {stage === 0 && (
               <div className="planner-stage">
                 <div className="planner-stage-heading">
-                  <span><Heart size={15} />No logistics yet</span>
-                  <h2>What should this trip feel like?</h2>
-                  <p>Start with the people and the energy. We’ll ask where you’re going after the trip has a direction.</p>
+                  <span><Heart size={15} />Travelers and activities</span>
+                  <h2>Who is traveling and what do you want to do?</h2>
+                  <p>Select your group and the types of activities you are interested in.</p>
                 </div>
                 <Field label="Who are you sharing it with?">
                   <ChipRow single value={form.who} onToggle={(v) => set("who", v)} options={[
@@ -224,23 +224,23 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
                     { v: "group", label: "Friends 🍻" }, { v: "solo", label: "Solo 🎒" },
                   ]} />
                 </Field>
-                <Field label="Which feeling sounds most like your Costa Rica?">
+                <Field label="What types of activities interest you most?">
                   <ChipRow single value={form.vibe} onToggle={(v) => set("vibe", v)} options={[
                     { v: "thrill", label: "Big adventure 🔥" }, { v: "chill", label: "Slow and scenic 🌅" },
                     { v: "nature", label: "Wildlife and rainforest 🦥" }, { v: "water", label: "Ocean and rivers 🌊" },
                   ]} />
                 </Field>
-                <Button variant="primary" size="lg" full onClick={() => setStage(1)}>Shape this trip <ArrowRight size={18} /></Button>
-                <p className="planner-reassurance">No city, dates or signup needed yet</p>
+                <Button variant="primary" size="lg" full onClick={() => setStage(1)}>Continue <ArrowRight size={18} /></Button>
+                <p className="planner-reassurance">You can change these choices later</p>
               </div>
             )}
 
             {stage === 1 && (
               <div className="planner-stage">
                 <div className="planner-stage-heading">
-                  <span><MapPinned size={15} />Now make it practical</span>
-                  <h2>Where does this trip take shape?</h2>
-                  <p>Use what you know. “Not sure yet” works too, and dates can stay blank while you explore.</p>
+                  <span><MapPinned size={15} />Destinations and dates</span>
+                  <h2>Where are you going and when?</h2>
+                  <p>Add your destinations and travel dates. Choose “Not sure yet” if you have not decided.</p>
                 </div>
                 <Field label="Your route or home base">
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -274,16 +274,16 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
             {stage === 2 && (
               <div className="planner-stage">
                 <div className="planner-stage-heading">
-                  <span><Sparkles size={15} />Make it yours</span>
-                  <h2>Anything that changes the right answer?</h2>
-                  <p>These details help Rico avoid generic recommendations and build days that fit the people actually going.</p>
+                  <span><Sparkles size={15} />Budget and requirements</span>
+                  <h2>What is your budget and what should we avoid?</h2>
+                  <p>Add your budget, driving preference and any activities your group needs to avoid.</p>
                 </div>
                 <Field label="Comfortable budget per experience">
                   <ChipRow single value={form.budget} onToggle={(v) => set("budget", v)} options={[
                     { v: "low", label: "Under $100" }, { v: "mid", label: "$100–200" }, { v: "high", label: "Treat us 💎" }, { v: "any", label: "Keep it open" },
                   ]} />
                 </Field>
-                <Field label="Anything Rico should work around?">
+                <Field label="Anything the plan should avoid?">
                   <ChipRow value={buildFlags(form)} onToggle={(v) => {
                     if (v === "avoidLongDrives") set("avoidLongDrives", !form.avoidLongDrives);
                     else if (v === "youngKids") set("youngKids", !form.youngKids);
@@ -297,7 +297,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
                   ]} />
                 </Field>
                 <div className="planner-summary"><strong>{form.who === "group" ? "Friends" : form.who} · {form.vibe}</strong><span>{form.stops.map((stop) => stop.region).join(" → ")} · {form.pax} traveler{form.pax === "1" ? "" : "s"}</span></div>
-                <div className="planner-stage-actions"><Button variant="ghost" onClick={() => setStage(1)}><ChevronLeft size={16} />Back</Button><Button variant="primary" size="lg" onClick={build} disabled={building}>{building ? <>Rico is building your plan…</> : <><Sparkles size={18} />Build my Costa Rica</>}</Button></div>
+                <div className="planner-stage-actions"><Button variant="ghost" onClick={() => setStage(1)}><ChevronLeft size={16} />Back</Button><Button variant="primary" size="lg" onClick={build} disabled={building}>{building ? <>Creating your plan…</> : <><Sparkles size={18} />Create my activity plan</>}</Button></div>
                 {error && <p role="alert" style={{ color: c.orchid, background: "rgba(255,90,77,.08)", border: "1px solid rgba(255,90,77,.24)", borderRadius: 12, padding: "10px 12px", fontSize: 13.5, margin: 0 }}>{error}</p>}
                 <p className="planner-reassurance">Free · no signup · no payment</p>
               </div>

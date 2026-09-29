@@ -88,7 +88,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
               <Sparkles size={14} /> Meet Rico the Tico · your local intelligence
             </div>
             <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: 0, animation: "ticoRise .5s .12s both" }}>
-              The smartest bird<br />in <span style={{ color: c.gold }}>Costa Rica.</span>
+              Meet Rico, your<br /><span style={{ color: c.gold }}>Costa Rica planning guide.</span>
             </h1>
             <p style={{ color: "rgba(243,247,255,.9)", fontSize: "clamp(16px,2vw,18px)", lineHeight: 1.55, margin: "18px 0 0", maxWidth: 520, animation: "ticoRise .5s .2s both" }}>
               I'm Rico the Tico — the personality behind TicoWild's planning tools. I use your route, travel style and seasonal patterns to make a giant list of choices feel much smaller.
@@ -120,7 +120,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
       <Section bg={c.sand}>
         <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 32px" }}>
           <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>Why travelers trust the bird</div>
-          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>What Rico knows</h2>
+          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>What Rico can help with</h2>
         </div>
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))" }}>
           {GUIDE_KNOWLEDGE.map((k, i) => {
@@ -159,7 +159,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
           <div style={{ ...glass, borderRadius: 22, padding: "clamp(22px,4vw,32px)", maxWidth: 820, margin: "0 auto" }}>
             <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8 }}>
               <TicoFace size={44} mood="proud" />
-              <h2 style={{ margin: 0, color: "#fff", fontSize: 22, fontWeight: 800 }}>How I rate — and why you can trust it</h2>
+              <h2 style={{ margin: 0, color: "#fff", fontSize: 22, fontWeight: 800 }}>How activity recommendations are rated</h2>
             </div>
             <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.6, margin: "0 0 18px" }}>
               I don't hand out stars for fun. Each score is a planning opinion based on trip fit, seasonal patterns, value and the information available in TicoWild. The team still confirms the current operator and details before payment:
@@ -233,7 +233,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
       {/* ══ HIS LEGEND ══ the myth, briefly ══ */}
       <Section bg={c.sand} pad={30}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          <h2 style={{ color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.5, margin: "0 0 20px", textAlign: "center" }}>The legend of Rico the Tico</h2>
+          <h2 style={{ color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.5, margin: "0 0 20px", textAlign: "center" }}>About Rico</h2>
           <div style={{ position: "relative", paddingLeft: 26 }}>
             <div aria-hidden style={{ position: "absolute", left: 7, top: 6, bottom: 6, width: 2, background: `linear-gradient(${c.teal},${c.blue})`, opacity: 0.4 }} />
             {LORE.map((l, i) => (
@@ -254,7 +254,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
         <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 18, maxWidth: 820, marginInline: "auto" }}>
           <TicoFace size={44} mood="excited" />
           <div>
-            <h2 style={{ margin: 0, color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.4 }}>My all-time favorites</h2>
+            <h2 style={{ margin: 0, color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.4 }}>Recommended activities</h2>
             <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 14 }}><b style={{ color: c.teal }}>Rico:</b> <span style={{ fontStyle: "italic" }}>"If you only did my top few, you'd still go home happy. Ranked, most-loved first."</span></p>
           </div>
         </div>

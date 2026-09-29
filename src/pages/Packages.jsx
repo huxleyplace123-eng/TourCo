@@ -185,12 +185,12 @@ export function Packages({ go, addToTrip }) {
           </div>
         </div>
         <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
-          <Eyebrow><span style={{ color: c.gold }}>Ready-made trips</span></Eyebrow>
+          <Eyebrow><span style={{ color: c.gold }}>Activity packages</span></Eyebrow>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "6px 0 10px" }}>
-            Curated adventure <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>packages</span>
+            Costa Rica activity <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>packages</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.8)", fontSize: 18, maxWidth: 560, lineHeight: 1.6 }}>
-            Pre-built by locals for every kind of traveler. Open one to see the day-by-day — then let your concierge tailor it to your dates.
+            Review ready-made activity packages with estimated pricing. Open a package to see the schedule and included activities.
           </p>
         </div>
       </div>
@@ -215,8 +215,8 @@ export function Packages({ go, addToTrip }) {
         <div className="closing-cta" style={{ position: "relative", borderRadius: 30, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2, padding: "56px 28px", textAlign: "center" }}>
           <div style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 80% at 80% 20%, rgba(34,211,238,.18), transparent 55%), radial-gradient(60% 80% at 15% 90%, rgba(255,208,0,.12), transparent 55%)` }} />
           <div style={{ position: "relative" }}>
-            <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,42px)", fontWeight: 800, letterSpacing: -1, margin: 0 }}>Nothing fits perfectly?</h2>
-            <p style={{ color: "rgba(243,247,255,.8)", fontSize: 17, marginTop: 12, maxWidth: 520, marginInline: "auto" }}>Every package is a starting point. Tell Rico what you want and we’ll shape it around your dates, pace and route.</p>
+            <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,42px)", fontWeight: 800, letterSpacing: -1, margin: 0 }}>Need a custom activity plan?</h2>
+            <p style={{ color: "rgba(243,247,255,.8)", fontSize: 17, marginTop: 12, maxWidth: 520, marginInline: "auto" }}>Enter your dates, destinations and activity preferences to create a custom plan.</p>
             <div className="mobile-cta-row" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 26 }}>
               <Button variant="primary" size="lg" onClick={() => go("build")}>Build a custom trip <ArrowRight size={18} /></Button>
               <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "collection" })}><MessageCircle size={18} />Ask Rico</Button>

@@ -60,7 +60,7 @@ export function Deals({ go, embedded = false, section = "deals" }) {
 
   return (
     <>
-      {!embedded && <PageHero slides={themedSlides("deals")} eyebrow="Listed savings" title="Spend smarter. Do more." sub={`${deals.length} listed offers, ${codeCount} promo codes, plus free stops and practical ways to make the trip go further.`} />}
+      {!embedded && <PageHero slides={themedSlides("deals")} eyebrow="Deals and discounts" title="Costa Rica deals and promo codes" sub={`${deals.length} listed offers, ${codeCount} promo codes, plus free and low-cost activities.`} />}
 
       <Section bg={c.sand} pad={embedded ? 26 : 54}>
         {!embedded && (

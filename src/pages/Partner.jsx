@@ -54,7 +54,7 @@ export function Partner({ go }) {
       <Section bg={c.sand}>
         <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 30, alignItems: "start" }}>
           <div>
-            <SectionHead eyebrow="What we look for" title="Are we a fit?" />
+            <SectionHead eyebrow="Requirements" title="TicoWild partner requirements" />
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {CHECKLIST.map((it) => (
                 <div key={it} style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 16, color: c.charcoal, fontWeight: 600 }}>

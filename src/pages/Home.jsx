@@ -10,10 +10,10 @@ import { activityPath } from "../routing.js";
 
 const ACTION_IDS = ["a7", "a10", "a6", "a9"];
 const ACTION_COPY = {
-  a7: { kicker: "Above the rainforest", title: "Fly the canopy" },
-  a10: { kicker: "Deep in the green", title: "Run the river" },
-  a6: { kicker: "Out on the Pacific", title: "Catch the break" },
-  a9: { kicker: "Wild water", title: "Meet the giants" },
+  a7: { kicker: "Manuel Antonio", title: "Zip lining" },
+  a10: { kicker: "Quepos", title: "White-water rafting" },
+  a6: { kicker: "Tamarindo", title: "Surfing" },
+  a9: { kicker: "Uvita", title: "Whale watching" },
 };
 const ACTIONS = ACTION_IDS.map((id) => activities.find((activity) => activity.id === id)).filter(Boolean);
 const REGION_NAMES = ["Manuel Antonio", "Guanacaste", "Uvita", "Dominical"];
@@ -22,9 +22,9 @@ const HOME_REGION_IMAGE = themedSlides("home", 1800)[6];
 const HOME_CLOSE_IMAGE = themedSlides("home", 1800)[8];
 
 const PROMISES = [
-  { icon: MapPin, title: "A route that flows", body: "The right experiences in the right order—without zig-zagging the country." },
-  { icon: ShieldCheck, title: "Real details, checked", body: "Availability, timing and operator details are confirmed before you decide." },
-  { icon: Check, title: "One clear plan", body: "Your days, pricing and next steps stay together in one place." },
+  { icon: MapPin, title: "Route planning", body: "Activities are organized around your destinations and travel time." },
+  { icon: ShieldCheck, title: "Confirmed details", body: "We confirm availability, timing, operator and final price." },
+  { icon: Check, title: "Trip summary", body: "Your activities, pricing and next steps stay in one place." },
 ];
 
 export function Home({ go, viewActivity, browseActivities }) {
@@ -34,9 +34,9 @@ export function Home({ go, viewActivity, browseActivities }) {
 
       <section className="home-action" aria-labelledby="home-action-title">
         <div className="home-shell home-action-head">
-          <span className="home-kicker">Costa Rica in motion</span>
-          <h2 id="home-action-title">See the kind of day<br /><em>that pulls you in.</em></h2>
-          <p>Turn that feeling into something real: canopy air, white water, warm waves or wildlife.</p>
+          <span className="home-kicker">Activities and tours</span>
+          <h2 id="home-action-title">Popular Costa Rica<br /><em>activities.</em></h2>
+          <p>Browse zip lining, rafting, surfing and wildlife tours.</p>
         </div>
         <div className="home-action-grid">
           {ACTIONS.map((activity, index) => (
@@ -65,16 +65,16 @@ export function Home({ go, viewActivity, browseActivities }) {
         <div className="home-regions-wash" />
         <div className="home-shell home-regions-content">
           <Reveal>
-            <span className="home-kicker">Make it fit your route</span>
-            <h2>Now shape the route.<br /><em>We’ll keep it practical.</em></h2>
-            <p>Once you know what excites you, we place it where the geography, drive time and pace make sense.</p>
-            <Button variant="primary" size="lg" onClick={() => go("map")}>See where it fits <ArrowRight size={18} /></Button>
+            <span className="home-kicker">Costa Rica regions</span>
+            <h2>Explore activities<br /><em>by region.</em></h2>
+            <p>See activities in Manuel Antonio, Guanacaste, Uvita and Dominical, along with route information.</p>
+            <Button variant="primary" size="lg" onClick={() => go("map")}>Explore the map <ArrowRight size={18} /></Button>
           </Reveal>
         </div>
         <div className="home-region-dock" aria-label="Explore Costa Rica regions">
-          {FEATURED_REGIONS.map((region, index) => (
+          {FEATURED_REGIONS.map((region) => (
             <button key={region.name} onClick={() => go("map")}>
-              <span>0{index + 1}</span><div><strong>{region.name}</strong><small>{region.tag}</small></div><ArrowRight size={15} />
+              <div><strong>{region.name}</strong><small>{region.tag}</small></div><ArrowRight size={15} />
             </button>
           ))}
         </div>
@@ -84,15 +84,15 @@ export function Home({ go, viewActivity, browseActivities }) {
         <div className="home-shell home-concierge-grid">
           <Reveal>
             <div className="home-concierge-copy">
-              <span className="home-kicker">The TicoWild difference</span>
-              <h2>You choose the feeling.<br />We make the days work.</h2>
-              <p>Now TicoWild connects the experiences, route and real details into one trip you can understand.</p>
-              <Button variant="primary" size="lg" onClick={() => go("build")}><Sparkles size={17} />Start my plan</Button>
+              <span className="home-kicker">Trip planning</span>
+              <h2>Build your Costa Rica<br />activity plan.</h2>
+              <p>Choose activities and dates. TicoWild helps organize the schedule and confirms availability, timing, operator and final price.</p>
+              <Button variant="primary" size="lg" onClick={() => go("build")}><Sparkles size={17} />Build my trip</Button>
             </div>
           </Reveal>
 
           <div className="home-promise-panel">
-            <span className="home-promise-label">Made easier from the start</span>
+            <span className="home-promise-label">What TicoWild helps with</span>
             {PROMISES.map(({ icon: Icon, title, body }, index) => (
               <Reveal key={title} delay={index * 70}>
                 <div className="home-promise-row">
@@ -109,10 +109,10 @@ export function Home({ go, viewActivity, browseActivities }) {
         <div className="home-closing-wash" />
         <div className="home-closing-content">
           <Reveal>
-            <span className="home-kicker">One clear next step</span>
-            <h2>Ready to make it<br />feel like yours?</h2>
-            <p>Tell us who is going and what matters most. We’ll take it from there.</p>
-            <Button variant="primary" size="lg" onClick={() => go("build")}>Plan my Costa Rica trip <ArrowRight size={18} /></Button>
+            <span className="home-kicker">Plan your trip</span>
+            <h2>Start planning your<br />Costa Rica trip.</h2>
+            <p>Enter your dates, destinations, group size and preferred activities.</p>
+            <Button variant="primary" size="lg" onClick={() => go("build")}>Start planning <ArrowRight size={18} /></Button>
           </Reveal>
         </div>
       </section>
@@ -126,7 +126,7 @@ export function Home({ go, viewActivity, browseActivities }) {
         .home-regions-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,15,30,.94) 0%,rgba(5,15,30,.68) 47%,rgba(5,15,30,.14) 100%),linear-gradient(0deg,rgba(5,15,30,.8) 0%,transparent 44%)}
         .home-regions-content{position:relative;z-index:2;padding-bottom:130px}.home-regions-content h2{margin:17px 0 20px;color:#fff;font-size:clamp(52px,6.4vw,86px);font-weight:830;letter-spacing:-.057em;line-height:.92;max-width:900px}.home-regions-content h2 em{font:inherit;color:${c.gold};font-style:normal}.home-regions-content p{max-width:570px;margin:0 0 30px;color:rgba(239,245,255,.8);font-size:17px;line-height:1.7}
         .home-region-dock{position:absolute;z-index:3;left:50%;bottom:26px;transform:translateX(-50%);display:grid;grid-template-columns:repeat(4,1fr);width:min(1320px,calc(100% - 48px));padding:10px;border:1px solid rgba(255,255,255,.17);border-radius:22px;background:rgba(5,15,30,.76);backdrop-filter:blur(18px);box-shadow:0 28px 70px -34px rgba(0,0,0,.9)}
-        .home-region-dock button{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:15px 16px;border:0;border-right:1px solid rgba(127,166,232,.16);background:transparent;color:#fff;text-align:left;cursor:pointer}.home-region-dock button:last-child{border-right:0}.home-region-dock button>span{color:${c.teal};font-size:9px;font-weight:900}.home-region-dock button div{display:grid;gap:2px}.home-region-dock strong{font-size:13px}.home-region-dock small{color:${c.stone};font-size:10px}.home-region-dock svg{color:rgba(255,255,255,.55);transition:transform .2s ease}.home-region-dock button:hover svg{transform:translateX(4px);color:${c.gold}}
+        .home-region-dock button{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:15px 16px;border:0;border-right:1px solid rgba(127,166,232,.16);background:transparent;color:#fff;text-align:left;cursor:pointer}.home-region-dock button:last-child{border-right:0}.home-region-dock button div{display:grid;gap:2px}.home-region-dock strong{font-size:13px}.home-region-dock small{color:${c.stone};font-size:10px}.home-region-dock svg{color:rgba(255,255,255,.55);transition:transform .2s ease}.home-region-dock button:hover svg{transform:translateX(4px);color:${c.gold}}
 
         .home-action{padding:116px 0 128px;background:#050f1f;overflow:hidden}.home-action-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.46fr);column-gap:70px;align-items:end;margin-bottom:42px}.home-action-head>.home-kicker{grid-column:1 / -1;margin-bottom:16px}.home-action-head h2{margin:0;color:#fff;font-size:clamp(48px,5.9vw,78px);font-weight:830;letter-spacing:-.055em;line-height:.94}.home-action-head h2 em{color:${c.gold};font:inherit;font-style:normal}.home-action-head p{margin:0 0 5px;color:${c.stone};font-size:16px;line-height:1.68;max-width:420px}.home-action-grid{width:min(1380px,calc(100% - 48px));height:690px;margin:0 auto;display:grid;grid-template-columns:1.18fr .78fr .78fr;grid-template-rows:1fr 1fr;gap:12px}.home-action-scene{position:relative;display:block;min-width:0;overflow:hidden;border-radius:24px;border:1px solid rgba(255,255,255,.13);background:#0b1a2e;box-shadow:0 35px 90px -54px rgba(0,0,0,.95)}.home-action-scene-1{grid-row:1 / 3}.home-action-scene-2{grid-column:2 / 4}.home-action-scene img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.16) contrast(1.03);transition:transform 1.1s cubic-bezier(.2,.7,.2,1),filter .35s ease}.home-action-scene:hover img{transform:scale(1.045);filter:saturate(1.3) contrast(1.04)}.home-action-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(3,12,25,.88) 100%),linear-gradient(110deg,rgba(3,12,25,.2),transparent 56%)}.home-action-copy{position:absolute;z-index:2;left:28px;right:24px;bottom:25px;display:grid;gap:5px;color:#fff}.home-action-copy small{color:${c.teal};font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.home-action-copy strong{font-size:clamp(25px,2.8vw,41px);line-height:1;letter-spacing:-.04em}.home-action-copy>span{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.78);font-size:12px;font-weight:750}.home-action-copy svg{color:${c.gold};transition:transform .2s ease}.home-action-scene:hover .home-action-copy svg{transform:translateX(4px)}
 

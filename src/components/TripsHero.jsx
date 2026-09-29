@@ -39,12 +39,12 @@ export function TripsHero({ count = 0 }) {
         <div className="tr-copy">
           <div style={{ animation: "trRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>My Trips</span></Eyebrow></div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "trRise .6s .12s both" }}>
-            Your Costa Rica,<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>one journey.</span>
+            Your saved Costa Rica<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>activities.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "trRise .6s .2s both" }}>
             {count > 0
-              ? `${count} experience${count !== 1 ? "s" : ""} lined up. Review the suggested order and request current availability when it feels right.`
-              : "Everything you add lands here and becomes a starting plan. Nothing is reserved and no payment is taken until the details are confirmed."}
+              ? `${count} saved activit${count !== 1 ? "ies" : "y"}. Review the suggested schedule or request current availability.`
+              : "Activities you save appear here. Nothing is reserved and no payment is taken until availability and pricing are confirmed."}
           </p>
         </div>
 
