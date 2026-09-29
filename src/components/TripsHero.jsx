@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Compass, MapPin } from "lucide-react";
-import { c, gradText } from "../theme.js";
+import { c } from "../theme.js";
 import { Eyebrow } from "./ui.jsx";
 
 // An illustrated "your journey" motif — a coastline with your stops connecting
@@ -39,7 +39,7 @@ export function TripsHero({ count = 0 }) {
         <div className="tr-copy">
           <div style={{ animation: "trRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>My Trips</span></Eyebrow></div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "trRise .6s .12s both" }}>
-            Your saved Costa Rica<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>activities.</span>
+            Your saved Costa Rica<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>activities.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "trRise .6s .2s both" }}>
             {count > 0

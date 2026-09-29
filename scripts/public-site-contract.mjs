@@ -54,12 +54,18 @@ assert.equal(hero.includes("tn-hero-plan"), false, "the homepage hero must not r
 assert.match(hero, /hero-where/, "the hero needs a destination or activity search field");
 assert.match(hero, /hero-when/, "the hero needs an optional travel date field");
 assert.match(hero, /onSearch\(query, date\)/, "the hero search needs to carry both pieces of context into discovery");
+assert.match(hero, /type="date" aria-label="When"/, "the homepage date control needs an explicit accessible name");
 assert.equal(hero.includes("Start my trip"), false, "the search-first hero should not compete with a second planning CTA");
 assert.equal(hero.includes("Browse activities"), false, "the homepage hero should present one clear primary CTA");
 
 const nav = read("src/components/Nav.jsx");
 assert.match(nav, /tripCount > 0 \? "My trip" : "Plan my trip"/, "the navigation must show one journey action that matches the visitor's state");
 assert.equal(nav.includes("nav-cta"), false, "the navigation must not show separate My Trip and Plan my trip controls");
+assert.match(nav, /@media\(max-width:350px\)/, "the navigation must protect the brand and actions at the narrowest supported width");
+
+for (const heroFile of ["src/components/PageHero.jsx", "src/components/MapHero.jsx", "src/components/GuideHero.jsx", "src/components/BuildHero.jsx", "src/components/TripsHero.jsx", "src/pages/InsiderGuide.jsx"]) {
+  assert.equal(read(heroFile).includes("gradText"), false, `${heroFile} must use the premium white-and-gold headline system instead of rainbow text`);
+}
 
 const builder = read("src/pages/Build.jsx");
 assert.match(builder, /Travelers and interests/);

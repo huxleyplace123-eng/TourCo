@@ -180,14 +180,16 @@ export function Packages({ go, addToTrip }) {
           <span key={slide} style={{ background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", color: "#fff", padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 700 }}>{PKG_SLIDES[slide].label}</span>
           <div style={{ display: "flex", gap: 5 }}>
             {PKG_SLIDES.map((_, i) => (
-              <button key={i} onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`} style={{ width: i === slide ? 18 : 6, height: 6, borderRadius: 999, border: "none", cursor: "pointer", background: i === slide ? c.teal : "rgba(255,255,255,.45)", transition: "all .3s", padding: 0 }} />
+              <button key={i} onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`} style={{ width: 32, height: 44, border: "none", cursor: "pointer", background: "transparent", padding: 0, display: "grid", placeItems: "center" }}>
+                <span aria-hidden style={{ display: "block", width: i === slide ? 18 : 6, height: 6, borderRadius: 999, background: i === slide ? c.teal : "rgba(255,255,255,.45)", transition: "all .3s" }} />
+              </button>
             ))}
           </div>
         </div>
         <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
           <Eyebrow><span style={{ color: c.gold }}>Activity packages</span></Eyebrow>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "6px 0 10px" }}>
-            Costa Rica activity <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>packages</span>
+            Costa Rica activity <span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>packages</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.8)", fontSize: 18, maxWidth: 560, lineHeight: 1.6 }}>
             Review ready-made activity packages with estimated pricing. Open a package to see the schedule and included activities.

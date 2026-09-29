@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { c, grad, gradText } from "../theme.js";
+import { c } from "../theme.js";
 import { Eyebrow } from "./ui.jsx";
 
 // ── PageHero ── one cinematic, on-brand hero for every sub-page.
@@ -26,7 +26,7 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
     const words = title.trim().split(" ");
     const last = accentWord || words.pop();
     const head = accentWord ? title.replace(new RegExp(accentWord + "$"), "").trim() : words.join(" ");
-    return (<>{head} <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>{last}</span></>);
+    return (<>{head} <span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>{last}</span></>);
   };
   return (
     <div className="page-hero" style={{ position: "relative", overflow: "hidden", minHeight: h, display: "flex", alignItems: "flex-end" }}>
@@ -59,8 +59,10 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
           <span key={slide} style={{ background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", color: "#fff", padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, animation: "tnHeroRise .5s ease both" }}>{slides[slide].label}</span>
           <div style={{ display: "flex", gap: 5 }}>
             {slides.map((_, i) => (
-              <button key={i} onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`}
-                style={{ width: i === slide ? 18 : 6, height: 6, borderRadius: 999, border: "none", cursor: "pointer", background: i === slide ? c.teal : "rgba(255,255,255,.45)", transition: "all .3s", padding: 0 }} />
+              <button key={i} className="page-hero-dot" onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`}
+                style={{ width: 32, height: 44, border: "none", cursor: "pointer", background: "transparent", padding: 0, display: "grid", placeItems: "center" }}>
+                <span aria-hidden style={{ display: "block", width: i === slide ? 18 : 6, height: 6, borderRadius: 999, background: i === slide ? c.teal : "rgba(255,255,255,.45)", transition: "all .3s" }} />
+              </button>
             ))}
           </div>
         </div>

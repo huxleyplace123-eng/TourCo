@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Sun, Sunset, MapPin, Sparkles, AlertTriangle, ArrowRight, Star, Clock, Compass, Waves } from "lucide-react";
-import { c, grad, glass, gradText, money } from "../theme.js";
+import { c, grad, glass, money } from "../theme.js";
 import { activities, operators } from "../data.js";
 import { activityImage, heroImage } from "../images.js";
 import { Section, Button } from "../components/ui.jsx";
@@ -62,7 +62,7 @@ export function Today({ go, addToTrip, trip, viewActivity }) {
             <span style={{ color: "#fff", fontSize: 12.5, fontWeight: 700 }}>Live today · {t.season || t.climateNote}</span>
           </div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: 0 }}>
-            {t.greeting} from <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>{region}</span>.
+            {t.greeting} from <span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>{region}</span>.
           </h1>
           <p style={{ color: "rgba(243,247,255,.85)", fontSize: 17, marginTop: 10, maxWidth: 560 }}>
             Activity suggestions for today based on the weather, tides and selected region.

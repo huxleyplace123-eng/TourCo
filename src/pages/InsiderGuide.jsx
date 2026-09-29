@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ArrowLeft, ArrowRight, BadgePercent, CheckCircle2, Compass, Gift, MapPin, MapPinned, Utensils, Wine } from "lucide-react";
-import { c, glass, gradText } from "../theme.js";
+import { c, glass } from "../theme.js";
 import { regions } from "../data.js";
 import { restaurants } from "../restaurants.js";
 import { bars, beaches, deals, freeThings } from "../places.js";
@@ -35,7 +35,7 @@ export function InsiderGuide({ go, trip = [] }) {
           <div style={{ maxWidth: 720 }}>
             <Eyebrow><span style={{ color: c.gold }}>TicoWild Insider Guide</span></Eyebrow>
             <h1 className="tico-page-title" style={{ color: "#fff", margin: "14px 0 0", fontWeight: 830 }}>
-              Costa Rica restaurants,<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>beaches and deals.</span>
+              Costa Rica restaurants,<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>beaches and deals.</span>
             </h1>
             <p style={{ color: "rgba(243,247,255,.82)", maxWidth: 630, fontSize: 18, lineHeight: 1.65, margin: "24px 0 0" }}>Browse restaurants, nightlife, beaches, local tips, discounts and free activities.</p>
             <div className="mobile-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 29 }}>

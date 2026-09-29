@@ -1,5 +1,5 @@
 import React from "react";
-import { c, grad, gradText } from "../theme.js";
+import { c } from "../theme.js";
 
 // ── Button ── (mirrors the original D component: variants + sizes)
 export function Button({ children, variant = "primary", onClick, full, size = "md", style = {}, ...rest }) {
@@ -61,7 +61,7 @@ export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
     if (!accent || light || typeof title !== "string") return title;
     const words = title.trim().split(" ");
     const last = words.pop();
-    return (<>{words.join(" ")} <span style={gradText(grad.ocean)}>{last}</span></>);
+    return (<>{words.join(" ")} <span style={{ color: c.gold }}>{last}</span></>);
   };
   return (
     <div className="section-head" style={{ maxWidth: 720, margin: center ? "0 auto" : 0, textAlign: center ? "center" : "left", marginBottom: 40 }}>

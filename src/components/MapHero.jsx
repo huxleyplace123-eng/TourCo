@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Compass, MapPin, Navigation } from "lucide-react";
-import { c, grad, gradText } from "../theme.js";
+import { c } from "../theme.js";
 import { Eyebrow } from "./ui.jsx";
 import { useCountUp } from "../motion.jsx";
 
@@ -58,7 +58,7 @@ export function MapHero() {
             <Eyebrow><span style={{ color: c.gold }}>Explore the map</span></Eyebrow>
           </div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "mhRise .6s .12s both" }}>
-            Explore Costa Rica<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>by region.</span>
+            Explore Costa Rica<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>by region.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 480, margin: "16px 0 0", animation: "mhRise .6s .2s both" }}>
             Find activities, beaches, restaurants, national parks, waterfalls and airports on the map.

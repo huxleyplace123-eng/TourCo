@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Sparkles, MapPin, Clock, Check } from "lucide-react";
-import { c, grad, gradText } from "../theme.js";
+import { c, grad } from "../theme.js";
 import { Eyebrow } from "./ui.jsx";
 import { TicoFace } from "./TicoFace.jsx";
 import { themedSlides } from "../images.js";
@@ -54,7 +54,7 @@ export function BuildHero() {
         <div className="bh-copy">
           <div style={{ animation: "bhRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>Build My Costa Rica</span></Eyebrow></div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "bhRise .6s .12s both" }}>
-            Build your Costa Rica<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>activity plan.</span>
+            Build your Costa Rica<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>activity plan.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.85)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "bhRise .6s .2s both" }}>
             Add your travelers, destinations, dates and preferences. We’ll create a suggested activity schedule for your trip.

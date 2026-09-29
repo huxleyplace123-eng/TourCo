@@ -187,7 +187,9 @@ export function CinematicHero({ go, onSearch }) {
         <div style={{ display: "flex", gap: 6 }}>
           {SLIDES.map((_, i) => (
             <button key={i} className="tn-dot" onClick={() => setSlide(i)} aria-label={`Scene ${i + 1}`}
-              style={{ width: i === slide ? 20 : 7, height: 7, borderRadius: 999, border: "none", cursor: "pointer", background: i === slide ? c.teal : "rgba(255,255,255,.4)", transition: "all .3s", padding: 0 }} />
+              style={{ width: 32, height: 44, border: "none", cursor: "pointer", background: "transparent", padding: 0, display: "grid", placeItems: "center" }}>
+              <span aria-hidden style={{ display: "block", width: i === slide ? 20 : 7, height: 7, borderRadius: 999, background: i === slide ? c.teal : "rgba(255,255,255,.4)", transition: "all .3s" }} />
+            </button>
           ))}
         </div>
       </div>
@@ -234,7 +236,7 @@ export function CinematicHero({ go, onSearch }) {
             <span className="tn-search-field">
               <CalendarDays size={20} aria-hidden="true" />
               <label htmlFor="hero-when">When</label>
-              <input id="hero-when" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+              <input id="hero-when" type="date" aria-label="When" value={date} onChange={(event) => setDate(event.target.value)} />
             </span>
             <button type="submit" aria-label="Search experiences"><Search size={22} /></button>
           </form>

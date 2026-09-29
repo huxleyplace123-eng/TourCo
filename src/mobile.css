@@ -114,9 +114,11 @@
     box-shadow: 0 24px 50px -26px rgba(0,0,0,.95);
   }
 
-  .mobile-nav-menu > button:not(:last-child) {
+  .mobile-nav-menu > a {
     min-height: 48px;
     padding: 12px 14px !important;
+    display: flex;
+    align-items: center;
   }
 
   .site-section {

@@ -65,6 +65,7 @@ export function Nav({ page, go, tripCount, openTrip }) {
         .nav-trip-button:focus-visible{outline:3px solid rgba(34,211,238,.42);outline-offset:2px}
         @media(max-width:820px){.nav-trip-button{min-height:38px!important;padding:0 12px!important;font-size:12.5px!important;gap:5px!important}.nav-trip-button svg{width:14px;height:14px}}
         @media(max-width:380px){.nav-trip-button{padding:0 10px!important;font-size:12.5px!important;gap:5px!important}}
+        @media(max-width:350px){.site-nav-inner>a:first-child>span>span:last-child{display:none!important}.site-nav-inner>a:first-child svg{width:36px!important;height:36px!important}.nav-trip-button{padding:0 9px!important;font-size:12px!important}}
         @media(prefers-reduced-motion:reduce){.nav-trip-button{transition:none!important}}
       `}</style>
     </header>
