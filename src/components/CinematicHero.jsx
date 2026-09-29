@@ -69,8 +69,8 @@ export function CinematicHero({ go }) {
         .tn-hero-content { max-width: 1280px !important; }
         .tn-hero-content > * { min-width: 0; }
         .tn-hero-copy { max-width: 780px; }
-        .tn-hero-plan { position:relative; overflow:hidden; width:100%; max-width:680px; min-height:330px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-end; }
-        .tn-plan-art{position:absolute;inset:0 0 auto;height:155px;pointer-events:none}.tn-plan-art svg{width:100%;height:100%;display:block;overflow:visible}.tn-plan-copy{position:relative;z-index:2}
+        .tn-hero-plan { position:relative; overflow:hidden; width:100%; max-width:680px; min-height:292px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; }
+        .tn-plan-copy{position:relative;z-index:2}
         .tn-hero-plan-grid,
         .tn-hero-plan-grid > * { min-width: 0; }
         .tn-hero-title-line { display: block; }
@@ -97,7 +97,6 @@ export function CinematicHero({ go }) {
           .tn-hero-scene { display: none !important; }
           .tn-hero-content { padding: 60px clamp(24px,5vw,40px) 78px !important; gap: 24px !important; }
           .tn-hero-plan { min-height:0!important; animation:none!important; padding:17px!important; border-radius:20px!important; }
-          .tn-plan-art{display:none!important}
           .tn-hero-plan h2 { font-size: 18px !important; }
           .tn-hero-reassurance { display: none !important; }
         }
@@ -196,26 +195,18 @@ export function CinematicHero({ go }) {
         </div>
 
         {/* One clear next step. The hero already explains the rest. */}
-        <div className="rise tn-hero-plan" style={{ ...glass, background: "linear-gradient(155deg,rgba(16,37,64,.94),rgba(7,18,36,.9))", borderRadius: 28, padding: 28, boxShadow: "0 44px 100px -35px rgba(0,0,0,.95),inset 0 1px rgba(255,255,255,.08),0 0 0 1px rgba(62,211,235,.12)", alignSelf: "center", animation: "tnFloat 7s ease-in-out infinite", animationDelay: ".3s", transform: `translate(${mouse.x * -10}px, ${mouse.y * -8}px)` }}>
-          <div className="tn-plan-art" aria-hidden="true">
-            <div style={{ position: "absolute", width: 120, height: 120, borderRadius: 999, right: -16, top: -24, background: "radial-gradient(circle,rgba(255,208,0,.3),rgba(34,211,238,.08) 48%,transparent 72%)", filter: "blur(2px)" }} />
-            <svg viewBox="0 0 400 155" preserveAspectRatio="none">
-              <defs><linearGradient id="tnPlanRoute" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor={c.teal} /><stop offset="1" stopColor={c.gold} /></linearGradient></defs>
-              <path d="M-20 126 C55 94 90 130 145 82 S246 96 305 46 S375 68 430 25" fill="none" stroke="rgba(127,166,232,.12)" strokeWidth="18" />
-              <path d="M-20 126 C55 94 90 130 145 82 S246 96 305 46 S375 68 430 25" fill="none" stroke="url(#tnPlanRoute)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="2 8" />
-              {[[72,108],[145,82],[232,82],[305,46],[373,50]].map(([x,y],index)=><g key={x}><circle cx={x} cy={y} r={index===3?7:5} fill={index===3?c.gold:c.teal} stroke="#0a1d35" strokeWidth="3"/><circle cx={x} cy={y} r={index===3?13:10} fill="none" stroke={index===3?"rgba(255,208,0,.28)":"rgba(34,211,238,.2)"} strokeWidth="1"/></g>)}
-            </svg>
-          </div>
+        <div className="rise tn-hero-plan" style={{ ...glass, background: "linear-gradient(155deg,rgba(16,37,64,.96),rgba(7,18,36,.93))", borderRadius: 28, padding: 30, boxShadow: "0 44px 100px -35px rgba(0,0,0,.95),inset 0 1px rgba(255,255,255,.08),0 0 0 1px rgba(62,211,235,.14)", alignSelf: "center", animation: "tnFloat 7s ease-in-out infinite", animationDelay: ".3s", transform: `translate(${mouse.x * -10}px, ${mouse.y * -8}px)` }}>
+          <div aria-hidden style={{ position: "absolute", width: 190, height: 190, borderRadius: 999, right: -70, top: -85, background: "radial-gradient(circle,rgba(34,211,238,.16),transparent 68%)" }} />
           <div className="tn-plan-copy">
             <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-              <span style={{ width: 40, height: 40, flex: "0 0 40px", borderRadius: 14, display: "grid", placeItems: "center", color: c.gold, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.26)" }}><Heart size={18} /></span>
+              <span style={{ width: 44, height: 44, flex: "0 0 44px", borderRadius: 15, display: "grid", placeItems: "center", color: c.gold, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.26)" }}><Heart size={20} /></span>
               <div>
                 <span style={{ color: c.teal, fontSize: 10.5, fontWeight: 900, letterSpacing: ".11em", textTransform: "uppercase" }}>Start with the trip you want</span>
-                <h2 style={{ color: "#fff", fontSize: 22, lineHeight: 1.14, letterSpacing: -.45, margin: "4px 0 5px" }}>What kind of trip feels like you?</h2>
-                <p style={{ color: c.stone, fontSize: 13, lineHeight: 1.45, margin: 0 }}>Two quick choices. Rico shapes the first draft.</p>
+                <h2 style={{ color: "#fff", fontSize: 24, lineHeight: 1.13, letterSpacing: -.5, margin: "5px 0 7px" }}>What kind of trip feels like you?</h2>
+                <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.48, margin: 0 }}>Two quick choices. Rico shapes the first draft.</p>
               </div>
             </div>
-            <Button variant="dark" full size="lg" onClick={() => go("build")} style={{ marginTop: 18 }}>Find my kind of trip <ArrowRight size={18} /></Button>
+            <Button variant="dark" full size="lg" onClick={() => go("build")} style={{ marginTop: 24 }}>Find my kind of trip <ArrowRight size={18} /></Button>
             <p className="tn-hero-reassurance" style={{ textAlign: "center", color: c.stone, fontSize: 11.5, margin: "10px 0 0" }}>No city, dates or signup required to begin</p>
           </div>
         </div>
