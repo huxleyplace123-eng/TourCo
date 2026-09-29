@@ -24,8 +24,8 @@ assert.equal(home.includes("TodaySection"), false, "homepage should not repeat t
 assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a second ranked catalog");
 assert.equal(home.includes("home-journey"), false, "homepage must not repeat a numbered journey strip below the hero");
 assert.equal(home.includes("SAMPLE_DAYS"), false, "homepage must not repeat another three-step timeline");
-assert.match(home, /01 · Begin with you/);
-assert.match(home, /What should Costa Rica/);
+assert.match(home, /01 · Start with what you love/);
+assert.match(home, /What do you want more of\?/);
 assert.match(home, /02 · Find the spark/);
 assert.match(home, /03 · Give it a place/);
 assert.match(home, /04 · Bring it together/);
