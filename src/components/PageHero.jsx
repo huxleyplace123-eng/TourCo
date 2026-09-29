@@ -8,7 +8,7 @@ import { Eyebrow } from "./ui.jsx";
 // random flat gradient band. Pass `image` (any Photo URL), `eyebrow`, `title`
 // (string; last word auto-accents unless `accent={false}`), `sub`, `align`,
 // `children` (extra content under the copy), and `height`.
-export function PageHero({ image, slides, eyebrow, title, sub, align = "left", children, height = 260, accentWord }) {
+export function PageHero({ image, slides, eyebrow, title, sub, align = "left", children, height = 410, accentWord }) {
   const center = align === "center";
   // Optional vivid cross-fading backdrop (slides = [{src,label}]). Falls back to
   // the single `image` when no slides are passed.
@@ -76,7 +76,7 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
 
       <div className="tn-phero" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "34px 20px 28px", width: "100%", textAlign: center ? "center" : "left" }}>
         {eyebrow && <Eyebrow><span style={{ color: c.gold }}>{eyebrow}</span></Eyebrow>}
-        <h1 style={{ color: "#fff", fontSize: "clamp(28px,4vw,42px)", fontWeight: 800, letterSpacing: -1.2, lineHeight: 1.05, margin: "4px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)" }}>
+        <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "4px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)" }}>
           {renderTitle()}
         </h1>
         {sub && (

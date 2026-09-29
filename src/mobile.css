@@ -8,6 +8,16 @@
   overflow-x: clip;
 }
 
+/* One premium editorial scale across every public page. Individual heroes keep
+   their own imagery and composition, while the title proportions remain part
+   of the same TicoWild visual system. */
+.tico-page-title {
+  font-size: clamp(54px, 5.8vw, 82px) !important;
+  line-height: .97 !important;
+  letter-spacing: -.055em !important;
+  text-wrap: balance;
+}
+
 .public-page,
 .public-page > *,
 .site-section-inner {
@@ -95,6 +105,12 @@
 
   .site-section {
     padding: var(--mobile-section-space) var(--mobile-gutter) !important;
+  }
+
+  .tico-page-title {
+    font-size: clamp(42px, 12vw, 54px) !important;
+    line-height: .97 !important;
+    letter-spacing: -.045em !important;
   }
 
   /* Mobile reading rhythm: every major page chapter gets a real pause. */
@@ -193,9 +209,9 @@
   }
 
   .section-head h2 {
-    font-size: clamp(27px, 8vw, 34px) !important;
-    line-height: 1.08 !important;
-    letter-spacing: -.8px !important;
+    font-size: clamp(36px, 10vw, 46px) !important;
+    line-height: 1 !important;
+    letter-spacing: -.04em !important;
   }
 
   .section-head p {

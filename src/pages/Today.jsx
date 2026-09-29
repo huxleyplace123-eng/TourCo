@@ -52,16 +52,16 @@ export function Today({ go, addToTrip, trip, viewActivity }) {
   return (
     <>
       {/* live hero band */}
-      <div style={{ position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "relative", overflow: "hidden", minHeight: 430, display: "flex", alignItems: "center" }}>
         <img src={heroImage(1800)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.4 }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.72), rgba(11,26,46,.97))" }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(45% 60% at 12% 15%, rgba(34,211,238,.2), transparent 55%), radial-gradient(45% 60% at 90% 80%, rgba(255,208,0,.14), transparent 55%)` }} />
-        <div style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "48px 20px 34px" }}>
+        <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "58px 20px 48px" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, ...glass, padding: "7px 14px", borderRadius: 999, marginBottom: 16 }}>
             <span style={{ width: 7, height: 7, borderRadius: 999, background: "#37E36B", boxShadow: "0 0 10px #37E36B" }} />
             <span style={{ color: "#fff", fontSize: 12.5, fontWeight: 700 }}>Live today · {t.season || t.climateNote}</span>
           </div>
-          <h1 style={{ color: "#fff", fontSize: "clamp(30px,5vw,50px)", fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.02, margin: 0 }}>
+          <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: 0 }}>
             {t.greeting} from <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>{region}</span>.
           </h1>
           <p style={{ color: "rgba(243,247,255,.85)", fontSize: 17, marginTop: 10, maxWidth: 560 }}>

@@ -57,7 +57,7 @@ export function MapHero() {
           <div style={{ animation: "mhRise .6s .05s both" }}>
             <Eyebrow><span style={{ color: c.gold }}>Explore the map</span></Eyebrow>
           </div>
-          <h1 style={{ color: "#fff", fontSize: "clamp(32px,5vw,56px)", fontWeight: 900, letterSpacing: -1.8, lineHeight: 1.0, margin: "6px 0 0", animation: "mhRise .6s .12s both" }}>
+          <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "mhRise .6s .12s both" }}>
             All of Costa Rica,<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>one living map.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 480, margin: "16px 0 0", animation: "mhRise .6s .2s both" }}>

@@ -34,7 +34,7 @@ export function InsiderGuide({ go, trip = [] }) {
         <div className="insider-hero-inner" style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "84px 20px 88px" }}>
           <div style={{ maxWidth: 720 }}>
             <Eyebrow><span style={{ color: c.gold }}>TicoWild Insider Guide</span></Eyebrow>
-            <h1 style={{ color: "#fff", fontSize: "clamp(42px,7vw,76px)", lineHeight: .98, letterSpacing: -2.4, margin: "14px 0 0", fontWeight: 800 }}>
+            <h1 className="tico-page-title" style={{ color: "#fff", margin: "14px 0 0", fontWeight: 830 }}>
               Eat, explore and save<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>without the endless scroll.</span>
             </h1>
             <p style={{ color: "rgba(243,247,255,.82)", maxWidth: 630, fontSize: 18, lineHeight: 1.65, margin: "24px 0 0" }}>Restaurants, beaches, local shortcuts and practical savings, organized so you can open only the part you need.</p>

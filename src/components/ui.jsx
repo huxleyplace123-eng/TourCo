@@ -66,7 +66,7 @@ export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
   return (
     <div className="section-head" style={{ maxWidth: 720, margin: center ? "0 auto" : 0, textAlign: center ? "center" : "left", marginBottom: 40 }}>
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-      <h2 style={{ fontSize: "clamp(28px,4vw,42px)", lineHeight: 1.08, fontWeight: 800, letterSpacing: -1, color: light ? "#fff" : c.charcoal, margin: 0 }}>
+      <h2 style={{ fontSize: "clamp(42px,5vw,66px)", lineHeight: .99, fontWeight: 820, letterSpacing: "-.045em", color: light ? "#fff" : c.charcoal, margin: 0 }}>
         {renderTitle()}
       </h2>
       {sub && (

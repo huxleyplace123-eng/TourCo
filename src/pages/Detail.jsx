@@ -68,7 +68,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
               {a.private && <Badge bg={HERO_GLASS} color={c.gold}>Private available</Badge>}
             </div>
             <div style={{ color: c.gold, fontWeight: 800, fontSize: 14, letterSpacing: 0.5 }}>{a.category}</div>
-            <h1 style={{ color: "#fff", fontSize: "clamp(28px,5vw,46px)", fontWeight: 800, letterSpacing: -1, margin: "4px 0 0", maxWidth: 760 }}>{a.title}</h1>
+            <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "4px 0 0", maxWidth: 900 }}>{a.title}</h1>
             <div style={{ display: "flex", gap: 18, color: "rgba(255,255,255,.92)", fontSize: 15, fontWeight: 600, flexWrap: "wrap", marginTop: 12 }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><MapPin size={15} />{a.region}</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Clock size={15} />{a.duration}</span>

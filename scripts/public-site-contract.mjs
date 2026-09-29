@@ -34,6 +34,8 @@ assert.match(home, /className="home-featured-track"/, "homepage needs a mobile-f
 assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage experience cards need real destinations");
 assert.match(home, /viewActivity\(activity\.id\)/, "homepage experience cards should use in-app activity navigation");
 assert.match(home, /className="home-regions"/, "homepage needs a cinematic regional discovery chapter");
+assert.match(home, /className="home-action"/, "homepage needs a vivid, activity-led visual chapter");
+for (const actionId of ["a7", "a10", "a6", "a9"]) assert.ok(home.includes(`"${actionId}"`), `homepage action reel is missing ${actionId}`);
 assert.match(home, /go\("map"\)/, "regional discovery must connect to the live map");
 assert.match(home, /className="home-concierge"/, "homepage needs one concise planning explanation");
 assert.match(home, /className="home-closing"/, "homepage needs a cinematic destination close");
@@ -46,6 +48,10 @@ assert.match(hero, /hero-when/, "the hero needs an optional travel date field");
 assert.match(hero, /onSearch\(query, date\)/, "the hero search needs to carry both pieces of context into discovery");
 assert.equal(hero.includes("Start my trip"), false, "the search-first hero should not compete with a second planning CTA");
 assert.equal(hero.includes("Browse activities"), false, "the homepage hero should present one clear primary CTA");
+
+const nav = read("src/components/Nav.jsx");
+assert.match(nav, /tripCount > 0 \? "My trip" : "Plan my trip"/, "the navigation must show one journey action that matches the visitor's state");
+assert.equal(nav.includes("nav-cta"), false, "the navigation must not show separate My Trip and Plan my trip controls");
 
 const builder = read("src/pages/Build.jsx");
 assert.match(builder, /The feeling/);

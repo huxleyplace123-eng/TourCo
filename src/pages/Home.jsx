@@ -18,6 +18,14 @@ const FEELINGS = [
 
 const FEATURED_IDS = ["a15", "a16", "a4", "a11"];
 const FEATURED = FEATURED_IDS.map((id) => activities.find((activity) => activity.id === id)).filter(Boolean);
+const ACTION_IDS = ["a7", "a10", "a6", "a9"];
+const ACTION_COPY = {
+  a7: { kicker: "Above the rainforest", title: "Fly the canopy" },
+  a10: { kicker: "Deep in the green", title: "Run the river" },
+  a6: { kicker: "Out on the Pacific", title: "Catch the break" },
+  a9: { kicker: "Wild water", title: "Meet the giants" },
+};
+const ACTIONS = ACTION_IDS.map((id) => activities.find((activity) => activity.id === id)).filter(Boolean);
 const REGION_NAMES = ["Manuel Antonio", "Guanacaste", "Uvita", "Dominical"];
 const FEATURED_REGIONS = REGION_NAMES.map((name) => regions.find((region) => region.name === name)).filter(Boolean);
 const HOME_REGION_IMAGE = themedSlides("home", 1800)[6];
@@ -112,6 +120,35 @@ export function Home({ go, viewActivity, browseActivities }) {
         </div>
       </section>
 
+      <section className="home-action" aria-labelledby="home-action-title">
+        <div className="home-shell home-action-head">
+          <span className="home-kicker">Costa Rica in motion</span>
+          <h2 id="home-action-title">Not just places.<br /><em>Stories you can step into.</em></h2>
+          <p>Canopy air, white water, warm waves and wildlife—four completely different ways to feel Costa Rica.</p>
+        </div>
+        <div className="home-action-grid">
+          {ACTIONS.map((activity, index) => (
+            <a
+              key={activity.id}
+              className={`home-action-scene home-action-scene-${index + 1}`}
+              href={activityPath(activity)}
+              onClick={(event) => {
+                event.preventDefault();
+                viewActivity(activity.id);
+              }}
+            >
+              <img src={activityImage(activity, index === 0 ? 1500 : 1100)} alt={activity.title} loading="lazy" decoding="async" />
+              <span className="home-action-shade" />
+              <span className="home-action-copy">
+                <small>{ACTION_COPY[activity.id].kicker}</small>
+                <strong>{ACTION_COPY[activity.id].title}</strong>
+                <span>{activity.region} <ArrowRight size={16} /></span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
       <section className="home-concierge">
         <div className="home-shell home-concierge-grid">
           <Reveal>
@@ -179,6 +216,8 @@ export function Home({ go, viewActivity, browseActivities }) {
         .home-region-dock{position:absolute;z-index:3;left:50%;bottom:26px;transform:translateX(-50%);display:grid;grid-template-columns:repeat(4,1fr);width:min(1320px,calc(100% - 48px));padding:10px;border:1px solid rgba(255,255,255,.17);border-radius:22px;background:rgba(5,15,30,.76);backdrop-filter:blur(18px);box-shadow:0 28px 70px -34px rgba(0,0,0,.9)}
         .home-region-dock button{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:15px 16px;border:0;border-right:1px solid rgba(127,166,232,.16);background:transparent;color:#fff;text-align:left;cursor:pointer}.home-region-dock button:last-child{border-right:0}.home-region-dock button>span{color:${c.teal};font-size:9px;font-weight:900}.home-region-dock button div{display:grid;gap:2px}.home-region-dock strong{font-size:13px}.home-region-dock small{color:${c.stone};font-size:10px}.home-region-dock svg{color:rgba(255,255,255,.55);transition:transform .2s ease}.home-region-dock button:hover svg{transform:translateX(4px);color:${c.gold}}
 
+        .home-action{padding:116px 0 128px;background:#050f1f;overflow:hidden}.home-action-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.46fr);column-gap:70px;align-items:end;margin-bottom:42px}.home-action-head>.home-kicker{grid-column:1 / -1;margin-bottom:16px}.home-action-head h2{margin:0;color:#fff;font-size:clamp(48px,5.9vw,78px);font-weight:830;letter-spacing:-.055em;line-height:.94}.home-action-head h2 em{color:${c.gold};font:inherit;font-style:normal}.home-action-head p{margin:0 0 5px;color:${c.stone};font-size:16px;line-height:1.68;max-width:420px}.home-action-grid{width:min(1380px,calc(100% - 48px));height:690px;margin:0 auto;display:grid;grid-template-columns:1.18fr .78fr .78fr;grid-template-rows:1fr 1fr;gap:12px}.home-action-scene{position:relative;display:block;min-width:0;overflow:hidden;border-radius:24px;border:1px solid rgba(255,255,255,.13);background:#0b1a2e;box-shadow:0 35px 90px -54px rgba(0,0,0,.95)}.home-action-scene-1{grid-row:1 / 3}.home-action-scene-2{grid-column:2 / 4}.home-action-scene img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.16) contrast(1.03);transition:transform 1.1s cubic-bezier(.2,.7,.2,1),filter .35s ease}.home-action-scene:hover img{transform:scale(1.045);filter:saturate(1.3) contrast(1.04)}.home-action-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(3,12,25,.88) 100%),linear-gradient(110deg,rgba(3,12,25,.2),transparent 56%)}.home-action-copy{position:absolute;z-index:2;left:28px;right:24px;bottom:25px;display:grid;gap:5px;color:#fff}.home-action-copy small{color:${c.teal};font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.home-action-copy strong{font-size:clamp(25px,2.8vw,41px);line-height:1;letter-spacing:-.04em}.home-action-copy>span{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.78);font-size:12px;font-weight:750}.home-action-copy svg{color:${c.gold};transition:transform .2s ease}.home-action-scene:hover .home-action-copy svg{transform:translateX(4px)}
+
         .home-concierge{position:relative;padding:126px 0;background:${c.sand};overflow:hidden;border-bottom:1px solid rgba(127,166,232,.12)}
         .home-concierge:after{content:"";position:absolute;width:520px;height:520px;left:-300px;bottom:-330px;border-radius:50%;border:1px solid rgba(34,211,238,.18);box-shadow:0 0 0 90px rgba(34,211,238,.025),0 0 0 180px rgba(34,211,238,.018);pointer-events:none}
         .home-concierge-grid{display:grid;grid-template-columns:minmax(460px,1fr) minmax(0,.9fr);gap:clamp(70px,10vw,150px);align-items:center}.home-concierge-grid>div:first-child{order:2}.home-concierge-copy{text-align:right}.home-concierge-copy .home-kicker{justify-content:flex-end}.home-concierge-copy h2{margin:18px 0 22px;color:#fff;font-size:clamp(42px,5.1vw,68px);font-weight:830;letter-spacing:-.052em;line-height:.98}.home-concierge-copy>p{margin:0 0 31px auto;color:${c.stone};font-size:17px;line-height:1.72;max-width:590px}
@@ -192,6 +231,7 @@ export function Home({ go, viewActivity, browseActivities }) {
           .home-discovery{padding-bottom:78px}.home-feeling-wrap{width:100%;margin:0;padding:23px 0 18px;border-width:0 0 1px;border-radius:0;background:#09182b}.home-feeling-head{padding:0 18px;margin-bottom:14px}.home-feeling-track{padding:0 18px 5px;grid-template-columns:repeat(5,190px);gap:8px;scroll-padding-left:18px}.home-feeling{padding:12px 11px}
           .home-featured-wrap{padding-top:72px}.home-section-head{grid-template-columns:1fr;gap:22px;margin-bottom:30px}.home-section-head h2{font-size:clamp(42px,12vw,56px);line-height:.95}.home-section-head p{font-size:15px}.home-featured-track{margin-right:-18px;grid-template-columns:repeat(4,78vw);gap:11px}.home-feature-image{height:320px}.home-feature-body h3{min-height:auto}
           .home-regions{min-height:730px;align-items:flex-start;background-position:60% center}.home-regions:before{background-position:60% center}.home-regions-wash{background:linear-gradient(180deg,rgba(5,15,30,.88) 0%,rgba(5,15,30,.55) 52%,rgba(5,15,30,.94) 100%)}.home-regions-content{padding-top:72px;padding-bottom:190px}.home-regions-content h2{font-size:clamp(44px,12.8vw,60px);line-height:.95}.home-regions-content p{font-size:15px;line-height:1.62}.home-regions-content .tico-button{width:100%}.home-region-dock{left:0;right:0;bottom:18px;transform:none;width:100%;display:flex;overflow-x:auto;border-left:0;border-right:0;border-radius:0;padding:9px 18px;scroll-snap-type:x mandatory}.home-region-dock button{flex:0 0 225px;scroll-snap-align:start;border-right:1px solid rgba(127,166,232,.16)}
+          .home-action{padding:76px 0 88px}.home-action-head{display:block;margin-bottom:28px}.home-action-head>.home-kicker{margin-bottom:13px}.home-action-head h2{font-size:clamp(42px,12vw,56px);line-height:.95}.home-action-head p{margin-top:18px;font-size:15px;line-height:1.6}.home-action-grid{width:100%;height:480px;display:flex;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 18px 8px;scroll-padding-left:18px}.home-action-scene{flex:0 0 84vw;height:100%;border-radius:22px;scroll-snap-align:start}.home-action-copy{left:21px;right:18px;bottom:84px}.home-action-copy strong{font-size:38px}.home-action-copy small{font-size:9px}
           .home-concierge{padding:78px 0}.home-concierge-grid{gap:38px}.home-concierge-grid>div:first-child{order:1}.home-concierge-copy{text-align:left}.home-concierge-copy .home-kicker{justify-content:flex-start}.home-concierge-copy h2{font-size:clamp(36px,10.7vw,46px);line-height:1}.home-concierge-copy>p{font-size:15px;line-height:1.62;margin:0 0 26px}.home-concierge-copy .tico-button{width:100%}.home-promise-panel{order:2;margin:0 -4px;padding:16px 20px 8px;border-radius:22px}.home-promise-row{grid-template-columns:42px 1fr;gap:13px;padding:19px 0}.home-promise-icon{width:40px;height:40px;border-radius:13px}.home-promise-row h3{font-size:16px}.home-promise-row p{font-size:12.5px;line-height:1.5}
           .home-closing{min-height:500px;background-position:66% center}.home-closing:before{background-position:66% center}.home-closing-wash{background:linear-gradient(90deg,rgba(5,16,31,.94),rgba(5,16,31,.66)),linear-gradient(0deg,rgba(5,16,31,.55),transparent)}.home-closing-content{padding:74px 0}.home-closing-content h2{font-size:clamp(42px,12vw,54px);line-height:.98}.home-closing-content p{font-size:15.5px}.home-closing-content .tico-button{width:100%}
         }

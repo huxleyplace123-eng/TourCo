@@ -38,7 +38,7 @@ export function TripsHero({ count = 0 }) {
         {/* copy */}
         <div className="tr-copy">
           <div style={{ animation: "trRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>My Trips</span></Eyebrow></div>
-          <h1 style={{ color: "#fff", fontSize: "clamp(32px,5vw,54px)", fontWeight: 900, letterSpacing: -1.6, lineHeight: 1.0, margin: "6px 0 0", animation: "trRise .6s .12s both" }}>
+          <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "trRise .6s .12s both" }}>
             Your Costa Rica,<br /><span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>one journey.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "trRise .6s .2s both" }}>

@@ -68,7 +68,7 @@ export function GuideHero({ go }) {
       {/* content */}
       <div className="guide-hero-content" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "34px 20px 30px", width: "100%" }}>
         <div style={{ animation: "guideRise .6s ease both" }}><Eyebrow><span style={{ color: c.gold }}>Local's Guide</span></Eyebrow></div>
-        <h1 style={{ color: "#fff", fontSize: "clamp(28px,4.4vw,46px)", fontWeight: 800, letterSpacing: -1.4, lineHeight: 1.04, margin: "4px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)", animation: "guideRise .6s .06s both" }}>
+        <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "4px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)", animation: "guideRise .6s .06s both" }}>
           Costa Rica, <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>region by region</span>
         </h1>
         <p style={{ color: "rgba(243,247,255,.85)", fontSize: 15.5, lineHeight: 1.55, maxWidth: 540, margin: "10px 0 0", animation: "guideRise .6s .12s both" }}>

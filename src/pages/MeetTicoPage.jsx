@@ -87,7 +87,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
             <div style={{ display: "inline-flex", alignItems: "center", gap: 7, ...glass, color: c.gold, padding: "6px 13px", borderRadius: 999, fontSize: 12, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 16, animation: "ticoRise .5s .05s both" }}>
               <Sparkles size={14} /> Meet Rico the Tico · your local intelligence
             </div>
-            <h1 style={{ color: "#fff", fontSize: "clamp(38px,6vw,68px)", fontWeight: 900, letterSpacing: -2, lineHeight: 0.98, margin: 0, animation: "ticoRise .5s .12s both" }}>
+            <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: 0, animation: "ticoRise .5s .12s both" }}>
               The smartest bird<br />in <span style={{ color: c.gold }}>Costa Rica.</span>
             </h1>
             <p style={{ color: "rgba(243,247,255,.9)", fontSize: "clamp(16px,2vw,18px)", lineHeight: 1.55, margin: "18px 0 0", maxWidth: 520, animation: "ticoRise .5s .2s both" }}>

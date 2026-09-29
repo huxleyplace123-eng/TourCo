@@ -186,7 +186,7 @@ export function Packages({ go, addToTrip }) {
         </div>
         <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
           <Eyebrow><span style={{ color: c.gold }}>Ready-made trips</span></Eyebrow>
-          <h1 style={{ color: "#fff", fontSize: "clamp(34px,6vw,60px)", fontWeight: 800, letterSpacing: -2, margin: "6px 0 10px", lineHeight: 1 }}>
+          <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "6px 0 10px" }}>
             Curated adventure <span style={gradText(`linear-gradient(100deg,${c.teal},${c.gold})`)}>packages</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.8)", fontSize: 18, maxWidth: 560, lineHeight: 1.6 }}>
