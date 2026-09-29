@@ -64,6 +64,11 @@
     min-width: 0;
   }
 
+  .site-nav-inner > a:first-child {
+    min-height: 44px;
+    align-items: center;
+  }
+
   .site-nav-inner .nav-burger {
     width: 44px;
     height: 44px;
@@ -455,11 +460,15 @@
   }
 
   .interactive-map .tn-pin {
-    min-width: 24px !important;
-    min-height: 24px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .page-hero-scene > div:last-child {
+    display: none !important;
   }
 
   .interactive-map > div[style*="max-width: 70%"] {
@@ -663,6 +672,12 @@
 
   .footer-brand p {
     max-width: 100% !important;
+  }
+
+  .footer-col a {
+    display: flex !important;
+    min-height: 40px;
+    align-items: center;
   }
 
   .footer-support .tico-button {

@@ -181,7 +181,7 @@ const PAGE_HERO = {
   packages: "photo-1507525428034-b723cf961d3e", // turquoise coast
   john: "photo-1516815231560-8f41ec531527",     // dock / local
   guide: "photo-1432405972618-c60b0225b8f9",     // waterfall
-  why: "photo-1518259102261-b40117eabbc9",
+  why: "photo-1506929562872-bb421503ef21",       // aerial tropical cove with boats
   partner: "photo-1521737604893-d14cc237f11d",   // people
   portal: "photo-1552733407-5d5c46c3bb3b",        // beach
 };

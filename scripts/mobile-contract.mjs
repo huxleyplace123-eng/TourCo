@@ -9,6 +9,7 @@ const css = read("src/mobile.css");
 const activities = read("src/pages/Activities.jsx");
 const activityCards = read("src/components/ActivityBrowseCard.jsx");
 const ticoRanked = read("src/components/TicoRanked.jsx");
+const exploreMap = read("src/pages/ExploreMap.jsx");
 
 assert.match(index, /width=device-width, initial-scale=1, viewport-fit=cover/);
 assert.match(index, /button:not\(\.tn-dot\):not\(\.tn-pin\)/);
@@ -58,6 +59,8 @@ assert.match(ticoRanked, /className="rico-stars"/, "ranked ratings need a stable
 assert.match(ticoRanked, /lineHeight: 0/, "star icons must not be clipped by the inline text baseline");
 assert.match(ticoRanked, /position: "absolute", inset: 0, display: "block", maxWidth: "none"/, "partial star fills must stay aligned with their full star");
 assert.match(css, /\.tico-dock\[data-lifted="true"\][\s\S]*?bottom: calc\(82px/, "the Rico guide must stay available above a mobile action bar");
+assert.match(css, /\.interactive-map \.tn-pin \{[\s\S]*?min-width: 44px !important;[\s\S]*?min-height: 44px !important;/, "map pins need phone-sized touch targets");
+assert.match(exploreMap, /aria-label=\{`Open \$\{typeLabel\(p\.type\)\}: \$\{pinTitle\(p\)\}`\}/, "map pins need accessible names");
 assert.equal(css.includes('.tico-dock[data-lifted="true"] {\n    display: none'), false, "mobile action bars must not hide Rico chat actions");
 assert.match(css, /\.meet-tico-hero \{[\s\S]*?flex-direction: column !important/, "the Rico hero and proof strip must stack instead of competing side by side on mobile");
 assert.match(css, /\.tico-credential-strip \{[\s\S]*?width: 100% !important/, "the Rico proof strip must use the full phone width");

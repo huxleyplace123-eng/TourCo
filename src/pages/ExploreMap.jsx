@@ -150,7 +150,7 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
               const isSel = sel === p;
               const Ico = p.landmark ? LM_ICON[LANDMARK_LAYERS.find((l) => l.key === p.type)?.icon] : null;
               return (
-                <button key={p.type + i} className="tn-pin" onClick={() => setSel(p)} onMouseEnter={() => setHover(p)} onMouseLeave={() => setHover(null)}
+                <button key={p.type + i} className="tn-pin" aria-label={`Open ${typeLabel(p.type)}: ${pinTitle(p)}`} title={pinTitle(p)} onClick={() => setSel(p)} onMouseEnter={() => setHover(p)} onMouseLeave={() => setHover(null)}
                   style={{ position: "absolute", left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%,-50%)", background: "none", border: "none", cursor: "pointer", padding: 0, zIndex: isSel ? 25 : (p.landmark ? 8 : 5), animation: p.landmark ? `tnPinFloat ${5 + (i % 4)}s ease-in-out infinite` : "none" }}>
                   {p.landmark ? (
                     // landmark = labeled chip with icon
