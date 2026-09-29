@@ -2,7 +2,7 @@ import { hasSupabase, supabase } from "./portal/supabase.js";
 import { queueInquiry } from "./inquiry-queue.js";
 
 const teamWhatsApp = String(import.meta.env.VITE_TICOWILD_WHATSAPP || "").replace(/\D/g, "");
-const teamEmail = String(import.meta.env.VITE_TICOWILD_EMAIL || "hello@ticowild.com").trim();
+const teamEmail = String(import.meta.env.VITE_TICOWILD_EMAIL || "ticowildtours@gmail.com").trim();
 
 export function whatsappHref(message) {
   return teamWhatsApp ? `https://wa.me/${teamWhatsApp}?text=${encodeURIComponent(message)}` : null;
