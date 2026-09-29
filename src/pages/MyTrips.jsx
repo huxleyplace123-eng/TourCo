@@ -13,9 +13,9 @@ import { useConversion } from "../components/ConversionCenter.jsx";
 
 // How the trip works — three simple, reassuring steps.
 const STEPS = [
-  { icon: PlusCircle, title: "1 · Save what you love", body: "Tap 'Save to trip' on any activity, or let Rico build a day-by-day. No account, no commitment — it just gathers here." },
-  { icon: Route, title: "2 · We shape the days", body: "Rico orders everything around drive times, tides and season, so your trip flows instead of zig-zagging the coast." },
-  { icon: CalendarCheck, title: "3 · Confirm before you pay", body: "TicoWild checks availability, timing, the operator and final total. You decide whether to continue after that." },
+  { icon: PlusCircle, number: "01", title: "Save your favorites", body: "Keep the experiences that feel right." },
+  { icon: Route, number: "02", title: "We shape the trip", body: "Rico arranges the best order and timing." },
+  { icon: CalendarCheck, number: "03", title: "Confirm when ready", body: "We verify every detail before you pay." },
 ];
 
 // What a great Costa Rica trip actually looks like — descriptive, not a list of
@@ -31,22 +31,26 @@ function EmptyState({ go }) {
     <div style={{ maxWidth: 980, margin: "0 auto" }}>
       {/* how it works */}
       <Reveal>
-        <div style={{ textAlign: "center", maxWidth: 560, margin: "0 auto 26px" }}>
-          <h2 style={{ margin: "0 0 6px", fontSize: "clamp(24px,3.4vw,30px)", fontWeight: 800, color: "#fff", letterSpacing: -0.6 }}>Start your trip — here's how it works</h2>
-          <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.55, margin: 0 }}>No forms, no pressure. Add what excites you and it becomes a real, ordered plan.</p>
+        <div className="trip-start-intro">
+          <span>Simple from the start</span>
+          <h2>From inspiration to a confirmed trip.</h2>
+          <p>Save what excites you. We’ll make the pieces fit.</p>
         </div>
+        <ol className="trip-start-progress" aria-label="Three steps from inspiration to confirmation">
+          {STEPS.map((s) => (
+            <li key={s.number}>
+              <div className="trip-start-marker">
+                <s.icon size={18} aria-hidden="true" />
+                <span>{s.number}</span>
+              </div>
+              <div className="trip-start-copy">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </Reveal>
-      <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", marginBottom: 34 }}>
-        {STEPS.map((s, i) => (
-          <Reveal key={s.title} delay={i * 80}>
-            <div style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 18, padding: 22, height: "100%" }}>
-              <span style={{ display: "inline-flex", width: 46, height: 46, borderRadius: 13, background: grad.jungle, alignItems: "center", justifyContent: "center", boxShadow: "0 0 22px -6px rgba(34,211,238,.7)" }}><s.icon size={22} color="#fff" /></span>
-              <h3 style={{ margin: "13px 0 6px", color: c.charcoal, fontSize: 16.5, fontWeight: 800 }}>{s.title}</h3>
-              <p style={{ margin: 0, color: c.stone, fontSize: 13.5, lineHeight: 1.55 }}>{s.body}</p>
-            </div>
-          </Reveal>
-        ))}
-      </div>
 
       {/* what a great day looks like */}
       <Reveal>
@@ -209,6 +213,8 @@ export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
 
       <style>{`
         .trip-workspace{border-top:1px solid rgba(127,166,232,.13)}
+        .trip-start-intro{text-align:center;max-width:650px;margin:0 auto 28px}.trip-start-intro>span{display:inline-flex;align-items:center;gap:8px;color:${c.teal};font-size:10.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.trip-start-intro>span:before{content:"";width:24px;height:1px;background:${c.teal}}.trip-start-intro h2{margin:10px 0 8px;color:#fff;font-size:clamp(25px,3.4vw,34px);font-weight:850;letter-spacing:-.8px;line-height:1.08}.trip-start-intro p{color:${c.stone};font-size:15px;line-height:1.55;margin:0}
+        .trip-start-progress{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:36px;list-style:none;margin:0 0 46px;padding:4px 12px 0}.trip-start-progress:before{content:"";position:absolute;top:27px;left:16.5%;right:16.5%;height:2px;background:linear-gradient(90deg,${c.teal},rgba(69,194,218,.7) 50%,${c.gold});box-shadow:0 0 18px rgba(34,211,238,.22)}.trip-start-progress li{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}.trip-start-marker{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#102847;border:1px solid rgba(91,210,229,.5);color:${c.teal};box-shadow:0 0 0 7px ${c.canvas2},0 12px 30px -12px rgba(34,211,238,.75)}.trip-start-marker span{position:absolute;top:-1px;right:calc(50% - 31px);min-width:21px;height:21px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:${c.gold};color:#071425;border:3px solid ${c.canvas2};font-size:8px;font-weight:950;letter-spacing:.04em}.trip-start-progress li:last-child .trip-start-marker{border-color:rgba(255,208,0,.56);color:${c.gold}}.trip-start-copy{max-width:245px;margin-top:18px}.trip-start-copy h3{margin:0 0 5px;color:#fff;font-size:16px;font-weight:850;letter-spacing:-.2px}.trip-start-copy p{margin:0;color:${c.stone};font-size:13px;line-height:1.48}
         .trip-progress{display:grid;grid-template-columns:1fr minmax(24px,70px) 1fr minmax(24px,70px) 1fr;align-items:center;gap:12px;margin:0 0 46px;padding:18px 20px;border:1px solid ${c.line};border-radius:20px;background:rgba(11,26,46,.45)}
         .trip-progress-step{display:flex;align-items:center;gap:11px;min-width:0;opacity:.58}.trip-progress-step.is-current{opacity:1}
         .trip-progress-step>span{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;border:1px solid rgba(127,166,232,.28);color:${c.stone};font-size:12px;font-weight:900}
@@ -216,7 +222,7 @@ export function MyTrips({ go, trip, removeFromTrip, viewActivity }) {
         .trip-progress-step div{display:grid;gap:2px;min-width:0}.trip-progress-step strong{color:#fff;font-size:13.5px}.trip-progress-step small{color:${c.stone};font-size:11px;line-height:1.25}
         .trip-progress>i{height:1px;background:linear-gradient(90deg,rgba(34,211,238,.4),rgba(127,166,232,.12))}
         @media(min-width:940px){.detail-grid{grid-template-columns:1fr 340px!important}}
-        @media(max-width:720px){.trip-progress{grid-template-columns:1fr;margin-bottom:32px;padding:16px}.trip-progress>i{width:1px;height:16px;margin-left:16px}.trip-progress-step small{font-size:11.5px}}
+        @media(max-width:720px){.trip-start-intro{text-align:left;margin-bottom:25px}.trip-start-intro>span:before{display:none}.trip-start-intro h2{font-size:25px;margin-top:8px}.trip-start-intro p{font-size:14.5px}.trip-start-progress{display:grid;grid-template-columns:1fr;gap:0;margin:0 0 38px;padding:0}.trip-start-progress:before{top:22px;bottom:22px;left:21px;right:auto;width:2px;height:auto;background:linear-gradient(180deg,${c.teal},rgba(69,194,218,.72) 50%,${c.gold})}.trip-start-progress li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:15px;align-items:center;text-align:left;padding:0 0 22px}.trip-start-progress li:last-child{padding-bottom:0}.trip-start-marker{width:44px;height:44px;box-shadow:0 0 0 6px ${c.canvas2},0 10px 24px -12px rgba(34,211,238,.8)}.trip-start-marker span{right:-4px;top:-5px;border-width:2px}.trip-start-copy{max-width:none;margin:0}.trip-start-copy h3{font-size:15.5px}.trip-start-copy p{font-size:12.75px}.trip-progress{grid-template-columns:1fr;margin-bottom:32px;padding:16px}.trip-progress>i{width:1px;height:16px;margin-left:16px}.trip-progress-step small{font-size:11.5px}}
       `}</style>
     </>
   );
