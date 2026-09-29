@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test:crm": "node scripts/crm-contract.mjs",
     "test:mobile": "node scripts/mobile-contract.mjs",
     "test:public": "node scripts/public-site-contract.mjs"
   },

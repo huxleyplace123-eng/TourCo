@@ -1,4 +1,5 @@
 import { hasSupabase, supabase } from "./portal/supabase.js";
+import { queueInquiry } from "./inquiry-queue.js";
 
 const teamWhatsApp = String(import.meta.env.VITE_TICOWILD_WHATSAPP || "").replace(/\D/g, "");
 const teamEmail = String(import.meta.env.VITE_TICOWILD_EMAIL || "hello@ticowild.com").trim();
@@ -44,6 +45,8 @@ export async function deliverInquiry(inquiry) {
     const { error } = await supabase.from("public_inquiries").insert(payload);
     if (!error) return { delivered: true };
   }
+
+  queueInquiry(payload);
 
   const body = [
     inquiryMessage(payload),

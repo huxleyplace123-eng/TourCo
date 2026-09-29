@@ -78,8 +78,23 @@ export function blankCustomer() {
     lastContacted: "",
     tripValue: "",
     payment: "No payment",
+    nextAction: "",
+    quoteStatus: "Draft",
+    depositPercent: 20,
+    quoteItems: [],
     tags: [],
     notes: [],
+  };
+}
+
+export function normalizeCustomer(customer) {
+  return {
+    ...blankCustomer(),
+    ...customer,
+    tags: Array.isArray(customer?.tags) ? customer.tags : [],
+    notes: Array.isArray(customer?.notes) ? customer.notes : [],
+    quoteItems: Array.isArray(customer?.quoteItems) ? customer.quoteItems : [],
+    depositPercent: Number.isFinite(Number(customer?.depositPercent)) ? Number(customer.depositPercent) : 20,
   };
 }
 
@@ -89,7 +104,7 @@ export function loadCustomers() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed) ? parsed.map(normalizeCustomer) : [];
   } catch {
     return [];
   }

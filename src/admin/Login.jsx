@@ -10,6 +10,29 @@ const USER_HASH = "64250640ac13ad3004878b0a8c8851a5ec1c15c4e7b604d76fe8c81b8a5f1
 const PASS_HASH = "6da1276c22cfb693e48b3277934a47dc483788ac78c1f7590868e4600ec511aa";
 
 export const AUTH_KEY = "ticowild_crm_signed_in";
+const AUTH_TTL = 12 * 60 * 60 * 1000;
+
+export function writeAdminSession() {
+  localStorage.setItem(AUTH_KEY, JSON.stringify({ expiresAt: Date.now() + AUTH_TTL }));
+}
+
+export function isAdminSessionValid() {
+  try {
+    const raw = localStorage.getItem(AUTH_KEY);
+    if (!raw) return false;
+    // Upgrade the earlier non-expiring session format without forcing a logout.
+    if (raw === "1") {
+      writeAdminSession();
+      return true;
+    }
+    const session = JSON.parse(raw);
+    if (Number(session?.expiresAt) > Date.now()) return true;
+  } catch {
+    // Invalid sessions fail closed.
+  }
+  localStorage.removeItem(AUTH_KEY);
+  return false;
+}
 
 async function sha256(text) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -28,7 +51,7 @@ export default function Login({ onSuccess }) {
     const [u, p] = await Promise.all([sha256(user.trim().toLowerCase()), sha256(pass)]);
     setBusy(false);
     if (u === USER_HASH && p === PASS_HASH) {
-      localStorage.setItem(AUTH_KEY, "1");
+      writeAdminSession();
       onSuccess();
     } else {
       setError(true);

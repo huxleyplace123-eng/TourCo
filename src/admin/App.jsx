@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CalendarClock, Check, ChevronDown, Columns3, Download, Filter, Mail, MessageCircle,
   Pencil, Phone, Plus, Search, Trash2, Upload, Users, X, AlertTriangle, StickyNote,
+  Copy, FileText, Sparkles, ListTodo, CircleDollarSign, ArrowRight,
 } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import {
@@ -14,6 +15,8 @@ import { TEMPERATURES, TEMPERATURE_META, tempRank } from "./crm-shared.js";
 import { TempBadge, TempPicker, CustomerContacts, CRM_CSS } from "./crm-ui.jsx";
 import { useSelection, SelectCheckbox, BulkBar, ComposeModal, WhatsAppSendModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
+import { allEmailTemplates } from "./email-templates.js";
+import { takeQueuedInquiries } from "../inquiry-queue.js";
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
@@ -157,7 +160,7 @@ const sortVal = (cust, key) => {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function App({ workspace, onWorkspace, onSignOut }) {
   const [customers, setCustomers] = useState(() => loadCustomers());
-  const [view, setView] = useState("table");
+  const [view, setView] = useState("today");
   const [query, setQuery] = useState("");
   const [stageFilter, setStageFilter] = useState("");
   const [assigneeFilter, setAssigneeFilter] = useState("");
@@ -173,6 +176,34 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   const [compose, setCompose] = useState(null); // "email" | "text" | null
   const [waOpen, setWaOpen] = useState(false);
   const fileRef = useRef(null);
+
+  useEffect(() => {
+    const queued = takeQueuedInquiries();
+    if (!queued.length) return;
+    setCustomers((current) => {
+      const known = new Set(current.map((item) => `${String(item.email || "").trim().toLowerCase()}|${item.travelStart || ""}`));
+      const recovered = queued.filter((item) => !known.has(`${String(item.email || "").trim().toLowerCase()}|${item.arrival || ""}`)).map((item) => ({
+        ...blankCustomer(),
+        id: `web_${item.queueId || Date.now().toString(36)}`,
+        createdAt: item.queuedAt || new Date().toISOString(),
+        updatedAt: item.queuedAt || new Date().toISOString(),
+        name: item.name || "Website inquiry",
+        phone: item.phone || "",
+        email: item.email || "",
+        travelStart: item.arrival || "",
+        travelEnd: item.departure || "",
+        travelers: item.travelers || "",
+        region: item.destination || "",
+        activities: (item.activity_titles || []).join(", "),
+        source: "Website",
+        temperature: "Hot",
+        nextFollowUp: todayIso(),
+        nextAction: "Respond to new website inquiry",
+        notes: [{ id: noteId(), at: item.queuedAt || new Date().toISOString(), kind: "note", text: item.notes || "New website planning request" }],
+      }));
+      return [...current, ...recovered];
+    });
+  }, []);
 
   useEffect(() => saveCustomers(customers), [customers]);
   useEffect(() => saveColumnPrefs(columns), [columns]);
@@ -364,6 +395,16 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         .crm-modal-bg { position: fixed; inset: 0; background: rgba(4,10,20,.6); backdrop-filter: blur(3px); z-index: 60;
           display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 4vh 12px 8vh; }
         .crm-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .crm-today-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .crm-priority-card { border: 1px solid ${c.line}; background: ${c.white}; border-radius: ${radius.lg}px; overflow: hidden; box-shadow: ${shadow.sm}; }
+        .crm-priority-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-top: 1px solid ${c.line}; cursor: pointer; }
+        .crm-priority-row:hover { background: rgba(255,255,255,.04); }
+        .crm-quote-row { display: grid; grid-template-columns: 1.4fr 1fr .62fr .62fr auto; gap: 7px; align-items: center; }
+        @media (max-width: 820px) {
+          .crm-today-grid { grid-template-columns: 1fr; }
+          .crm-quote-row { grid-template-columns: 1fr 1fr; padding: 10px; border: 1px solid ${c.line}; border-radius: ${radius.sm}px; }
+          .crm-quote-row > :first-child { grid-column: 1 / -1; }
+        }
       `}</style>
 
       <div className="crm-wrap">
@@ -386,7 +427,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           </div>
 
           <div style={{ display: "flex", gap: 2, background: "rgba(255,255,255,.06)", border: `1px solid ${c.line}`, borderRadius: radius.sm, padding: 3 }}>
-            {[["table", "Table"], ["pipeline", "Pipeline"], ["followups", "Follow-ups"]].map(([k, label]) => (
+            {[["today", "Today"], ["table", "Table"], ["pipeline", "Pipeline"], ["followups", "Follow-ups"]].map(([k, label]) => (
               <button key={k} onClick={() => setView(k)}
                 style={{
                   padding: "7px 14px", borderRadius: radius.sm - 4, border: "none", cursor: "pointer",
@@ -479,7 +520,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
         </div>
 
         {/* ── Filters ── */}
-        <div className="crm-filters crm-filterbar">
+        {view !== "today" && <div className="crm-filters crm-filterbar">
           <Filter size={14} style={{ color: c.stone }} />
           <select value={tempFilter} onChange={(e) => setTempFilter(e.target.value)} style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
             <option value="">All heat</option>
@@ -522,10 +563,12 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
             <span style={{ color: c.teal }}>{filtered.length}</span>
             {filtersOn ? <span style={{ color: c.stone, fontWeight: 600 }}>of {customers.length} customers</span> : <span style={{ color: c.stone, fontWeight: 600 }}>customers</span>}
           </span>
-        </div>
+        </div>}
 
         {/* ── Views ── */}
-        {customers.length === 0 ? (
+        {view === "today" ? (
+          <TodayView customers={customers} buckets={buckets} onOpen={setSelectedId} onAdd={() => setShowAdd(true)} onTemplates={() => onWorkspace("templates")} />
+        ) : customers.length === 0 ? (
           <EmptyState onAdd={() => setShowAdd(true)} onImport={() => fileRef.current?.click()} />
         ) : view === "table" ? (
           <TableView
@@ -535,9 +578,9 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           />
         ) : view === "pipeline" ? (
           <PipelineView customers={filtered} onOpen={setSelectedId} onStage={setStage} />
-        ) : (
+        ) : view === "followups" ? (
           <FollowupsView buckets={buckets} onOpen={setSelectedId} onLog={logContact} update={update} />
-        )}
+        ) : null}
       </div>
 
       {selected && (
@@ -584,6 +627,69 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           onClose={() => setWaOpen(false)} onSent={markWaSent}
         />
       )}
+    </div>
+  );
+}
+
+// ── Today command center ─────────────────────────────────────────────────────
+function TodayView({ customers, buckets, onOpen, onAdd, onTemplates }) {
+  const newLeads = customers.filter((x) => x.stage === "New" && !x.lastContacted);
+  const quotes = customers.filter((x) => x.stage === "Quote sent");
+  const upcoming = customers.filter((x) => {
+    const days = daysFromToday(x.travelStart);
+    return days !== null && days >= 0 && days <= 14 && !["Lost", "Completed"].includes(x.stage);
+  }).sort((a, b) => String(a.travelStart).localeCompare(String(b.travelStart)));
+  const incomplete = customers.filter((x) => !x.email || !x.phone || !x.nextFollowUp);
+
+  const groups = [
+    { title: "Needs attention now", hint: "Overdue follow-ups", color: "#F87171", icon: <CalendarClock size={16} />, items: buckets.overdue, empty: "Nothing overdue — excellent." },
+    { title: "New leads", hint: "Waiting for a first response", color: c.teal, icon: <Sparkles size={16} />, items: newLeads, empty: "No untouched leads." },
+    { title: "Quotes to close", hint: "Sent and awaiting a decision", color: c.gold, icon: <CircleDollarSign size={16} />, items: quotes, empty: "No quotes are waiting." },
+    { title: "Traveling soon", hint: "Departing in the next 14 days", color: "#34D399", icon: <ListTodo size={16} />, items: upcoming, empty: "No near-term trips." },
+  ];
+
+  if (!customers.length) {
+    return (
+      <div style={{ marginTop: 18, borderRadius: radius.lg, border: `1px solid ${c.line}`, background: `linear-gradient(135deg, ${c.white}, rgba(34,211,238,.07))`, padding: "clamp(24px,5vw,48px)", boxShadow: shadow.md }}>
+        <div style={{ maxWidth: 760 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, color: c.teal, fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".09em" }}><Sparkles size={15} /> Start here</div>
+          <h1 style={{ margin: "10px 0 8px", fontSize: "clamp(28px,4vw,42px)", lineHeight: 1.05, letterSpacing: "-.035em" }}>Turn every inquiry into a clear next action.</h1>
+          <p style={{ margin: 0, color: c.stone, fontSize: 15, lineHeight: 1.65, maxWidth: 650 }}>Add the first traveler or import your existing list. TicoWild will organize follow-ups, quotes, trip value, payment status, messages, and upcoming travel from one customer record.</p>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22 }}>
+            <button onClick={onAdd} style={{ border: 0, borderRadius: radius.sm, background: c.gold, color: c.ink, padding: "12px 18px", fontFamily: FONT, fontWeight: 800, cursor: "pointer", boxShadow: shadow.glowGold }}><Plus size={15} style={{ verticalAlign: -2 }} /> Add first customer</button>
+            <button onClick={onTemplates} style={{ border: `1px solid ${c.line}`, borderRadius: radius.sm, background: "rgba(255,255,255,.05)", color: c.charcoal, padding: "12px 18px", fontFamily: FONT, fontWeight: 750, cursor: "pointer" }}><FileText size={15} style={{ verticalAlign: -2 }} /> Open message templates</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "end", marginBottom: 14, flexWrap: "wrap" }}>
+        <div>
+          <div style={{ color: c.teal, textTransform: "uppercase", letterSpacing: ".1em", fontSize: 11.5, fontWeight: 800 }}>Daily command center</div>
+          <h2 style={{ margin: "5px 0 0", fontSize: 26, letterSpacing: "-.025em" }}>What needs attention today</h2>
+        </div>
+        <div style={{ color: c.stone, fontSize: 13 }}>{incomplete.length ? `${incomplete.length} record${incomplete.length === 1 ? "" : "s"} missing contact or follow-up details` : "Every active record has the essentials"}</div>
+      </div>
+      <div className="crm-today-grid">
+        {groups.map((group) => (
+          <section key={group.title} className="crm-priority-card">
+            <div style={{ display: "flex", gap: 10, alignItems: "center", padding: "14px 16px" }}>
+              <span style={{ width: 34, height: 34, borderRadius: 11, display: "grid", placeItems: "center", color: group.color, background: `${group.color}18`, border: `1px solid ${group.color}35` }}>{group.icon}</span>
+              <div style={{ flex: 1 }}><div style={{ fontWeight: 800, fontSize: 15 }}>{group.title}</div><div style={{ color: c.stone, fontSize: 12.5, marginTop: 2 }}>{group.hint}</div></div>
+              <span style={{ minWidth: 28, height: 28, padding: "0 8px", borderRadius: 999, display: "grid", placeItems: "center", background: `${group.color}18`, color: group.color, fontWeight: 800, fontSize: 12 }}>{group.items.length}</span>
+            </div>
+            {group.items.length ? group.items.slice(0, 5).map((cust) => (
+              <div key={cust.id} className="crm-priority-row" onClick={() => onOpen(cust.id)}>
+                <div style={{ minWidth: 0, flex: 1 }}><div style={{ fontSize: 13.5, fontWeight: 750, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cust.name}</div><div style={{ color: c.stone, fontSize: 12, marginTop: 2 }}>{cust.nextAction || cust.region || cust.activities || "Open record to add the next action"}</div></div>
+                <StageChip stage={cust.stage} small /><ArrowRight size={15} color={c.stone} />
+              </div>
+            )) : <div style={{ borderTop: `1px solid ${c.line}`, padding: "16px", color: c.stone, fontSize: 13 }}>{group.empty}</div>}
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
@@ -879,6 +985,100 @@ function TagsEditor({ tags, onChange }) {
   );
 }
 
+const mergeTemplate = (value, cust, quoteTotal = 0) => {
+  const firstName = String(cust.name || "there").trim().split(/\s+/)[0];
+  const replacements = {
+    first_name: firstName,
+    contact_name: firstName,
+    travel_date: cust.travelStart ? fmtDate(cust.travelStart) : "your preferred date",
+    guest_count: cust.travelers || "your group",
+    location: cust.region || "your destination",
+    experience_name: cust.activities || "your Costa Rica experience",
+    final_total: quoteTotal ? money(quoteTotal) : "to be confirmed",
+    amount_due_now: quoteTotal ? money(quoteTotal * (Number(cust.depositPercent || 20) / 100)) : "to be confirmed",
+    operator_balance: quoteTotal ? money(quoteTotal * (1 - Number(cust.depositPercent || 20) / 100)) : "to be confirmed",
+  };
+  return String(value || "").replace(/{{([^}]+)}}/g, (_, key) => replacements[key.trim()] || `[${key.trim().replaceAll("_", " ")}]`);
+};
+
+function CustomerTemplateComposer({ cust, onLog }) {
+  const templates = useMemo(() => allEmailTemplates().filter((x) => x.audience === "customer"), []);
+  const [templateId, setTemplateId] = useState(templates[0]?.id || "");
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
+  const [copied, setCopied] = useState(false);
+  const quoteTotal = (cust.quoteItems || []).reduce((sum, item) => sum + moneyNum(item.customerPrice), 0);
+
+  useEffect(() => {
+    const template = templates.find((x) => x.id === templateId);
+    setSubject(mergeTemplate(template?.subject, cust, quoteTotal));
+    setBody(mergeTemplate(template?.body, cust, quoteTotal));
+  }, [templateId, cust.id]);
+
+  const href = cust.email ? `mailto:${cust.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}` : undefined;
+  const copy = async () => {
+    await navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
+  };
+
+  if (!templates.length) return null;
+  return (
+    <div style={{ border: `1px solid ${c.line}`, background: "rgba(34,211,238,.045)", borderRadius: radius.md, padding: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}><Mail size={15} color={c.teal} /><div style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".06em", flex: 1 }}>Send a customer message</div><span style={{ fontSize: 11.5, color: c.stone }}>Personalized automatically</span></div>
+      <select value={templateId} onChange={(e) => setTemplateId(e.target.value)} style={{ ...inputBase, marginBottom: 8 }}>
+        {templates.map((t) => <option key={t.id} value={t.id}>{t.category} · {t.name}</option>)}
+      </select>
+      <input value={subject} onChange={(e) => setSubject(e.target.value)} style={{ ...inputBase, marginBottom: 8, fontWeight: 700 }} aria-label="Email subject" />
+      <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={7} style={{ ...inputBase, resize: "vertical", lineHeight: 1.5 }} aria-label="Email body" />
+      <div style={{ display: "flex", gap: 8, marginTop: 9, flexWrap: "wrap" }}>
+        <a href={href} onClick={() => cust.email && onLog(cust.id, "email")} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, background: c.gold, color: c.ink, textDecoration: "none", fontSize: 13, fontWeight: 800, opacity: cust.email ? 1 : .45, pointerEvents: cust.email ? "auto" : "none" }}><Mail size={14} /> Open email</a>
+        <button onClick={copy} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "transparent", color: c.charcoal, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}><Copy size={14} /> {copied ? "Copied" : "Copy message"}</button>
+      </div>
+    </div>
+  );
+}
+
+function QuoteBuilder({ cust, update, addNote }) {
+  const items = cust.quoteItems || [];
+  const retail = items.reduce((sum, item) => sum + moneyNum(item.customerPrice), 0);
+  const cost = items.reduce((sum, item) => sum + moneyNum(item.operatorCost), 0);
+  const margin = retail - cost;
+  const depositPercent = Number(cust.depositPercent || 20);
+  const saveItems = (next) => update(cust.id, { quoteItems: next, tripValue: retail === 0 && next.length === 0 ? "" : next.reduce((sum, item) => sum + moneyNum(item.customerPrice), 0) });
+  const addItem = () => saveItems([...items, { id: `q_${Date.now().toString(36)}`, title: "", operator: "", customerPrice: "", operatorCost: "", status: "Needs confirmation" }]);
+  const patchItem = (id, patch) => saveItems(items.map((item) => item.id === id ? { ...item, ...patch } : item));
+  const removeItem = (id) => saveItems(items.filter((item) => item.id !== id));
+
+  return (
+    <div style={{ border: `1px solid ${c.line}`, background: "rgba(255,208,0,.035)", borderRadius: radius.md, padding: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 11 }}>
+        <CircleDollarSign size={16} color={c.gold} /><div style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".06em", flex: 1 }}>Quote & margin</div>
+        <select value={cust.quoteStatus || "Draft"} onChange={(e) => update(cust.id, { quoteStatus: e.target.value })} style={{ ...inputBase, width: "auto", padding: "7px 9px", fontSize: 12.5 }}>
+          {["Draft", "Awaiting availability", "Ready", "Sent", "Accepted"].map((status) => <option key={status}>{status}</option>)}
+        </select>
+      </div>
+      {items.length > 0 && <div className="crm-quote-row crm-hide-mobile" style={{ color: c.stone, fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 6 }}><span>Experience</span><span>Operator</span><span>Guest price</span><span>Operator cost</span><span /></div>}
+      <div style={{ display: "grid", gap: 7 }}>
+        {items.map((item) => (
+          <div key={item.id} className="crm-quote-row">
+            <input value={item.title} onChange={(e) => patchItem(item.id, { title: e.target.value })} placeholder="Experience" style={{ ...inputBase, padding: "8px 9px", fontSize: 12.5 }} />
+            <input value={item.operator} onChange={(e) => patchItem(item.id, { operator: e.target.value })} placeholder="Operator" style={{ ...inputBase, padding: "8px 9px", fontSize: 12.5 }} />
+            <input value={item.customerPrice} onChange={(e) => patchItem(item.id, { customerPrice: e.target.value })} placeholder="$ price" inputMode="decimal" style={{ ...inputBase, padding: "8px 9px", fontSize: 12.5 }} />
+            <input value={item.operatorCost} onChange={(e) => patchItem(item.id, { operatorCost: e.target.value })} placeholder="$ cost" inputMode="decimal" style={{ ...inputBase, padding: "8px 9px", fontSize: 12.5 }} />
+            <button onClick={() => removeItem(item.id)} aria-label="Remove quote item" style={{ all: "unset", color: "#F87171", cursor: "pointer", display: "grid", placeItems: "center", padding: 7 }}><Trash2 size={14} /></button>
+          </div>
+        ))}
+      </div>
+      <button onClick={addItem} style={{ marginTop: 9, display: "inline-flex", alignItems: "center", gap: 6, border: `1px solid ${c.line}`, background: "transparent", color: c.teal, borderRadius: radius.sm, padding: "8px 11px", fontFamily: FONT, fontWeight: 750, fontSize: 12.5, cursor: "pointer" }}><Plus size={13} /> Add experience</button>
+      <div style={{ marginTop: 12, paddingTop: 11, borderTop: `1px solid ${c.line}`, display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 8 }}>
+        {[{ label: "Guest total", value: money(retail), color: c.gold }, { label: "Operator cost", value: money(cost), color: c.charcoal }, { label: "Gross margin", value: money(margin), color: margin >= 0 ? "#34D399" : "#F87171" }, { label: "Deposit", value: money(retail * depositPercent / 100), color: c.teal }].map((stat) => <div key={stat.label}><div style={{ color: c.stone, fontSize: 10.5, textTransform: "uppercase", fontWeight: 750 }}>{stat.label}</div><div style={{ color: stat.color, fontSize: 15, fontWeight: 850, marginTop: 3 }}>{stat.value}</div></div>)}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, color: c.stone, fontSize: 12 }}><span>Deposit %</span><input value={cust.depositPercent ?? 20} onChange={(e) => update(cust.id, { depositPercent: e.target.value })} inputMode="decimal" style={{ ...inputBase, width: 76, padding: "6px 8px", fontSize: 12.5 }} /><button onClick={() => addNote(cust.id, `Quote ${cust.quoteStatus || "Draft"}: ${money(retail)} total · ${money(margin)} gross margin`, "note")} style={{ marginLeft: "auto", border: 0, background: "transparent", color: c.teal, fontFamily: FONT, fontWeight: 750, cursor: "pointer" }}>Log quote snapshot</button></div>
+    </div>
+  );
+}
+
 // ── Drawer (customer side panel) ─────────────────────────────────────────────
 function Drawer({ cust, customers, update, addNote, setStage, logContact, onDelete, onClose }) {
   const [noteDraft, setNoteDraft] = useState("");
@@ -966,7 +1166,13 @@ function Drawer({ cust, customers, update, addNote, setStage, logContact, onDele
                 </button>
               </div>
             </Field>
+            <Field label="Next action" span2>
+              <input value={cust.nextAction || ""} onChange={set("nextAction")} style={inputBase} placeholder="Example: Confirm catamaran availability with Panache" />
+            </Field>
           </div>
+
+          <QuoteBuilder cust={cust} update={update} addNote={addNote} />
+          <CustomerTemplateComposer cust={cust} onLog={logContact} />
 
           {/* details */}
           <div>
