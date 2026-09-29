@@ -24,15 +24,17 @@ assert.equal(home.includes("TodaySection"), false, "homepage should not repeat t
 assert.equal(home.includes("TicoRanked"), false, "homepage should not repeat a second ranked catalog");
 assert.equal(home.includes("home-journey"), false, "homepage must not repeat a numbered journey strip below the hero");
 assert.equal(home.includes("SAMPLE_DAYS"), false, "homepage must not repeat another three-step timeline");
-assert.match(home, /Less searching\./);
+assert.match(home, /What sounds like you\?/);
+assert.match(home, /Days worth building/);
+assert.match(home, /Follow the feeling\./);
 assert.match(home, /You imagine the trip\./);
 assert.match(home, /A trip this beautiful/);
-assert.match(home, /themedSlides\("activities", 1400\)\.slice\(0, 3\)/, "the homepage should keep a restrained three-image inspiration gallery");
-assert.match(home, /className="home-image-stage"/);
-assert.match(home, /HOME_STORY_ACTIVITY_IDS = \["a7", "a12", "a10"\]/, "homepage inspiration should map to real experiences");
-assert.match(home, /href=\{activityPath\(image\.activity\)\}/, "homepage inspiration images need real destinations");
-assert.match(home, /viewActivity\(image\.activity\.id\)/, "homepage inspiration links should use in-app activity navigation");
-assert.match(home, /home-image-card home-image-card-/, "the full inspiration image must be tappable");
+assert.match(home, /FEATURED_IDS = \["a15", "a16", "a4", "a11"\]/, "homepage must use a restrained curated experience set");
+assert.match(home, /className="home-featured-track"/, "homepage needs a mobile-friendly curated experience rail");
+assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage experience cards need real destinations");
+assert.match(home, /viewActivity\(activity\.id\)/, "homepage experience cards should use in-app activity navigation");
+assert.match(home, /className="home-regions"/, "homepage needs a cinematic regional discovery chapter");
+assert.match(home, /go\("map"\)/, "regional discovery must connect to the live map");
 assert.match(home, /className="home-concierge"/, "homepage needs one concise planning explanation");
 assert.match(home, /className="home-closing"/, "homepage needs a cinematic destination close");
 
