@@ -68,7 +68,6 @@ export function Home({ go, viewActivity, browseActivities }) {
             <span className="home-kicker">Costa Rica regions</span>
             <h2>Explore activities<br /><em>by region.</em></h2>
             <p>See activities in Manuel Antonio, Guanacaste, Uvita and Dominical, along with route information.</p>
-            <Button variant="primary" size="lg" onClick={() => go("map")}>Explore the map <ArrowRight size={18} /></Button>
           </Reveal>
         </div>
         <div className="home-region-dock" aria-label="Explore Costa Rica regions">
@@ -87,7 +86,7 @@ export function Home({ go, viewActivity, browseActivities }) {
               <span className="home-kicker">Trip planning</span>
               <h2>Build your Costa Rica<br />activity plan.</h2>
               <p>Choose activities and dates. TicoWild helps organize the schedule and confirms availability, timing, operator and final price.</p>
-              <Button variant="primary" size="lg" onClick={() => go("build")}><Sparkles size={17} />Build my trip</Button>
+              <Button variant="primary" size="lg" onClick={() => go("build")}><Sparkles size={17} />Plan my trip</Button>
             </div>
           </Reveal>
 
@@ -112,7 +111,7 @@ export function Home({ go, viewActivity, browseActivities }) {
             <span className="home-kicker">Plan your trip</span>
             <h2>Start planning your<br />Costa Rica trip.</h2>
             <p>Enter your dates, destinations, group size and preferred activities.</p>
-            <Button variant="primary" size="lg" onClick={() => go("build")}>Start planning <ArrowRight size={18} /></Button>
+            <Button variant="primary" size="lg" onClick={() => go("build")}>Plan my trip <ArrowRight size={18} /></Button>
           </Reveal>
         </div>
       </section>
@@ -124,7 +123,7 @@ export function Home({ go, viewActivity, browseActivities }) {
         .home-regions{position:relative;min-height:760px;display:flex;align-items:center;overflow:hidden;background-image:var(--home-region-image);background-size:cover;background-position:center;isolation:isolate}
         .home-regions:before{content:"";position:absolute;inset:0;z-index:-1;background:inherit;background-size:cover;background-position:center;transform:scale(1.025)}
         .home-regions-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,15,30,.94) 0%,rgba(5,15,30,.68) 47%,rgba(5,15,30,.14) 100%),linear-gradient(0deg,rgba(5,15,30,.8) 0%,transparent 44%)}
-        .home-regions-content{position:relative;z-index:2;padding-bottom:130px}.home-regions-content h2{margin:17px 0 20px;color:#fff;font-size:clamp(52px,6.4vw,86px);font-weight:830;letter-spacing:-.057em;line-height:.92;max-width:900px}.home-regions-content h2 em{font:inherit;color:${c.gold};font-style:normal}.home-regions-content p{max-width:570px;margin:0 0 30px;color:rgba(239,245,255,.8);font-size:17px;line-height:1.7}
+        .home-regions-content{position:relative;z-index:2;padding-bottom:130px}.home-regions-content h2{margin:17px 0 20px;color:#fff;font-size:clamp(52px,6.4vw,86px);font-weight:830;letter-spacing:-.057em;line-height:.92;max-width:900px}.home-regions-content h2 em{font:inherit;color:${c.gold};font-style:normal}.home-regions-content p{max-width:570px;margin:0;color:rgba(239,245,255,.8);font-size:17px;line-height:1.7}
         .home-region-dock{position:absolute;z-index:3;left:50%;bottom:26px;transform:translateX(-50%);display:grid;grid-template-columns:repeat(4,1fr);width:min(1320px,calc(100% - 48px));padding:10px;border:1px solid rgba(255,255,255,.17);border-radius:22px;background:rgba(5,15,30,.76);backdrop-filter:blur(18px);box-shadow:0 28px 70px -34px rgba(0,0,0,.9)}
         .home-region-dock button{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:15px 16px;border:0;border-right:1px solid rgba(127,166,232,.16);background:transparent;color:#fff;text-align:left;cursor:pointer}.home-region-dock button:last-child{border-right:0}.home-region-dock button div{display:grid;gap:2px}.home-region-dock strong{font-size:13px}.home-region-dock small{color:${c.stone};font-size:10px}.home-region-dock svg{color:rgba(255,255,255,.55);transition:transform .2s ease}.home-region-dock button:hover svg{transform:translateX(4px);color:${c.gold}}
 
@@ -140,7 +139,7 @@ export function Home({ go, viewActivity, browseActivities }) {
         @media(max-width:1050px){.home-concierge-grid{grid-template-columns:1fr;gap:52px}.home-promise-panel{max-width:680px}}
         @media(max-width:760px){
           .home-shell,.home-closing-content{width:calc(100% - 36px)}
-          .home-regions{min-height:730px;align-items:flex-start;background-position:60% center}.home-regions:before{background-position:60% center}.home-regions-wash{background:linear-gradient(180deg,rgba(5,15,30,.88) 0%,rgba(5,15,30,.55) 52%,rgba(5,15,30,.94) 100%)}.home-regions-content{padding-top:72px;padding-bottom:190px}.home-regions-content h2{font-size:clamp(44px,12.8vw,60px);line-height:.95}.home-regions-content p{font-size:15px;line-height:1.62}.home-regions-content .tico-button{width:100%}.home-region-dock{left:0;right:0;bottom:18px;transform:none;width:100%;display:flex;overflow-x:auto;border-left:0;border-right:0;border-radius:0;padding:9px 18px;scroll-snap-type:x mandatory}.home-region-dock button{flex:0 0 225px;scroll-snap-align:start;border-right:1px solid rgba(127,166,232,.16)}
+          .home-regions{min-height:730px;align-items:flex-start;background-position:60% center}.home-regions:before{background-position:60% center}.home-regions-wash{background:linear-gradient(180deg,rgba(5,15,30,.88) 0%,rgba(5,15,30,.55) 52%,rgba(5,15,30,.94) 100%)}.home-regions-content{padding-top:72px;padding-bottom:190px}.home-regions-content h2{font-size:clamp(44px,12.8vw,60px);line-height:.95}.home-regions-content p{font-size:15px;line-height:1.62}.home-region-dock{left:0;right:0;bottom:18px;transform:none;width:100%;display:flex;overflow-x:auto;border-left:0;border-right:0;border-radius:0;padding:9px 18px;scroll-snap-type:x mandatory}.home-region-dock button{flex:0 0 225px;scroll-snap-align:start;border-right:1px solid rgba(127,166,232,.16)}
           .home-action{padding:76px 0 88px}.home-action-head{display:block;margin-bottom:28px}.home-action-head>.home-kicker{margin-bottom:13px}.home-action-head h2{font-size:clamp(42px,12vw,56px);line-height:.95}.home-action-head p{margin-top:18px;font-size:15px;line-height:1.6}.home-action-grid{width:100%;height:480px;display:flex;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 18px 8px;scroll-padding-left:18px}.home-action-scene{flex:0 0 84vw;height:100%;border-radius:22px;scroll-snap-align:start}.home-action-copy{left:21px;right:18px;bottom:84px}.home-action-copy strong{font-size:38px}.home-action-copy small{font-size:9px}
           .home-concierge{padding:78px 0}.home-concierge-grid{gap:38px}.home-concierge-grid>div:first-child{order:1}.home-concierge-copy{text-align:left}.home-concierge-copy .home-kicker{justify-content:flex-start}.home-concierge-copy h2{font-size:clamp(36px,10.7vw,46px);line-height:1}.home-concierge-copy>p{font-size:15px;line-height:1.62;margin:0 0 26px}.home-concierge-copy .tico-button{width:100%}.home-promise-panel{order:2;margin:0 -4px;padding:16px 20px 8px;border-radius:22px}.home-promise-row{grid-template-columns:42px 1fr;gap:13px;padding:19px 0}.home-promise-icon{width:40px;height:40px;border-radius:13px}.home-promise-row h3{font-size:16px}.home-promise-row p{font-size:12.5px;line-height:1.5}
           .home-closing{min-height:500px;background-position:66% center}.home-closing:before{background-position:66% center}.home-closing-wash{background:linear-gradient(90deg,rgba(5,16,31,.94),rgba(5,16,31,.66)),linear-gradient(0deg,rgba(5,16,31,.55),transparent)}.home-closing-content{padding:74px 0}.home-closing-content h2{font-size:clamp(42px,12vw,54px);line-height:.98}.home-closing-content p{font-size:15.5px}.home-closing-content .tico-button{width:100%}
