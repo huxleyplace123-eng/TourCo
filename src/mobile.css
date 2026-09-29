@@ -657,12 +657,12 @@
 
   /* Footer and overlays. */
   .site-footer {
-    padding: 38px var(--mobile-gutter) calc(94px + env(safe-area-inset-bottom)) !important;
+    padding: 28px var(--mobile-gutter) calc(72px + env(safe-area-inset-bottom)) !important;
   }
 
   .footer-grid {
     grid-template-columns: repeat(2, minmax(0,1fr)) !important;
-    gap: 28px 18px !important;
+    gap: 18px 16px !important;
   }
 
   .footer-brand,
@@ -672,21 +672,55 @@
 
   .footer-brand p {
     max-width: 100% !important;
+    margin: 0 !important;
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  .footer-brand > div:first-child {
+    margin-bottom: 7px !important;
+  }
+
+  .footer-col > div:first-child,
+  .footer-support > div:first-child {
+    margin-bottom: 5px !important;
+    font-size: 13px !important;
+  }
+
+  .footer-col > div:last-child {
+    gap: 0 !important;
   }
 
   .footer-col a {
     display: flex !important;
-    min-height: 40px;
+    min-height: 32px;
     align-items: center;
+    font-size: 12.5px !important;
   }
 
   .footer-support .tico-button {
-    width: 100%;
+    width: auto !important;
+    min-height: 40px;
+    padding: 9px 15px !important;
+    font-size: 13px !important;
+  }
+
+  .footer-support p {
+    margin: 8px 0 0 !important;
+    font-size: 11.5px !important;
   }
 
   .footer-bottom {
     align-items: flex-start !important;
     flex-direction: column;
+    margin-top: 18px !important;
+    padding-top: 14px !important;
+    gap: 6px !important;
+    font-size: 11.5px !important;
+  }
+
+  .footer-bottom > div:first-child {
+    gap: 12px !important;
   }
 
   .tico-dock {
@@ -942,12 +976,7 @@
   }
 
   .footer-grid {
-    grid-template-columns: minmax(0,1fr) !important;
-  }
-
-  .footer-brand,
-  .footer-support {
-    grid-column: auto;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
   }
 }
 
