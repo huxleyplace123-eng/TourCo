@@ -24,8 +24,10 @@ const label = { fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: 
 
 export default function Portal({ email, onSignOut }) {
   const [tab, setTab] = useState("trip");
-  const [trip, setTrip] = useState(null);
-  useEffect(() => { getTrip().then(setTrip); }, []);
+  const [trip, setTrip] = useState(undefined);
+  const [tripError, setTripError] = useState("");
+  const loadTrip = () => { setTrip(undefined); setTripError(""); getTrip().then(setTrip).catch((err) => { setTrip(null); setTripError(err.message); }); };
+  useEffect(() => { loadTrip(); }, []);
 
   return (
     <div style={{ minHeight: "100vh", background: c.sand, color: c.charcoal, fontFamily: FONT }}>
@@ -56,7 +58,7 @@ export default function Portal({ email, onSignOut }) {
       </div>
 
       <div className="pt-wrap">
-        {tab === "trip" && <TripTab trip={trip} />}
+        {tab === "trip" && <TripTab trip={trip} error={tripError} onRetry={loadTrip} />}
         {tab === "messages" && <MessagesTab />}
         {tab === "account" && <AccountTab email={email} />}
       </div>
@@ -121,9 +123,11 @@ function StatusBadge({ status }) {
   );
 }
 
-function TripTab({ trip }) {
+function TripTab({ trip, error, onRetry }) {
   const [voucher, setVoucher] = useState(null);
-  if (!trip) return <div style={{ padding: 40, textAlign: "center", color: c.stone }}>Loading your trip…</div>;
+  if (trip === undefined) return <PortalNotice title="Loading your trip…" body="Getting the latest itinerary and confirmations." />;
+  if (error) return <PortalNotice title="We couldn't load your trip" body={error} action="Try again" onAction={onRetry} tone="error" />;
+  if (!trip) return <PortalNotice title="Your trip is ready for the next step" body="There is no itinerary on this account yet. Your TicoWild concierge will add it here as soon as planning begins." />;
   const until = daysUntil(trip.start);
   const stageIdx = tripStages.indexOf(trip.status === "Confirmed" ? "Confirmed" : trip.status);
   const balance = trip.total - trip.deposit;
@@ -219,8 +223,10 @@ function TripTab({ trip }) {
 function MessagesTab() {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState("");
-  useEffect(() => { getMessages().then(setMessages); }, []);
-  const send = async () => { const t = draft.trim(); if (!t) return; setDraft(""); setMessages(await sendMessage(t)); };
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { getMessages().then(setMessages).catch((err) => setError(err.message)); }, []);
+  const send = async () => { const t = draft.trim(); if (!t || busy) return; setBusy(true); setError(""); try { setMessages(await sendMessage(t)); setDraft(""); } catch (err) { setError(err.message); } finally { setBusy(false); } };
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <div style={{ ...label, marginLeft: 2 }}>Chat with your TicoWild concierge</div>
@@ -239,8 +245,9 @@ function MessagesTab() {
       </div>
       <div style={{ display: "flex", gap: 8 }}>
         <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") send(); }} placeholder="Message your concierge…" style={input} />
-        <button onClick={send} style={{ padding: "0 16px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontWeight: 800, cursor: "pointer", display: "inline-flex", alignItems: "center" }}><Send size={16} /></button>
+        <button onClick={send} disabled={busy} aria-label="Send message" style={{ padding: "0 16px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontWeight: 800, cursor: busy ? "wait" : "pointer", display: "inline-flex", alignItems: "center", opacity: busy ? .65 : 1 }}><Send size={16} /></button>
       </div>
+      {error&&<div role="alert" style={{ padding:"10px 12px",borderRadius:radius.sm,border:"1px solid rgba(248,113,113,.28)",background:"rgba(248,113,113,.08)",color:"#FCA5A5",fontSize:12.5 }}>{error}</div>}
       <div style={{ color: c.stone, fontSize: 12, textAlign: "center" }}>A real human on the TicoWild team replies here — and on WhatsApp.</div>
     </div>
   );
@@ -250,10 +257,12 @@ function MessagesTab() {
 function AccountTab({ email }) {
   const [f, setF] = useState(null);
   const [saved, setSaved] = useState(false);
-  useEffect(() => { getProfile(email).then((p) => setF({ ...p, email: p.email || email })); }, [email]);
-  if (!f) return <div style={{ padding: 40, textAlign: "center", color: c.stone }}>Loading…</div>;
+  const [error,setError]=useState("");
+  const [busy,setBusy]=useState(false);
+  useEffect(() => { getProfile(email).then((p) => setF({ ...p, email: p.email || email })).catch((err)=>setError(err.message)); }, [email]);
+  if (!f) return error?<PortalNotice title="We couldn't load your profile" body={error} tone="error"/>:<PortalNotice title="Loading your account…" body="Getting your saved traveler details."/>;
   const set = (k) => (e) => { setF((x) => ({ ...x, [k]: e.target.value })); setSaved(false); };
-  const save = async () => { await saveProfile(f); setSaved(true); };
+  const save = async () => { setBusy(true);setError("");try{setF(await saveProfile(f));setSaved(true);}catch(err){setError(err.message);}finally{setBusy(false);} };
   const Row = ({ k, lab, ph, type }) => (
     <label style={{ display: "block" }}><div style={label}>{lab}</div><input type={type || "text"} value={f[k] || ""} onChange={set(k)} placeholder={ph} style={input} /></label>
   );
@@ -272,11 +281,16 @@ function AccountTab({ email }) {
         </div>
         <label style={{ display: "block" }}><div style={label}>Anything we should know?</div><textarea value={f.notes || ""} onChange={set("notes")} rows={2} placeholder="Dietary needs, mobility, celebrating something…" style={{ ...input, resize: "vertical" }} /></label>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={save} style={{ padding: "11px 20px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontFamily: FONT, fontWeight: 800, fontSize: 14, cursor: "pointer" }}>Save</button>
+          <button onClick={save} disabled={busy} style={{ padding: "11px 20px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontFamily: FONT, fontWeight: 800, fontSize: 14, cursor: busy ? "wait" : "pointer", opacity: busy ? .65 : 1 }}>{busy ? "Saving…" : "Save"}</button>
           {saved && <span style={{ color: "#34D399", fontSize: 13, fontWeight: 700 }}><Check size={14} style={{ verticalAlign: -2 }} /> Saved</span>}
         </div>
+        {error&&<div role="alert" style={{ padding:"10px 12px",borderRadius:radius.sm,border:"1px solid rgba(248,113,113,.28)",background:"rgba(248,113,113,.08)",color:"#FCA5A5",fontSize:12.5 }}>{error}</div>}
       </div>
       <div style={{ color: c.stone, fontSize: 12, textAlign: "center" }}>Signed in as {email} · your inbox is your login — nothing to remember.</div>
     </div>
   );
+}
+
+function PortalNotice({ title, body, action, onAction, tone }) {
+  return <div className="pt-card" style={{ padding:"clamp(28px,7vw,52px) 22px",textAlign:"center",background:tone==="error"?"linear-gradient(145deg,rgba(248,113,113,.08),#13294A)":"linear-gradient(145deg,rgba(34,211,238,.08),#13294A)" }}><div style={{ width:46,height:46,borderRadius:15,margin:"0 auto 14px",display:"grid",placeItems:"center",background:tone==="error"?"rgba(248,113,113,.12)":"rgba(34,211,238,.12)",color:tone==="error"?"#FCA5A5":c.teal,fontSize:20 }}>✦</div><h2 style={{ margin:"0 0 7px",fontSize:21 }}>{title}</h2><p style={{ maxWidth:500,margin:"0 auto",color:c.stone,fontSize:13.5,lineHeight:1.65 }}>{body}</p>{action&&<button onClick={onAction} style={{ marginTop:17,padding:"10px 16px",border:0,borderRadius:radius.sm,background:c.gold,color:c.ink,fontWeight:850,cursor:"pointer" }}>{action}</button>}</div>;
 }

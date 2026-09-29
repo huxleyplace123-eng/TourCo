@@ -17,8 +17,10 @@ const benefits = [
 
 export default function PartnerAuth({ onSession, onDemo }) {
   const params = new URLSearchParams(window.location.search);
-  const invitedCompany = params.get("company") || "";
-  const invitedEmail = params.get("email") || "";
+  let draft = {};
+  try { draft = JSON.parse(sessionStorage.getItem("ticowild_partner_draft") || "{}"); } catch { draft = {}; }
+  const invitedCompany = params.get("company") || draft.companyName || "";
+  const invitedEmail = params.get("email") || draft.email || "";
   const [mode, setMode] = useState(invitedCompany || invitedEmail ? "apply" : "signin");
   const [companyName, setCompanyName] = useState(invitedCompany);
   const [email, setEmail] = useState(invitedEmail);

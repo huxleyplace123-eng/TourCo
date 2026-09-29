@@ -12,16 +12,28 @@ const LANGUAGES = ["English", "Spanish", "French", "German", "Portuguese", "Ital
 const field = { width:"100%", padding:"12px 13px", borderRadius:12, border:`1px solid ${c.line}`, background:"rgba(255,255,255,.05)", color:c.charcoal, outline:"none", fontSize:14 };
 const blank = { companyName:"", contactName:"", phone:"", whatsapp:"", website:"", regions:[], categories:[], languages:["English","Spanish"], yearsInBusiness:"", description:"" };
 
+function websiteDraft() {
+  try {
+    const draft = JSON.parse(sessionStorage.getItem("ticowild_partner_draft") || "{}");
+    const region = String(draft.regions?.[0] || "");
+    const regionMap = /Manuel Antonio|Quepos|Jacó/i.test(region) ? "Central Pacific" : /Uvita|Dominical/i.test(region) ? "South Pacific" : /Tamarindo|Guanacaste/i.test(region) ? "Guanacaste" : region;
+    const rawCategory = String(draft.categories?.[0] || "");
+    const categoryMap = /transport/i.test(rawCategory) ? "Transport" : /fish/i.test(rawCategory) ? "Fishing" : /water/i.test(rawCategory) ? "Water" : /tour|activit/i.test(rawCategory) ? "Adventure" : rawCategory ? "Other" : "";
+    return { companyName:draft.companyName||"",contactName:draft.contactName||"",regions:regionMap?[regionMap]:[],categories:categoryMap?[categoryMap]:[] };
+  } catch { return {}; }
+}
+
 function valuesFrom(application, email) {
-  if (!application) return { ...blank };
+  const draft = websiteDraft();
+  if (!application) return { ...blank, ...draft, email };
   return {
-    companyName: application.company_name || "",
-    contactName: application.contact_name || "",
+    companyName: application.company_name || draft.companyName || "",
+    contactName: application.contact_name || draft.contactName || "",
     phone: application.phone || "",
     whatsapp: application.whatsapp || "",
     website: application.website || "",
-    regions: application.regions || [],
-    categories: application.categories || [],
+    regions: application.regions?.length ? application.regions : (draft.regions || []),
+    categories: application.categories?.length ? application.categories : (draft.categories || []),
     languages: application.languages || [],
     yearsInBusiness: application.years_in_business || "",
     description: application.description || "",

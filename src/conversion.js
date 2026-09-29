@@ -1,4 +1,4 @@
-import { hasSupabase, supabase } from "./portal/supabase.js";
+import { hasSupabase, supabase, withTimeout } from "./portal/supabase.js";
 import { queueInquiry } from "./inquiry-queue.js";
 
 const teamWhatsApp = String(import.meta.env.VITE_TICOWILD_WHATSAPP || "").replace(/\D/g, "");
@@ -42,8 +42,10 @@ export async function deliverInquiry(inquiry) {
   };
 
   if (hasSupabase) {
-    const { error } = await supabase.from("public_inquiries").insert(payload);
-    if (!error) return { delivered: true };
+    try {
+      const { error } = await withTimeout(supabase.from("public_inquiries").insert(payload), 12000, "Trip request");
+      if (!error) return { delivered: true };
+    } catch { /* safe local + email fallback below */ }
   }
 
   queueInquiry(payload);

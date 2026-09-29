@@ -18,6 +18,7 @@ import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import { allEmailTemplates } from "./email-templates.js";
 import { gmailComposeHref, TICO_GMAIL } from "./email.js";
 import { takeQueuedInquiries } from "../inquiry-queue.js";
+import { deleteConnectedCustomers, loadConnectedCustomers, saveConnectedCustomers } from "./customer-data.js";
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
@@ -176,7 +177,10 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   const [columns, setColumns] = useState(() => loadColumnPrefs(DEFAULT_COLUMNS));
   const [compose, setCompose] = useState(null); // "email" | "text" | null
   const [waOpen, setWaOpen] = useState(false);
+  const [syncState, setSyncState] = useState("checking"); // checking | connected | local | error | saving
+  const [syncMessage, setSyncMessage] = useState("");
   const fileRef = useRef(null);
+  const syncTimer = useRef(null);
 
   useEffect(() => {
     const queued = takeQueuedInquiries();
@@ -206,7 +210,34 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     });
   }, []);
 
+  const refreshConnectedCustomers = async () => {
+    setSyncState("checking");
+    setSyncMessage("");
+    try {
+      const result = await loadConnectedCustomers(loadCustomers());
+      setCustomers(result.customers);
+      setSyncState(result.connected ? "connected" : "local");
+      if (result.imported) setSyncMessage(`${result.imported} new website lead${result.imported === 1 ? "" : "s"} added`);
+    } catch (error) {
+      setSyncState("error");
+      setSyncMessage(error.message || "Live sync is unavailable.");
+    }
+  };
+
+  useEffect(() => { refreshConnectedCustomers(); }, []);
+
   useEffect(() => saveCustomers(customers), [customers]);
+  useEffect(() => {
+    if (syncState !== "connected") return undefined;
+    clearTimeout(syncTimer.current);
+    setSyncMessage("Saving changes…");
+    syncTimer.current = setTimeout(() => {
+      saveConnectedCustomers(customers)
+        .then(() => { setSyncState("connected"); setSyncMessage("Live and up to date"); })
+        .catch((error) => { setSyncState("error"); setSyncMessage(error.message); });
+    }, 450);
+    return () => clearTimeout(syncTimer.current);
+  }, [customers]);
   useEffect(() => saveColumnPrefs(columns), [columns]);
 
   const update = (id, patch) =>
@@ -239,6 +270,9 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     if (!window.confirm(`Delete ${cust.name}? This can't be undone.`)) return;
     setSelectedId(null);
     setCustomers((cs) => cs.filter((x) => x.id !== id));
+    if (syncState === "connected") {
+      deleteConnectedCustomers([id]).catch((error) => { setSyncState("error"); setSyncMessage(error.message); });
+    }
   };
 
   // Derived option lists for filters + form datalists.
@@ -308,6 +342,9 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     const s = new Set(sel.selectedIds);
     setSelectedId(null);
     setCustomers((cs) => cs.filter((x) => !s.has(x.id)));
+    if (syncState === "connected") {
+      deleteConnectedCustomers([...s]).catch((error) => { setSyncState("error"); setSyncMessage(error.message); });
+    }
     sel.clear();
   };
   const exportSelected = () => downloadCsv(toCsv(selectedCustomers()), `ticowild-customers-${todayIso()}.csv`);
@@ -470,6 +507,22 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           <button onClick={onSignOut} style={{ ...headerBtn, color: c.stone }} title="Sign out">
             Sign out
           </button>
+        </div>
+
+        <div style={{
+          marginTop: 10, display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap",
+          padding: "9px 12px", borderRadius: radius.sm,
+          border: `1px solid ${syncState === "error" ? "rgba(248,113,113,.3)" : syncState === "local" ? "rgba(255,208,0,.25)" : c.line}`,
+          background: syncState === "error" ? "rgba(248,113,113,.07)" : syncState === "local" ? "rgba(255,208,0,.06)" : "rgba(34,211,238,.055)",
+          color: syncState === "error" ? "#FCA5A5" : c.stone, fontSize: 12.5,
+        }}>
+          <span style={{ width: 8, height: 8, borderRadius: 99, flex: "0 0 auto", background: syncState === "connected" ? "#34D399" : syncState === "error" ? "#F87171" : syncState === "local" ? c.gold : c.teal, boxShadow: syncState === "connected" ? "0 0 12px rgba(52,211,153,.65)" : "none" }} />
+          <b style={{ color: c.charcoal }}>
+            {syncState === "connected" ? "Live CRM connected" : syncState === "saving" ? "Saving live…" : syncState === "checking" ? "Checking live CRM…" : syncState === "local" ? "Local CRM mode" : "CRM sync needs attention"}
+          </b>
+          <span>{syncMessage || (syncState === "local" ? "Connect the team database once in Applications to sync every browser and website lead." : syncState === "checking" ? "" : "Website leads and team edits share one database.")}</span>
+          <span style={{ flex: 1 }} />
+          {(syncState === "error" || syncState === "local") && <button onClick={syncState === "local" ? () => onWorkspace("applications") : refreshConnectedCustomers} style={{ ...headerBtn, padding: "6px 10px", color: syncState === "error" ? "#FCA5A5" : c.gold }}>{syncState === "local" ? "Connect team database" : "Try again"}</button>}
         </div>
 
         {/* ── Column picker ── */}

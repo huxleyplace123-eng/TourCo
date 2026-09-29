@@ -20,6 +20,7 @@ import { gmailComposeHref } from "./email.js";
 import { loadPortal, addMessage } from "./portal-store.js";
 import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
+import { loadConnectedOperatorOverlay, loadConnectedOperatorPortal, saveConnectedOperatorOverlay, saveConnectedOperatorPortal } from "./operator-data.js";
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
@@ -78,6 +79,22 @@ function FollowUpCell({ iso }) {
   return <span style={{ color: col, fontWeight: 700, fontSize: 13, whiteSpace: "nowrap" }}>{label}</span>;
 }
 
+function TeamOperatorPortal({ op, onExit }) {
+  const [portal, setPortal] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    let live = true;
+    loadConnectedOperatorPortal(op.id, loadPortal(op.id))
+      .then((result) => { if (live) { setPortal(result.portal); setConnected(result.connected); } })
+      .catch((err) => { if (live) setError(err.message); });
+    return () => { live = false; };
+  }, [op.id]);
+  if (error) return <div style={{ position:"fixed",inset:0,zIndex:80,display:"grid",placeItems:"center",padding:18,background:c.sand,color:c.charcoal,fontFamily:FONT }}><div style={{ width:"min(500px,100%)",padding:26,borderRadius:radius.lg,border:"1px solid rgba(248,113,113,.28)",background:c.white,textAlign:"center" }}><AlertTriangle color="#FCA5A5"/><h2>Partner workspace needs attention</h2><p style={{ color:c.stone,lineHeight:1.6,fontSize:13.5 }}>{error}</p><button onClick={onExit} style={{ padding:"10px 15px",border:0,borderRadius:radius.sm,background:c.gold,color:c.ink,fontWeight:850,cursor:"pointer" }}>Back to operators</button></div></div>;
+  if (!portal) return <div style={{ position:"fixed",inset:0,zIndex:80,display:"grid",placeItems:"center",background:c.sand,color:c.stone,fontFamily:FONT }}>Opening the shared partner workspace…</div>;
+  return <OperatorPortal op={op} initialPortal={portal} onPortalChange={connected?(next)=>saveConnectedOperatorPortal(op.id,next).catch((err)=>setError(err.message)):undefined} onExit={onExit}/>;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [overlay, setOverlay] = useState(() => loadOperatorOverlay());
@@ -95,9 +112,25 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [portalOpId, setPortalOpId] = useState(null);
   const [compose, setCompose] = useState(null); // "email" | "text" | null
   const [waOpen, setWaOpen] = useState(false);
+  const [syncState, setSyncState] = useState("checking");
+  const [syncMessage, setSyncMessage] = useState("");
   const fileRef = useRef(null);
+  const syncTimer = useRef(null);
 
   useEffect(() => saveOverlay(overlay), [overlay]);
+  useEffect(() => {
+    loadConnectedOperatorOverlay(loadOperatorOverlay()).then((result) => {
+      setOverlay(result.overlay);
+      setSyncState(result.connected ? "connected" : "local");
+      setSyncMessage(result.connected ? "Operators and partner workspaces share the live database." : "Connect the team database in Applications to sync across browsers.");
+    }).catch((error) => { setSyncState("error"); setSyncMessage(error.message); });
+  }, []);
+  useEffect(() => {
+    if (syncState !== "connected") return undefined;
+    clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => saveConnectedOperatorOverlay(overlay).catch((error) => { setSyncState("error"); setSyncMessage(error.message); }), 450);
+    return () => clearTimeout(syncTimer.current);
+  }, [overlay]);
 
   const operators = useMemo(() => mergedOperators(overlay), [overlay]);
 
@@ -351,6 +384,8 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
           <button onClick={onSignOut} style={{ ...headerBtn, color: c.stone }}>Sign out</button>
         </div>
 
+        <div style={{ marginTop:10,display:"flex",alignItems:"center",gap:9,flexWrap:"wrap",padding:"9px 12px",borderRadius:radius.sm,border:`1px solid ${syncState==="error"?"rgba(248,113,113,.3)":syncState==="local"?"rgba(255,208,0,.25)":c.line}`,background:syncState==="error"?"rgba(248,113,113,.07)":syncState==="local"?"rgba(255,208,0,.06)":"rgba(34,211,238,.055)",fontSize:12.5,color:syncState==="error"?"#FCA5A5":c.stone }}><span style={{ width:8,height:8,borderRadius:99,background:syncState==="connected"?"#34D399":syncState==="error"?"#F87171":syncState==="local"?c.gold:c.teal }}/><b style={{ color:c.charcoal }}>{syncState==="connected"?"Live operator CRM connected":syncState==="checking"?"Checking operator sync…":syncState==="local"?"Local operator mode":"Operator sync needs attention"}</b><span>{syncMessage}</span>{syncState==="local"&&<button onClick={()=>onWorkspace("applications")} style={{ ...headerBtn,padding:"6px 10px",marginLeft:"auto",color:c.gold }}>Connect team database</button>}</div>
+
         {/* ── Stats ── */}
         <div className="ops-stats">
           {[
@@ -441,7 +476,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
           onPreviewPortal={() => setPortalOpId(selected.id)} onClose={() => setSelectedId(null)} />
       )}
       {portalOpId && (
-        <OperatorPortal op={operators.find((o) => o.id === portalOpId)} onExit={() => setPortalOpId(null)} />
+        <TeamOperatorPortal op={operators.find((o) => o.id === portalOpId)} onExit={() => setPortalOpId(null)} />
       )}
       {showAdd && (
         <AddOperatorModal

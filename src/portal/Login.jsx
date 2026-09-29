@@ -10,15 +10,22 @@ export default function Login({ onSignIn }) {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   const valid = /\S+@\S+\.\S+/.test(email);
 
   const submit = async (e) => {
     e.preventDefault();
     if (!valid) return;
     setBusy(true);
-    await onSignIn(email.trim());
-    setBusy(false);
-    setSent(true);
+    setError("");
+    try {
+      await onSignIn(email.trim());
+      setSent(true);
+    } catch (err) {
+      setError(err.message || "We could not send the sign-in link. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const input = {
@@ -65,6 +72,7 @@ export default function Login({ onSignIn }) {
               }}>
                 {busy ? "Sending…" : <>Email me a sign-in link <ArrowRight size={17} strokeWidth={2.6} /></>}
               </button>
+              {error && <div role="alert" style={{ padding:"10px 12px",borderRadius:radius.sm,border:"1px solid rgba(248,113,113,.28)",background:"rgba(248,113,113,.08)",color:"#FCA5A5",fontSize:12.5,lineHeight:1.5 }}>{error}</div>}
             </form>
             <p style={{ color: c.stone, fontSize: 12, lineHeight: 1.5, margin: "16px auto 0", maxWidth: 320 }}>
               No password to create or remember. We email you a link each time — tap it and you're in from any device.

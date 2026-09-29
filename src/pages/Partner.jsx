@@ -16,7 +16,19 @@ const CHECKLIST = ["Licensed & insured in Costa Rica", "Consistent 4.5★+ guest
 
 export function Partner({ go }) {
   const [form, setForm] = useState({ name: "", operator: "", region: "Manuel Antonio", email: "", type: "Tours & activities" });
-  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  const beginApplication = () => {
+    if (!form.name.trim() || !form.operator.trim() || !/\S+@\S+\.\S+/.test(form.email)) {
+      setError("Add your name, business name, and a valid email to continue.");
+      return;
+    }
+    sessionStorage.setItem("ticowild_partner_draft", JSON.stringify({
+      contactName: form.name.trim(), companyName: form.operator.trim(), email: form.email.trim(),
+      regions: [form.region], categories: [form.type],
+    }));
+    window.location.assign("/partners/");
+  };
 
   return (
     <>
@@ -60,28 +72,19 @@ export function Partner({ go }) {
 
           {/* Apply form */}
           <div style={{ background: c.surface2, borderRadius: 22, padding: 28, border: "1px solid rgba(255,255,255,.08)" }}>
-            {sent ? (
-              <div style={{ textAlign: "center", padding: "30px 10px" }}>
-                <span style={{ width: 60, height: 60, borderRadius: 999, background: grad.jungle, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-                  <Check size={30} color="#fff" />
-                </span>
-                <h3 style={{ margin: "0 0 8px", fontSize: 22, fontWeight: 800, color: c.charcoal }}>Application received!</h3>
-                <p style={{ color: c.stone, fontSize: 15 }}>Thanks, {form.name || "partner"}. Our operator team will be in touch within two business days.</p>
-                <Button variant="ghost" onClick={() => go("home")} style={{ marginTop: 8 }}>Back to home</Button>
-              </div>
-            ) : (
-              <>
+            <>
                 <h3 style={{ margin: "0 0 18px", fontSize: 20, fontWeight: 800, color: c.charcoal }}>Apply to partner</h3>
                 <Field label="Your name"><TextInput value={form.name} onChange={(v) => setForm({ ...form, name: v })} placeholder="Full name" /></Field>
                 <Field label="Operator / business name"><TextInput value={form.operator} onChange={(v) => setForm({ ...form, operator: v })} placeholder="e.g. Pura Vida Sportfishing" /></Field>
                 <Field label="Primary region"><Select value={form.region} onChange={(v) => setForm({ ...form, region: v })} options={["Manuel Antonio", "Quepos", "Uvita", "Dominical", "Jacó", "Tamarindo", "Guanacaste"]} /></Field>
                 <Field label="What you offer"><Select value={form.type} onChange={(v) => setForm({ ...form, type: v })} options={["Tours & activities", "Transportation", "Fishing charters", "Water sports", "Luxury / private", "Other"]} /></Field>
                 <Field label="Email"><TextInput type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} placeholder="you@company.com" /></Field>
-                <Button variant="dark" full size="lg" style={{ marginTop: 8 }} onClick={() => setSent(true)}>
-                  <Send size={17} />Submit application
+                {error&&<div role="alert" style={{ marginTop:10,padding:"10px 12px",borderRadius:12,border:"1px solid rgba(248,113,113,.3)",background:"rgba(248,113,113,.08)",color:"#FCA5A5",fontSize:12.5 }}>{error}</div>}
+                <Button variant="dark" full size="lg" style={{ marginTop: 8 }} onClick={beginApplication}>
+                  <Send size={17} />Continue secure application
                 </Button>
+                <p style={{ margin:"10px 0 0",color:c.stone,fontSize:11.5,textAlign:"center",lineHeight:1.5 }}>You’ll create a secure partner account, sign the agreement, and submit the complete application in the Partner Center.</p>
               </>
-            )}
           </div>
         </div>
       </Section>

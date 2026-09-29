@@ -1,4 +1,4 @@
-import { hasSupabase, supabase } from "../portal/supabase.js";
+import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "../portal/supabase.js";
 import { mergedOperators } from "../admin/operators-store.js";
 import { loadPortal } from "../admin/portal-store.js";
 
@@ -17,8 +17,8 @@ export function demoSession(intent = "signin", profile = {}) {
 
 export async function getSession() {
   if (!hasSupabase) return null;
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw error;
+  const { data, error } = await withTimeout(supabase.auth.getSession(), 10000, "Partner Center");
+  if (error) throw friendlyBackendError(error, "The Partner Center could not connect.");
   return data.session;
 }
 
@@ -29,31 +29,31 @@ export function watchSession(callback) {
 }
 
 export async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await withTimeout(supabase.auth.signInWithPassword({ email, password }), 12000, "Partner sign-in");
   if (error) throw error;
   return data.session;
 }
 
 export async function sendMagicLink(email) {
-  const { error } = await supabase.auth.signInWithOtp({
+  const { error } = await withTimeout(supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: `${window.location.origin}/partners/`,
       data: { account_type: "operator" },
     },
-  });
+  }), 12000, "Partner sign-in email");
   if (error) throw error;
 }
 
 export async function createAccount({ companyName, email, password }) {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await withTimeout(supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${window.location.origin}/partners/`,
       data: { account_type: "operator", company_name: companyName.trim() },
     },
-  });
+  }), 15000, "Partner account");
   if (error) throw error;
   return data;
 }
