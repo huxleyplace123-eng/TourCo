@@ -5,6 +5,7 @@ import {
   QrCode, X, LifeBuoy, ChevronRight, Navigation, ExternalLink, Sparkles, Route, ArrowLeft,
   KeyRound, MailCheck, Smartphone, Headphones, LockKeyhole, CheckCircle2,
   CalendarPlus, Share2, ListChecks, ClipboardCheck, Search, SlidersHorizontal,
+  LayoutDashboard, Map as MapIcon, FolderOpen, Users, CreditCard, FileText, ReceiptText, BellRing,
 } from "lucide-react";
 import { c, FONT, radius, shadow, grad } from "../theme.js";
 import {
@@ -42,6 +43,30 @@ const downloadTripCalendar = (trip, bookings) => {
   anchor.click();
   URL.revokeObjectURL(url);
 };
+
+const downloadPaymentSummary = (trip) => {
+  const balance = Number(trip.total || 0) - Number(trip.deposit || 0);
+  const summary = [
+    "TICOWILD TRIP PAYMENT SUMMARY", "", trip.title, `${trip.region} | ${fmt(trip.start)} – ${fmt(trip.end)}`, "",
+    `Trip total: ${money(trip.total)}`, `Deposit paid: ${money(trip.deposit)}`, `Remaining balance: ${money(balance)}`, "",
+    "Your TicoWild portal is the source of truth for current trip and payment details.",
+  ].join("\r\n");
+  const url = URL.createObjectURL(new Blob([summary], { type: "text/plain;charset=utf-8" }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "ticowild-payment-summary.txt";
+  anchor.click();
+  URL.revokeObjectURL(url);
+};
+
+const TRIP_SECTIONS = [
+  { key: "overview", label: "Overview", Icon: LayoutDashboard },
+  { key: "itinerary", label: "Itinerary", Icon: MapIcon },
+  { key: "documents", label: "Documents", Icon: FolderOpen },
+  { key: "travelers", label: "Travelers", Icon: Users },
+  { key: "payments", label: "Payments", Icon: CreditCard },
+  { key: "support", label: "Support", Icon: LifeBuoy },
+];
 
 const TABS = [
   { key: "trip", label: "My Trip", mobileLabel: "Trip", Icon: CalendarDays },
@@ -85,6 +110,13 @@ export default function Portal({ email, onSignOut }) {
         .guest-sample-copy{display:grid;gap:2px;flex:1;font-size:12.5px;color:#536C68}
         .guest-sample-copy b{color:#173C39;font-size:13.5px}
         .guest-sample-exit{display:inline-flex;align-items:center;gap:6px;padding:8px 11px;border:1px solid #B7D8D3;border-radius:10px;background:#fff;color:#173C39;font:800 12px ${FONT};cursor:pointer}
+        .trip-section-nav{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:6px;border:1px solid #E2E6E8;border-radius:17px;background:rgba(255,255,255,.9);box-shadow:0 10px 28px rgba(19,40,61,.055)}.trip-section-nav button{display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 10px;border:0;border-radius:12px;background:transparent;color:#65747E;font:800 10.5px ${FONT};cursor:pointer;white-space:nowrap}.trip-section-nav button[data-active="true"]{background:#13283D;color:#fff;box-shadow:0 8px 18px rgba(19,40,61,.17)}
+        .trip-section-page{display:grid;gap:16px;animation:skeletonEnter .2s ease both}.trip-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:5px 2px 1px}.trip-section-heading>div{display:grid;gap:4px}.trip-section-heading span{color:#0A8174;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.trip-section-heading h1{margin:0;font-size:31px;line-height:1;letter-spacing:-.05em}.trip-section-heading p{max-width:600px;margin:0;color:#6D7B85;font-size:11.5px;line-height:1.5}.trip-section-heading-badge{padding:7px 10px;border-radius:999px;background:#EAF6F4;color:#08786D;font-size:10px;font-weight:850;white-space:nowrap}
+        .portal-enterprise-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.portal-enterprise-card{padding:20px!important}.portal-enterprise-card-head{display:flex;align-items:flex-start;gap:11px;margin-bottom:16px}.portal-enterprise-card-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:13px;background:#EAF6F4;color:#087E71}.portal-enterprise-card-head>div:not(.portal-enterprise-card-icon){display:grid;gap:3px;flex:1}.portal-enterprise-card-head h2{margin:0;font-size:17px;letter-spacing:-.03em}.portal-enterprise-card-head p{margin:0;color:#74818A;font-size:10.5px;line-height:1.45}.portal-enterprise-action{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 13px;border:0;border-radius:12px;background:#13283D;color:#fff;font:850 11px ${FONT};cursor:pointer}.portal-enterprise-action.secondary{border:1px solid #D9DFE2;background:#fff;color:#344752}
+        .document-list,.traveler-list,.support-list,.payment-timeline{display:grid;gap:8px}.document-row,.traveler-row,.support-row,.payment-step{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid #E5E8E9;border-radius:13px;background:#FAFAF8}.document-row-icon,.traveler-row-icon,.support-row-icon,.payment-step-icon{display:grid;place-items:center;flex:0 0 auto;width:34px;height:34px;border-radius:11px;background:#E9F5F2;color:#087F71}.document-row>div,.traveler-row>div,.support-row>div,.payment-step>div{display:grid;gap:2px;min-width:0;flex:1}.document-row b,.traveler-row b,.support-row b,.payment-step b{font-size:11.5px}.document-row span,.traveler-row span,.support-row span,.payment-step span{color:#75818A;font-size:9.8px;line-height:1.4}.document-row button,.support-row button{display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:10px;background:#fff;color:#425560;cursor:pointer}.document-row[data-pending="true"] .document-row-icon{background:#FFF6CF;color:#A77C00}
+        .traveler-party-hero{display:flex;align-items:center;gap:16px;padding:20px;border-radius:18px;background:linear-gradient(135deg,#13283D,#0D6A61);color:#fff}.traveler-party-count{display:grid;place-items:center;width:70px;height:70px;border:1px solid rgba(255,255,255,.2);border-radius:22px;background:rgba(255,255,255,.12);font-size:27px;font-weight:900}.traveler-party-hero>div:nth-child(2){display:grid;gap:3px;flex:1}.traveler-party-hero b{font-size:18px}.traveler-party-hero span{color:rgba(255,255,255,.7);font-size:10.5px}.traveler-party-hero button{min-height:40px;padding:0 13px;border:0;border-radius:11px;background:#FFD000;color:#172532;font:850 10.5px ${FONT};cursor:pointer}
+        .payment-hero{display:grid;grid-template-columns:1.2fr repeat(2,.7fr);gap:1px;overflow:hidden;border-radius:18px;background:#DDE3E4}.payment-hero>div{display:grid;gap:3px;padding:20px;background:#13283D;color:#fff}.payment-hero>div:not(:first-child){background:#fff;color:#172532}.payment-hero span{color:rgba(255,255,255,.65);font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.payment-hero>div:not(:first-child) span{color:#75818A}.payment-hero b{font-size:25px;letter-spacing:-.05em}.payment-hero small{color:#35CFA2;font-size:9.5px;font-weight:800}.payment-step[data-done="true"] .payment-step-icon{background:#E5F6F1;color:#078A73}.payment-step[data-next="true"] .payment-step-icon{background:#FFF6CF;color:#A77C00}
+        .support-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:20px;padding:24px;border-radius:22px;background:linear-gradient(135deg,#13283D,#0A8174);color:#fff}.support-hero-copy{display:grid;gap:6px}.support-hero-copy span{color:#FFD000;font-size:9.5px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}.support-hero-copy h2{margin:0;font-size:25px;letter-spacing:-.04em}.support-hero-copy p{max-width:600px;margin:0;color:rgba(255,255,255,.72);font-size:11.5px;line-height:1.5}.support-hero button{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 15px;border:0;border-radius:13px;background:#FFD000;color:#172532;font:900 11.5px ${FONT};cursor:pointer}
         .guest-empty{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);min-height:470px;overflow:hidden;border-radius:28px!important}
         .guest-empty-copy{display:flex;flex-direction:column;justify-content:center;padding:clamp(30px,5vw,58px)}
         .guest-empty-kicker{display:inline-flex;align-items:center;gap:7px;color:#0A8174;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
@@ -271,6 +303,7 @@ export default function Portal({ email, onSignOut }) {
           .pt-wrap{padding:18px 12px calc(105px + env(safe-area-inset-bottom))}
           .guest-sample-bar{align-items:flex-start}
           .guest-sample-exit span{display:none}
+          .trip-section-nav{display:flex;gap:5px;overflow-x:auto;padding:5px;scrollbar-width:none}.trip-section-nav::-webkit-scrollbar{display:none}.trip-section-nav button{flex:0 0 auto;min-width:91px;min-height:44px}.trip-section-heading{align-items:flex-start;flex-direction:column;gap:9px}.trip-section-heading h1{font-size:27px}.trip-section-heading p{font-size:11px}.portal-enterprise-grid{grid-template-columns:1fr}.portal-enterprise-card{padding:16px!important}.traveler-party-hero{align-items:flex-start;flex-wrap:wrap;padding:17px}.traveler-party-count{width:58px;height:58px;border-radius:18px;font-size:22px}.traveler-party-hero button{width:100%}.payment-hero{grid-template-columns:1fr 1fr}.payment-hero>div:first-child{grid-column:1/-1}.payment-hero>div{padding:16px}.support-hero{grid-template-columns:1fr;padding:19px}.support-hero button{justify-content:center}.trip-section-heading-badge{align-self:flex-start}
           .guest-empty{grid-template-columns:1fr;min-height:0}
           .guest-empty-copy{padding:31px 22px 26px}
           .guest-empty h1{font-size:36px}
@@ -343,7 +376,7 @@ export default function Portal({ email, onSignOut }) {
       </div>
 
       <div className="pt-wrap">
-        {tab === "trip" && <TripTab trip={sampleMode && trip !== undefined ? DEMO_TRIP : trip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} />}
+        {tab === "trip" && <TripTab trip={sampleMode && trip !== undefined ? DEMO_TRIP : trip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} onAccount={() => setTab("account")} />}
         {tab === "messages" && <MessagesTab />}
         {tab === "account" && <AccountTab email={email} onSignOut={onSignOut} onMessage={() => setTab("messages")} />}
       </div>
@@ -503,8 +536,62 @@ function TripCommandCenter({ trip, bookings, onVoucher }) {
   );
 }
 
-function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSample, onMessage }) {
+function PortalSectionHeading({ eyebrow, title, body, badge }) {
+  return <div className="trip-section-heading"><div><span>{eyebrow}</span><h1>{title}</h1><p>{body}</p></div>{badge && <div className="trip-section-heading-badge">{badge}</div>}</div>;
+}
+
+function DocumentsSection({ trip, bookings, onVoucher, onPayments }) {
+  const confirmed = bookings.filter((item) => item.status === "Confirmed");
+  return <div className="trip-section-page"><PortalSectionHeading eyebrow="Travel wallet" title="Documents & passes" body="Every trip document a traveler may need, organized around the itinerary instead of buried in email." badge={`${confirmed.length} passes ready`} />
+    <div className="portal-enterprise-grid">
+      <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><QrCode size={19}/></div><div><h2>Activity passes</h2><p>Confirmed bookings open into an offline-ready QR pass and exact meeting point.</p></div></div><div className="document-list">{bookings.map((item) => <div className="document-row" data-pending={item.status !== "Confirmed"} key={item.id}><span className="document-row-icon">{item.status === "Confirmed" ? <QrCode size={16}/> : <Hourglass size={15}/>}</span><div><b>{item.name}</b><span>{item.status === "Confirmed" ? `${fmt(item.date)} · Pass ready` : "Awaiting operator confirmation"}</span></div>{item.status === "Confirmed" && <button onClick={() => onVoucher(item)} aria-label={`Open ${item.name} pass`}><ChevronRight size={15}/></button>}</div>)}</div></section>
+      <div style={{display:"grid",gap:14}}>
+        <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><CalendarPlus size={19}/></div><div><h2>Trip calendar</h2><p>Download every scheduled activity, location, and preparation note into the traveler’s calendar.</p></div></div><button className="portal-enterprise-action" onClick={() => downloadTripCalendar(trip, bookings)}><CalendarPlus size={15}/> Download complete calendar</button></section>
+        <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><ReceiptText size={19}/></div><div><h2>Payment records</h2><p>Review deposit, remaining balance, and download a portable trip payment summary.</p></div></div><button className="portal-enterprise-action secondary" onClick={onPayments}><ReceiptText size={15}/> View payments & receipts</button></section>
+      </div>
+    </div>
+  </div>;
+}
+
+function TravelersSection({ trip, onAccount }) {
+  const travelers = Array.from({ length: Math.max(1, Number(trip.travelers || 1)) }, (_, index) => index);
+  const share = async () => {
+    const data = { title: trip.title, text: `Our TicoWild journey: ${trip.region}, ${fmt(trip.start)} – ${fmt(trip.end)}`, url: window.location.href };
+    try { if (navigator.share) await navigator.share(data); else await navigator.clipboard.writeText(`${data.text}\n${data.url}`); } catch { /* customer cancelled */ }
+  };
+  return <div className="trip-section-page"><PortalSectionHeading eyebrow="Travel party" title="Travelers" body="A clear view of who TicoWild is coordinating, with personal trip preferences kept in the lead traveler’s private account." badge={`${trip.travelers} travelers`} />
+    <div className="traveler-party-hero"><div className="traveler-party-count">{trip.travelers}</div><div><b>Your Costa Rica travel party</b><span>One shared itinerary, one source of truth, and concierge support connected to the entire journey.</span></div><button onClick={share}><Share2 size={14}/> Share trip with your party</button></div>
+    <div className="portal-enterprise-grid"><section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><Users size={19}/></div><div><h2>Party members</h2><p>The live trip uses names from the secured traveler record. Sample mode protects real personal information.</p></div></div><div className="traveler-list">{travelers.map((index) => <div className="traveler-row" key={index}><span className="traveler-row-icon"><User size={16}/></span><div><b>{index === 0 ? "Lead traveler" : `Travel companion ${index + 1}`}</b><span>{index === 0 ? "Manages the trip account and concierge conversation" : "Included in tour counts and operator coordination"}</span></div><CheckCircle2 size={16} color="#0A8174"/></div>)}</div></section>
+      <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><ClipboardCheck size={19}/></div><div><h2>Traveler preferences</h2><p>Dietary needs, mobility considerations, celebrations, phone, country, and pickup preferences stay in the private profile.</p></div></div><button className="portal-enterprise-action" onClick={onAccount}><User size={15}/> Review traveler profile</button></section></div>
+  </div>;
+}
+
+function PaymentsSection({ trip }) {
+  const balance = Number(trip.total || 0) - Number(trip.deposit || 0);
+  return <div className="trip-section-page"><PortalSectionHeading eyebrow="Transparent trip finances" title="Payments & receipts" body="Customers can understand what has been paid, what remains, and how the remaining balance is handled without contacting support." badge="Deposit recorded" />
+    <div className="payment-hero"><div><span>Trip total</span><b>{money(trip.total)}</b><small>Complete journey value</small></div><div><span>Deposit paid</span><b>{money(trip.deposit)}</b><small style={{color:"#078A73"}}>Recorded ✓</small></div><div><span>Remaining</span><b>{money(balance)}</b><small style={{color:"#A77C00"}}>To operators on arrival</small></div></div>
+    <div className="portal-enterprise-grid"><section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><CreditCard size={19}/></div><div><h2>Payment timeline</h2><p>A plain-language view of the customer’s financial progress.</p></div></div><div className="payment-timeline"><div className="payment-step" data-done="true"><span className="payment-step-icon"><Check size={16}/></span><div><b>Deposit received</b><span>{money(trip.deposit)} credited toward this journey</span></div></div><div className="payment-step" data-next="true"><span className="payment-step-icon"><Clock size={16}/></span><div><b>Remaining trip balance</b><span>{money(balance)} payable to participating operators on arrival</span></div></div></div></section>
+      <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><ReceiptText size={19}/></div><div><h2>Portable records</h2><p>Keep a local payment summary for travel planning, expense records, or sharing with the travel party.</p></div></div><button className="portal-enterprise-action" onClick={() => downloadPaymentSummary(trip)}><FileText size={15}/> Download payment summary</button></section></div>
+  </div>;
+}
+
+function SupportSection({ bookings, onMessage }) {
+  const pending = bookings.filter((item) => item.status !== "Confirmed");
+  const needs = [
+    ["Pickup or meeting help", "Ask about timing, directions, transfers, or where to meet.", Navigation],
+    ["Change a trip detail", "Request traveler, timing, accessibility, or booking changes.", CalendarDays],
+    ["Operator confirmation", pending.length ? `${pending.length} activity is still being coordinated by TicoWild.` : "Every activity is currently confirmed.", BellRing],
+  ];
+  return <div className="trip-section-page"><PortalSectionHeading eyebrow="Human support" title="Help throughout the journey" body="The support experience keeps every request attached to the trip so travelers never need to repeat booking details." badge="Concierge connected" />
+    <div className="support-hero"><div className="support-hero-copy"><span>TicoWild concierge</span><h2>A real local team is with you</h2><p>Questions, changes, pickup coordination, and operator follow-up stay in one private conversation connected to this journey.</p></div><button onClick={onMessage}><MessageCircle size={16}/> Message concierge</button></div>
+    <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><LifeBuoy size={19}/></div><div><h2>What can we help with?</h2><p>Choose a need and continue with the concierge without searching for a separate support channel.</p></div></div><div className="support-list">{needs.map(([title, body, Icon]) => <div className="support-row" key={title}><span className="support-row-icon"><Icon size={16}/></span><div><b>{title}</b><span>{body}</span></div><button onClick={onMessage} aria-label={`Ask concierge about ${title}`}><ChevronRight size={15}/></button></div>)}</div></section>
+    <div className="guest-trust"><ShieldCheck size={15} color="#34D399"/> For immediate danger, contact local emergency services first, then notify TicoWild.</div>
+  </div>;
+}
+
+function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSample, onMessage, onAccount }) {
   const [voucher, setVoucher] = useState(null);
+  const [tripSection, setTripSection] = useState("overview");
   const [itineraryQuery, setItineraryQuery] = useState("");
   const [itineraryFilter, setItineraryFilter] = useState("all");
   if (trip === undefined) return <PortalSkeleton type="trip" />;
@@ -534,6 +621,10 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
           <button className="guest-sample-exit" onClick={onExitSample}><ArrowLeft size={14} /><span>Exit preview</span></button>
         </div>
       )}
+      <nav className="trip-section-nav" aria-label="Trip workspace">
+        {TRIP_SECTIONS.map(({ key, label: sectionLabel, Icon }) => <button key={key} data-active={tripSection === key} onClick={() => { setTripSection(key); window.scrollTo({ top: 0, behavior: "smooth" }); }}><Icon size={15}/>{sectionLabel}</button>)}
+      </nav>
+      {tripSection === "overview" && <div className="trip-section-page">
       {/* one connected journey overview: hero, status, and next action */}
       <section className="journey-overview" aria-label="Journey overview">
       <div className="guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
@@ -582,8 +673,15 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       </section>
 
       <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
+      <div className="portal-enterprise-grid">
+        <button className="pt-card portal-enterprise-card" onClick={() => setTripSection("documents")} style={{textAlign:"left",cursor:"pointer"}}><div className="portal-enterprise-card-head" style={{marginBottom:0}}><div className="portal-enterprise-card-icon"><FolderOpen size={19}/></div><div><h2>Documents & passes</h2><p>{bookings.filter((item) => item.status === "Confirmed").length} QR passes ready, plus calendar and payment records.</p></div><ChevronRight size={17} color="#75818A"/></div></button>
+        <button className="pt-card portal-enterprise-card" onClick={() => setTripSection("support")} style={{textAlign:"left",cursor:"pointer"}}><div className="portal-enterprise-card-head" style={{marginBottom:0}}><div className="portal-enterprise-card-icon"><MessageCircle size={19}/></div><div><h2>Concierge & trip support</h2><p>Changes, pickup questions, and operator coordination in one conversation.</p></div><ChevronRight size={17} color="#75818A"/></div></button>
+      </div>
+      </div>}
 
       {/* itinerary */}
+      {tripSection === "itinerary" && <div className="trip-section-page">
+        <PortalSectionHeading eyebrow="Day-by-day journey" title="Your itinerary" body="Search and filter every activity, pickup point, operator, and preparation detail in this trip." badge={`${bookings.length} activities`} />
       <div>
         <div className="guest-itinerary-heading">Your itinerary</div>
         <div className="pt-card itinerary-finder">
@@ -633,18 +731,16 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
         </div>
         {!visibleCount && <div className="itinerary-empty"><Search size={22}/><b>No trip details match that search</b><span>Try a different word or show the complete itinerary.</span><button onClick={resetItinerary}>Show everything</button></div>}
       </div>
+      </div>}
 
-      {/* payment summary */}
-      <div className="pt-card guest-payment" style={{ padding: "16px 18px" }}>
-        <div style={{ ...label }}>Payment</div>
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, padding: "3px 0" }}><span style={{ color: c.stone }}>Trip total</span><b>{money(trip.total)}</b></div>
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, padding: "3px 0" }}><span style={{ color: c.stone }}>Deposit paid (20%)</span><b style={{ color: "#34D399" }}>{money(trip.deposit)} ✓</b></div>
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, padding: "6px 0 0", marginTop: 6, borderTop: `1px solid ${c.line}` }}><span style={{ color: c.stone }}>Balance (to operators on arrival)</span><b style={{ color: c.gold }}>{money(balance)}</b></div>
-      </div>
+      {tripSection === "documents" && <DocumentsSection trip={trip} bookings={bookings} onVoucher={setVoucher} onPayments={() => setTripSection("payments")} />}
+      {tripSection === "travelers" && <TravelersSection trip={trip} onAccount={onAccount} />}
+      {tripSection === "payments" && <PaymentsSection trip={trip} />}
+      {tripSection === "support" && <SupportSection bookings={bookings} onMessage={onMessage} />}
 
-      <div className="guest-trust" style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center", fontSize: 12.5 }}>
+      {tripSection !== "support" && <div className="guest-trust" style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center", fontSize: 12.5 }}>
         <ShieldCheck size={15} color="#34D399" /> Vetted local operators · TicoWild coordinates every confirmation
-      </div>
+      </div>}
 
       {voucher && <Voucher booking={voucher} trip={trip} onClose={() => setVoucher(null)} />}
     </div>
