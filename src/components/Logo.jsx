@@ -29,7 +29,7 @@ export function Logo({ fontSize = 22, tagline = false, surface = "dark" }) {
       <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1, gap: tagline ? 5 : 0 }}>
         <span style={{ fontWeight: 800, fontSize, letterSpacing: -1 }}>
           <span style={{ color: onLight ? "#13283D" : "#FFFFFF" }}>Tico</span>
-          <span style={{ color: onLight ? "#0A8174" : "#FFD000" }}>Wild</span>
+          <span style={{ color: "#FFD000", textShadow: onLight ? "0 1px 0 rgba(19,40,61,.14)" : "none" }}>Wild</span>
         </span>
         {tagline && (
           <span style={{ color: onLight ? "#637582" : "#7FA6E8", fontWeight: 600, fontSize: Math.max(8, fontSize * 0.33), letterSpacing: fontSize * 0.14, textTransform: "uppercase" }}>
