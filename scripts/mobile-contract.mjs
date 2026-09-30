@@ -90,6 +90,10 @@ assert.match(customerPortal, /\.customer-help\{display:none!important\}/, "the c
 assert.match(customerPortal, /<PortalSkeleton type="trip"/, "trip loading must use content-shaped skeletons");
 assert.match(customerPortal, /<PortalSkeleton type="account"/, "account loading must use content-shaped skeletons");
 assert.match(customerPortal, /dirty&&<div className="account-mobile-save"/, "mobile profile saving must appear only when customer details change");
+assert.match(customerPortal, /Your traveler command center/, "the customer portal needs a practical pre-trip command center");
+assert.match(customerPortal, /Your smart packing list/, "the trip must build a personalized packing checklist from booked experiences");
+assert.match(customerPortal, /downloadTripCalendar/, "travelers need a real calendar export for their itinerary");
+assert.match(customerPortal, /Your trip wallet/, "confirmed activity passes need a single traveler wallet");
 assert.match(guestMeetingMap, /google\.com\/maps\/dir/, "customer meeting maps need turn-by-turn directions");
 assert.equal(guestMeetingMap.includes("Open operator record"), false, "customer meeting maps must never expose the CRM action");
 assert.match(css, /\.meet-tico-hero \{[\s\S]*?flex-direction: column !important/, "the Rico hero and proof strip must stack instead of competing side by side on mobile");
