@@ -6,6 +6,7 @@
 
 import { OPERATOR_SEED } from "./operators-data.js";
 import { CONTACTS_SEED } from "./operators-contacts.js";
+import { CURATED_OPERATOR_MEETING_POINTS } from "./operator-meeting-points.js";
 import { inferOperatorType, OPERATOR_TYPES, TEMPERATURES } from "./crm-shared.js";
 import { parseCsvText } from "./store.js";
 
@@ -90,7 +91,7 @@ export function mergedOperators(overlay) {
       notes: ov.notes ?? [],
       checklist: ov.checklist ?? {},
       takeRate: ov.takeRate ?? seed.targetTakeRate,
-      meetingPoint: ov.meetingPoint ?? null,
+      meetingPoint: ov.meetingPoint ?? CURATED_OPERATOR_MEETING_POINTS[seed.id] ?? null,
       contactOverrides: ov.contactOverrides ?? {},
       custom: false,
     };

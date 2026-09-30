@@ -27,9 +27,9 @@ function createMap(node, point, zoom = DEFAULT_ZOOM) {
     hasPoint ? 13 : zoom,
   );
   L.control.zoom({ position: "bottomright" }).addTo(map);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
     maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    attribution: 'Tiles &copy; <a href="https://www.esri.com/">Esri</a>',
   }).addTo(map);
   return map;
 }
@@ -117,7 +117,7 @@ export function MeetingPointPicker({ value, onChange, compact = false }) {
 }
 
 export function OperatorMapView({ operators, onOpen }) {
-  const [partnersOnly, setPartnersOnly] = useState(true);
+  const [partnersOnly, setPartnersOnly] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const mapNode = useRef(null);
   const mapRef = useRef(null);
@@ -143,15 +143,31 @@ export function OperatorMapView({ operators, onOpen }) {
     if (!map || !layer) return;
     layer.clearLayers();
     const bounds = [];
+    const markers = [];
     visible.forEach((operator) => {
       const position = [Number(operator.meetingPoint.lat), Number(operator.meetingPoint.lng)];
       bounds.push(position);
-      const marker = L.marker(position, { icon: companyIcon(operator, operator.id === selectedId), riseOnHover: true }).addTo(layer);
+      const marker = L.marker(position, { icon: pinIcon(operator.stage === "Active partner", operator.id === selectedId), riseOnHover: true }).addTo(layer);
       marker.on("click", () => setSelectedId(operator.id));
+      markers.push({ marker, operator });
     });
-    if (bounds.length === 1) map.setView(bounds[0], 12, { animate: true });
+    const refreshMarkerStyle = () => {
+      const showCompanyNames = map.getZoom() >= 10;
+      markers.forEach(({ marker, operator }) => {
+        const isSelected = operator.id === selectedId;
+        marker.setIcon(showCompanyNames || isSelected
+          ? companyIcon(operator, isSelected)
+          : pinIcon(operator.stage === "Active partner", isSelected));
+      });
+    };
+    map.on("zoomend", refreshMarkerStyle);
+    const selectedOperator = visible.find((operator) => operator.id === selectedId);
+    if (selectedOperator) map.flyTo([Number(selectedOperator.meetingPoint.lat), Number(selectedOperator.meetingPoint.lng)], 13, { animate: true, duration: 0.8 });
+    else if (bounds.length === 1) map.setView(bounds[0], 12, { animate: true });
     else if (bounds.length > 1) map.fitBounds(bounds, { padding: [70, 70], maxZoom: 11 });
     else map.setView(COSTA_RICA, DEFAULT_ZOOM);
+    window.setTimeout(refreshMarkerStyle, 0);
+    return () => map.off("zoomend", refreshMarkerStyle);
   }, [visible, selectedId]);
 
   const selected = visible.find((operator) => operator.id === selectedId) || null;
@@ -194,6 +210,7 @@ export function OperatorMapView({ operators, onOpen }) {
             <div className="tw-map-selection-kicker">TOUR MEETING POINT</div>
             <h3>{selected.name}</h3>
             <p><MapPin size={14} /> {selected.meetingPoint.name || "Pinned location"}</p>
+            {selected.meetingPoint.verified && <div className="tw-verified-place">✓ Location verified</div>}
             {selected.meetingPoint.instructions && <small>{selected.meetingPoint.instructions}</small>}
             <button className="tw-open-record" onClick={() => onOpen(selected.id)}>Open operator record</button>
           </div>
