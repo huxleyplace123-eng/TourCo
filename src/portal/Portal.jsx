@@ -152,8 +152,9 @@ export default function Portal({ email, onSignOut }) {
           .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
           .guest-trip-title{font-size:31px!important}
-          .guest-progress{overflow-x:auto;padding:15px 12px!important;scrollbar-width:none}
-          .guest-progress>div{min-width:480px}
+          .guest-progress{overflow:hidden;padding:15px 9px!important}
+          .guest-progress>div{min-width:0}
+          .guest-progress-label{font-size:9px!important;line-height:1.15}
           .guest-next-up{grid-template-columns:92px minmax(0,1fr);gap:12px}
           .guest-next-photo{height:92px}
           .guest-next-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}
