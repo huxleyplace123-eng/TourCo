@@ -17,9 +17,9 @@ const fmt = (iso) => { const d = new Date(`${String(iso).slice(0, 10)}T00:00:00`
 const daysUntil = (iso) => { const d = new Date(`${String(iso).slice(0, 10)}T00:00:00`); const t = new Date(); t.setHours(0, 0, 0, 0); return Math.round((d - t) / 86400000); };
 
 const TABS = [
-  { key: "trip", label: "My Trip", Icon: CalendarDays },
-  { key: "messages", label: "Messages", Icon: MessageCircle },
-  { key: "account", label: "Account", Icon: User },
+  { key: "trip", label: "My Trip", mobileLabel: "Trip", Icon: CalendarDays },
+  { key: "messages", label: "Messages", mobileLabel: "Concierge", Icon: MessageCircle },
+  { key: "account", label: "Account", mobileLabel: "Account", Icon: User },
 ];
 
 const input = { width: "100%", boxSizing: "border-box", background: "#fff", border: "1px solid #DDE2E6", borderRadius: radius.sm, color: "#172532", fontFamily: FONT, fontSize: 15, padding: "12px 13px", outline: "none" };
@@ -50,6 +50,7 @@ export default function Portal({ email, onSignOut }) {
         .pt-tabs{position:sticky;top:59px;z-index:10;display:flex;justify-content:center;gap:7px;padding:10px clamp(10px,3vw,20px);background:rgba(255,255,255,.94);border-bottom:1px solid #E5E7E9;backdrop-filter:blur(16px)}
         .pt-tabs button{min-height:42px;padding-inline:20px!important;color:#56636F!important}
         .pt-tabs button[data-active="true"]{background:#13283D!important;color:#fff!important;box-shadow:0 8px 20px rgba(19,40,61,.16)}
+        .pt-tab-icon{display:contents}.pt-tab-label:after{content:""}
         .pt-card{border-radius:20px;border:1px solid #E4E7E9!important;background-color:#fff!important;color:#172532!important;box-shadow:0 12px 35px rgba(19,40,61,.07)!important}
         .guest-trip-view{gap:22px!important}
         .guest-sample-bar{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid #BFE3DE;border-radius:16px;background:#EAF7F5;color:#173C39;box-shadow:0 8px 24px rgba(10,129,116,.08)}
@@ -197,6 +198,7 @@ export default function Portal({ email, onSignOut }) {
         .security-row span{color:#7B878F;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .account-secondary-action{width:100%;min-height:43px;border:1px solid #D8DEE2;border-radius:12px;background:#fff;color:#314451;font:800 12px ${FONT};cursor:pointer}
         .account-danger-action{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:42px;margin-top:9px;border:0;border-radius:12px;background:#F3F5F5;color:#596771;font:800 12px ${FONT};cursor:pointer}
+        .account-mobile-save{display:none}
         .password-action{margin-top:9px;border-color:#13283D;background:#13283D;color:#fff}
         .password-success{margin-top:10px;padding:10px 12px;border-radius:12px;background:#EFF9F6;color:#087662;font-size:11px;font-weight:800}
         .password-modal-backdrop{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:18px;background:rgba(6,20,32,.62);backdrop-filter:blur(7px)}
@@ -206,10 +208,18 @@ export default function Portal({ email, onSignOut }) {
         .account-help h3{margin:0 0 6px;font-size:16px;letter-spacing:-.025em}
         .account-help p{margin:0 0 14px;color:#6E6B5F;font-size:11.5px;line-height:1.55}
         .account-help button{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:0;border-radius:11px;background:#13283D;color:#fff;font:800 11.5px ${FONT};cursor:pointer}
+        .portal-skeleton{display:grid;gap:16px;animation:skeletonEnter .25s ease both}.portal-skeleton-block{position:relative;overflow:hidden;border:1px solid #E5E8E9;border-radius:22px;background:#E9ECEC}.portal-skeleton-block:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);animation:portalShimmer 1.25s ease-in-out infinite}.portal-skeleton-hero{height:250px;background:linear-gradient(135deg,#DCE4E5,#C8D4D6)}.portal-skeleton-progress{height:62px;border-radius:18px}.portal-skeleton-row{display:grid;grid-template-columns:150px 1fr;gap:16px}.portal-skeleton-thumb{height:130px}.portal-skeleton-copy{height:130px}.portal-skeleton-account-hero{height:114px;background:linear-gradient(135deg,#D2DCDE,#B9CCCA)}.portal-skeleton-columns{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}.portal-skeleton-panel{height:440px}.portal-skeleton-security{height:360px}@keyframes portalShimmer{to{transform:translateX(100%)}}@keyframes skeletonEnter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
         @media(max-width:700px){
-          .pt-tabs{justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
+          .customer-app-bar{min-height:58px;padding:10px 14px!important}
+          .customer-signout{padding:8px 10px!important;font-size:11.5px!important}
+          .pt-tabs{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:7px 10px calc(7px + env(safe-area-inset-bottom));border-top:1px solid rgba(19,40,61,.1);border-bottom:0;background:rgba(255,255,255,.96);box-shadow:0 -12px 32px rgba(19,40,61,.11);backdrop-filter:blur(20px);overflow:visible}
+          .pt-tabs button{display:flex!important;min-height:56px!important;flex-direction:column;justify-content:center;gap:3px!important;padding:3px 5px!important;border-radius:15px!important;color:#70808A!important;font-size:0!important}
+          .pt-tabs button[data-active="true"]{background:transparent!important;color:#13283D!important;box-shadow:none!important}
+          .pt-tab-icon{display:grid;place-items:center;width:38px;height:27px;border-radius:999px;transition:transform .2s ease,background .2s ease,color .2s ease}
+          .pt-tabs button[data-active="true"] .pt-tab-icon{transform:translateY(-1px);background:#13283D;color:#fff;box-shadow:0 7px 15px rgba(19,40,61,.2)}
+          .pt-tab-label{font-size:10.5px;font-weight:850;line-height:1.05}.pt-tab-label-text{display:none}.pt-tab-label:after{content:attr(data-mobile)}
           .pt-tabs::-webkit-scrollbar,.guest-progress::-webkit-scrollbar{display:none}
-          .pt-wrap{padding:18px 12px 92px}
+          .pt-wrap{padding:18px 12px calc(105px + env(safe-area-inset-bottom))}
           .guest-sample-bar{align-items:flex-start}
           .guest-sample-exit span{display:none}
           .guest-empty{grid-template-columns:1fr;min-height:0}
@@ -239,11 +249,11 @@ export default function Portal({ email, onSignOut }) {
           .guest-meeting-panel{grid-template-rows:auto 240px auto auto}
           .guest-meeting-copy h3{font-size:19px}
           .guest-directions-button{min-height:48px}
-          .customer-help{width:52px;height:52px;padding:0!important;justify-content:center!important;font-size:0!important}
+          .customer-help{display:none!important}
           .concierge-head{padding:15px}
           .concierge-assurance{display:none}
           .concierge-thread{min-height:360px;max-height:none;padding:17px 13px}
-          .concierge-compose{position:sticky;bottom:0;padding:11px}
+          .concierge-compose{position:sticky;bottom:calc(70px + env(safe-area-inset-bottom));padding:11px;box-shadow:0 -10px 24px rgba(19,40,61,.06)}
           .account-hero{grid-template-columns:auto minmax(0,1fr);gap:13px;padding:19px!important}
           .account-avatar{width:54px;height:54px;border-radius:18px;font-size:19px}
           .account-identity h1{font-size:20px;white-space:normal;line-height:1.1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -253,10 +263,12 @@ export default function Portal({ email, onSignOut }) {
           .account-card{padding:18px!important}
           .account-fields{grid-template-columns:1fr;gap:12px}
           .account-field-wide{grid-column:auto}
-          .account-save-row{align-items:flex-start;flex-direction:column-reverse}
-          .account-save{width:100%;min-height:48px}
+          .account-save-row{align-items:flex-start;flex-direction:column-reverse}.account-save-row>div{display:none!important}
+          .account-mobile-save{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:46;display:flex;align-items:center;gap:10px;padding:9px;border:1px solid rgba(19,40,61,.1);border-radius:17px;background:rgba(255,255,255,.96);box-shadow:0 16px 42px rgba(19,40,61,.2);backdrop-filter:blur(18px);animation:skeletonEnter .2s ease both}.account-mobile-save span{flex:1;padding-left:5px;color:#53636E;font-size:10.5px;font-weight:750}.account-mobile-save button{min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#13283D;color:#fff;font:850 12px ${FONT};cursor:pointer}
           .password-modal-backdrop{place-items:end center;padding:0}.password-modal{width:100%;box-sizing:border-box;border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
+          .portal-skeleton-hero{height:245px}.portal-skeleton-progress{height:50px}.portal-skeleton-row{grid-template-columns:88px 1fr;gap:12px}.portal-skeleton-thumb,.portal-skeleton-copy{height:110px}.portal-skeleton-account-hero{height:150px}.portal-skeleton-columns{grid-template-columns:1fr;gap:14px}.portal-skeleton-panel{height:520px}.portal-skeleton-security{height:390px}
         }
+        @media(prefers-reduced-motion:reduce){.portal-skeleton-block:after,.portal-skeleton{animation:none!important}.pt-tab-icon{transition:none!important}}
       `}</style>
 
       {/* app bar */}
@@ -268,11 +280,11 @@ export default function Portal({ email, onSignOut }) {
       </div>
 
       <div className="pt-tabs">
-        {TABS.map(({ key, label: lab, Icon }) => {
+        {TABS.map(({ key, label: lab, mobileLabel, Icon }) => {
           const on = tab === key;
           return (
             <button key={key} data-active={on} onClick={() => setTab(key)} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: radius.pill, border: "none", cursor: "pointer", fontFamily: FONT, fontSize: 13.5, fontWeight: 700, whiteSpace: "nowrap", background: "transparent" }}>
-              <Icon size={15} /> {lab}
+              <span className="pt-tab-icon"><Icon size={16} /></span><span className="pt-tab-label" data-mobile={mobileLabel}><span className="pt-tab-label-text">{lab}</span></span>
             </button>
           );
         })}
@@ -391,7 +403,7 @@ function EmptyTripState({ onPreviewSample, onMessage }) {
 
 function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSample, onMessage }) {
   const [voucher, setVoucher] = useState(null);
-  if (trip === undefined) return <PortalNotice title="Loading your trip…" body="Getting the latest itinerary and confirmations." />;
+  if (trip === undefined) return <PortalSkeleton type="trip" />;
   if (error) return <PortalNotice title="We couldn't load your trip" body={error} action="Try again" onAction={onRetry} tone="error" />;
   if (!trip) return <EmptyTripState onPreviewSample={onPreviewSample} onMessage={onMessage} />;
   const until = daysUntil(trip.start);
@@ -562,6 +574,7 @@ function AccountTab({ email, onSignOut, onMessage }) {
   const [saved, setSaved] = useState(false);
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
+  const [dirty,setDirty]=useState(false);
   const [linkState,setLinkState]=useState("");
   const [passwordOpen,setPasswordOpen]=useState(false);
   const [newPassword,setNewPassword]=useState("");
@@ -569,9 +582,9 @@ function AccountTab({ email, onSignOut, onMessage }) {
   const [passwordBusy,setPasswordBusy]=useState(false);
   const [passwordMessage,setPasswordMessage]=useState("");
   useEffect(() => { getProfile(email).then((p) => setF({ ...p, email: p.email || email })).catch((err)=>setError(err.message)); }, [email]);
-  if (!f) return error?<PortalNotice title="We couldn't load your profile" body={error} tone="error"/>:<PortalNotice title="Loading your account…" body="Getting your saved traveler details."/>;
-  const set = (k) => (e) => { setF((x) => ({ ...x, [k]: e.target.value })); setSaved(false); };
-  const save = async () => { setBusy(true);setError("");try{setF(await saveProfile(f));setSaved(true);}catch(err){setError(err.message);}finally{setBusy(false);} };
+  if (!f) return error?<PortalNotice title="We couldn't load your profile" body={error} tone="error"/>:<PortalSkeleton type="account" />;
+  const set = (k) => (e) => { setF((x) => ({ ...x, [k]: e.target.value })); setSaved(false); setDirty(true); };
+  const save = async () => { if(!dirty)return;setBusy(true);setError("");try{setF(await saveProfile(f));setSaved(true);setDirty(false);}catch(err){setError(err.message);}finally{setBusy(false);} };
   const sendLink = async () => { setLinkState("sending");setError("");try{await sendSecureSignInLink(email);setLinkState("sent");}catch(err){setError(err.message);setLinkState("");} };
   const updatePassword = async (e) => {
     e.preventDefault();
@@ -611,7 +624,7 @@ function AccountTab({ email, onSignOut, onMessage }) {
               <Row k="travelers" lab="Number of travelers" ph="2" type="number" />
               <label className="account-field-wide" style={{ display:"block" }}><div style={label}>Travel notes & preferences</div><textarea value={f.notes || ""} onChange={set("notes")} rows={4} placeholder="Dietary needs, mobility considerations, celebrations, preferred pickup style, or anything that helps us personalize your trip…" style={{ ...input,resize:"vertical",minHeight:105 }} /></label>
             </div>
-            <div className="account-save-row"><span style={{ color:"#7A858D",fontSize:10.5,lineHeight:1.4 }}>Your details are only shared when needed to operate your bookings.</span><div style={{ display:"flex",alignItems:"center",gap:10 }}>{saved&&<span className="account-saved"><CheckCircle2 size={15}/> Saved</span>}<button className="account-save" onClick={save} disabled={busy}>{busy?"Saving…":"Save traveler profile"}</button></div></div>
+            <div className="account-save-row"><span style={{ color:"#7A858D",fontSize:10.5,lineHeight:1.4 }}>Your details are only shared when needed to operate your bookings.</span><div style={{ display:"flex",alignItems:"center",gap:10 }}>{saved&&<span className="account-saved"><CheckCircle2 size={15}/> Saved</span>}<button className="account-save" onClick={save} disabled={busy||!dirty}>{busy?"Saving…":dirty?"Save traveler profile":saved?"Saved":"No changes"}</button></div></div>
             {error&&<div role="alert" style={{ marginTop:12,padding:"10px 12px",borderRadius:radius.sm,border:"1px solid #F1B9B5",background:"#FFF3F2",color:"#B42318",fontSize:12 }}>{error}</div>}
           </section>
         </div>
@@ -632,9 +645,15 @@ function AccountTab({ email, onSignOut, onMessage }) {
           <section className="pt-card account-help"><h3>Need something changed?</h3><p>Your concierge can help with traveler names, timing, pickups, accessibility needs, or booking questions.</p><button onClick={onMessage}><Headphones size={15}/> Message your concierge</button></section>
         </aside>
       </div>
+      {dirty&&<div className="account-mobile-save"><span>Unsaved traveler details</span><button onClick={save} disabled={busy}>{busy?"Saving…":"Save changes"}</button></div>}
       {passwordOpen&&<div className="password-modal-backdrop" role="presentation" onMouseDown={(e)=>{if(e.target===e.currentTarget)setPasswordOpen(false);}}><form className="password-modal" onSubmit={updatePassword} role="dialog" aria-modal="true" aria-labelledby="password-title"><div className="password-modal-head"><div><LockKeyhole size={20}/></div><div><h2 id="password-title">Change password</h2><p>Choose at least 8 characters. You can still use a secure email link anytime.</p></div><button className="password-modal-close" type="button" onClick={()=>setPasswordOpen(false)} aria-label="Close password dialog"><X size={17}/></button></div><div className="password-modal-fields"><label><div style={label}>New password</div><input autoFocus type="password" autoComplete="new-password" value={newPassword} onChange={(e)=>setNewPassword(e.target.value)} placeholder="At least 8 characters" style={input}/></label><label><div style={label}>Confirm new password</div><input type="password" autoComplete="new-password" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} placeholder="Enter it again" style={input}/></label></div>{passwordMessage&&<div role="alert" style={{marginTop:12,padding:"10px 12px",borderRadius:11,background:"#FFF3F2",color:"#B42318",fontSize:11.5,fontWeight:700}}>{passwordMessage}</div>}<div className="password-modal-actions"><button className="password-cancel" type="button" onClick={()=>setPasswordOpen(false)}>Cancel</button><button className="password-submit" type="submit" disabled={passwordBusy||newPassword.length<8||confirmPassword.length<8}>{passwordBusy?"Updating…":"Update password"}</button></div></form></div>}
     </div>
   );
+}
+
+function PortalSkeleton({ type = "trip" }) {
+  if (type === "account") return <div className="portal-skeleton" role="status" aria-label="Loading your account"><div className="portal-skeleton-block portal-skeleton-account-hero"/><div className="portal-skeleton-columns"><div className="portal-skeleton-block portal-skeleton-panel"/><div className="portal-skeleton-block portal-skeleton-security"/></div></div>;
+  return <div className="portal-skeleton" role="status" aria-label="Loading your trip"><div className="portal-skeleton-block portal-skeleton-hero"/><div className="portal-skeleton-block portal-skeleton-progress"/><div className="portal-skeleton-row"><div className="portal-skeleton-block portal-skeleton-thumb"/><div className="portal-skeleton-block portal-skeleton-copy"/></div></div>;
 }
 
 function PortalNotice({ title, body, action, onAction, tone }) {

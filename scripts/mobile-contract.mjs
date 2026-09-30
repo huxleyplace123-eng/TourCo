@@ -84,6 +84,12 @@ assert.match(customerPortal, /<Logo fontSize=\{20\} surface="light"/, "customer 
 assert.match(customerLogin, /<Logo fontSize=\{23\} surface="light"/, "mobile customer sign-in must use the real branded logo component");
 assert.match(read("src/components/Logo.jsx"), /color: "#FFD000"/, "the TicoWild wordmark must preserve the official yellow Wild brand color");
 assert.match(customerPortal, /@media\(max-width:700px\)/, "customer booking details need a dedicated phone layout");
+assert.match(customerPortal, /\.pt-tabs\{position:fixed;top:auto;bottom:0/, "customer portal navigation must move to a thumb-friendly mobile dock");
+assert.match(customerPortal, /data-mobile=\{mobileLabel\}/, "mobile customer navigation needs concise destination labels");
+assert.match(customerPortal, /\.customer-help\{display:none!important\}/, "the concierge shortcut must not float over mobile content");
+assert.match(customerPortal, /<PortalSkeleton type="trip"/, "trip loading must use content-shaped skeletons");
+assert.match(customerPortal, /<PortalSkeleton type="account"/, "account loading must use content-shaped skeletons");
+assert.match(customerPortal, /dirty&&<div className="account-mobile-save"/, "mobile profile saving must appear only when customer details change");
 assert.match(guestMeetingMap, /google\.com\/maps\/dir/, "customer meeting maps need turn-by-turn directions");
 assert.equal(guestMeetingMap.includes("Open operator record"), false, "customer meeting maps must never expose the CRM action");
 assert.match(css, /\.meet-tico-hero \{[\s\S]*?flex-direction: column !important/, "the Rico hero and proof strip must stack instead of competing side by side on mobile");
