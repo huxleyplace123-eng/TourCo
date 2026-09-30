@@ -94,6 +94,10 @@ assert.match(customerPortal, /Your traveler command center/, "the customer porta
 assert.match(customerPortal, /Your smart packing list/, "the trip must build a personalized packing checklist from booked experiences");
 assert.match(customerPortal, /downloadTripCalendar/, "travelers need a real calendar export for their itinerary");
 assert.match(customerPortal, /Your trip wallet/, "confirmed activity passes need a single traveler wallet");
+assert.match(customerPortal, /Find anything in your trip/, "travelers need a clear itinerary search entry point");
+assert.match(customerPortal, /Search activities, operators, pickup points/, "itinerary search must explain what customers can find");
+assert.match(customerPortal, /In coordination/, "travelers need to filter items that still need operator coordination");
+assert.match(customerPortal, /No trip details match that search/, "itinerary filtering needs a useful empty result state");
 assert.match(guestMeetingMap, /google\.com\/maps\/dir/, "customer meeting maps need turn-by-turn directions");
 assert.equal(guestMeetingMap.includes("Open operator record"), false, "customer meeting maps must never expose the CRM action");
 assert.match(css, /\.meet-tico-hero \{[\s\S]*?flex-direction: column !important/, "the Rico hero and proof strip must stack instead of competing side by side on mobile");

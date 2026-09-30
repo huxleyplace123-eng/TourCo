@@ -4,7 +4,7 @@ import {
   CalendarDays, MessageCircle, User, MapPin, Clock, Check, Hourglass, Send, LogOut, Backpack, ShieldCheck,
   QrCode, X, LifeBuoy, ChevronRight, Navigation, ExternalLink, Sparkles, Route, ArrowLeft,
   KeyRound, MailCheck, Smartphone, Headphones, LockKeyhole, CheckCircle2,
-  CalendarPlus, Share2, ListChecks, ClipboardCheck,
+  CalendarPlus, Share2, ListChecks, ClipboardCheck, Search, SlidersHorizontal,
 } from "lucide-react";
 import { c, FONT, radius, shadow, grad } from "../theme.js";
 import {
@@ -139,6 +139,9 @@ export default function Portal({ email, onSignOut }) {
         .trip-pass-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.trip-pass{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;min-width:0;padding:11px;border:1px solid #E5E8E9;border-radius:13px;background:#FAFAF8;text-align:left;color:#172532;cursor:pointer}.trip-pass:disabled{cursor:default;opacity:.7}.trip-pass-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#E7F5F2;color:#087D70}.trip-pass-copy{display:grid;gap:2px;min-width:0}.trip-pass-copy b,.trip-pass-copy span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trip-pass-copy b{font-size:11px}.trip-pass-copy span{color:#73808A;font-size:9.5px}.trip-pass>svg{color:#99A3A9}
         .packing-progress{display:flex;align-items:center;gap:11px;margin-bottom:12px;padding:11px 12px;border-radius:13px;background:#F2F8F7}.packing-progress-ring{display:grid;place-items:center;width:37px;height:37px;border-radius:50%;background:#0A8174;color:#fff;font-size:10px;font-weight:900}.packing-progress div{display:grid;gap:2px}.packing-progress b{font-size:11.5px}.packing-progress span{color:#6F7D85;font-size:10px}.packing-list{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.packing-item{display:flex;align-items:center;gap:9px;min-height:42px;padding:8px 10px;border:1px solid #E5E8E9;border-radius:12px;background:#fff;color:#334550;font:750 11px ${FONT};cursor:pointer;text-align:left}.packing-item[data-checked="true"]{border-color:#B9E2D9;background:#F1FAF8;color:#0A756A}.packing-check{display:grid;place-items:center;flex:0 0 auto;width:20px;height:20px;border:1.5px solid #C7CFD3;border-radius:7px}.packing-item[data-checked="true"] .packing-check{border-color:#0A8174;background:#0A8174;color:#fff}
         .trip-tool-toast{position:relative;margin:0 26px 18px;padding:9px 12px;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:rgba(3,17,28,.24);color:rgba(255,255,255,.86);font-size:10.5px;font-weight:750;text-align:center}
+        .itinerary-finder{display:grid;gap:12px;padding:16px!important}.itinerary-finder-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.itinerary-finder-title{display:flex;align-items:center;gap:9px}.itinerary-finder-title>span{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#EAF6F4;color:#087E71}.itinerary-finder-title div{display:grid;gap:1px}.itinerary-finder-title b{font-size:13px}.itinerary-finder-title small{color:#71808A;font-size:9.5px}.itinerary-result-count{padding:5px 8px;border-radius:999px;background:#F1F4F4;color:#63717A;font-size:9.5px;font-weight:850}
+        .itinerary-search{position:relative}.itinerary-search>svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#72808A}.itinerary-search input{width:100%;min-height:45px;box-sizing:border-box;padding:0 38px;border:1px solid #DDE2E5;border-radius:13px;background:#FAFAF8;color:#172532;font:700 12px ${FONT};outline:none}.itinerary-search input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}.itinerary-search input:focus{border-color:#0A8174;box-shadow:0 0 0 3px rgba(10,129,116,.1)}.itinerary-search button{position:absolute;right:7px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:9px;background:#EEF1F1;color:#65737C;cursor:pointer}
+        .itinerary-filters{display:flex;align-items:center;gap:7px;overflow:auto;padding-bottom:1px}.itinerary-filter-label{display:flex;align-items:center;gap:5px;margin-right:2px;color:#74818A;font-size:9.5px;font-weight:850;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}.itinerary-filter{min-height:34px;padding:0 12px;border:1px solid #DDE2E5;border-radius:999px;background:#fff;color:#5F6E78;font:800 10.5px ${FONT};cursor:pointer;white-space:nowrap}.itinerary-filter[data-active="true"]{border-color:#13283D;background:#13283D;color:#fff}.itinerary-empty{display:grid;place-items:center;gap:5px;padding:35px 18px;border:1px dashed #D5DBDE;border-radius:18px;background:#FAFAF8;text-align:center}.itinerary-empty svg{color:#0A8174}.itinerary-empty b{font-size:14px}.itinerary-empty span{color:#73808A;font-size:11px}.itinerary-empty button{margin-top:5px;padding:8px 11px;border:0;border-radius:10px;background:#13283D;color:#fff;font:800 10.5px ${FONT};cursor:pointer}
         .guest-itinerary-heading{margin:4px 2px 0;color:#687581;font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
         .guest-itinerary-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px!important}
         .guest-day{min-width:0}
@@ -276,6 +279,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-next-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}
           .guest-next-copy h2{font-size:18px}
           .trip-command-main{grid-template-columns:1fr;gap:17px;padding:22px 18px 18px}.trip-command-copy h2{font-size:25px}.trip-command-stats{grid-template-columns:repeat(3,1fr);gap:6px}.trip-command-stat{min-width:0;padding:10px 8px}.trip-command-stat b{font-size:16px}.trip-tool-actions{grid-template-columns:repeat(2,1fr);padding:0 18px 18px}.trip-tool-action{min-height:55px}.trip-tool-panel{margin:0 8px 8px;padding:14px}.trip-pass-grid{grid-template-columns:1fr}.packing-list{grid-template-columns:1fr}.trip-tool-toast{margin:0 18px 14px}
+          .itinerary-finder{padding:13px!important}.itinerary-finder-head{align-items:flex-start}.itinerary-finder-title small{max-width:190px;line-height:1.3}.itinerary-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible;padding:0}.itinerary-filter-label{display:none}.itinerary-filter{min-height:40px;padding:0 6px;white-space:normal;line-height:1.15}
           .guest-itinerary-grid{grid-template-columns:1fr;gap:15px!important}
           .guest-booking-photo{height:180px!important}
           .guest-booking-modal{max-height:calc(100dvh - 20px)!important;border-radius:20px!important}
@@ -491,6 +495,8 @@ function TripCommandCenter({ trip, bookings, onVoucher }) {
 
 function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSample, onMessage }) {
   const [voucher, setVoucher] = useState(null);
+  const [itineraryQuery, setItineraryQuery] = useState("");
+  const [itineraryFilter, setItineraryFilter] = useState("all");
   if (trip === undefined) return <PortalSkeleton type="trip" />;
   if (error) return <PortalNotice title="We couldn't load your trip" body={error} action="Try again" onAction={onRetry} tone="error" />;
   if (!trip) return <EmptyTripState onPreviewSample={onPreviewSample} onMessage={onMessage} />;
@@ -500,6 +506,15 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
   const heroPhoto = trip.days?.[0]?.items?.[0]?.photo;
   const bookings = trip.days.flatMap((day) => day.items.map((item) => ({ ...item, date: day.date })));
   const nextUp = bookings.find((item) => item.status === "Confirmed") || bookings[0];
+  const normalizedQuery = itineraryQuery.trim().toLocaleLowerCase();
+  const matchesItinerary = (item) => {
+    const statusMatches = itineraryFilter === "all" || (itineraryFilter === "confirmed" ? item.status === "Confirmed" : item.status !== "Confirmed");
+    const searchText = [item.name, item.operator, item.meet, item.bring, item.meetingPoint?.name].filter(Boolean).join(" ").toLocaleLowerCase();
+    return statusMatches && (!normalizedQuery || searchText.includes(normalizedQuery));
+  };
+  const visibleDays = trip.days.map((day) => ({ ...day, items: day.items.filter(matchesItinerary) })).filter((day) => day.items.length);
+  const visibleCount = visibleDays.reduce((total, day) => total + day.items.length, 0);
+  const resetItinerary = () => { setItineraryQuery(""); setItineraryFilter("all"); };
   return (
     <div className="guest-trip-view" style={{ display: "grid", gap: 16 }}>
       {sampleMode && (
@@ -557,8 +572,13 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       {/* itinerary */}
       <div>
         <div className="guest-itinerary-heading">Your itinerary</div>
+        <div className="pt-card itinerary-finder">
+          <div className="itinerary-finder-head"><div className="itinerary-finder-title"><span><Search size={16}/></span><div><b>Find anything in your trip</b><small>Search activities, operators, pickup points, or what to bring.</small></div></div><span className="itinerary-result-count">{visibleCount} {visibleCount === 1 ? "result" : "results"}</span></div>
+          <div className="itinerary-search"><Search size={15}/><input type="search" value={itineraryQuery} onChange={(event) => setItineraryQuery(event.target.value)} placeholder="Try “Tamarindo,” “swimsuit,” or an operator…" aria-label="Search your itinerary" />{itineraryQuery && <button onClick={() => setItineraryQuery("")} aria-label="Clear itinerary search"><X size={14}/></button>}</div>
+          <div className="itinerary-filters"><span className="itinerary-filter-label"><SlidersHorizontal size={12}/> Filter</span>{[["all","Everything"],["confirmed","Confirmed"],["pending","In coordination"]].map(([key, text]) => <button key={key} className="itinerary-filter" data-active={itineraryFilter === key} onClick={() => setItineraryFilter(key)}>{text}</button>)}</div>
+        </div>
         <div className="guest-itinerary-grid" style={{ display: "grid", gap: 12 }}>
-          {trip.days.map((day) => (
+          {visibleDays.map((day) => (
             <div className="guest-day" key={day.date}>
               <div className="guest-day-date" style={{ fontWeight: 800, fontSize: 13.5, margin: "4px 2px 8px" }}>{fmt(day.date)}</div>
               {day.items.map((it) => {
@@ -597,6 +617,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
             </div>
           ))}
         </div>
+        {!visibleCount && <div className="itinerary-empty"><Search size={22}/><b>No trip details match that search</b><span>Try a different word or show the complete itinerary.</span><button onClick={resetItinerary}>Show everything</button></div>}
       </div>
 
       {/* payment summary */}
