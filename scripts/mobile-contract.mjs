@@ -82,11 +82,11 @@ assert.match(customerLogin, /Email link/, "customer sign-in must preserve privat
 assert.match(customerLogin, /Sign in securely/, "customer sign-in must support passwords customers create in Account");
 assert.match(read("src/portal/portalData.js"), /supabase\.auth\.updateUser\(\{ password \}\)/, "change password must update the authenticated account rather than display a dead control");
 assert.match(customerLogin, /@media\(max-width:800px\)/, "customer sign-in needs a dedicated mobile layout");
-assert.match(customerPortal, /<Logo fontSize=\{20\} surface="light"/, "customer portal must use the real branded logo component");
+assert.match(customerPortal, /<Logo fontSize=\{20\} surface="dark"/, "customer portal must use the same dark-header branded logo treatment as the public site");
 assert.match(customerLogin, /<Logo fontSize=\{23\} surface="light"/, "mobile customer sign-in must use the real branded logo component");
 assert.match(read("src/components/Logo.jsx"), /color: "#FFD000"/, "the TicoWild wordmark must preserve the official yellow Wild brand color");
 assert.match(customerPortal, /@media\(max-width:700px\)/, "customer booking details need a dedicated phone layout");
-assert.match(customerPortal, /\.pt-tabs\{position:fixed;top:auto;bottom:0/, "customer portal navigation must move to a thumb-friendly mobile dock");
+assert.match(customerPortal, /\.pt-tabs-mobile\{position:fixed;top:auto;bottom:0/, "customer portal navigation must move to a thumb-friendly mobile dock");
 assert.match(customerPortal, /data-mobile=\{mobileLabel\}/, "mobile customer navigation needs concise destination labels");
 assert.match(customerPortal, /\.customer-help\{display:none!important\}/, "the concierge shortcut must not float over mobile content");
 assert.match(customerPortal, /<PortalSkeleton type="trip"/, "trip loading must use content-shaped skeletons");

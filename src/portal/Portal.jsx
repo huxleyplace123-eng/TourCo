@@ -88,12 +88,12 @@ export default function Portal({ email, onSignOut }) {
     <div className="customer-portal" style={{ minHeight: "100vh", background: "#F2F1EC", color: "#172532", fontFamily: FONT }}>
       <style>{`
         .pt-wrap{max-width:1180px;margin:0 auto;padding:20px clamp(16px,3vw,34px) 70px}
-        .customer-app-bar{position:sticky;top:0;z-index:12;background:#0C2133!important;border-bottom:1px solid rgba(255,255,255,.08)!important;backdrop-filter:blur(16px)}
-        .customer-brand{display:flex;align-items:center;flex:1}.customer-brand>span{padding:6px 10px 6px 7px;border-radius:13px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.16)}
-        .customer-signout{border-color:rgba(255,255,255,.18)!important;background:rgba(255,255,255,.07)!important;color:#fff!important}
-        .pt-tabs{position:sticky;top:54px;z-index:10;display:flex;justify-content:center;gap:5px;padding:5px clamp(10px,3vw,20px);background:#0C2133;border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+        .customer-app-bar{position:sticky;top:0;z-index:12;display:grid!important;grid-template-columns:1fr auto 1fr;background:#0C2133!important;border-bottom:1px solid rgba(255,255,255,.08)!important;backdrop-filter:blur(16px)}
+        .customer-brand{display:flex;align-items:center}.customer-brand>span{padding:0;background:transparent;box-shadow:none}
+        .customer-signout{justify-self:end;border-color:rgba(255,255,255,.18)!important;background:rgba(255,255,255,.07)!important;color:#fff!important}
+        .pt-tabs{z-index:10;justify-content:center;gap:5px;padding:0;background:transparent;border:0;backdrop-filter:none}.pt-tabs-desktop{position:static;display:flex}.pt-tabs-mobile{display:none}
         .pt-tabs button{min-height:36px;padding-inline:17px!important;color:rgba(255,255,255,.68)!important}
-        .pt-tabs button[data-active="true"]{background:#FFD000!important;color:#102438!important;box-shadow:0 8px 20px rgba(255,208,0,.15)}
+        .pt-tabs button[data-active="true"]{background:rgba(34,211,238,.13)!important;color:#fff!important;box-shadow:inset 0 0 0 1px rgba(34,211,238,.34)}
         .pt-tab-icon{display:contents}.pt-tab-label:after{content:""}
         .pt-card{border-radius:20px;border:1px solid #E4E7E9!important;background-color:#fff!important;color:#172532!important;box-shadow:0 12px 35px rgba(19,40,61,.07)!important}
         .guest-trip-view{gap:15px!important}
@@ -167,6 +167,7 @@ export default function Portal({ email, onSignOut }) {
         .guest-next-primary{border:0;background:#13283D;color:#fff}
         .guest-next-secondary{border:1px solid #DDE2E5;background:#fff;color:#43525E}
         .trip-command{position:relative;overflow:hidden;padding:0!important;border:1px solid #DFE4E5!important;background:#fff!important;color:#172532!important;box-shadow:0 15px 42px rgba(19,40,61,.08)!important}
+        .overview-tools-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.65fr);gap:15px;align-items:stretch}.overview-tools-grid .trip-command{height:100%}.overview-tools-grid .trip-concierge-card{height:100%;box-sizing:border-box;flex-direction:column;align-items:flex-start;padding:22px}.overview-tools-grid .trip-concierge-copy{flex:0}.overview-tools-grid .trip-concierge-copy b{font-size:19px}.overview-tools-grid .trip-concierge-copy small{margin-top:4px;line-height:1.45}.overview-tools-grid .trip-concierge-action{width:100%;box-sizing:border-box;justify-content:center;margin-top:auto}
         .trip-command:before{display:none}
         .trip-command-main{position:relative;display:block;padding:24px 26px 18px}
         .trip-command-copy{display:grid;align-content:start;gap:7px;max-width:620px}.trip-command-kicker{display:flex;align-items:center;gap:7px;color:#0A8174;font-size:10px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}.trip-command-copy h2{margin:0;color:#13283D;font-size:27px;line-height:1;letter-spacing:-.045em}.trip-command-copy p{margin:0;color:#687782;font-size:12.5px;line-height:1.55}
@@ -289,9 +290,9 @@ export default function Portal({ email, onSignOut }) {
         .account-help button{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:0;border-radius:11px;background:#13283D;color:#fff;font:800 11.5px ${FONT};cursor:pointer}
         .portal-skeleton{display:grid;gap:16px;animation:skeletonEnter .25s ease both}.portal-skeleton-block{position:relative;overflow:hidden;border:1px solid #E5E8E9;border-radius:22px;background:#E9ECEC}.portal-skeleton-block:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);animation:portalShimmer 1.25s ease-in-out infinite}.portal-skeleton-hero{height:250px;background:linear-gradient(135deg,#DCE4E5,#C8D4D6)}.portal-skeleton-progress{height:62px;border-radius:18px}.portal-skeleton-row{display:grid;grid-template-columns:150px 1fr;gap:16px}.portal-skeleton-thumb{height:130px}.portal-skeleton-copy{height:130px}.portal-skeleton-account-hero{height:114px;background:linear-gradient(135deg,#D2DCDE,#B9CCCA)}.portal-skeleton-columns{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}.portal-skeleton-panel{height:440px}.portal-skeleton-security{height:360px}@keyframes portalShimmer{to{transform:translateX(100%)}}@keyframes skeletonEnter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
         @media(max-width:700px){
-          .customer-app-bar{min-height:52px;padding:7px 12px!important}
+          .customer-app-bar{display:flex!important;min-height:52px;padding:7px 12px!important}
           .customer-signout{padding:8px 10px!important;font-size:11.5px!important}
-          .pt-tabs{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:7px 10px calc(7px + env(safe-area-inset-bottom));border-top:1px solid rgba(19,40,61,.1);border-bottom:0;background:rgba(255,255,255,.96);box-shadow:0 -12px 32px rgba(19,40,61,.11);backdrop-filter:blur(20px);overflow:visible}
+          .pt-tabs-desktop{display:none}.pt-tabs-mobile{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:7px 10px calc(7px + env(safe-area-inset-bottom));border-top:1px solid rgba(19,40,61,.1);border-bottom:0;background:rgba(255,255,255,.96);box-shadow:0 -12px 32px rgba(19,40,61,.11);backdrop-filter:blur(20px);overflow:visible}
           .pt-tabs button{display:flex!important;min-height:56px!important;flex-direction:column;justify-content:center;gap:3px!important;padding:3px 5px!important;border-radius:15px!important;color:#70808A!important;font-size:0!important}
           .pt-tabs button[data-active="true"]{background:transparent!important;color:#13283D!important;box-shadow:none!important}
           .pt-tab-icon{display:grid;place-items:center;width:38px;height:27px;border-radius:999px;transition:transform .2s ease,background .2s ease,color .2s ease}
@@ -320,6 +321,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-next-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}
           .guest-next-copy h2{font-size:18px}
           .trip-command-main{padding:22px 18px 18px}.trip-command-copy h2{font-size:25px}.trip-tool-actions{grid-template-columns:repeat(2,1fr);padding:0 18px 18px}.trip-tool-action{min-height:55px}.trip-tool-panel{margin:0 8px 8px;padding:14px}.trip-pass-grid{grid-template-columns:1fr}.packing-list{grid-template-columns:1fr}.trip-tool-toast{margin:0 18px 14px}
+          .overview-tools-grid{grid-template-columns:1fr;gap:12px}.overview-tools-grid .trip-concierge-card{height:auto;flex-direction:row;align-items:center;padding:14px}.overview-tools-grid .trip-concierge-copy{flex:1}.overview-tools-grid .trip-concierge-copy b{font-size:14px}.overview-tools-grid .trip-concierge-action{width:auto;margin-top:0}
           .itinerary-finder{padding:13px!important}.itinerary-finder-head{align-items:flex-start}.itinerary-finder-title small{max-width:190px;line-height:1.3}.itinerary-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible;padding:0}.itinerary-filter-label{display:none}.itinerary-filter{min-height:40px;padding:0 6px;white-space:normal;line-height:1.15}
           .guest-itinerary-grid{grid-template-columns:1fr;gap:15px!important}
           .guest-booking-photo{height:180px!important}
@@ -357,13 +359,22 @@ export default function Portal({ email, onSignOut }) {
 
       {/* app bar */}
       <div className="customer-app-bar" style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px clamp(12px,3vw,22px)" }}>
-        <div className="customer-brand"><Logo fontSize={20} surface="light" /></div>
+        <div className="customer-brand"><Logo fontSize={20} surface="dark" /></div>
+        <div className="pt-tabs pt-tabs-desktop">
+          {TABS.map(({ key, label: lab, mobileLabel, Icon }) => {
+            const on = tab === key;
+            return (
+              <button key={key} data-active={on} onClick={() => setTab(key)} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: radius.pill, border: "none", cursor: "pointer", fontFamily: FONT, fontSize: 13.5, fontWeight: 700, whiteSpace: "nowrap", background: "transparent" }}>
+                <span className="pt-tab-icon"><Icon size={16} /></span><span className="pt-tab-label" data-mobile={mobileLabel}><span className="pt-tab-label-text">{lab}</span></span>
+              </button>
+            );
+          })}
+        </div>
         <button className="customer-signout" onClick={onSignOut} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 12px", borderRadius: radius.sm, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
           <LogOut size={15} /> Sign out
         </button>
       </div>
-
-      <div className="pt-tabs">
+      <div className="pt-tabs pt-tabs-mobile">
         {TABS.map(({ key, label: lab, mobileLabel, Icon }) => {
           const on = tab === key;
           return (
@@ -668,12 +679,14 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       </aside>
       </section>
 
-      <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
-      <button className="trip-concierge-card" onClick={onMessage}>
-        <span className="trip-concierge-avatar">{conciergeInitials}</span>
-        <span className="trip-concierge-copy"><span>Your concierge</span><b>{concierge.name}</b><small>{concierge.role} · {concierge.availability}</small></span>
-        <span className="trip-concierge-action"><MessageCircle size={15}/><span>Message concierge</span><ChevronRight size={15}/></span>
-      </button>
+      <div className="overview-tools-grid">
+        <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
+        <button className="trip-concierge-card" onClick={onMessage}>
+          <span className="trip-concierge-avatar">{conciergeInitials}</span>
+          <span className="trip-concierge-copy"><span>Your concierge</span><b>{concierge.name}</b><small>{concierge.role} · {concierge.availability}</small></span>
+          <span className="trip-concierge-action"><MessageCircle size={15}/><span>Message concierge</span><ChevronRight size={15}/></span>
+        </button>
+      </div>
       </div>}
 
       {/* itinerary */}
