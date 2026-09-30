@@ -91,7 +91,7 @@ assert.match(customerPortal, /\.customer-help\{display:none!important\}/, "the c
 assert.match(customerPortal, /<PortalSkeleton type="trip"/, "trip loading must use content-shaped skeletons");
 assert.match(customerPortal, /<PortalSkeleton type="account"/, "account loading must use content-shaped skeletons");
 assert.match(customerPortal, /dirty&&<div className="account-mobile-save"/, "mobile profile saving must appear only when customer details change");
-assert.match(customerPortal, /Your traveler command center/, "the customer portal needs a practical pre-trip command center");
+assert.match(customerPortal, /Trip essentials/, "the customer portal needs a simple set of practical trip tools");
 assert.match(customerPortal, /Your smart packing list/, "the trip must build a personalized packing checklist from booked experiences");
 assert.match(customerPortal, /downloadTripCalendar/, "travelers need a real calendar export for their itinerary");
 assert.match(customerPortal, /Your trip wallet/, "confirmed activity passes need a single traveler wallet");
@@ -99,12 +99,9 @@ assert.match(customerPortal, /Find anything in your trip/, "travelers need a cle
 assert.match(customerPortal, /Search activities, operators, pickup points/, "itinerary search must explain what customers can find");
 assert.match(customerPortal, /In coordination/, "travelers need to filter items that still need operator coordination");
 assert.match(customerPortal, /No trip details match that search/, "itinerary filtering needs a useful empty result state");
-for (const section of ["Overview", "Itinerary", "Documents", "Travelers", "Payments", "Support"]) {
-  assert.ok(customerPortal.includes(`label: "${section}"`), `enterprise customer portal needs the ${section} workspace`);
-}
-assert.match(customerPortal, /Documents & passes/, "customer portal needs a consolidated travel-document wallet");
-assert.match(customerPortal, /Payments & receipts/, "customer portal needs transparent payment records");
-assert.match(customerPortal, /Help throughout the journey/, "customer portal needs a complete concierge support surface");
+assert.match(customerPortal, /View full itinerary/, "the trip home needs one obvious route into the detailed itinerary");
+assert.match(customerPortal, /Back to trip/, "the detailed itinerary needs an obvious return to the trip home");
+assert.equal(customerPortal.includes('aria-label="Trip workspace"'), false, "the customer portal must not bury My Trip beneath a second six-item navigation system");
 assert.match(guestMeetingMap, /google\.com\/maps\/dir/, "customer meeting maps need turn-by-turn directions");
 assert.equal(guestMeetingMap.includes("Open operator record"), false, "customer meeting maps must never expose the CRM action");
 assert.match(css, /\.meet-tico-hero \{[\s\S]*?flex-direction: column !important/, "the Rico hero and proof strip must stack instead of competing side by side on mobile");

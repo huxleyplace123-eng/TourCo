@@ -59,15 +59,6 @@ const downloadPaymentSummary = (trip) => {
   URL.revokeObjectURL(url);
 };
 
-const TRIP_SECTIONS = [
-  { key: "overview", label: "Overview", Icon: LayoutDashboard },
-  { key: "itinerary", label: "Itinerary", Icon: MapIcon },
-  { key: "documents", label: "Documents", Icon: FolderOpen },
-  { key: "travelers", label: "Travelers", Icon: Users },
-  { key: "payments", label: "Payments", Icon: CreditCard },
-  { key: "support", label: "Support", Icon: LifeBuoy },
-];
-
 const TABS = [
   { key: "trip", label: "My Trip", mobileLabel: "Trip", Icon: CalendarDays },
   { key: "messages", label: "Messages", mobileLabel: "Concierge", Icon: MessageCircle },
@@ -173,9 +164,9 @@ export default function Portal({ email, onSignOut }) {
         .guest-next-secondary{border:1px solid #DDE2E5;background:#fff;color:#43525E}
         .trip-command{position:relative;overflow:hidden;padding:0!important;border:0!important;background:linear-gradient(135deg,#10293D 0%,#0B625B 72%,#087F71 100%)!important;color:#fff!important;box-shadow:0 24px 58px rgba(19,40,61,.19)!important}
         .trip-command:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 0,rgba(255,208,0,.2),transparent 35%),radial-gradient(circle at 0 100%,rgba(255,255,255,.12),transparent 34%);pointer-events:none}
-        .trip-command-main{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;padding:25px 26px 22px}
+        .trip-command-main{position:relative;display:block;padding:25px 26px 22px}
         .trip-command-copy{display:grid;align-content:start;gap:7px;max-width:540px}.trip-command-kicker{display:flex;align-items:center;gap:7px;color:#FFD000;font-size:10px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}.trip-command-copy h2{margin:0;font-size:27px;line-height:1;letter-spacing:-.045em}.trip-command-copy p{margin:0;color:rgba(255,255,255,.73);font-size:12.5px;line-height:1.55}
-        .trip-command-stats{display:grid;grid-template-columns:repeat(3,minmax(98px,1fr));gap:8px;align-self:start}.trip-command-stat{display:grid;gap:2px;min-width:96px;padding:12px 13px;border:1px solid rgba(255,255,255,.15);border-radius:15px;background:rgba(255,255,255,.08);backdrop-filter:blur(8px)}.trip-command-stat b{font-size:18px;letter-spacing:-.04em}.trip-command-stat span{color:rgba(255,255,255,.65);font-size:9.5px;font-weight:750;line-height:1.25}
+        .trip-back{display:inline-flex;align-items:center;justify-self:start;gap:7px;margin:0;padding:9px 12px;border:1px solid #DDE3E5;border-radius:12px;background:#fff;color:#344752;font:850 11.5px ${FONT};cursor:pointer}
         .trip-tool-actions{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 26px 24px}.trip-tool-action{display:flex;align-items:center;gap:10px;min-height:53px;padding:8px 13px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(255,255,255,.1);color:#fff;font:800 11.5px ${FONT};cursor:pointer;text-align:left}.trip-tool-action:hover,.trip-tool-action[data-active="true"]{background:#fff;color:#173044;transform:translateY(-1px)}.trip-tool-icon{display:grid;place-items:center;flex:0 0 auto;width:32px;height:32px;border-radius:10px;background:rgba(255,208,0,.16);color:#FFD000}.trip-tool-action:hover .trip-tool-icon,.trip-tool-action[data-active="true"] .trip-tool-icon{background:#FFF3B0;color:#9A7300}
         .trip-tool-panel{position:relative;margin:0 12px 12px;padding:17px;border-radius:18px;background:#fff;color:#172532;animation:skeletonEnter .2s ease both}.trip-tool-panel-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px}.trip-tool-panel-head>div{display:grid;gap:2px;flex:1}.trip-tool-panel-head b{font-size:15px}.trip-tool-panel-head span{color:#71808A;font-size:10.5px}.trip-tool-panel-head button{display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:9px;background:#F1F3F3;color:#53636E;cursor:pointer}
         .trip-pass-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.trip-pass{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;min-width:0;padding:11px;border:1px solid #E5E8E9;border-radius:13px;background:#FAFAF8;text-align:left;color:#172532;cursor:pointer}.trip-pass:disabled{cursor:default;opacity:.7}.trip-pass-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#E7F5F2;color:#087D70}.trip-pass-copy{display:grid;gap:2px;min-width:0}.trip-pass-copy b,.trip-pass-copy span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trip-pass-copy b{font-size:11px}.trip-pass-copy span{color:#73808A;font-size:9.5px}.trip-pass>svg{color:#99A3A9}
@@ -313,7 +304,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-empty-visual{min-height:350px;padding:28px}
           .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
-          .journey-overview{border-radius:22px}.journey-overview .guest-trip-hero{min-height:210px;border-radius:0!important}.journey-status{align-items:flex-start;gap:12px;margin:0 14px;padding:15px 0}.journey-status-mark{flex-basis:40px;width:40px;height:40px;border-radius:13px}.journey-status-copy{min-width:0}.journey-status-copy b{font-size:15px}.journey-status-detail{margin-left:auto;padding-left:12px}.journey-status-detail small{display:none}.journey-overview .guest-next-up{grid-template-columns:78px minmax(0,1fr);gap:12px;padding:16px 14px 15px!important}.journey-overview .guest-next-photo{height:78px}.journey-overview .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr}.journey-overview .guest-next-actions button{min-height:42px}
+          .journey-overview{border-radius:22px}.journey-overview .guest-trip-hero{min-height:210px;border-radius:0!important}.journey-status{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:12px;margin:0 14px;padding:15px 0}.journey-status-mark{flex-basis:40px;width:40px;height:40px;border-radius:13px}.journey-status-copy{min-width:0}.journey-status-copy b{font-size:15px}.journey-status-detail{grid-column:1/-1;width:100%;box-sizing:border-box;margin:0;padding:12px 0 0;border-top:1px solid #E8ECEE;border-left:0;text-align:left}.journey-status-detail small{display:block}.journey-overview .guest-next-up{grid-template-columns:78px minmax(0,1fr);gap:12px;padding:16px 14px 15px!important}.journey-overview .guest-next-photo{height:78px}.journey-overview .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr}.journey-overview .guest-next-actions button{min-height:42px}
           .guest-trip-title{font-size:31px!important}
           .guest-progress{overflow:hidden;padding:15px 9px!important}
           .guest-progress>div{min-width:0}
@@ -322,7 +313,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-next-photo{height:92px}
           .guest-next-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}
           .guest-next-copy h2{font-size:18px}
-          .trip-command-main{grid-template-columns:1fr;gap:17px;padding:22px 18px 18px}.trip-command-copy h2{font-size:25px}.trip-command-stats{grid-template-columns:repeat(3,1fr);gap:6px}.trip-command-stat{min-width:0;padding:10px 8px}.trip-command-stat b{font-size:16px}.trip-tool-actions{grid-template-columns:repeat(2,1fr);padding:0 18px 18px}.trip-tool-action{min-height:55px}.trip-tool-panel{margin:0 8px 8px;padding:14px}.trip-pass-grid{grid-template-columns:1fr}.packing-list{grid-template-columns:1fr}.trip-tool-toast{margin:0 18px 14px}
+          .trip-command-main{padding:22px 18px 18px}.trip-command-copy h2{font-size:25px}.trip-tool-actions{grid-template-columns:repeat(2,1fr);padding:0 18px 18px}.trip-tool-action{min-height:55px}.trip-tool-panel{margin:0 8px 8px;padding:14px}.trip-pass-grid{grid-template-columns:1fr}.packing-list{grid-template-columns:1fr}.trip-tool-toast{margin:0 18px 14px}
           .itinerary-finder{padding:13px!important}.itinerary-finder-head{align-items:flex-start}.itinerary-finder-title small{max-width:190px;line-height:1.3}.itinerary-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible;padding:0}.itinerary-filter-label{display:none}.itinerary-filter{min-height:40px;padding:0 6px;white-space:normal;line-height:1.15}
           .guest-itinerary-grid{grid-template-columns:1fr;gap:15px!important}
           .guest-booking-photo{height:180px!important}
@@ -353,11 +344,6 @@ export default function Portal({ email, onSignOut }) {
           .account-mobile-save{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:46;display:flex;align-items:center;gap:10px;padding:9px;border:1px solid rgba(19,40,61,.1);border-radius:17px;background:rgba(255,255,255,.96);box-shadow:0 16px 42px rgba(19,40,61,.2);backdrop-filter:blur(18px);animation:skeletonEnter .2s ease both}.account-mobile-save span{flex:1;padding-left:5px;color:#53636E;font-size:10.5px;font-weight:750}.account-mobile-save button{min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#13283D;color:#fff;font:850 12px ${FONT};cursor:pointer}
           .password-modal-backdrop{place-items:end center;padding:0}.password-modal{width:100%;box-sizing:border-box;border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
           .portal-skeleton-hero{height:245px}.portal-skeleton-progress{height:50px}.portal-skeleton-row{grid-template-columns:88px 1fr;gap:12px}.portal-skeleton-thumb,.portal-skeleton-copy{height:110px}.portal-skeleton-account-hero{height:150px}.portal-skeleton-columns{grid-template-columns:1fr;gap:14px}.portal-skeleton-panel{height:520px}.portal-skeleton-security{height:390px}
-        }
-        @media(max-width:350px){
-          .journey-status{display:grid;grid-template-columns:40px minmax(0,1fr)}
-          .journey-status-detail{grid-column:1/-1;width:100%;box-sizing:border-box;margin:0;padding:12px 0 0;border-top:1px solid #E8ECEE;border-left:0;text-align:left}
-          .journey-status-detail small{display:block}
         }
         @media(prefers-reduced-motion:reduce){.portal-skeleton-block:after,.portal-skeleton{animation:none!important}.pt-tab-icon{transition:none!important}}
       `}</style>
@@ -499,7 +485,6 @@ function TripCommandCenter({ trip, bookings, onVoucher }) {
     if (!items.has(key)) items.set(key, item.replace(/\b\w/g, (letter) => letter.toUpperCase()));
     return items;
   }, new Map()).values()];
-  const confirmed = bookings.filter((item) => item.status === "Confirmed");
   const [panel, setPanel] = useState("");
   const [notice, setNotice] = useState("");
   const [packed, setPacked] = useState(() => {
@@ -520,14 +505,9 @@ function TripCommandCenter({ trip, bookings, onVoucher }) {
   const packPercent = packing.length ? Math.round((packed.length / packing.length) * 100) : 100;
   const togglePanel = (name) => { setPanel((current) => current === name ? "" : name); setNotice(""); };
   return (
-    <section className="pt-card trip-command" aria-label="Traveler command center">
+    <section className="pt-card trip-command" aria-label="Trip essentials">
       <div className="trip-command-main">
-        <div className="trip-command-copy"><div className="trip-command-kicker"><Sparkles size={13}/> Your traveler command center</div><h2>Ready for Costa Rica</h2><p>Passes, packing, timing, and help—organized around the trip you are actually taking.</p></div>
-        <div className="trip-command-stats">
-          <div className="trip-command-stat"><b>{confirmed.length}/{bookings.length}</b><span>activities confirmed</span></div>
-          <div className="trip-command-stat"><b>{packing.length}</b><span>personalized pack items</span></div>
-          <div className="trip-command-stat"><b>{trip.travelers}</b><span>travelers coordinated</span></div>
-        </div>
+        <div className="trip-command-copy"><div className="trip-command-kicker"><Sparkles size={13}/> Trip essentials</div><h2>Everything you may need</h2><p>Open a pass, check what to pack, add the trip to your calendar, or share it with your travel party.</p></div>
       </div>
       <div className="trip-tool-actions">
         <button className="trip-tool-action" data-active={panel === "passes"} onClick={() => togglePanel("passes")}><span className="trip-tool-icon"><ClipboardCheck size={17}/></span><span>Trip passes</span></button>
@@ -606,6 +586,8 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
   const until = daysUntil(trip.start);
   const heroPhoto = trip.days?.[0]?.items?.[0]?.photo;
   const bookings = trip.days.flatMap((day) => day.items.map((item) => ({ ...item, date: day.date })));
+  const confirmedCount = bookings.filter((item) => item.status === "Confirmed").length;
+  const allExperiencesReady = confirmedCount === bookings.length;
   const nextUp = bookings.find((item) => item.status === "Confirmed") || bookings[0];
   const normalizedQuery = itineraryQuery.trim().toLocaleLowerCase();
   const matchesItinerary = (item) => {
@@ -625,9 +607,6 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
           <button className="guest-sample-exit" onClick={onExitSample}><ArrowLeft size={14} /><span>Exit preview</span></button>
         </div>
       )}
-      <nav className="trip-section-nav" aria-label="Trip workspace">
-        {TRIP_SECTIONS.map(({ key, label: sectionLabel, Icon }) => <button key={key} data-active={tripSection === key} onClick={() => { setTripSection(key); window.scrollTo({ top: 0, behavior: "smooth" }); }}><Icon size={15}/>{sectionLabel}</button>)}
-      </nav>
       {tripSection === "overview" && <div className="trip-section-page">
       {/* one connected journey overview: hero, status, and next action */}
       <section className="journey-overview" aria-label="Journey overview">
@@ -643,11 +622,11 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       <div className="journey-footer">
       <div className="journey-status">
         <div className="journey-status-mark"><Check size={20}/></div>
-        <div className="journey-status-copy"><span>Your trip status</span><b>Trip confirmed</b></div>
+        <div className="journey-status-copy"><span>Your trip status</span><b>{allExperiencesReady ? "Trip confirmed" : "Trip being finalized"}</b></div>
         <div className="journey-status-detail">
-          <span>Experiences ready</span>
-          <b>{bookings.filter((item) => item.status === "Confirmed").length} of {bookings.length} confirmed</b>
-          <small>TicoWild is coordinating the remaining details.</small>
+          <span>Your experiences</span>
+          <b>{allExperiencesReady ? `${confirmedCount} ready` : `${confirmedCount} ready · ${bookings.length - confirmedCount} being confirmed`}</b>
+          <small>{allExperiencesReady ? "Everything is ready for your arrival." : "TicoWild is handling the remaining confirmation."}</small>
         </div>
       </div>
 
@@ -664,7 +643,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
           </div>
           <div className="guest-next-actions">
             <button className="guest-next-primary" onClick={() => setVoucher(nextUp)}><Navigation size={14} /> Meeting details</button>
-            <button className="guest-next-secondary" onClick={onMessage}><MessageCircle size={14} /> Ask concierge</button>
+            <button className="guest-next-secondary" onClick={() => { setTripSection("itinerary"); window.scrollTo({ top: 0, behavior: "smooth" }); }}><MapIcon size={14} /> View full itinerary</button>
           </div>
         </div>
       )}
@@ -672,14 +651,11 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       </section>
 
       <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
-      <div className="portal-enterprise-grid">
-        <button className="pt-card portal-enterprise-card" onClick={() => setTripSection("documents")} style={{textAlign:"left",cursor:"pointer"}}><div className="portal-enterprise-card-head" style={{marginBottom:0}}><div className="portal-enterprise-card-icon"><FolderOpen size={19}/></div><div><h2>Documents & passes</h2><p>{bookings.filter((item) => item.status === "Confirmed").length} QR passes ready, plus calendar and payment records.</p></div><ChevronRight size={17} color="#75818A"/></div></button>
-        <button className="pt-card portal-enterprise-card" onClick={() => setTripSection("support")} style={{textAlign:"left",cursor:"pointer"}}><div className="portal-enterprise-card-head" style={{marginBottom:0}}><div className="portal-enterprise-card-icon"><MessageCircle size={19}/></div><div><h2>Concierge & trip support</h2><p>Changes, pickup questions, and operator coordination in one conversation.</p></div><ChevronRight size={17} color="#75818A"/></div></button>
-      </div>
       </div>}
 
       {/* itinerary */}
       {tripSection === "itinerary" && <div className="trip-section-page">
+        <button className="trip-back" onClick={() => { setTripSection("overview"); window.scrollTo({ top: 0, behavior: "smooth" }); }}><ArrowLeft size={14}/> Back to trip</button>
         <PortalSectionHeading eyebrow="Day-by-day journey" title="Your itinerary" body="Search and filter every activity, pickup point, operator, and preparation detail in this trip." badge={`${bookings.length} activities`} />
       <div>
         <div className="guest-itinerary-heading">Your itinerary</div>
@@ -732,14 +708,9 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       </div>
       </div>}
 
-      {tripSection === "documents" && <DocumentsSection trip={trip} bookings={bookings} onVoucher={setVoucher} onPayments={() => setTripSection("payments")} />}
-      {tripSection === "travelers" && <TravelersSection trip={trip} onAccount={onAccount} />}
-      {tripSection === "payments" && <PaymentsSection trip={trip} />}
-      {tripSection === "support" && <SupportSection bookings={bookings} onMessage={onMessage} />}
-
-      {tripSection !== "support" && <div className="guest-trust" style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center", fontSize: 12.5 }}>
+      <div className="guest-trust" style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center", fontSize: 12.5 }}>
         <ShieldCheck size={15} color="#34D399" /> Vetted local operators · TicoWild coordinates every confirmation
-      </div>}
+      </div>
 
       {voucher && <Voucher booking={voucher} trip={trip} onClose={() => setVoucher(null)} />}
     </div>
