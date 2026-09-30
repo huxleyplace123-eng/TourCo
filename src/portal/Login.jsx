@@ -3,6 +3,7 @@ import { Mail, ArrowRight, Check, MapPinned, MessageCircle, ShieldCheck, Sparkle
 import { c, FONT, radius } from "../theme.js";
 import { cdnImage } from "../images.js";
 import { hasSupabase } from "./supabase.js";
+import { Logo } from "../components/Logo.jsx";
 
 // Passwordless login: every access link is unique and delivered to the traveler's inbox.
 export default function Login({ onSignIn }) {
@@ -29,7 +30,7 @@ export default function Login({ onSignIn }) {
         .portal-login-story{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh;padding:42px clamp(30px,5vw,72px);overflow:hidden;background-position:center;background-size:cover;color:#fff}
         .portal-login-story:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,23,34,.22),rgba(7,23,34,.9))}
         .portal-login-story>*{position:relative;z-index:1}
-        .portal-login-brand{font-size:25px;font-weight:900;letter-spacing:-.06em}.portal-login-brand span{color:#FFD000}
+        .portal-login-brand{display:flex;align-items:center}
         .portal-login-copy{max-width:620px}.portal-login-copy>span{display:inline-flex;align-items:center;gap:7px;margin-bottom:14px;font-size:10.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#8FE6DA}
         .portal-login-copy h1{margin:0 0 16px;font-size:clamp(42px,6vw,70px);line-height:.93;letter-spacing:-.065em}
         .portal-login-copy p{max-width:540px;margin:0;color:rgba(255,255,255,.78);font-size:15px;line-height:1.65}
@@ -38,7 +39,7 @@ export default function Login({ onSignIn }) {
         .portal-login-proof svg{color:#FFD000}.portal-login-proof b{font-size:12px}.portal-login-proof span{color:rgba(255,255,255,.67);font-size:10.5px;line-height:1.4}
         .portal-login-panel{display:flex;align-items:center;justify-content:center;padding:32px}
         .portal-login-card{width:min(430px,100%);padding:34px;border:1px solid #DFE4E6;border-radius:27px;background:#fff;box-shadow:0 28px 75px rgba(19,40,61,.12)}
-        .portal-login-mobile-brand{display:none;margin-bottom:22px;font-size:25px;font-weight:900;letter-spacing:-.05em}.portal-login-mobile-brand span{color:#0A8174}
+        .portal-login-mobile-brand{display:none;margin-bottom:22px}
         .portal-login-card h2{margin:0 0 7px;font-size:28px;letter-spacing:-.045em}.portal-login-card>p,.portal-login-sent>p{margin:0 0 24px;color:#697781;font-size:13px;line-height:1.55}
         .portal-login-input{position:relative;display:block}.portal-login-input svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#71808A}
         .portal-login-input input{width:100%;box-sizing:border-box;min-height:52px;padding:0 15px 0 44px;border:1px solid #D9DFE2;border-radius:13px;background:#F8F9F8;color:#172532;font:500 15px ${FONT};outline:none}
@@ -50,11 +51,11 @@ export default function Login({ onSignIn }) {
         @media(max-width:800px){.portal-login{grid-template-columns:1fr;min-height:100dvh}.portal-login-story{display:none}.portal-login-panel{align-items:flex-start;padding:26px 16px 40px}.portal-login-card{margin-top:4vh;padding:27px 22px;border-radius:23px}.portal-login-mobile-brand{display:block}.portal-login-card h2{font-size:26px}}
       `}</style>
       <section className="portal-login-story" style={{ backgroundImage:`url(${cdnImage("photo-1530789253388-582c481c54b0",1600)})` }}>
-        <div className="portal-login-brand">Tico<span>Wild</span></div>
+        <div className="portal-login-brand"><Logo fontSize={25} tagline /></div>
         <div className="portal-login-copy"><span><Sparkles size={14}/> Your Costa Rica journey</span><h1>Every detail.<br/>One beautiful trip.</h1><p>Your itinerary, exact meeting points, booking vouchers, and a real local concierge—all together when you need them.</p><div className="portal-login-proof"><div><MapPinned size={18}/><b>Know where to go</b><span>Exact pins, pickup notes, and directions.</span></div><div><MessageCircle size={18}/><b>Talk to a human</b><span>Your trip conversation stays in one place.</span></div><div><ShieldCheck size={18}/><b>Travel securely</b><span>Private access without a reusable password.</span></div></div></div>
       </section>
       <main className="portal-login-panel"><div className="portal-login-card">
-        <div className="portal-login-mobile-brand">Tico<span>Wild</span></div>
+        <div className="portal-login-mobile-brand"><Logo fontSize={23} surface="light" /></div>
         {sent ? <div className="portal-login-sent"><div className="portal-login-check"><Check size={30}/></div><h2>Check your email</h2><p>We sent a one-time sign-in link to <b style={{color:c.charcoal}}>{email}</b>. Tap it and you’re in—no password needed.</p><button onClick={()=>setSent(false)} style={{background:"none",border:0,color:c.teal,font:`750 13px ${FONT}`,cursor:"pointer"}}>Use a different email</button></div> : <>
           <h2>Open your trip</h2><p>Enter the email connected to your TicoWild booking. We’ll send you a private one-time access link.</p>
           <form onSubmit={submit}><label className="portal-login-input"><Mail size={17}/><input autoFocus type="email" inputMode="email" autoComplete="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="you@email.com"/></label><button className="portal-login-submit" type="submit" disabled={!valid||busy}>{busy?"Sending…":<>Email me a secure link <ArrowRight size={17}/></>}</button>{error&&<div role="alert" style={{marginTop:10,padding:"10px 12px",borderRadius:radius.sm,border:"1px solid #F1B9B5",background:"#FFF3F2",color:"#B42318",fontSize:12}}>{error}</div>}</form>

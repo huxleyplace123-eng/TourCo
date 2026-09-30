@@ -78,6 +78,8 @@ assert.match(customerPortal, /Email me a fresh sign-in link/, "customer accounts
 assert.match(customerPortal, /Your TicoWild concierge/, "customer messaging needs a professional concierge identity");
 assert.match(customerLogin, /Why there’s no password/, "customer sign-in must clearly explain passwordless access");
 assert.match(customerLogin, /@media\(max-width:800px\)/, "customer sign-in needs a dedicated mobile layout");
+assert.match(customerPortal, /<Logo fontSize=\{20\} surface="light"/, "customer portal must use the real branded logo component");
+assert.match(customerLogin, /<Logo fontSize=\{23\} surface="light"/, "mobile customer sign-in must use the real branded logo component");
 assert.match(customerPortal, /@media\(max-width:700px\)/, "customer booking details need a dedicated phone layout");
 assert.match(guestMeetingMap, /google\.com\/maps\/dir/, "customer meeting maps need turn-by-turn directions");
 assert.equal(guestMeetingMap.includes("Open operator record"), false, "customer meeting maps must never expose the CRM action");

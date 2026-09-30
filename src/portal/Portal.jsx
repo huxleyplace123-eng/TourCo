@@ -10,6 +10,7 @@ import {
   getTrip, getMessages, sendMessage, getProfile, saveProfile, sendSecureSignInLink, activityPhoto, tripStages, DEMO_TRIP,
 } from "./portalData.js";
 import GuestMeetingMap, { guestDirectionsUrl } from "./GuestMeetingMap.jsx";
+import { Logo } from "../components/Logo.jsx";
 
 const money = (n) => (n || n === 0 ? `$${Math.round(n).toLocaleString()}` : "—");
 const fmt = (iso) => { const d = new Date(`${String(iso).slice(0, 10)}T00:00:00`); return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }); };
@@ -44,8 +45,7 @@ export default function Portal({ email, onSignOut }) {
       <style>{`
         .pt-wrap{max-width:1120px;margin:0 auto;padding:28px clamp(16px,4vw,32px) 70px}
         .customer-app-bar{position:sticky;top:0;z-index:12;background:rgba(255,255,255,.94)!important;border-bottom:1px solid #E5E7E9!important;backdrop-filter:blur(16px)}
-        .customer-brand{color:#172532;font-size:23px!important;letter-spacing:-.05em!important}
-        .customer-brand span{color:#0A8174!important}
+        .customer-brand{display:flex;align-items:center;flex:1}
         .customer-signout{border-color:#E1E4E7!important;background:#fff!important;color:#53616D!important}
         .pt-tabs{position:sticky;top:59px;z-index:10;display:flex;justify-content:center;gap:7px;padding:10px clamp(10px,3vw,20px);background:rgba(255,255,255,.94);border-bottom:1px solid #E5E7E9;backdrop-filter:blur(16px)}
         .pt-tabs button{min-height:42px;padding-inline:20px!important;color:#56636F!important}
@@ -141,7 +141,8 @@ export default function Portal({ email, onSignOut }) {
         .consumer-section-label{margin:0 2px;color:#687581;font-size:10.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
         .concierge-shell{overflow:hidden;border-radius:26px!important}
         .concierge-head{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid #E6E9EA;background:linear-gradient(135deg,#F7FBFA,#fff)}
-        .concierge-avatar{position:relative;display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:#13283D;color:#fff;font-size:18px;font-weight:900;box-shadow:0 8px 22px rgba(19,40,61,.18)}
+        .concierge-avatar{position:relative;display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:#13283D;color:#fff;font-size:18px;font-weight:900;box-shadow:0 8px 22px rgba(19,40,61,.18);overflow:visible}
+        .concierge-avatar img{width:48px;height:48px;border-radius:15px;display:block}
         .concierge-avatar:after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border:3px solid #fff;border-radius:50%;background:#25B889}
         .concierge-title{display:grid;gap:3px;flex:1}
         .concierge-title b{font-size:16px;letter-spacing:-.02em}
@@ -254,7 +255,7 @@ export default function Portal({ email, onSignOut }) {
 
       {/* app bar */}
       <div className="customer-app-bar" style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px clamp(14px,4vw,26px)" }}>
-        <div className="customer-brand" style={{ fontSize: 20, fontWeight: 800, letterSpacing: -0.5, flex: 1 }}>Tico<span>Wild</span></div>
+        <div className="customer-brand"><Logo fontSize={20} surface="light" /></div>
         <button className="customer-signout" onClick={onSignOut} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 12px", borderRadius: radius.sm, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
           <LogOut size={15} /> Sign out
         </button>
@@ -522,7 +523,7 @@ function MessagesTab() {
       <div className="consumer-section-label">Your trip support</div>
       <section className="pt-card concierge-shell">
         <div className="concierge-head">
-          <div className="concierge-avatar">TW</div>
+          <div className="concierge-avatar"><img src="/ticowild-macaw.svg" alt="" /></div>
           <div className="concierge-title"><b>Your TicoWild concierge</b><span>A real local team coordinating every operator</span></div>
           <div className="concierge-assurance"><ShieldCheck size={15} /> Private trip conversation</div>
         </div>

@@ -2,9 +2,10 @@ import React, { useId } from "react";
 
 // TicoWild logo — macaw-head mark (from the brand SVG) + wordmark:
 // "Tico" white + "Wild" yellow (#FFD000), optional tagline underneath.
-export function Logo({ fontSize = 22, tagline = false }) {
+export function Logo({ fontSize = 22, tagline = false, surface = "dark" }) {
   const id = useId();
   const mark = Math.round(fontSize * 1.55); // icon scales with wordmark
+  const onLight = surface === "light";
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: fontSize * 0.5 }}>
       {/* macaw mark on a rounded blue tile */}
@@ -27,11 +28,11 @@ export function Logo({ fontSize = 22, tagline = false }) {
       </svg>
       <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1, gap: tagline ? 5 : 0 }}>
         <span style={{ fontWeight: 800, fontSize, letterSpacing: -1 }}>
-          <span style={{ color: "#FFFFFF" }}>Tico</span>
-          <span style={{ color: "#FFD000" }}>Wild</span>
+          <span style={{ color: onLight ? "#13283D" : "#FFFFFF" }}>Tico</span>
+          <span style={{ color: onLight ? "#0A8174" : "#FFD000" }}>Wild</span>
         </span>
         {tagline && (
-          <span style={{ color: "#7FA6E8", fontWeight: 600, fontSize: Math.max(8, fontSize * 0.33), letterSpacing: fontSize * 0.14, textTransform: "uppercase" }}>
+          <span style={{ color: onLight ? "#637582" : "#7FA6E8", fontWeight: 600, fontSize: Math.max(8, fontSize * 0.33), letterSpacing: fontSize * 0.14, textTransform: "uppercase" }}>
             Costa Rica · Tour Guides
           </span>
         )}
