@@ -23,12 +23,14 @@ export const DEMO_TRIP = {
     { date: "2026-09-13", items: [
       { id: "b1", name: "Sky Trek Zipline", operator: "Sky Adventures", time: "8:00 AM",
         meet: "Hotel lobby pickup, 7:30 AM", status: "Confirmed", price: 186,
-        bring: "Closed-toe shoes, sunscreen, light layer", photo: "photo-1679117730976-cdb5f6b05b88" },
+        bring: "Closed-toe shoes, sunscreen, light layer", photo: "photo-1679117730976-cdb5f6b05b88",
+        meetingPoint: { name: "Sky Adventures · Arenal Park", lat: 10.4247679, lng: -84.7358654, instructions: "Meet your TicoWild transfer in the hotel lobby at 7:30 AM. If traveling independently, check in at the Arenal Park reception on Route 936." } },
     ]},
     { date: "2026-09-15", items: [
       { id: "b2", name: "Sunset Catamaran", operator: "Lazy Lizard Sailing", time: "2:30 PM",
         meet: "Tamarindo pier, 2:00 PM", status: "Confirmed", price: 220,
-        bring: "Swimsuit, towel, sandals", photo: "photo-1507525428034-b723cf961d3e" },
+        bring: "Swimsuit, towel, sandals", photo: "photo-1507525428034-b723cf961d3e",
+        meetingPoint: { name: "Lazy Lizard Sailing · Marina Flamingo", lat: 10.4392403, lng: -85.7875008, instructions: "Arrive 30 minutes before departure and check in at Marina Flamingo. Keep your confirmation ready for the crew." } },
     ]},
     { date: "2026-09-17", items: [
       { id: "b3", name: "Arenal Volcano Hike + Hot Springs", operator: "Desafío Adventure Company", time: "9:00 AM",
@@ -66,6 +68,12 @@ function shapeTrip(row) {
       photo: booking.photo || "photo-1432405972618-c60b0225b8f9",
       price: Number(booking.price || 0),
       status: booking.status || "Requested",
+      meetingPoint: {
+        name: booking.meeting_point_name || booking.meet || "",
+        lat: booking.meeting_point_lat ?? booking.meet_lat ?? "",
+        lng: booking.meeting_point_lng ?? booking.meet_lng ?? "",
+        instructions: booking.meeting_instructions || booking.arrival_instructions || "",
+      },
     });
   }
   return {

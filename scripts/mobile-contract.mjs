@@ -10,6 +10,8 @@ const activities = read("src/pages/Activities.jsx");
 const activityCards = read("src/components/ActivityBrowseCard.jsx");
 const ticoRanked = read("src/components/TicoRanked.jsx");
 const exploreMap = read("src/pages/ExploreMap.jsx");
+const customerPortal = read("src/portal/Portal.jsx");
+const guestMeetingMap = read("src/portal/GuestMeetingMap.jsx");
 
 assert.match(index, /width=device-width, initial-scale=1, viewport-fit=cover/);
 assert.match(index, /button:not\(\.tn-dot\):not\(\.tn-pin\)/);
@@ -62,6 +64,12 @@ assert.match(css, /\.tico-dock\[data-lifted="true"\][\s\S]*?bottom: calc\(82px/,
 assert.match(css, /\.interactive-map \.tn-pin \{[\s\S]*?min-width: 44px !important;[\s\S]*?min-height: 44px !important;/, "map pins need phone-sized touch targets");
 assert.match(exploreMap, /aria-label=\{`Open \$\{typeLabel\(p\.type\)\}: \$\{pinTitle\(p\)\}`\}/, "map pins need accessible names");
 assert.equal(css.includes('.tico-dock[data-lifted="true"] {\n    display: none'), false, "mobile action bars must not hide Rico chat actions");
+assert.match(customerPortal, /View meeting point & voucher/, "confirmed customer bookings need a clear meeting-point action");
+assert.match(customerPortal, /Open turn-by-turn directions/, "customer booking details need a directions action");
+assert.match(customerPortal, /Private operator CRM information stays private/, "customer booking details must explain the privacy boundary");
+assert.match(customerPortal, /@media\(max-width:700px\)/, "customer booking details need a dedicated phone layout");
+assert.match(guestMeetingMap, /google\.com\/maps\/dir/, "customer meeting maps need turn-by-turn directions");
+assert.equal(guestMeetingMap.includes("Open operator record"), false, "customer meeting maps must never expose the CRM action");
 assert.match(css, /\.meet-tico-hero \{[\s\S]*?flex-direction: column !important/, "the Rico hero and proof strip must stack instead of competing side by side on mobile");
 assert.match(css, /\.tico-credential-strip \{[\s\S]*?width: 100% !important/, "the Rico proof strip must use the full phone width");
 
