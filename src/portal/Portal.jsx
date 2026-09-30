@@ -134,19 +134,20 @@ export default function Portal({ email, onSignOut }) {
         .guest-trip-hero{position:relative;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:30px!important;border-radius:28px!important;background-position:center!important;background-size:cover!important;color:#fff!important;box-shadow:0 22px 55px rgba(19,40,61,.18)!important}
         .guest-trip-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,24,38,.08),rgba(10,24,38,.82));pointer-events:none}
         .guest-trip-hero>*{position:relative;z-index:1}
-        .journey-overview{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(330px,.7fr);min-height:310px;overflow:hidden;border:0;border-radius:23px;background:#0C2133;box-shadow:0 19px 45px rgba(19,40,61,.15)}
-        .journey-overview .guest-trip-hero{min-height:310px;padding:22px!important;border-radius:0!important;box-shadow:none!important}
-        .journey-control-panel{display:flex;flex-direction:column;padding:17px 19px;background:linear-gradient(160deg,#102A3E 0%,#0A514E 100%);color:#fff}
-        .journey-control-kicker{display:flex;align-items:center;gap:8px;color:#FFD000;font-size:10px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
-        .journey-glance{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:9px 0}.journey-glance>div{display:grid;gap:1px;padding:9px 10px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.065)}.journey-glance b{color:#fff;font-size:20px;line-height:1;letter-spacing:-.04em}.journey-glance span{color:rgba(255,255,255,.58);font-size:8.5px;font-weight:850;text-transform:uppercase;letter-spacing:.07em}
-        .journey-status{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:9px;width:100%;box-sizing:border-box;padding:10px;border:1px solid rgba(255,255,255,.15);border-radius:14px;background:rgba(255,255,255,.08)}
-        .journey-status-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#FFD000;color:#13283D;box-shadow:0 7px 18px rgba(0,0,0,.16)}
-        .journey-status-copy{display:grid;gap:2px;min-width:0}.journey-status-copy span,.journey-status-detail span{color:rgba(255,255,255,.56);font-size:8.5px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}.journey-status-copy b{color:#fff;font-size:15px;letter-spacing:-.02em}
-        .journey-status-detail{grid-column:1/-1;display:grid;gap:2px;padding-top:8px;border-top:1px solid rgba(255,255,255,.12);text-align:left}.journey-status-detail b{color:#fff;font-size:11px}.journey-status-detail small{color:rgba(255,255,255,.62);font-size:9px}
-        .journey-control-panel .guest-next-up{display:grid;grid-template-columns:56px minmax(0,1fr);gap:9px;margin-top:auto;padding:10px 0 0!important;border:0!important;border-top:1px solid rgba(255,255,255,.14)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
-        .journey-control-panel .guest-next-photo{width:56px;height:56px;border-radius:13px}
-        .journey-control-panel .guest-next-kicker{color:#FFD000}.journey-control-panel .guest-next-copy h2{color:#fff;font-size:16px}.journey-control-panel .guest-next-facts{color:rgba(255,255,255,.65);gap:3px;font-size:10px}
-        .journey-control-panel .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:6px}.journey-control-panel .guest-next-actions button{min-height:34px;padding:0 7px;font-size:10.5px}.journey-control-panel .guest-next-primary{background:#FFD000;color:#102438}.journey-control-panel .guest-next-secondary{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff}
+        .journey-overview{display:grid;grid-template-columns:250px minmax(0,1fr);overflow:hidden;border:1px solid #E1E6E8;border-radius:21px;background:#fff;box-shadow:0 15px 38px rgba(19,40,61,.09)}
+        .journey-overview .guest-trip-hero{min-height:250px;padding:16px!important;border-radius:0!important;box-shadow:none!important}
+        .journey-control-panel{display:grid;grid-template-columns:minmax(0,1fr) 205px;grid-template-areas:"intro glance" "status status" "next next";gap:10px 14px;padding:17px 18px;background:#fff;color:#172532}
+        .journey-trip-intro{grid-area:intro;display:grid;align-content:start;gap:5px;min-width:0}.journey-trip-intro h1{margin:0;color:#13283D;font-size:27px;line-height:1;letter-spacing:-.045em}.journey-trip-meta{display:flex;flex-wrap:wrap;gap:7px 13px;color:#667681;font-size:10.5px}.journey-trip-meta span{display:inline-flex;align-items:center;gap:5px}.journey-trip-meta svg{color:#0A8174}
+        .journey-control-kicker{display:flex;align-items:center;gap:7px;color:#0A8174;font-size:9px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
+        .journey-glance{grid-area:glance;display:grid;grid-template-columns:1fr 1fr;gap:7px}.journey-glance>div{display:grid;align-content:center;gap:2px;padding:9px 10px;border:1px solid #DDE6E7;border-radius:12px;background:#F6F8F7}.journey-glance b{color:#13283D;font-size:20px;line-height:1;letter-spacing:-.04em}.journey-glance span{color:#718089;font-size:8px;font-weight:850;text-transform:uppercase;letter-spacing:.07em}
+        .journey-status{grid-area:status;display:grid;grid-template-columns:34px 170px minmax(0,1fr);align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #DCE5E6;border-radius:13px;background:#F3F8F7}
+        .journey-status-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#FFD000;color:#13283D}
+        .journey-status-copy{display:grid;gap:2px;min-width:0}.journey-status-copy span,.journey-status-detail span{color:#718089;font-size:8px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}.journey-status-copy b{color:#13283D;font-size:13px;letter-spacing:-.02em}
+        .journey-status-detail{display:grid;gap:1px;padding-left:11px;border-left:1px solid #D5E0E0;text-align:left}.journey-status-detail b{color:#314651;font-size:10.5px}.journey-status-detail small{color:#718089;font-size:8.5px}
+        .journey-control-panel .guest-next-up{grid-area:next;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px!important;border:1px solid #E0E5E7!important;border-radius:13px!important;background:#FAFAF8!important;box-shadow:none!important}
+        .journey-control-panel .guest-next-photo{width:48px;height:48px;border-radius:11px}
+        .journey-control-panel .guest-next-kicker{color:#0A8174}.journey-control-panel .guest-next-copy h2{color:#13283D;font-size:14px}.journey-control-panel .guest-next-facts{flex-direction:row;color:#6A7983;gap:8px;font-size:9px}
+        .journey-control-panel .guest-next-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}.journey-control-panel .guest-next-actions button{min-height:34px;padding:0 9px;font-size:9.5px}.journey-control-panel .guest-next-primary{background:#13283D;color:#fff}.journey-control-panel .guest-next-secondary{border-color:#D7DEE1;background:#fff;color:#324853}
         .guest-trip-eyebrow{display:inline-flex;align-self:flex-start;margin-bottom:auto;padding:7px 11px;border:1px solid rgba(255,255,255,.48);border-radius:999px;background:rgba(255,255,255,.92);color:#0A8174;font-size:10px!important;font-weight:900!important;letter-spacing:.08em;text-transform:uppercase;opacity:1!important}
         .guest-trip-title{max-width:650px;font-size:clamp(32px,3.5vw,44px)!important;line-height:.95!important;letter-spacing:-.055em!important}
         .guest-trip-meta{font-size:14px!important;opacity:.94!important}
@@ -311,7 +312,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-empty-visual{min-height:350px;padding:28px}
           .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
-          .journey-overview{grid-template-columns:1fr;min-height:0;border-radius:19px}.journey-overview .guest-trip-hero{min-height:200px;padding:16px!important;border-radius:0!important}.journey-overview .guest-trip-title{max-width:100%;font-size:clamp(28px,8.3vw,34px)!important;line-height:.95!important}.journey-control-panel{padding:14px}.journey-glance{margin:8px 0}.journey-status{grid-template-columns:32px minmax(0,1fr);padding:10px}.journey-status-mark{width:32px;height:32px;border-radius:10px}.journey-status-copy b{font-size:12.5px}.journey-status-detail{padding-top:7px}.journey-status-detail small{display:block}.journey-control-panel .guest-next-up{grid-template-columns:56px minmax(0,1fr);gap:9px;margin-top:12px;padding-top:10px!important}.journey-control-panel .guest-next-photo{width:56px;height:56px}.journey-control-panel .guest-next-actions{grid-template-columns:1fr 1fr}.journey-control-panel .guest-next-actions button{min-height:42px;padding:0 7px}
+          .journey-overview{grid-template-columns:1fr;min-height:0;border-radius:19px}.journey-overview .guest-trip-hero{min-height:140px;padding:13px!important;border-radius:0!important}.journey-control-panel{grid-template-columns:1fr;grid-template-areas:"intro" "glance" "status" "next";gap:10px;padding:14px}.journey-trip-intro h1{font-size:24px}.journey-trip-meta{gap:6px 10px}.journey-glance{margin:0}.journey-status{grid-template-columns:32px minmax(0,1fr);padding:10px}.journey-status-mark{width:32px;height:32px;border-radius:10px}.journey-status-copy b{font-size:12.5px}.journey-status-detail{grid-column:1/-1;padding:7px 0 0;border-top:1px solid #D5E0E0;border-left:0}.journey-status-detail small{display:block}.journey-control-panel .guest-next-up{grid-template-columns:50px minmax(0,1fr);gap:9px;padding:9px!important}.journey-control-panel .guest-next-photo{width:50px;height:50px}.journey-control-panel .guest-next-facts{flex-direction:column;gap:2px}.journey-control-panel .guest-next-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}.journey-control-panel .guest-next-actions button{min-height:42px;padding:0 7px}
           .guest-trip-title{font-size:31px!important}
           .guest-progress{overflow:hidden;padding:15px 9px!important}
           .guest-progress>div{min-width:0}
@@ -630,15 +631,18 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       <section className="journey-overview" aria-label="Journey overview">
       <div className="guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
         <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Sample journey" : "Your trip"}</div>
-        <div className="guest-trip-title" style={{ fontSize: 24, fontWeight: 800, margin: "3px 0 8px" }}>{trip.title}</div>
-        <div className="guest-trip-meta" style={{ fontSize: 14, opacity: .95 }}>
-          {trip.region}<br />
-          {fmt(trip.start)} – {fmt(trip.end)} · {trip.travelers} travelers
-        </div>
       </div>
 
       <aside className="journey-control-panel">
-        <div className="journey-control-kicker"><Sparkles size={14}/> Trip at a glance</div>
+        <div className="journey-trip-intro">
+          <div className="journey-control-kicker"><Sparkles size={13}/> Upcoming trip</div>
+          <h1>{trip.title}</h1>
+          <div className="journey-trip-meta">
+            <span><MapPin size={12}/>{trip.region}</span>
+            <span><CalendarDays size={12}/>{fmt(trip.start)} – {fmt(trip.end)}</span>
+            <span><Users size={12}/>{trip.travelers} travelers</span>
+          </div>
+        </div>
         <div className="journey-glance">
           <div><b>{until > 0 ? until : until === 0 ? "Today" : "Live"}</b><span>{until > 0 ? "days to go" : "trip status"}</span></div>
           <div><b>{confirmedCount}/{bookings.length}</b><span>experiences ready</span></div>
