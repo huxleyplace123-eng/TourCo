@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { c, FONT, radius, shadow, grad } from "../theme.js";
 import {
-  getTrip, getMessages, sendMessage, getProfile, saveProfile, sendSecureSignInLink, changePassword, activityPhoto, tripStages, DEMO_TRIP,
+  getTrip, getMessages, sendMessage, getProfile, saveProfile, sendSecureSignInLink, changePassword, activityPhoto, DEMO_TRIP,
 } from "./portalData.js";
 import GuestMeetingMap, { guestDirectionsUrl } from "./GuestMeetingMap.jsx";
 import { Logo } from "../components/Logo.jsx";
@@ -145,11 +145,12 @@ export default function Portal({ email, onSignOut }) {
         .journey-overview{overflow:hidden;border:1px solid #E4E7E9;border-radius:28px;background:#fff;box-shadow:0 18px 48px rgba(19,40,61,.11)}
         .journey-footer{background:#fff}
         .journey-overview .guest-trip-hero{min-height:245px;border-radius:0!important;box-shadow:none!important}
-        .journey-overview .guest-progress{padding:11px 20px 7px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
-        .journey-overview .guest-progress-bar{margin-bottom:5px!important}
-        .journey-overview .guest-progress-label{font-size:9.5px!important}
-        .journey-overview .guest-next-up{grid-template-columns:108px minmax(0,1fr) auto;padding:8px 14px 12px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
-        .journey-overview .guest-next-photo{height:78px}
+        .journey-status{display:flex;align-items:center;gap:16px;margin:0 22px;padding:18px 0;border-bottom:1px solid #E8ECEE}
+        .journey-status-mark{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:15px;background:linear-gradient(145deg,#0B8A79,#086D64);color:#fff;box-shadow:0 9px 20px rgba(8,126,113,.22)}
+        .journey-status-copy{display:grid;gap:2px;min-width:150px}.journey-status-copy span,.journey-status-detail span{color:#75818A;font-size:9.5px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.journey-status-copy b{color:#13283D;font-size:17px;letter-spacing:-.025em}
+        .journey-status-detail{display:grid;gap:3px;margin-left:auto;padding-left:22px;border-left:1px solid #E4E9EB;text-align:right}.journey-status-detail b{color:#334752;font-size:12px}.journey-status-detail small{color:#75818A;font-size:10.5px}
+        .journey-overview .guest-next-up{grid-template-columns:116px minmax(0,1fr) auto;padding:18px 22px 22px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+        .journey-overview .guest-next-photo{height:86px}
         .journey-overview .guest-next-actions{display:flex}.journey-overview .guest-next-actions button{min-height:38px}
         .guest-trip-eyebrow{display:inline-flex;align-self:flex-start;margin-bottom:auto;padding:7px 11px;border:1px solid rgba(255,255,255,.48);border-radius:999px;background:rgba(255,255,255,.92);color:#0A8174;font-size:10px!important;font-weight:900!important;letter-spacing:.08em;text-transform:uppercase;opacity:1!important}
         .guest-trip-title{font-size:clamp(30px,5vw,48px)!important;line-height:1!important;letter-spacing:-.055em!important}
@@ -312,7 +313,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-empty-visual{min-height:350px;padding:28px}
           .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
-          .journey-overview{border-radius:22px}.journey-overview .guest-trip-hero{min-height:210px;border-radius:0!important}.journey-overview .guest-progress{padding:11px 8px 9px!important}.journey-overview .guest-next-up{grid-template-columns:78px minmax(0,1fr);gap:10px;padding:10px!important}.journey-overview .guest-next-photo{height:78px}.journey-overview .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr}.journey-overview .guest-next-actions button{min-height:40px}
+          .journey-overview{border-radius:22px}.journey-overview .guest-trip-hero{min-height:210px;border-radius:0!important}.journey-status{align-items:flex-start;gap:12px;margin:0 14px;padding:15px 0}.journey-status-mark{flex-basis:40px;width:40px;height:40px;border-radius:13px}.journey-status-copy{min-width:0}.journey-status-copy b{font-size:15px}.journey-status-detail{margin-left:auto;padding-left:12px}.journey-status-detail small{display:none}.journey-overview .guest-next-up{grid-template-columns:78px minmax(0,1fr);gap:12px;padding:16px 14px 15px!important}.journey-overview .guest-next-photo{height:78px}.journey-overview .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr}.journey-overview .guest-next-actions button{min-height:42px}
           .guest-trip-title{font-size:31px!important}
           .guest-progress{overflow:hidden;padding:15px 9px!important}
           .guest-progress>div{min-width:0}
@@ -352,6 +353,11 @@ export default function Portal({ email, onSignOut }) {
           .account-mobile-save{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:46;display:flex;align-items:center;gap:10px;padding:9px;border:1px solid rgba(19,40,61,.1);border-radius:17px;background:rgba(255,255,255,.96);box-shadow:0 16px 42px rgba(19,40,61,.2);backdrop-filter:blur(18px);animation:skeletonEnter .2s ease both}.account-mobile-save span{flex:1;padding-left:5px;color:#53636E;font-size:10.5px;font-weight:750}.account-mobile-save button{min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#13283D;color:#fff;font:850 12px ${FONT};cursor:pointer}
           .password-modal-backdrop{place-items:end center;padding:0}.password-modal{width:100%;box-sizing:border-box;border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
           .portal-skeleton-hero{height:245px}.portal-skeleton-progress{height:50px}.portal-skeleton-row{grid-template-columns:88px 1fr;gap:12px}.portal-skeleton-thumb,.portal-skeleton-copy{height:110px}.portal-skeleton-account-hero{height:150px}.portal-skeleton-columns{grid-template-columns:1fr;gap:14px}.portal-skeleton-panel{height:520px}.portal-skeleton-security{height:390px}
+        }
+        @media(max-width:350px){
+          .journey-status{display:grid;grid-template-columns:40px minmax(0,1fr)}
+          .journey-status-detail{grid-column:1/-1;width:100%;box-sizing:border-box;margin:0;padding:12px 0 0;border-top:1px solid #E8ECEE;border-left:0;text-align:left}
+          .journey-status-detail small{display:block}
         }
         @media(prefers-reduced-motion:reduce){.portal-skeleton-block:after,.portal-skeleton{animation:none!important}.pt-tab-icon{transition:none!important}}
       `}</style>
@@ -598,8 +604,6 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
   if (error) return <PortalNotice title="We couldn't load your trip" body={error} action="Try again" onAction={onRetry} tone="error" />;
   if (!trip) return <EmptyTripState onPreviewSample={onPreviewSample} onMessage={onMessage} />;
   const until = daysUntil(trip.start);
-  const stageIdx = tripStages.indexOf(trip.status === "Confirmed" ? "Confirmed" : trip.status);
-  const balance = trip.total - trip.deposit;
   const heroPhoto = trip.days?.[0]?.items?.[0]?.photo;
   const bookings = trip.days.flatMap((day) => day.items.map((item) => ({ ...item, date: day.date })));
   const nextUp = bookings.find((item) => item.status === "Confirmed") || bookings[0];
@@ -637,18 +641,13 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       </div>
 
       <div className="journey-footer">
-      {/* status stepper */}
-      <div className="guest-progress" style={{ padding: "14px 18px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 4 }}>
-          {tripStages.map((s, i) => {
-            const done = i <= stageIdx;
-            return (
-              <div key={s} style={{ flex: 1, textAlign: "center" }}>
-                <div className={`guest-progress-bar ${done ? "is-done" : ""}`} style={{ height: 4, borderRadius: 999, margin: "0 2px 7px" }} />
-                <div className={`guest-progress-label ${done ? "is-done" : ""}`} style={{ fontSize: 10.5, fontWeight: 700 }}>{s}</div>
-              </div>
-            );
-          })}
+      <div className="journey-status">
+        <div className="journey-status-mark"><Check size={20}/></div>
+        <div className="journey-status-copy"><span>Your trip status</span><b>Trip confirmed</b></div>
+        <div className="journey-status-detail">
+          <span>Experiences ready</span>
+          <b>{bookings.filter((item) => item.status === "Confirmed").length} of {bookings.length} confirmed</b>
+          <small>TicoWild is coordinating the remaining details.</small>
         </div>
       </div>
 
