@@ -71,7 +71,7 @@ assert.match(customerPortal, /Open turn-by-turn directions/, "customer booking d
 assert.match(customerPortal, /Private operator CRM information stays private/, "customer booking details must explain the privacy boundary");
 assert.match(customerPortal, /Preview a sample trip/, "empty customer accounts need a safe sample-trip preview");
 assert.match(customerPortal, /Nothing has been added to your account/, "sample trips must be clearly separated from real customer data");
-assert.match(customerPortal, /Next on your trip/, "the customer portal needs a clear next-action summary");
+assert.match(customerPortal, /Upcoming itinerary/, "the customer portal needs a clear itinerary-first summary");
 assert.match(customerPortal, /Meeting details/, "the next activity needs a direct meeting-details action");
 assert.match(customerPortal, /className="simple-trip-summary"/, "the trip home needs a compact, readable trip summary");
 assert.match(customerPortal, /Change password/, "customer accounts need a visible password security control");
@@ -100,7 +100,7 @@ assert.match(customerPortal, /Find anything in your trip/, "travelers need a cle
 assert.match(customerPortal, /Search activities, operators, pickup points/, "itinerary search must explain what customers can find");
 assert.match(customerPortal, /In coordination/, "travelers need to filter items that still need operator coordination");
 assert.match(customerPortal, /No trip details match that search/, "itinerary filtering needs a useful empty result state");
-assert.match(customerPortal, /Full itinerary/, "the trip home needs one obvious route into the detailed itinerary");
+assert.match(customerPortal, /View full itinerary/, "the trip home needs one obvious route into the detailed itinerary");
 assert.match(customerPortal, /Back to trip/, "the detailed itinerary needs an obvious return to the trip home");
 assert.equal(customerPortal.includes('aria-label="Trip workspace"'), false, "the customer portal must not bury My Trip beneath a second six-item navigation system");
 assert.match(customerPortal, /Sample preview/, "the trip home needs a clear preview label without competing with the trip title");
