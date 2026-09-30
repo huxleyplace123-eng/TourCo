@@ -3,4 +3,221 @@
 @media(max-width:600px){.tw-operator-map-card{margin:0 -4px;border-radius:18px}.tw-map-heading p{font-size:11.5px}.tw-map-stage{min-height:62vh}.tw-map-legend{top:10px;right:10px;max-width:calc(100% - 20px)}.tw-company-marker{max-width:145px;font-size:10px}.tw-point-map{height:210px}.tw-coordinate-row{display:grid}.tw-map-stats{margin:9px 0}.tw-map-selection{padding:15px}.tw-map-selection h3{font-size:18px}}
 .tw-operator-map-card{width:100%;max-width:100%;min-width:0}
 @media(max-width:900px){.tw-operator-map-card{grid-template-columns:minmax(0,1fr)}.tw-map-rail{min-width:0;max-width:100%;overflow:hidden}.tw-map-toggles,.tw-map-stats,.tw-map-list,.tw-map-heading{min-width:0;max-width:100%}.tw-map-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.tw-map-empty{box-sizing:border-box;min-width:0;max-width:100%}}
+
+.tw-map-clear-selection{position:absolute;z-index:900;top:14px;left:14px;display:flex;align-items:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid rgba(255,255,255,.82);border-radius:999px;background:rgba(11,26,46,.94);box-shadow:0 8px 28px rgba(4,12,25,.28);color:#fff;font:800 11px/1 Inter,system-ui,sans-serif;cursor:pointer;backdrop-filter:blur(12px)}
+.tw-map-clear-selection:hover{background:#fff;color:#10243d;transform:translateY(-1px)}
+.tw-map-selection>button:first-child{display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid rgba(255,255,255,.16);border-radius:50%;background:rgba(255,255,255,.06);color:#dce8f2}
+.tw-map-location-link,.tw-record-location-link{display:flex;align-items:center;justify-content:center;gap:7px;border-radius:10px;text-decoration:none;font-weight:900}
+.tw-map-location-link{width:100%;box-sizing:border-box;margin-top:13px;padding:10px;border:1px solid rgba(34,211,238,.28);background:rgba(34,211,238,.09);color:#67e8f9;font-size:12px}
+.tw-map-location-link:hover{border-color:#22d3ee;background:rgba(34,211,238,.16)}
+.tw-record-location-link{flex:0 0 auto;min-height:34px;padding:7px 10px;border:1px solid rgba(34,211,238,.26);background:rgba(34,211,238,.08);color:#67e8f9;font-size:10.5px}
+.tw-record-location-link:hover{border-color:#22d3ee;background:rgba(34,211,238,.15)}
+
+@media(max-width:600px){
+  .tw-map-stage{min-height:66vh;max-height:680px}
+  .tw-map-clear-selection{top:10px;left:10px;min-width:44px;min-height:44px;padding:10px 12px}
+  .tw-map-clear-selection span{display:none}
+  .tw-map-legend{left:64px;right:10px;justify-content:center;min-height:44px;box-sizing:border-box;padding:8px;font-size:9px}
+  .tw-map-list>button{flex-basis:205px;min-height:58px;padding:10px 9px}
+  .tw-map-selection{z-index:950;max-height:52%;overflow:auto;padding:15px 15px 14px;border-radius:17px}
+  .tw-map-selection>button:first-child{top:9px;right:9px;width:44px;height:44px}
+  .tw-map-selection h3{margin-right:46px}
+  .tw-map-location-link,.tw-open-record{min-height:44px;box-sizing:border-box}
+  .tw-record-location-link{width:100%;min-height:44px;box-sizing:border-box}
+  .tw-coordinate-row{gap:7px}
+  .tw-coordinate-row>span:first-child{justify-content:center;padding:7px;border-radius:8px;background:rgba(255,255,255,.035)}
+  .tw-map-dot{width:24px;height:24px}
+}
+
+/* Airbnb-inspired map directory: calm white surfaces, floating location pills,
+   and a tactile mobile bottom sheet while preserving TicoWild's brand colors. */
+.tw-operator-map-card{
+  grid-template-columns:minmax(330px,390px) minmax(0,1fr);
+  border:1px solid #e6e7e9;
+  border-radius:26px;
+  background:#fff;
+  box-shadow:0 24px 70px rgba(15,29,45,.13);
+}
+.tw-map-rail{
+  padding:28px 22px 20px;
+  border-right:1px solid #e8eaed;
+  background:#fff;
+}
+.tw-map-heading{padding:2px 4px 20px}
+.tw-map-kicker{color:#087f72;font-size:10px;letter-spacing:.11em}
+.tw-map-heading h2{
+  margin:10px 0 8px;
+  color:#182431;
+  font-size:28px;
+  line-height:1.08;
+  letter-spacing:-.045em;
+}
+.tw-map-heading p{color:#68737f;font-size:12.5px;line-height:1.55}
+.tw-map-toggles{
+  gap:5px;
+  padding:4px;
+  border:1px solid #e2e5e8;
+  border-radius:14px;
+  background:#f5f6f7;
+}
+.tw-map-toggles button{min-height:40px;color:#5d6974;border-radius:10px}
+.tw-map-toggles button.active{
+  background:#13283d;
+  color:#fff;
+  box-shadow:0 7px 18px rgba(19,40,61,.18);
+}
+.tw-map-stats{gap:8px;margin:14px 0}
+.tw-map-stats>div{
+  padding:11px 10px;
+  border:1px solid #e8eaec;
+  border-radius:13px;
+  background:#fafafa;
+}
+.tw-map-stats b{color:#182431;font-size:19px}
+.tw-map-stats span{color:#7d8790}
+.tw-map-list{gap:8px;padding:1px 4px 8px 1px}
+.tw-map-list>button{
+  grid-template-columns:8px minmax(0,1fr) 20px;
+  min-height:57px;
+  padding:11px 12px;
+  border:1px solid #eceef0;
+  border-radius:14px;
+  background:#fff;
+  color:#1d2b38;
+  box-shadow:0 2px 7px rgba(18,35,52,.035);
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.tw-map-list>button:hover{
+  border-color:#cfd5da;
+  background:#fff;
+  box-shadow:0 8px 20px rgba(18,35,52,.09);
+  transform:translateY(-1px);
+}
+.tw-map-list>button.active{
+  border-color:#13283d;
+  background:#f7fafb;
+  box-shadow:0 0 0 1px #13283d,0 9px 22px rgba(18,35,52,.11);
+}
+.tw-map-list>button b{color:#1b2936;font-size:12.5px}
+.tw-map-list>button small{color:#77818a}
+.tw-map-list>button>svg{color:#71808d}
+.tw-map-empty{color:#7b8792}
+.tw-map-empty b{color:#24323f}
+.tw-map-stage{background:#dce9ef}
+.tw-map-legend{
+  border:1px solid rgba(218,222,226,.95);
+  background:rgba(255,255,255,.96);
+  color:#283744;
+  box-shadow:0 7px 25px rgba(24,39,54,.13);
+}
+.tw-map-clear-selection{
+  border:1px solid #dfe3e6;
+  background:rgba(255,255,255,.97);
+  color:#1d2b38;
+  box-shadow:0 8px 26px rgba(18,35,52,.17);
+}
+.tw-map-clear-selection:hover{background:#13283d;color:#fff}
+.tw-map-selection{
+  width:min(360px,calc(100% - 36px));
+  padding:20px;
+  border:1px solid rgba(224,227,230,.98);
+  border-radius:20px;
+  background:rgba(255,255,255,.97);
+  box-shadow:0 18px 55px rgba(20,35,50,.22);
+  color:#1c2a37;
+  backdrop-filter:blur(16px);
+}
+.tw-map-selection>button:first-child{
+  border:1px solid #e2e5e8;
+  background:#fff;
+  color:#253543;
+  box-shadow:0 4px 12px rgba(18,35,52,.08);
+}
+.tw-map-selection>button:first-child:hover{background:#f0f2f3}
+.tw-map-selection-kicker{color:#087f72}
+.tw-map-selection h3{color:#172532;font-size:21px}
+.tw-map-selection p{color:#4d5a65}
+.tw-map-selection small{color:#6d7882}
+.tw-map-location-link{
+  border-color:#dfe3e6;
+  background:#f7f8f8;
+  color:#1e3448;
+}
+.tw-map-location-link:hover{border-color:#13283d;background:#fff}
+.tw-open-record{
+  min-height:42px;
+  border-radius:12px!important;
+  background:#13283d!important;
+  color:#fff!important;
+  box-shadow:0 8px 20px rgba(19,40,61,.18);
+}
+.tw-open-record:hover{background:#0a7f71!important}
+.tw-company-marker{
+  max-width:205px;
+  padding:8px 12px 8px 9px;
+  border:1px solid #d9dee2;
+  color:#172632;
+  box-shadow:0 7px 22px rgba(16,31,46,.2);
+}
+.tw-company-marker.is-selected{
+  border-color:#13283d;
+  background:#13283d;
+  color:#fff;
+  box-shadow:0 11px 30px rgba(14,31,48,.3);
+}
+.tw-map-dot{
+  width:22px;
+  height:22px;
+  border:4px solid #fff;
+  border-radius:50%;
+  box-shadow:0 5px 15px rgba(7,20,38,.3);
+  transform:none;
+}
+.tw-map-dot.is-selected{box-shadow:0 0 0 6px rgba(19,40,61,.18),0 5px 15px rgba(7,20,38,.3)}
+
+@media(min-width:901px){
+  .tw-operator-map-card{
+    height:clamp(620px,calc(100vh - 190px),720px);
+    min-height:0;
+  }
+  .tw-map-rail{min-height:0;overflow:hidden}
+  .tw-map-list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+  .tw-map-stage{min-height:0}
+}
+
+@media(max-width:900px){
+  .tw-operator-map-card{grid-template-columns:minmax(0,1fr);border-radius:22px}
+  .tw-map-rail{padding:20px 16px 13px;border-right:0;border-bottom:1px solid #e6e8ea}
+  .tw-map-heading{padding:0 2px 14px}
+  .tw-map-heading h2{font-size:24px}
+  .tw-map-list{gap:9px;padding:2px 2px 8px;scroll-snap-type:x proximity}
+  .tw-map-list>button{flex-basis:225px;scroll-snap-align:start}
+  .tw-map-stage{min-height:64vh}
+}
+@media(max-width:600px){
+  .tw-operator-map-card{margin:0;border-radius:18px}
+  .tw-map-rail{padding:17px 13px 11px}
+  .tw-map-heading h2{font-size:22px}
+  .tw-map-heading p{font-size:11.5px}
+  .tw-map-toggles button{min-height:42px}
+  .tw-map-stats>div{padding:9px 8px}
+  .tw-map-list>button{flex-basis:205px;min-height:58px}
+  .tw-map-stage{min-height:66vh}
+  .tw-map-clear-selection{border-color:#dce0e3;background:#fff;color:#1d2b38}
+  .tw-map-legend{top:10px;right:10px;padding:8px 10px;font-size:9px}
+  .tw-map-selection{
+    right:10px;
+    bottom:10px;
+    left:10px;
+    width:auto;
+    max-height:54%;
+    padding:17px 16px 15px;
+    border-radius:20px;
+    box-shadow:0 16px 46px rgba(18,35,52,.28);
+  }
+  .tw-map-selection h3{font-size:19px}
+  .tw-map-location-link,.tw-open-record{min-height:44px}
+  .tw-company-marker{max-width:168px;padding:8px 10px;font-size:10px}
+  .tw-map-dot{width:24px;height:24px}
+}
 .tw-verified-place{display:inline-flex;align-items:center;margin-top:10px;padding:5px 8px;border:1px solid rgba(52,211,153,.24);border-radius:999px;background:rgba(52,211,153,.1);color:#74e5bd;font-size:9px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}

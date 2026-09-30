@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Crosshair, MapPin, Navigation, UsersRound } from "lucide-react";
+import { Crosshair, ExternalLink, MapPin, Navigation, UsersRound, X } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import "./operator-map.css";
 
@@ -19,6 +19,11 @@ const cleanPoint = (point = {}) => ({
   lng: point.lng === "" || point.lng === null || point.lng === undefined ? "" : Number(point.lng),
   instructions: String(point.instructions || ""),
 });
+
+const mapUrl = (point) => {
+  if (!Number.isFinite(Number(point?.lat)) || !Number.isFinite(Number(point?.lng))) return "";
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${Number(point.lat)},${Number(point.lng)}`)}`;
+};
 
 function createMap(node, point, zoom = DEFAULT_ZOOM) {
   const hasPoint = Number.isFinite(Number(point?.lat)) && Number.isFinite(Number(point?.lng));
@@ -109,7 +114,11 @@ export function MeetingPointPicker({ value, onChange, compact = false }) {
       <div className="tw-point-map" ref={mapNode} aria-label="Choose tour meeting point on map" />
       <div className="tw-coordinate-row">
         <span><Crosshair size={13} /> {hasMeetingPoint({ meetingPoint: point }) ? `${Number(point.lat).toFixed(5)}, ${Number(point.lng).toFixed(5)}` : "Click the map to place the exact meeting pin"}</span>
-        <span>Drag to fine-tune</span>
+        {mapUrl(point) ? (
+          <a className="tw-record-location-link" href={mapUrl(point)} target="_blank" rel="noreferrer">
+            <ExternalLink size={13} /> Open exact location
+          </a>
+        ) : <span>Drag to fine-tune</span>}
       </div>
       <textarea value={point.instructions} onChange={setField("instructions")} placeholder="Pickup landmark or instructions guests need to know" />
     </div>
@@ -152,7 +161,7 @@ export function OperatorMapView({ operators, onOpen }) {
       markers.push({ marker, operator });
     });
     const refreshMarkerStyle = () => {
-      const showCompanyNames = map.getZoom() >= 10;
+      const showCompanyNames = map.getZoom() >= 9;
       markers.forEach(({ marker, operator }) => {
         const isSelected = operator.id === selectedId;
         marker.setIcon(showCompanyNames || isSelected
@@ -170,14 +179,22 @@ export function OperatorMapView({ operators, onOpen }) {
     return () => map.off("zoomend", refreshMarkerStyle);
   }, [visible, selectedId]);
 
+  useEffect(() => {
+    if (!selectedId || !window.matchMedia("(max-width: 900px)").matches) return;
+    const timer = window.setTimeout(() => {
+      mapNode.current?.parentElement?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, [selectedId]);
+
   const selected = visible.find((operator) => operator.id === selectedId) || null;
   return (
     <section className="tw-operator-map-card">
       <div className="tw-map-rail">
         <div className="tw-map-heading">
           <div className="tw-map-kicker"><Navigation size={13} /> LIVE PARTNER COVERAGE</div>
-          <h2>Meet every operator on the map.</h2>
-          <p>Exact tour meeting locations across Costa Rica—so the team always connects travelers to the right place.</p>
+          <h2>{visible.length} tour meeting points across Costa Rica</h2>
+          <p>Choose a company to see its exact guest meeting spot and open the full operator record.</p>
         </div>
         <div className="tw-map-toggles">
           <button className={partnersOnly ? "active" : ""} onClick={() => setPartnersOnly(true)}>Active partners</button>
@@ -205,13 +222,21 @@ export function OperatorMapView({ operators, onOpen }) {
         <div ref={mapNode} className="tw-operator-map" aria-label="Costa Rica tour operator meeting points" />
         <div className="tw-map-legend"><span className="legend-active" /> Active partner <span className="legend-lead" /> Pinned prospect</div>
         {selected && (
+          <button className="tw-map-clear-selection" type="button" onClick={() => setSelectedId(null)} aria-label="Close selected operator">
+            <X size={17} /> <span>Close</span>
+          </button>
+        )}
+        {selected && (
           <div className="tw-map-selection">
-            <button onClick={() => setSelectedId(null)} aria-label="Close map card">×</button>
+            <button onClick={() => setSelectedId(null)} aria-label="Close map card"><X size={19} /></button>
             <div className="tw-map-selection-kicker">TOUR MEETING POINT</div>
             <h3>{selected.name}</h3>
             <p><MapPin size={14} /> {selected.meetingPoint.name || "Pinned location"}</p>
             {selected.meetingPoint.verified && <div className="tw-verified-place">✓ Location verified</div>}
             {selected.meetingPoint.instructions && <small>{selected.meetingPoint.instructions}</small>}
+            <a className="tw-map-location-link" href={mapUrl(selected.meetingPoint)} target="_blank" rel="noreferrer">
+              <ExternalLink size={14} /> Open exact location
+            </a>
             <button className="tw-open-record" onClick={() => onOpen(selected.id)}>Open operator record</button>
           </div>
         )}
