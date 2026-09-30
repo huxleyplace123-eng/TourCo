@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import {
   CalendarDays, MessageCircle, User, MapPin, Clock, Check, Hourglass, Send, LogOut, Backpack, ShieldCheck,
-  QrCode, X, LifeBuoy, ChevronRight, Navigation, ExternalLink,
+  QrCode, X, LifeBuoy, ChevronRight, Navigation, ExternalLink, Sparkles, Route, ArrowLeft,
 } from "lucide-react";
 import { c, FONT, radius, shadow, grad } from "../theme.js";
 import {
-  getTrip, getMessages, sendMessage, getProfile, saveProfile, activityPhoto, tripStages,
+  getTrip, getMessages, sendMessage, getProfile, saveProfile, activityPhoto, tripStages, DEMO_TRIP,
 } from "./portalData.js";
 import GuestMeetingMap, { guestDirectionsUrl } from "./GuestMeetingMap.jsx";
 
@@ -26,9 +26,17 @@ const label = { fontSize: 11.5, fontWeight: 800, color: "#65727D", textTransform
 export default function Portal({ email, onSignOut }) {
   const [tab, setTab] = useState("trip");
   const [trip, setTrip] = useState(undefined);
+  const [sampleMode, setSampleMode] = useState(() => new URLSearchParams(window.location.search).get("sample") === "1");
   const [tripError, setTripError] = useState("");
   const loadTrip = () => { setTrip(undefined); setTripError(""); getTrip().then(setTrip).catch((err) => { setTrip(null); setTripError(err.message); }); };
   useEffect(() => { loadTrip(); }, []);
+  const toggleSample = (on) => {
+    setSampleMode(on);
+    const url = new URL(window.location.href);
+    if (on) url.searchParams.set("sample", "1"); else url.searchParams.delete("sample");
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="customer-portal" style={{ minHeight: "100vh", background: "#F5F4F0", color: "#172532", fontFamily: FONT }}>
@@ -43,6 +51,33 @@ export default function Portal({ email, onSignOut }) {
         .pt-tabs button[data-active="true"]{background:#13283D!important;color:#fff!important;box-shadow:0 8px 20px rgba(19,40,61,.16)}
         .pt-card{border-radius:20px;border:1px solid #E4E7E9!important;background-color:#fff!important;color:#172532!important;box-shadow:0 12px 35px rgba(19,40,61,.07)!important}
         .guest-trip-view{gap:22px!important}
+        .guest-sample-bar{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid #BFE3DE;border-radius:16px;background:#EAF7F5;color:#173C39;box-shadow:0 8px 24px rgba(10,129,116,.08)}
+        .guest-sample-bar>svg{flex:0 0 auto;color:#0A8174}
+        .guest-sample-copy{display:grid;gap:2px;flex:1;font-size:12.5px;color:#536C68}
+        .guest-sample-copy b{color:#173C39;font-size:13.5px}
+        .guest-sample-exit{display:inline-flex;align-items:center;gap:6px;padding:8px 11px;border:1px solid #B7D8D3;border-radius:10px;background:#fff;color:#173C39;font:800 12px ${FONT};cursor:pointer}
+        .guest-empty{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);min-height:470px;overflow:hidden;border-radius:28px!important}
+        .guest-empty-copy{display:flex;flex-direction:column;justify-content:center;padding:clamp(30px,5vw,58px)}
+        .guest-empty-kicker{display:inline-flex;align-items:center;gap:7px;color:#0A8174;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+        .guest-empty h1{max-width:600px;margin:13px 0 14px;font-size:clamp(34px,5vw,55px);line-height:.98;letter-spacing:-.06em}
+        .guest-empty-copy>p{max-width:560px;margin:0;color:#60707B;font-size:15px;line-height:1.65}
+        .guest-empty-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+        .guest-empty-primary,.guest-empty-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 17px;border-radius:13px;font:850 13px ${FONT};cursor:pointer}
+        .guest-empty-primary{border:0;background:#13283D;color:#fff;box-shadow:0 12px 26px rgba(19,40,61,.18)}
+        .guest-empty-secondary{border:1px solid #D7DDE1;background:#fff;color:#314251}
+        .guest-empty-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:30px}
+        .guest-empty-proof div{display:grid;gap:4px;padding-top:13px;border-top:1px solid #DDE3E5}
+        .guest-empty-proof b{font-size:12px;color:#263846}
+        .guest-empty-proof span{font-size:11px;line-height:1.45;color:#75818A}
+        .guest-empty-visual{position:relative;display:flex;align-items:center;justify-content:center;min-height:470px;padding:35px;background:linear-gradient(155deg,#153047,#0A8174)}
+        .guest-empty-visual:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 15%,rgba(255,255,255,.18),transparent 36%),radial-gradient(circle at 15% 90%,rgba(255,208,0,.16),transparent 32%)}
+        .guest-preview-phone{position:relative;width:min(330px,100%);padding:11px;border-radius:30px;background:#F8F8F5;box-shadow:0 30px 70px rgba(3,14,24,.38);transform:rotate(2deg)}
+        .guest-preview-photo{height:190px;border-radius:21px;background-position:center;background-size:cover;overflow:hidden}
+        .guest-preview-photo:after{content:"";display:block;width:100%;height:100%;background:linear-gradient(0deg,rgba(10,25,38,.65),transparent 60%)}
+        .guest-preview-details{display:grid;gap:9px;padding:15px 10px 10px}
+        .guest-preview-chip{display:inline-flex;align-items:center;gap:5px;justify-self:start;padding:5px 8px;border-radius:999px;background:#DCF5EF;color:#08776B;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+        .guest-preview-details b{font-size:20px;letter-spacing:-.04em}
+        .guest-preview-details span{display:flex;align-items:center;gap:6px;color:#65737D;font-size:11.5px}
         .guest-trip-hero{position:relative;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:30px!important;border-radius:28px!important;background-position:center!important;background-size:cover!important;color:#fff!important;box-shadow:0 22px 55px rgba(19,40,61,.18)!important}
         .guest-trip-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,24,38,.08),rgba(10,24,38,.82));pointer-events:none}
         .guest-trip-hero>*{position:relative;z-index:1}
@@ -54,6 +89,17 @@ export default function Portal({ email, onSignOut }) {
         .guest-progress-label.is-done{color:#172532!important}
         .guest-progress-bar{background:#E7E9EB!important}
         .guest-progress-bar.is-done{background:#0A8174!important}
+        .guest-next-up{display:grid;grid-template-columns:150px minmax(0,1fr) auto;align-items:center;gap:18px;padding:12px!important;overflow:hidden}
+        .guest-next-photo{height:106px;border-radius:14px;object-fit:cover;width:100%}
+        .guest-next-copy{min-width:0;display:grid;gap:6px}
+        .guest-next-kicker{display:flex;align-items:center;gap:6px;color:#0A8174;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+        .guest-next-copy h2{margin:0;font-size:21px;letter-spacing:-.035em}
+        .guest-next-facts{display:flex;flex-wrap:wrap;gap:7px 14px;color:#63717C;font-size:12.5px}
+        .guest-next-facts span{display:inline-flex;align-items:center;gap:5px}
+        .guest-next-actions{display:grid;gap:7px}
+        .guest-next-actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:0 13px;border-radius:11px;font:800 12px ${FONT};cursor:pointer;white-space:nowrap}
+        .guest-next-primary{border:0;background:#13283D;color:#fff}
+        .guest-next-secondary{border:1px solid #DDE2E5;background:#fff;color:#43525E}
         .guest-itinerary-heading{margin:4px 2px 0;color:#687581;font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
         .guest-itinerary-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px!important}
         .guest-day{min-width:0}
@@ -92,12 +138,26 @@ export default function Portal({ email, onSignOut }) {
         .guest-message-bubble{background:#F2F4F4!important;color:#172532!important;border:1px solid #E3E6E8!important;box-shadow:0 4px 14px rgba(19,40,61,.045)}
         .guest-message-bubble[data-mine="true"]{background:#13283D!important;color:#fff!important;border-color:#13283D!important}
         @media(max-width:700px){
-          .pt-tabs{justify-content:flex-start;overflow-x:auto}
+          .pt-tabs{justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
+          .pt-tabs::-webkit-scrollbar,.guest-progress::-webkit-scrollbar{display:none}
           .pt-wrap{padding:18px 12px 92px}
+          .guest-sample-bar{align-items:flex-start}
+          .guest-sample-exit span{display:none}
+          .guest-empty{grid-template-columns:1fr;min-height:0}
+          .guest-empty-copy{padding:31px 22px 26px}
+          .guest-empty h1{font-size:36px}
+          .guest-empty-proof{grid-template-columns:1fr;gap:8px;margin-top:24px}
+          .guest-empty-proof div{grid-template-columns:120px 1fr;align-items:start;padding-top:9px}
+          .guest-empty-visual{min-height:350px;padding:28px}
+          .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
           .guest-trip-title{font-size:31px!important}
-          .guest-progress{overflow-x:auto;padding:15px 12px!important}
+          .guest-progress{overflow-x:auto;padding:15px 12px!important;scrollbar-width:none}
           .guest-progress>div{min-width:480px}
+          .guest-next-up{grid-template-columns:92px minmax(0,1fr);gap:12px}
+          .guest-next-photo{height:92px}
+          .guest-next-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}
+          .guest-next-copy h2{font-size:18px}
           .guest-itinerary-grid{grid-template-columns:1fr;gap:15px!important}
           .guest-booking-photo{height:180px!important}
           .guest-booking-modal{max-height:calc(100dvh - 20px)!important;border-radius:20px!important}
@@ -109,6 +169,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-meeting-panel{grid-template-rows:auto 240px auto auto}
           .guest-meeting-copy h3{font-size:19px}
           .guest-directions-button{min-height:48px}
+          .customer-help{width:52px;height:52px;padding:0!important;justify-content:center!important;font-size:0!important}
         }
       `}</style>
 
@@ -132,13 +193,13 @@ export default function Portal({ email, onSignOut }) {
       </div>
 
       <div className="pt-wrap">
-        {tab === "trip" && <TripTab trip={trip} error={tripError} onRetry={loadTrip} />}
+        {tab === "trip" && <TripTab trip={sampleMode && trip !== undefined ? DEMO_TRIP : trip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} />}
         {tab === "messages" && <MessagesTab />}
         {tab === "account" && <AccountTab email={email} />}
       </div>
 
       {tab !== "messages" && (
-        <button onClick={() => setTab("messages")} title="Chat with your concierge"
+        <button className="customer-help" onClick={() => setTab("messages")} title="Chat with your concierge"
           style={{ position: "fixed", right: 18, bottom: 18, zIndex: 40, display: "inline-flex", alignItems: "center", gap: 8,
             padding: "12px 16px", borderRadius: 999, border: "none", background: c.gold, color: c.ink,
             fontFamily: FONT, fontSize: 14, fontWeight: 800, cursor: "pointer", boxShadow: shadow.glowGold }}>
@@ -209,20 +270,62 @@ function StatusBadge({ status }) {
   );
 }
 
-function TripTab({ trip, error, onRetry }) {
+function EmptyTripState({ onPreviewSample, onMessage }) {
+  const preview = DEMO_TRIP.days[0].items[0];
+  return (
+    <section className="pt-card guest-empty">
+      <div className="guest-empty-copy">
+        <div className="guest-empty-kicker"><Sparkles size={15} /> Your TicoWild journey</div>
+        <h1>Your whole Costa Rica adventure, one tap away.</h1>
+        <p>When planning begins, this becomes your travel command center—not another booking list. Every activity, exact meeting point, confirmation, and concierge conversation lives here.</p>
+        <div className="guest-empty-actions">
+          <button className="guest-empty-primary" onClick={onPreviewSample}><Sparkles size={16} /> Preview a sample trip</button>
+          <button className="guest-empty-secondary" onClick={onMessage}><MessageCircle size={16} /> Message your concierge</button>
+        </div>
+        <div className="guest-empty-proof">
+          <div><b>Day by day</b><span>A calm timeline for every tour and transfer.</span></div>
+          <div><b>Meet with confidence</b><span>Exact pins, pickup notes, and directions.</span></div>
+          <div><b>Human backup</b><span>Your TicoWild concierge is always close.</span></div>
+        </div>
+      </div>
+      <div className="guest-empty-visual" aria-hidden="true">
+        <div className="guest-preview-phone">
+          <div className="guest-preview-photo" style={{ backgroundImage: `url(${activityPhoto(preview.photo, 800)})` }} />
+          <div className="guest-preview-details">
+            <div className="guest-preview-chip"><Check size={11} /> Confirmed</div>
+            <b>{preview.name}</b>
+            <span><Clock size={13} /> {preview.time}</span>
+            <span><MapPin size={13} /> {preview.meetingPoint.name}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSample, onMessage }) {
   const [voucher, setVoucher] = useState(null);
   if (trip === undefined) return <PortalNotice title="Loading your trip…" body="Getting the latest itinerary and confirmations." />;
   if (error) return <PortalNotice title="We couldn't load your trip" body={error} action="Try again" onAction={onRetry} tone="error" />;
-  if (!trip) return <PortalNotice title="Your trip is ready for the next step" body="There is no itinerary on this account yet. Your TicoWild concierge will add it here as soon as planning begins." />;
+  if (!trip) return <EmptyTripState onPreviewSample={onPreviewSample} onMessage={onMessage} />;
   const until = daysUntil(trip.start);
   const stageIdx = tripStages.indexOf(trip.status === "Confirmed" ? "Confirmed" : trip.status);
   const balance = trip.total - trip.deposit;
   const heroPhoto = trip.days?.[0]?.items?.[0]?.photo;
+  const bookings = trip.days.flatMap((day) => day.items.map((item) => ({ ...item, date: day.date })));
+  const nextUp = bookings.find((item) => item.status === "Confirmed") || bookings[0];
   return (
     <div className="guest-trip-view" style={{ display: "grid", gap: 16 }}>
+      {sampleMode && (
+        <div className="guest-sample-bar">
+          <Sparkles size={18} />
+          <div className="guest-sample-copy"><b>Sample trip preview</b><span>This is example content only. Nothing has been added to your account.</span></div>
+          <button className="guest-sample-exit" onClick={onExitSample}><ArrowLeft size={14} /><span>Exit preview</span></button>
+        </div>
+      )}
       {/* hero */}
       <div className="pt-card guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
-        <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>Confirmed Costa Rica journey</div>
+        <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Sample Costa Rica journey" : "Confirmed Costa Rica journey"}</div>
         <div className="guest-trip-title" style={{ fontSize: 24, fontWeight: 800, margin: "3px 0 8px" }}>{trip.title}</div>
         <div className="guest-trip-meta" style={{ fontSize: 14, opacity: .95 }}>
           {trip.region} · {trip.travelers} travelers<br />
@@ -244,6 +347,24 @@ function TripTab({ trip, error, onRetry }) {
           })}
         </div>
       </div>
+
+      {nextUp && (
+        <div className="pt-card guest-next-up">
+          <img className="guest-next-photo" src={activityPhoto(nextUp.photo, 500)} alt="" />
+          <div className="guest-next-copy">
+            <div className="guest-next-kicker"><Route size={13} /> Next up</div>
+            <h2>{nextUp.name}</h2>
+            <div className="guest-next-facts">
+              <span><CalendarDays size={14} /> {fmt(nextUp.date)} · {nextUp.time}</span>
+              <span><MapPin size={14} /> {nextUp.meet}</span>
+            </div>
+          </div>
+          <div className="guest-next-actions">
+            <button className="guest-next-primary" onClick={() => setVoucher(nextUp)}><Navigation size={14} /> Meeting details</button>
+            <button className="guest-next-secondary" onClick={onMessage}><MessageCircle size={14} /> Ask concierge</button>
+          </div>
+        </div>
+      )}
 
       {/* itinerary */}
       <div>

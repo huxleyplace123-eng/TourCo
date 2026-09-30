@@ -67,6 +67,10 @@ assert.equal(css.includes('.tico-dock[data-lifted="true"] {\n    display: none')
 assert.match(customerPortal, /View meeting point & voucher/, "confirmed customer bookings need a clear meeting-point action");
 assert.match(customerPortal, /Open turn-by-turn directions/, "customer booking details need a directions action");
 assert.match(customerPortal, /Private operator CRM information stays private/, "customer booking details must explain the privacy boundary");
+assert.match(customerPortal, /Preview a sample trip/, "empty customer accounts need a safe sample-trip preview");
+assert.match(customerPortal, /Nothing has been added to your account/, "sample trips must be clearly separated from real customer data");
+assert.match(customerPortal, /Next up/, "the customer portal needs a clear next-action summary");
+assert.match(customerPortal, /Meeting details/, "the next activity needs a direct meeting-details action");
 assert.match(customerPortal, /@media\(max-width:700px\)/, "customer booking details need a dedicated phone layout");
 assert.match(guestMeetingMap, /google\.com\/maps\/dir/, "customer meeting maps need turn-by-turn directions");
 assert.equal(guestMeetingMap.includes("Open operator record"), false, "customer meeting maps must never expose the CRM action");
