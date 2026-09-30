@@ -87,17 +87,17 @@ export default function Portal({ email, onSignOut }) {
   return (
     <div className="customer-portal" style={{ minHeight: "100vh", background: "#F2F1EC", color: "#172532", fontFamily: FONT }}>
       <style>{`
-        .pt-wrap{max-width:1280px;margin:0 auto;padding:30px clamp(18px,3.5vw,46px) 80px}
+        .pt-wrap{max-width:1180px;margin:0 auto;padding:20px clamp(16px,3vw,34px) 70px}
         .customer-app-bar{position:sticky;top:0;z-index:12;background:#0C2133!important;border-bottom:1px solid rgba(255,255,255,.08)!important;backdrop-filter:blur(16px)}
         .customer-brand{display:flex;align-items:center;flex:1}.customer-brand>span{padding:6px 10px 6px 7px;border-radius:13px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.16)}
         .customer-signout{border-color:rgba(255,255,255,.18)!important;background:rgba(255,255,255,.07)!important;color:#fff!important}
-        .pt-tabs{position:sticky;top:59px;z-index:10;display:flex;justify-content:center;gap:7px;padding:8px clamp(10px,3vw,20px);background:#0C2133;border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}
-        .pt-tabs button{min-height:40px;padding-inline:20px!important;color:rgba(255,255,255,.68)!important}
+        .pt-tabs{position:sticky;top:54px;z-index:10;display:flex;justify-content:center;gap:5px;padding:5px clamp(10px,3vw,20px);background:#0C2133;border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+        .pt-tabs button{min-height:36px;padding-inline:17px!important;color:rgba(255,255,255,.68)!important}
         .pt-tabs button[data-active="true"]{background:#FFD000!important;color:#102438!important;box-shadow:0 8px 20px rgba(255,208,0,.15)}
         .pt-tab-icon{display:contents}.pt-tab-label:after{content:""}
         .pt-card{border-radius:20px;border:1px solid #E4E7E9!important;background-color:#fff!important;color:#172532!important;box-shadow:0 12px 35px rgba(19,40,61,.07)!important}
-        .guest-trip-view{gap:22px!important}
-        .guest-sample-bar{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid #BFE3DE;border-radius:16px;background:#EAF7F5;color:#173C39;box-shadow:0 8px 24px rgba(10,129,116,.08)}
+        .guest-trip-view{gap:15px!important}
+        .guest-sample-bar{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid #BFE3DE;border-radius:14px;background:#EAF7F5;color:#173C39;box-shadow:0 8px 24px rgba(10,129,116,.08)}
         .guest-sample-bar>svg{flex:0 0 auto;color:#0A8174}
         .guest-sample-copy{display:grid;gap:2px;flex:1;font-size:12.5px;color:#536C68}
         .guest-sample-copy b{color:#173C39;font-size:13.5px}
@@ -134,21 +134,21 @@ export default function Portal({ email, onSignOut }) {
         .guest-trip-hero{position:relative;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:30px!important;border-radius:28px!important;background-position:center!important;background-size:cover!important;color:#fff!important;box-shadow:0 22px 55px rgba(19,40,61,.18)!important}
         .guest-trip-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,24,38,.08),rgba(10,24,38,.82));pointer-events:none}
         .guest-trip-hero>*{position:relative;z-index:1}
-        .journey-overview{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(340px,.65fr);min-height:540px;overflow:hidden;border:0;border-radius:34px;background:#0C2133;box-shadow:0 34px 85px rgba(19,40,61,.2)}
-        .journey-overview .guest-trip-hero{min-height:540px;border-radius:0!important;box-shadow:none!important}
-        .journey-control-panel{display:flex;flex-direction:column;padding:30px;background:linear-gradient(160deg,#102A3E 0%,#0A514E 100%);color:#fff}
+        .journey-overview{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(330px,.7fr);min-height:420px;overflow:hidden;border:0;border-radius:27px;background:#0C2133;box-shadow:0 24px 58px rgba(19,40,61,.17)}
+        .journey-overview .guest-trip-hero{min-height:420px;border-radius:0!important;box-shadow:none!important}
+        .journey-control-panel{display:flex;flex-direction:column;padding:23px;background:linear-gradient(160deg,#102A3E 0%,#0A514E 100%);color:#fff}
         .journey-control-kicker{display:flex;align-items:center;gap:8px;color:#FFD000;font-size:10px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
-        .journey-control-panel>h2{max-width:300px;margin:11px 0 25px;color:#fff;font-size:29px;line-height:1.02;letter-spacing:-.05em}
-        .journey-status{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;gap:12px;width:100%;box-sizing:border-box;padding:16px;border:1px solid rgba(255,255,255,.15);border-radius:19px;background:rgba(255,255,255,.08)}
-        .journey-status-mark{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#FFD000;color:#13283D;box-shadow:0 9px 22px rgba(0,0,0,.16)}
+        .journey-control-panel>h2{max-width:300px;margin:8px 0 17px;color:#fff;font-size:25px;line-height:1.02;letter-spacing:-.05em}
+        .journey-status{display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:13px;border:1px solid rgba(255,255,255,.15);border-radius:16px;background:rgba(255,255,255,.08)}
+        .journey-status-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#FFD000;color:#13283D;box-shadow:0 9px 22px rgba(0,0,0,.16)}
         .journey-status-copy{display:grid;gap:2px;min-width:0}.journey-status-copy span,.journey-status-detail span{color:rgba(255,255,255,.56);font-size:8.5px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}.journey-status-copy b{color:#fff;font-size:15px;letter-spacing:-.02em}
         .journey-status-detail{grid-column:1/-1;display:grid;gap:3px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);text-align:left}.journey-status-detail b{color:#fff;font-size:12px}.journey-status-detail small{color:rgba(255,255,255,.62);font-size:10px}
-        .journey-control-panel .guest-next-up{display:grid;grid-template-columns:88px minmax(0,1fr);gap:13px;margin-top:auto;padding:18px 0 0!important;border:0!important;border-top:1px solid rgba(255,255,255,.14)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
-        .journey-control-panel .guest-next-photo{width:88px;height:88px;border-radius:18px}
-        .journey-control-panel .guest-next-kicker{color:#FFD000}.journey-control-panel .guest-next-copy h2{color:#fff;font-size:20px}.journey-control-panel .guest-next-facts{color:rgba(255,255,255,.65)}
-        .journey-control-panel .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:8px}.journey-control-panel .guest-next-actions button{min-height:42px}.journey-control-panel .guest-next-primary{background:#FFD000;color:#102438}.journey-control-panel .guest-next-secondary{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff}
+        .journey-control-panel .guest-next-up{display:grid;grid-template-columns:70px minmax(0,1fr);gap:11px;margin-top:auto;padding:14px 0 0!important;border:0!important;border-top:1px solid rgba(255,255,255,.14)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+        .journey-control-panel .guest-next-photo{width:70px;height:70px;border-radius:15px}
+        .journey-control-panel .guest-next-kicker{color:#FFD000}.journey-control-panel .guest-next-copy h2{color:#fff;font-size:18px}.journey-control-panel .guest-next-facts{color:rgba(255,255,255,.65)}
+        .journey-control-panel .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:7px}.journey-control-panel .guest-next-actions button{min-height:38px;padding:0 9px}.journey-control-panel .guest-next-primary{background:#FFD000;color:#102438}.journey-control-panel .guest-next-secondary{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff}
         .guest-trip-eyebrow{display:inline-flex;align-self:flex-start;margin-bottom:auto;padding:7px 11px;border:1px solid rgba(255,255,255,.48);border-radius:999px;background:rgba(255,255,255,.92);color:#0A8174;font-size:10px!important;font-weight:900!important;letter-spacing:.08em;text-transform:uppercase;opacity:1!important}
-        .guest-trip-title{max-width:820px;font-size:clamp(44px,5.2vw,72px)!important;line-height:.92!important;letter-spacing:-.065em!important}
+        .guest-trip-title{max-width:720px;font-size:clamp(38px,4.4vw,56px)!important;line-height:.94!important;letter-spacing:-.06em!important}
         .guest-trip-meta{font-size:14px!important;opacity:.94!important}
         .guest-progress{padding:18px 20px!important;border-radius:18px!important}
         .guest-progress-label{color:#687581!important}
@@ -289,7 +289,7 @@ export default function Portal({ email, onSignOut }) {
         .account-help button{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:0;border-radius:11px;background:#13283D;color:#fff;font:800 11.5px ${FONT};cursor:pointer}
         .portal-skeleton{display:grid;gap:16px;animation:skeletonEnter .25s ease both}.portal-skeleton-block{position:relative;overflow:hidden;border:1px solid #E5E8E9;border-radius:22px;background:#E9ECEC}.portal-skeleton-block:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);animation:portalShimmer 1.25s ease-in-out infinite}.portal-skeleton-hero{height:250px;background:linear-gradient(135deg,#DCE4E5,#C8D4D6)}.portal-skeleton-progress{height:62px;border-radius:18px}.portal-skeleton-row{display:grid;grid-template-columns:150px 1fr;gap:16px}.portal-skeleton-thumb{height:130px}.portal-skeleton-copy{height:130px}.portal-skeleton-account-hero{height:114px;background:linear-gradient(135deg,#D2DCDE,#B9CCCA)}.portal-skeleton-columns{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}.portal-skeleton-panel{height:440px}.portal-skeleton-security{height:360px}@keyframes portalShimmer{to{transform:translateX(100%)}}@keyframes skeletonEnter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
         @media(max-width:700px){
-          .customer-app-bar{min-height:58px;padding:10px 14px!important}
+          .customer-app-bar{min-height:52px;padding:7px 12px!important}
           .customer-signout{padding:8px 10px!important;font-size:11.5px!important}
           .pt-tabs{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:7px 10px calc(7px + env(safe-area-inset-bottom));border-top:1px solid rgba(19,40,61,.1);border-bottom:0;background:rgba(255,255,255,.96);box-shadow:0 -12px 32px rgba(19,40,61,.11);backdrop-filter:blur(20px);overflow:visible}
           .pt-tabs button{display:flex!important;min-height:56px!important;flex-direction:column;justify-content:center;gap:3px!important;padding:3px 5px!important;border-radius:15px!important;color:#70808A!important;font-size:0!important}
@@ -298,7 +298,7 @@ export default function Portal({ email, onSignOut }) {
           .pt-tabs button[data-active="true"] .pt-tab-icon{transform:translateY(-1px);background:#13283D;color:#fff;box-shadow:0 7px 15px rgba(19,40,61,.2)}
           .pt-tab-label{font-size:10.5px;font-weight:850;line-height:1.05}.pt-tab-label-text{display:none}.pt-tab-label:after{content:attr(data-mobile)}
           .pt-tabs::-webkit-scrollbar,.guest-progress::-webkit-scrollbar{display:none}
-          .pt-wrap{padding:18px 12px calc(105px + env(safe-area-inset-bottom))}
+          .pt-wrap{padding:13px 10px calc(100px + env(safe-area-inset-bottom))}
           .guest-sample-bar{align-items:flex-start}
           .guest-sample-exit span{display:none}
           .trip-section-nav{display:flex;gap:5px;overflow-x:auto;padding:5px;scrollbar-width:none}.trip-section-nav::-webkit-scrollbar{display:none}.trip-section-nav button{flex:0 0 auto;min-width:91px;min-height:44px}.trip-section-heading{align-items:flex-start;flex-direction:column;gap:9px}.trip-section-heading h1{font-size:27px}.trip-section-heading p{font-size:11px}.portal-enterprise-grid{grid-template-columns:1fr}.portal-enterprise-card{padding:16px!important}.traveler-party-hero{align-items:flex-start;flex-wrap:wrap;padding:17px}.traveler-party-count{width:58px;height:58px;border-radius:18px;font-size:22px}.traveler-party-hero button{width:100%}.payment-hero{grid-template-columns:1fr 1fr}.payment-hero>div:first-child{grid-column:1/-1}.payment-hero>div{padding:16px}.support-hero{grid-template-columns:1fr;padding:19px}.support-hero button{justify-content:center}.trip-section-heading-badge{align-self:flex-start}
@@ -310,7 +310,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-empty-visual{min-height:350px;padding:28px}
           .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
-          .journey-overview{grid-template-columns:1fr;min-height:0;border-radius:24px}.journey-overview .guest-trip-hero{min-height:340px;padding:22px!important;border-radius:0!important}.journey-overview .guest-trip-title{max-width:100%;font-size:clamp(36px,11vw,48px)!important;line-height:.93!important}.journey-control-panel{padding:22px 18px 20px}.journey-control-panel>h2{margin:9px 0 18px;font-size:25px}.journey-status{grid-template-columns:38px minmax(0,1fr);padding:13px}.journey-status-mark{width:38px;height:38px;border-radius:12px}.journey-status-copy b{font-size:14px}.journey-status-detail{padding-top:10px}.journey-status-detail small{display:block}.journey-control-panel .guest-next-up{grid-template-columns:74px minmax(0,1fr);gap:11px;margin-top:22px;padding-top:17px!important}.journey-control-panel .guest-next-photo{width:74px;height:74px}.journey-control-panel .guest-next-actions{grid-template-columns:1fr 1fr}.journey-control-panel .guest-next-actions button{min-height:44px;padding:0 8px}
+          .journey-overview{grid-template-columns:1fr;min-height:0;border-radius:21px}.journey-overview .guest-trip-hero{min-height:265px;padding:18px!important;border-radius:0!important}.journey-overview .guest-trip-title{max-width:100%;font-size:clamp(32px,9.5vw,40px)!important;line-height:.94!important}.journey-control-panel{padding:17px 16px 16px}.journey-control-panel>h2{margin:7px 0 14px;font-size:22px}.journey-status{grid-template-columns:34px minmax(0,1fr);padding:11px}.journey-status-mark{width:34px;height:34px;border-radius:11px}.journey-status-copy b{font-size:13px}.journey-status-detail{padding-top:8px}.journey-status-detail small{display:block}.journey-control-panel .guest-next-up{grid-template-columns:62px minmax(0,1fr);gap:10px;margin-top:16px;padding-top:13px!important}.journey-control-panel .guest-next-photo{width:62px;height:62px}.journey-control-panel .guest-next-actions{grid-template-columns:1fr 1fr}.journey-control-panel .guest-next-actions button{min-height:42px;padding:0 7px}
           .guest-trip-title{font-size:31px!important}
           .guest-progress{overflow:hidden;padding:15px 9px!important}
           .guest-progress>div{min-width:0}
@@ -356,7 +356,7 @@ export default function Portal({ email, onSignOut }) {
       `}</style>
 
       {/* app bar */}
-      <div className="customer-app-bar" style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px clamp(14px,4vw,26px)" }}>
+      <div className="customer-app-bar" style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px clamp(12px,3vw,22px)" }}>
         <div className="customer-brand"><Logo fontSize={20} surface="light" /></div>
         <button className="customer-signout" onClick={onSignOut} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 12px", borderRadius: radius.sm, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
           <LogOut size={15} /> Sign out
