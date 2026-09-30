@@ -4,7 +4,7 @@ import { Logo } from "../components/Logo.jsx";
 import { AGREEMENT_VERSION, OperatorAgreement } from "../components/OperatorAgreement.jsx";
 import { c, FONT, grad, radius, shadow } from "../theme.js";
 import { saveApplication } from "./partnerData.js";
-import { MeetingPointPicker, hasMeetingPoint } from "../admin/OperatorMeetingMap.jsx";
+import { MeetingPointPicker, hasMeetingPoint } from "../admin/OperatorMeetingMap.jsx?mapRelease=37";
 
 const REGIONS = ["Guanacaste", "Central Pacific", "South Pacific", "Northern Plains", "Central Valley", "Caribbean"];
 const CATEGORIES = ["Adventure", "Wildlife", "Water", "Fishing", "Surfing", "Wellness", "Transport", "Hotels", "Food & dining", "Other"];

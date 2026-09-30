@@ -21,7 +21,7 @@ import { loadPortal, addMessage } from "./portal-store.js";
 import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import { loadConnectedOperatorOverlay, loadConnectedOperatorPortal, saveConnectedOperatorOverlay, saveConnectedOperatorPortal } from "./operator-data.js";
-import { hasMeetingPoint, MeetingPointPicker, OperatorMapView } from "./OperatorMeetingMap.jsx";
+import { hasMeetingPoint, MeetingPointPicker, OperatorMapView } from "./OperatorMeetingMap.jsx?mapRelease=37";
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
