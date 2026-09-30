@@ -148,6 +148,10 @@ export default function Portal({ email, onSignOut }) {
         .journey-control-panel .guest-next-photo{width:48px;height:48px;border-radius:11px}
         .journey-control-panel .guest-next-kicker{color:#0A8174}.journey-control-panel .guest-next-copy h2{color:#13283D;font-size:14px}.journey-control-panel .guest-next-facts{flex-direction:row;color:#6A7983;gap:8px;font-size:9px}
         .journey-control-panel .guest-next-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}.journey-control-panel .guest-next-actions button{min-height:34px;padding:0 9px;font-size:9.5px}.journey-control-panel .guest-next-primary{background:#13283D;color:#fff}.journey-control-panel .guest-next-secondary{border-color:#D7DEE1;background:#fff;color:#324853}
+        .simple-preview-note{display:flex;align-items:center;gap:8px;min-height:34px;padding:0 11px;border:1px solid #CFE4E1;border-radius:11px;background:#F1F9F7;color:#45645F;font-size:10.5px}.simple-preview-note svg{color:#0A8174}.simple-preview-note b{color:#173C39}.simple-preview-note button{display:inline-flex;align-items:center;gap:5px;margin-left:auto;padding:6px 9px;border:1px solid #C9DAD8;border-radius:9px;background:#fff;color:#314C49;font:800 10px ${FONT};cursor:pointer}
+        .simple-trip-summary{display:grid;grid-template-columns:118px minmax(0,1fr) auto;align-items:center;gap:17px;padding:13px;border:1px solid #E0E5E7;border-radius:20px;background:#fff;box-shadow:0 12px 32px rgba(19,40,61,.075)}.simple-trip-photo{width:118px;height:82px;border-radius:14px;object-fit:cover}.simple-trip-copy{display:grid;gap:5px;min-width:0}.simple-eyebrow{display:flex;align-items:center;gap:6px;color:#087E71;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.simple-trip-copy h1{margin:0;color:#13283D;font-size:27px;line-height:1;letter-spacing:-.045em}.simple-trip-meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:#6B7983;font-size:10.5px}.simple-trip-meta span{display:inline-flex;align-items:center;gap:5px}.simple-trip-meta svg{color:#0A8174}.simple-countdown{display:grid;place-items:center;align-content:center;width:88px;height:72px;border-radius:15px;background:#13283D;color:#fff}.simple-countdown b{font-size:26px;line-height:1;letter-spacing:-.04em}.simple-countdown span{margin-top:3px;color:rgba(255,255,255,.65);font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+        .simple-home-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.7fr);gap:12px}.simple-next-card,.simple-status-card{padding:16px;border:1px solid #E0E5E7;border-radius:19px;background:#fff;box-shadow:0 11px 30px rgba(19,40,61,.065)}.simple-card-label{display:flex;align-items:center;gap:7px;margin-bottom:11px;color:#087E71;font-size:9.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.simple-next-content{display:grid;grid-template-columns:105px minmax(0,1fr) auto;align-items:center;gap:14px}.simple-next-content img{width:105px;height:78px;border-radius:13px;object-fit:cover}.simple-next-copy{display:grid;gap:5px;min-width:0}.simple-next-copy h2{margin:0;color:#13283D;font-size:20px;letter-spacing:-.035em}.simple-next-facts{display:flex;flex-wrap:wrap;gap:6px 12px;color:#687782;font-size:10.5px}.simple-next-facts span{display:inline-flex;align-items:center;gap:5px}.simple-next-actions{display:grid;gap:7px}.simple-next-actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:0 12px;border-radius:11px;font:850 10.5px ${FONT};white-space:nowrap;cursor:pointer}.simple-next-actions button:first-child{border:0;background:#13283D;color:#fff}.simple-next-actions button:last-child{border:1px solid #D9E0E2;background:#fff;color:#40535E}
+        .simple-status-card{display:grid;gap:11px}.simple-status-row{display:flex;align-items:center;gap:10px}.simple-status-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:11px;background:#FFD000;color:#13283D}.simple-status-copy{display:grid;gap:2px;flex:1}.simple-status-copy span{color:#75828A;font-size:8.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.simple-status-copy b{color:#13283D;font-size:13px}.simple-progress{height:6px;overflow:hidden;border-radius:999px;background:#E7EBEC}.simple-progress span{display:block;height:100%;border-radius:inherit;background:#0A8174}.simple-status-caption{color:#6C7A83;font-size:9.5px}.simple-concierge-button{display:flex;align-items:center;gap:9px;width:100%;padding:10px;border:0;border-radius:13px;background:#F1F7F5;color:#173A37;text-align:left;cursor:pointer}.simple-concierge-avatar{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border-radius:10px;background:#0A8174;color:#fff;font-size:10px;font-weight:900}.simple-concierge-button span:nth-child(2){display:grid;gap:1px;flex:1}.simple-concierge-button small{color:#71807E;font-size:8.5px}.simple-concierge-button b{font-size:11px}.simple-concierge-button>svg{color:#0A8174}
         .guest-trip-eyebrow{display:inline-flex;align-self:flex-start;margin-bottom:auto;padding:7px 11px;border:1px solid rgba(255,255,255,.48);border-radius:999px;background:rgba(255,255,255,.92);color:#0A8174;font-size:10px!important;font-weight:900!important;letter-spacing:.08em;text-transform:uppercase;opacity:1!important}
         .guest-trip-title{max-width:650px;font-size:clamp(32px,3.5vw,44px)!important;line-height:.95!important;letter-spacing:-.055em!important}
         .guest-trip-meta{font-size:14px!important;opacity:.94!important}
@@ -313,6 +317,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
           .journey-overview{grid-template-columns:1fr;min-height:0;border-radius:19px}.journey-overview .guest-trip-hero{min-height:140px;padding:13px!important;border-radius:0!important}.journey-control-panel{grid-template-columns:1fr;grid-template-areas:"intro" "glance" "status" "next";gap:10px;padding:14px}.journey-trip-intro h1{font-size:24px}.journey-trip-meta{gap:6px 10px}.journey-glance{margin:0}.journey-status{grid-template-columns:32px minmax(0,1fr);padding:10px}.journey-status-mark{width:32px;height:32px;border-radius:10px}.journey-status-copy b{font-size:12.5px}.journey-status-detail{grid-column:1/-1;padding:7px 0 0;border-top:1px solid #D5E0E0;border-left:0}.journey-status-detail small{display:block}.journey-control-panel .guest-next-up{grid-template-columns:50px minmax(0,1fr);gap:9px;padding:9px!important}.journey-control-panel .guest-next-photo{width:50px;height:50px}.journey-control-panel .guest-next-facts{flex-direction:column;gap:2px}.journey-control-panel .guest-next-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}.journey-control-panel .guest-next-actions button{min-height:42px;padding:0 7px}
+          .simple-trip-summary{grid-template-columns:76px minmax(0,1fr);gap:11px;padding:11px}.simple-trip-photo{width:76px;height:76px}.simple-trip-copy h1{font-size:21px}.simple-trip-meta{display:grid;gap:4px}.simple-countdown{grid-column:1/-1;display:flex;justify-content:flex-start;gap:5px;width:auto;height:auto;padding:8px 10px}.simple-countdown b{font-size:18px}.simple-countdown span{margin:0}.simple-home-grid{grid-template-columns:1fr}.simple-next-card,.simple-status-card{padding:13px}.simple-next-content{grid-template-columns:68px minmax(0,1fr);gap:10px}.simple-next-content img{width:68px;height:68px}.simple-next-copy h2{font-size:17px}.simple-next-facts{display:grid;gap:3px}.simple-next-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}.simple-next-actions button{min-height:43px;padding:0 8px}.simple-status-card{gap:10px}.trip-command-main{padding:17px 18px 11px}.trip-command-copy h2{font-size:21px}.trip-command-copy p{display:none}.trip-tool-actions{padding:0 14px 17px}
           .guest-trip-title{font-size:31px!important}
           .guest-progress{overflow:hidden;padding:15px 9px!important}
           .guest-progress>div{min-width:0}
@@ -524,7 +529,7 @@ function TripCommandCenter({ trip, bookings, onVoucher }) {
   return (
     <section className="pt-card trip-command" aria-label="Trip essentials">
       <div className="trip-command-main">
-        <div className="trip-command-copy"><div className="trip-command-kicker"><Sparkles size={13}/> Trip essentials</div><h2>Everything you may need</h2><p>Open a pass, check what to pack, add the trip to your calendar, or share it with your travel party.</p></div>
+        <div className="trip-command-copy"><div className="trip-command-kicker"><Sparkles size={13}/> Quick access</div><h2>Your trip tools</h2><p>Passes, packing, calendar, and sharing in one place.</p></div>
       </div>
       <div className="trip-tool-actions">
         <button className="trip-tool-action" data-active={panel === "passes"} onClick={() => togglePanel("passes")}><span className="trip-tool-icon"><ClipboardCheck size={17}/></span><span>Trip passes</span></button>
@@ -620,71 +625,49 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
   return (
     <div className="guest-trip-view" style={{ display: "grid", gap: 16 }}>
       {sampleMode && (
-        <div className="guest-sample-bar">
-          <Sparkles size={18} />
-          <div className="guest-sample-copy"><b>Sample trip preview</b><span>This is example content only. Nothing has been added to your account.</span></div>
-          <button className="guest-sample-exit" onClick={onExitSample}><ArrowLeft size={14} /><span>Exit preview</span></button>
+        <div className="simple-preview-note">
+          <Sparkles size={14}/><b>Sample preview</b><span>Example trip data · Nothing has been added to your account.</span>
+          <button onClick={onExitSample}><ArrowLeft size={12}/> Exit</button>
         </div>
       )}
       {tripSection === "overview" && <div className="trip-section-page">
-      {/* one connected journey overview: hero, status, and next action */}
-      <section className="journey-overview" aria-label="Journey overview">
-      <div className="guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
-        <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Sample journey" : "Your trip"}</div>
-      </div>
-
-      <aside className="journey-control-panel">
-        <div className="journey-trip-intro">
-          <div className="journey-control-kicker"><Sparkles size={13}/> Upcoming trip</div>
+      <section className="simple-trip-summary" aria-label="Trip summary">
+        <img className="simple-trip-photo" src={activityPhoto(heroPhoto, 600)} alt="" />
+        <div className="simple-trip-copy">
+          <div className="simple-eyebrow"><Sparkles size={12}/> Your upcoming trip</div>
           <h1>{trip.title}</h1>
-          <div className="journey-trip-meta">
+          <div className="simple-trip-meta">
             <span><MapPin size={12}/>{trip.region}</span>
             <span><CalendarDays size={12}/>{fmt(trip.start)} – {fmt(trip.end)}</span>
             <span><Users size={12}/>{trip.travelers} travelers</span>
           </div>
         </div>
-        <div className="journey-glance">
-          <div><b>{until > 0 ? until : until === 0 ? "Today" : "Live"}</b><span>{until > 0 ? "days to go" : "trip status"}</span></div>
-          <div><b>{confirmedCount}/{bookings.length}</b><span>experiences ready</span></div>
-        </div>
-        <div className="journey-status">
-          <div className="journey-status-mark"><Check size={20}/></div>
-          <div className="journey-status-copy"><span>Your trip status</span><b>{allExperiencesReady ? "Trip confirmed" : "Trip being finalized"}</b></div>
-          <div className="journey-status-detail">
-            <span>Your experiences</span>
-            <b>{allExperiencesReady ? `${confirmedCount} ready` : `${confirmedCount} ready · ${bookings.length - confirmedCount} being confirmed`}</b>
-            <small>{allExperiencesReady ? "Everything is ready for your arrival." : "TicoWild is handling the remaining confirmation."}</small>
-          </div>
-        </div>
-
-      {nextUp && (
-        <div className="guest-next-up">
-          <img className="guest-next-photo" src={activityPhoto(nextUp.photo, 500)} alt="" />
-          <div className="guest-next-copy">
-            <div className="guest-next-kicker"><Route size={13} /> Next up</div>
-            <h2>{nextUp.name}</h2>
-            <div className="guest-next-facts">
-              <span><CalendarDays size={14} /> {fmt(nextUp.date)} · {nextUp.time}</span>
-              <span><MapPin size={14} /> {nextUp.meet}</span>
-            </div>
-          </div>
-          <div className="guest-next-actions">
-            <button className="guest-next-primary" onClick={() => setVoucher(nextUp)}><Navigation size={14} /> Meeting details</button>
-            <button className="guest-next-secondary" onClick={() => { setTripSection("itinerary"); window.scrollTo({ top: 0, behavior: "smooth" }); }}><MapIcon size={14} /> View full itinerary</button>
-          </div>
-        </div>
-      )}
-      </aside>
+        <div className="simple-countdown"><b>{until > 0 ? until : until === 0 ? "Today" : "Live"}</b><span>{until > 0 ? "days to go" : "trip status"}</span></div>
       </section>
 
-      <div className="overview-tools-grid">
-        <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
-        <button className="trip-concierge-card" onClick={onMessage}>
-          <span className="trip-concierge-avatar">{conciergeInitials}</span>
-          <span className="trip-concierge-copy"><span>Your concierge</span><b>{concierge.name}</b><small>{concierge.role} · {concierge.availability}</small></span>
-          <span className="trip-concierge-action"><MessageCircle size={15}/><span>Message concierge</span><ChevronRight size={15}/></span>
-        </button>
+      <div className="simple-home-grid">
+        {nextUp && <section className="simple-next-card">
+          <div className="simple-card-label"><Route size={13}/> Next on your trip</div>
+          <div className="simple-next-content">
+            <img src={activityPhoto(nextUp.photo, 500)} alt="" />
+            <div className="simple-next-copy">
+              <h2>{nextUp.name}</h2>
+              <div className="simple-next-facts"><span><CalendarDays size={13}/>{fmt(nextUp.date)} · {nextUp.time}</span><span><MapPin size={13}/>{nextUp.meet}</span></div>
+            </div>
+            <div className="simple-next-actions">
+              <button onClick={() => setVoucher(nextUp)}><Navigation size={13}/> Meeting details</button>
+              <button onClick={() => { setTripSection("itinerary"); window.scrollTo({ top: 0, behavior: "smooth" }); }}><MapIcon size={13}/> Full itinerary</button>
+            </div>
+          </div>
+        </section>}
+        <aside className="simple-status-card">
+          <div className="simple-status-row"><span className="simple-status-icon"><Check size={18}/></span><span className="simple-status-copy"><span>Trip status</span><b>{allExperiencesReady ? "Everything is confirmed" : `${confirmedCount} of ${bookings.length} experiences confirmed`}</b></span></div>
+          <div className="simple-progress"><span style={{width:`${bookings.length ? Math.round((confirmedCount / bookings.length) * 100) : 0}%`}} /></div>
+          <div className="simple-status-caption">{allExperiencesReady ? "You are ready to go." : "TicoWild is confirming the remaining activity."}</div>
+          <button className="simple-concierge-button" onClick={onMessage}><span className="simple-concierge-avatar">{conciergeInitials}</span><span><b>Message {concierge.name}</b><small>Your Costa Rica concierge</small></span><ChevronRight size={15}/></button>
+        </aside>
       </div>
+      <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
       </div>}
 
       {/* itinerary */}

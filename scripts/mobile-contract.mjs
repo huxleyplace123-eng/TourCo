@@ -71,9 +71,9 @@ assert.match(customerPortal, /Open turn-by-turn directions/, "customer booking d
 assert.match(customerPortal, /Private operator CRM information stays private/, "customer booking details must explain the privacy boundary");
 assert.match(customerPortal, /Preview a sample trip/, "empty customer accounts need a safe sample-trip preview");
 assert.match(customerPortal, /Nothing has been added to your account/, "sample trips must be clearly separated from real customer data");
-assert.match(customerPortal, /Next up/, "the customer portal needs a clear next-action summary");
+assert.match(customerPortal, /Next on your trip/, "the customer portal needs a clear next-action summary");
 assert.match(customerPortal, /Meeting details/, "the next activity needs a direct meeting-details action");
-assert.match(customerPortal, /className="journey-overview"/, "hero, trip status, and next action should share one compact journey surface");
+assert.match(customerPortal, /className="simple-trip-summary"/, "the trip home needs a compact, readable trip summary");
 assert.match(customerPortal, /Change password/, "customer accounts need a visible password security control");
 assert.match(customerPortal, /Profile readiness/, "customer accounts need visible traveler-profile completeness");
 assert.match(customerPortal, /Email me a fresh sign-in link/, "customer accounts need a secure re-entry control");
@@ -92,7 +92,7 @@ assert.match(customerPortal, /\.customer-help\{display:none!important\}/, "the c
 assert.match(customerPortal, /<PortalSkeleton type="trip"/, "trip loading must use content-shaped skeletons");
 assert.match(customerPortal, /<PortalSkeleton type="account"/, "account loading must use content-shaped skeletons");
 assert.match(customerPortal, /dirty&&<div className="account-mobile-save"/, "mobile profile saving must appear only when customer details change");
-assert.match(customerPortal, /Trip essentials/, "the customer portal needs a simple set of practical trip tools");
+assert.match(customerPortal, /Your trip tools/, "the customer portal needs a simple set of practical trip tools");
 assert.match(customerPortal, /Your smart packing list/, "the trip must build a personalized packing checklist from booked experiences");
 assert.match(customerPortal, /downloadTripCalendar/, "travelers need a real calendar export for their itinerary");
 assert.match(customerPortal, /Your trip wallet/, "confirmed activity passes need a single traveler wallet");
@@ -100,12 +100,12 @@ assert.match(customerPortal, /Find anything in your trip/, "travelers need a cle
 assert.match(customerPortal, /Search activities, operators, pickup points/, "itinerary search must explain what customers can find");
 assert.match(customerPortal, /In coordination/, "travelers need to filter items that still need operator coordination");
 assert.match(customerPortal, /No trip details match that search/, "itinerary filtering needs a useful empty result state");
-assert.match(customerPortal, /View full itinerary/, "the trip home needs one obvious route into the detailed itinerary");
+assert.match(customerPortal, /Full itinerary/, "the trip home needs one obvious route into the detailed itinerary");
 assert.match(customerPortal, /Back to trip/, "the detailed itinerary needs an obvious return to the trip home");
 assert.equal(customerPortal.includes('aria-label="Trip workspace"'), false, "the customer portal must not bury My Trip beneath a second six-item navigation system");
-assert.match(customerPortal, /Sample journey/, "the trip home needs a clear preview label without competing with the trip title");
-assert.match(customerPortal, /Upcoming trip/, "the trip home needs an immediate utility-first trip summary");
-assert.match(customerPortal, /experiences ready/, "the trip home needs visible confirmation progress");
+assert.match(customerPortal, /Sample preview/, "the trip home needs a clear preview label without competing with the trip title");
+assert.match(customerPortal, /Your upcoming trip/, "the trip home needs an immediate utility-first trip summary");
+assert.match(customerPortal, /experiences confirmed/, "the trip home needs visible confirmation progress");
 assert.match(customerPortal, /guest-booking-hero/, "confirmed activities need a premium image-led detail experience");
 assert.match(customerPortal, /Assigned to your trip/, "concierge support needs visible trip ownership");
 assert.match(portalData, /concierge_name/, "real trip data must accept an assigned concierge identity from the CRM");
