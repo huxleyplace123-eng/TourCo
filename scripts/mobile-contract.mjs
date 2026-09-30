@@ -72,6 +72,7 @@ assert.match(customerPortal, /Preview a sample trip/, "empty customer accounts n
 assert.match(customerPortal, /Nothing has been added to your account/, "sample trips must be clearly separated from real customer data");
 assert.match(customerPortal, /Next up/, "the customer portal needs a clear next-action summary");
 assert.match(customerPortal, /Meeting details/, "the next activity needs a direct meeting-details action");
+assert.match(customerPortal, /className="journey-overview"/, "hero, trip status, and next action should share one compact journey surface");
 assert.match(customerPortal, /Change password/, "customer accounts need a visible password security control");
 assert.match(customerPortal, /Profile readiness/, "customer accounts need visible traveler-profile completeness");
 assert.match(customerPortal, /Email me a fresh sign-in link/, "customer accounts need a secure re-entry control");

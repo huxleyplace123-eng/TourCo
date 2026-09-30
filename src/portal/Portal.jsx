@@ -110,6 +110,14 @@ export default function Portal({ email, onSignOut }) {
         .guest-trip-hero{position:relative;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:30px!important;border-radius:28px!important;background-position:center!important;background-size:cover!important;color:#fff!important;box-shadow:0 22px 55px rgba(19,40,61,.18)!important}
         .guest-trip-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,24,38,.08),rgba(10,24,38,.82));pointer-events:none}
         .guest-trip-hero>*{position:relative;z-index:1}
+        .journey-overview{overflow:hidden;border:1px solid #E4E7E9;border-radius:28px;background:#fff;box-shadow:0 18px 48px rgba(19,40,61,.11)}
+        .journey-overview .guest-trip-hero{min-height:245px;border-radius:0!important;box-shadow:none!important}
+        .journey-overview .guest-progress{padding:11px 20px 9px!important;border:0!important;border-bottom:1px solid #E8EBEC!important;border-radius:0!important;box-shadow:none!important}
+        .journey-overview .guest-progress-bar{margin-bottom:5px!important}
+        .journey-overview .guest-progress-label{font-size:9.5px!important}
+        .journey-overview .guest-next-up{grid-template-columns:108px minmax(0,1fr) auto;padding:10px 14px!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+        .journey-overview .guest-next-photo{height:78px}
+        .journey-overview .guest-next-actions{display:flex}.journey-overview .guest-next-actions button{min-height:38px}
         .guest-trip-eyebrow{display:inline-flex;align-self:flex-start;margin-bottom:auto;padding:7px 11px;border:1px solid rgba(255,255,255,.48);border-radius:999px;background:rgba(255,255,255,.92);color:#0A8174;font-size:10px!important;font-weight:900!important;letter-spacing:.08em;text-transform:uppercase;opacity:1!important}
         .guest-trip-title{font-size:clamp(30px,5vw,48px)!important;line-height:1!important;letter-spacing:-.055em!important}
         .guest-trip-meta{font-size:14px!important;opacity:.94!important}
@@ -270,6 +278,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-empty-visual{min-height:350px;padding:28px}
           .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
+          .journey-overview{border-radius:22px}.journey-overview .guest-trip-hero{min-height:210px;border-radius:0!important}.journey-overview .guest-progress{padding:11px 8px 9px!important}.journey-overview .guest-next-up{grid-template-columns:78px minmax(0,1fr);gap:10px;padding:10px!important}.journey-overview .guest-next-photo{height:78px}.journey-overview .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr}.journey-overview .guest-next-actions button{min-height:40px}
           .guest-trip-title{font-size:31px!important}
           .guest-progress{overflow:hidden;padding:15px 9px!important}
           .guest-progress>div{min-width:0}
@@ -524,7 +533,8 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
           <button className="guest-sample-exit" onClick={onExitSample}><ArrowLeft size={14} /><span>Exit preview</span></button>
         </div>
       )}
-      {/* hero */}
+      {/* one connected journey overview: hero, status, and next action */}
+      <section className="journey-overview" aria-label="Journey overview">
       <div className="pt-card guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
         <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Sample Costa Rica journey" : "Confirmed Costa Rica journey"}</div>
         <div className="guest-trip-title" style={{ fontSize: 24, fontWeight: 800, margin: "3px 0 8px" }}>{trip.title}</div>
@@ -566,6 +576,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
           </div>
         </div>
       )}
+      </section>
 
       <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
 
