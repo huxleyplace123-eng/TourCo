@@ -111,11 +111,12 @@ export default function Portal({ email, onSignOut }) {
         .guest-trip-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,24,38,.08),rgba(10,24,38,.82));pointer-events:none}
         .guest-trip-hero>*{position:relative;z-index:1}
         .journey-overview{overflow:hidden;border:1px solid #E4E7E9;border-radius:28px;background:#fff;box-shadow:0 18px 48px rgba(19,40,61,.11)}
+        .journey-footer{background:#fff}
         .journey-overview .guest-trip-hero{min-height:245px;border-radius:0!important;box-shadow:none!important}
-        .journey-overview .guest-progress{padding:11px 20px 9px!important;border:0!important;border-bottom:1px solid #E8EBEC!important;border-radius:0!important;box-shadow:none!important}
+        .journey-overview .guest-progress{padding:11px 20px 7px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
         .journey-overview .guest-progress-bar{margin-bottom:5px!important}
         .journey-overview .guest-progress-label{font-size:9.5px!important}
-        .journey-overview .guest-next-up{grid-template-columns:108px minmax(0,1fr) auto;padding:10px 14px!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+        .journey-overview .guest-next-up{grid-template-columns:108px minmax(0,1fr) auto;padding:8px 14px 12px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
         .journey-overview .guest-next-photo{height:78px}
         .journey-overview .guest-next-actions{display:flex}.journey-overview .guest-next-actions button{min-height:38px}
         .guest-trip-eyebrow{display:inline-flex;align-self:flex-start;margin-bottom:auto;padding:7px 11px;border:1px solid rgba(255,255,255,.48);border-radius:999px;background:rgba(255,255,255,.92);color:#0A8174;font-size:10px!important;font-weight:900!important;letter-spacing:.08em;text-transform:uppercase;opacity:1!important}
@@ -535,7 +536,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       )}
       {/* one connected journey overview: hero, status, and next action */}
       <section className="journey-overview" aria-label="Journey overview">
-      <div className="pt-card guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
+      <div className="guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
         <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Sample Costa Rica journey" : "Confirmed Costa Rica journey"}</div>
         <div className="guest-trip-title" style={{ fontSize: 24, fontWeight: 800, margin: "3px 0 8px" }}>{trip.title}</div>
         <div className="guest-trip-meta" style={{ fontSize: 14, opacity: .95 }}>
@@ -544,8 +545,9 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
         </div>
       </div>
 
+      <div className="journey-footer">
       {/* status stepper */}
-      <div className="pt-card guest-progress" style={{ padding: "14px 18px" }}>
+      <div className="guest-progress" style={{ padding: "14px 18px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 4 }}>
           {tripStages.map((s, i) => {
             const done = i <= stageIdx;
@@ -560,7 +562,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       </div>
 
       {nextUp && (
-        <div className="pt-card guest-next-up">
+        <div className="guest-next-up">
           <img className="guest-next-photo" src={activityPhoto(nextUp.photo, 500)} alt="" />
           <div className="guest-next-copy">
             <div className="guest-next-kicker"><Route size={13} /> Next up</div>
@@ -576,6 +578,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
           </div>
         </div>
       )}
+      </div>
       </section>
 
       <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
