@@ -168,3 +168,18 @@ export async function sendSecureSignInLink(email) {
   if (error) throw friendlyBackendError(error, "We could not send your secure sign-in link.");
   return true;
 }
+
+export async function changePassword(password) {
+  if (String(password || "").length < 8) throw new Error("Use at least 8 characters for your new password.");
+  if (!hasSupabase) {
+    localStorage.setItem("ticowild_demo_password_set", "true");
+    return true;
+  }
+  const { error } = await withTimeout(
+    supabase.auth.updateUser({ password }),
+    12000,
+    "Password update",
+  );
+  if (error) throw friendlyBackendError(error, "We could not update your password.");
+  return true;
+}

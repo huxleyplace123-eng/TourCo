@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { c, FONT, radius, shadow, grad } from "../theme.js";
 import {
-  getTrip, getMessages, sendMessage, getProfile, saveProfile, sendSecureSignInLink, activityPhoto, tripStages, DEMO_TRIP,
+  getTrip, getMessages, sendMessage, getProfile, saveProfile, sendSecureSignInLink, changePassword, activityPhoto, tripStages, DEMO_TRIP,
 } from "./portalData.js";
 import GuestMeetingMap, { guestDirectionsUrl } from "./GuestMeetingMap.jsx";
 import { Logo } from "../components/Logo.jsx";
@@ -197,6 +197,11 @@ export default function Portal({ email, onSignOut }) {
         .security-row span{color:#7B878F;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .account-secondary-action{width:100%;min-height:43px;border:1px solid #D8DEE2;border-radius:12px;background:#fff;color:#314451;font:800 12px ${FONT};cursor:pointer}
         .account-danger-action{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:42px;margin-top:9px;border:0;border-radius:12px;background:#F3F5F5;color:#596771;font:800 12px ${FONT};cursor:pointer}
+        .password-action{margin-top:9px;border-color:#13283D;background:#13283D;color:#fff}
+        .password-success{margin-top:10px;padding:10px 12px;border-radius:12px;background:#EFF9F6;color:#087662;font-size:11px;font-weight:800}
+        .password-modal-backdrop{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:18px;background:rgba(6,20,32,.62);backdrop-filter:blur(7px)}
+        .password-modal{width:min(430px,100%);padding:25px;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.3)}
+        .password-modal-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}.password-modal-head>div:first-child{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#EAF6F4;color:#087F71}.password-modal-head>div:nth-child(2){flex:1}.password-modal h2{margin:0 0 4px;font-size:20px}.password-modal p{margin:0;color:#6F7C84;font-size:11.5px;line-height:1.5}.password-modal-close{border:0;background:#F3F5F5;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer}.password-modal-fields{display:grid;gap:12px}.password-modal-actions{display:grid;grid-template-columns:.7fr 1.3fr;gap:9px;margin-top:18px}.password-modal-actions button{min-height:45px;border-radius:12px;font:850 12px ${FONT};cursor:pointer}.password-cancel{border:1px solid #DDE2E4;background:#fff;color:#52616B}.password-submit{border:0;background:#13283D;color:#fff}.password-submit:disabled{opacity:.45;cursor:default}
         .account-help{padding:20px!important;background:linear-gradient(145deg,#FFF8D7,#fff)!important;border-color:#F2E5A0!important}
         .account-help h3{margin:0 0 6px;font-size:16px;letter-spacing:-.025em}
         .account-help p{margin:0 0 14px;color:#6E6B5F;font-size:11.5px;line-height:1.55}
@@ -250,6 +255,7 @@ export default function Portal({ email, onSignOut }) {
           .account-field-wide{grid-column:auto}
           .account-save-row{align-items:flex-start;flex-direction:column-reverse}
           .account-save{width:100%;min-height:48px}
+          .password-modal-backdrop{place-items:end center;padding:0}.password-modal{width:100%;box-sizing:border-box;border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
         }
       `}</style>
 
@@ -557,11 +563,28 @@ function AccountTab({ email, onSignOut, onMessage }) {
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
   const [linkState,setLinkState]=useState("");
+  const [passwordOpen,setPasswordOpen]=useState(false);
+  const [newPassword,setNewPassword]=useState("");
+  const [confirmPassword,setConfirmPassword]=useState("");
+  const [passwordBusy,setPasswordBusy]=useState(false);
+  const [passwordMessage,setPasswordMessage]=useState("");
   useEffect(() => { getProfile(email).then((p) => setF({ ...p, email: p.email || email })).catch((err)=>setError(err.message)); }, [email]);
   if (!f) return error?<PortalNotice title="We couldn't load your profile" body={error} tone="error"/>:<PortalNotice title="Loading your account…" body="Getting your saved traveler details."/>;
   const set = (k) => (e) => { setF((x) => ({ ...x, [k]: e.target.value })); setSaved(false); };
   const save = async () => { setBusy(true);setError("");try{setF(await saveProfile(f));setSaved(true);}catch(err){setError(err.message);}finally{setBusy(false);} };
   const sendLink = async () => { setLinkState("sending");setError("");try{await sendSecureSignInLink(email);setLinkState("sent");}catch(err){setError(err.message);setLinkState("");} };
+  const updatePassword = async (e) => {
+    e.preventDefault();
+    setPasswordMessage("");
+    if (newPassword.length < 8) return setPasswordMessage("Use at least 8 characters.");
+    if (newPassword !== confirmPassword) return setPasswordMessage("The passwords do not match.");
+    setPasswordBusy(true);
+    try {
+      await changePassword(newPassword);
+      setNewPassword("");setConfirmPassword("");setPasswordOpen(false);setPasswordMessage("Password updated successfully.");
+    } catch (err) { setPasswordMessage(err.message || "We could not update your password."); }
+    finally { setPasswordBusy(false); }
+  };
   const initials = String(f.name || email || "TW").split(/\s+|@/).filter(Boolean).slice(0,2).map((part)=>part[0]?.toUpperCase()).join("");
   const profileChecks = [f.name, f.phone, f.country, f.travelers, f.notes].filter((value)=>String(value || "").trim()).length;
   const completion = Math.round((profileChecks / 5) * 100);
@@ -595,18 +618,21 @@ function AccountTab({ email, onSignOut, onMessage }) {
         <aside className="account-stack">
           <section className="pt-card account-card">
             <div className="account-card-head"><div className="account-card-icon"><LockKeyhole size={18}/></div><div><h2>Login & security</h2><p>A clear view of how access to your trip is protected.</p></div></div>
-            <div className="security-status"><ShieldCheck size={21}/><div><b>Secure passwordless account</b><span>No reusable password exists to steal or forget.</span></div></div>
+            <div className="security-status"><ShieldCheck size={21}/><div><b>Flexible secure access</b><span>Use a private email link or your own password.</span></div></div>
             <div className="security-list">
               <div className="security-row"><MailCheck size={17}/><div><b>One-time email link</b><span>{email}</span></div></div>
               <div className="security-row"><Smartphone size={17}/><div><b>This device</b><span>Currently signed in with an active session</span></div></div>
-              <div className="security-row"><KeyRound size={17}/><div><b>Password</b><span>Not required—each sign-in link is unique</span></div></div>
+              <div className="security-row"><KeyRound size={17}/><div><b>Password</b><span>Set or change your password anytime</span></div></div>
             </div>
             <button className="account-secondary-action" onClick={sendLink} disabled={linkState==="sending"}>{linkState==="sending"?"Sending secure link…":linkState==="sent"?"Secure link sent ✓":"Email me a fresh sign-in link"}</button>
+            <button className="account-secondary-action password-action" onClick={()=>{setPasswordOpen(true);setPasswordMessage("");}}>Change password</button>
+            {passwordMessage&&<div className="password-success">{passwordMessage}</div>}
             <button className="account-danger-action" onClick={onSignOut}><LogOut size={14}/> Sign out of this device</button>
           </section>
           <section className="pt-card account-help"><h3>Need something changed?</h3><p>Your concierge can help with traveler names, timing, pickups, accessibility needs, or booking questions.</p><button onClick={onMessage}><Headphones size={15}/> Message your concierge</button></section>
         </aside>
       </div>
+      {passwordOpen&&<div className="password-modal-backdrop" role="presentation" onMouseDown={(e)=>{if(e.target===e.currentTarget)setPasswordOpen(false);}}><form className="password-modal" onSubmit={updatePassword} role="dialog" aria-modal="true" aria-labelledby="password-title"><div className="password-modal-head"><div><LockKeyhole size={20}/></div><div><h2 id="password-title">Change password</h2><p>Choose at least 8 characters. You can still use a secure email link anytime.</p></div><button className="password-modal-close" type="button" onClick={()=>setPasswordOpen(false)} aria-label="Close password dialog"><X size={17}/></button></div><div className="password-modal-fields"><label><div style={label}>New password</div><input autoFocus type="password" autoComplete="new-password" value={newPassword} onChange={(e)=>setNewPassword(e.target.value)} placeholder="At least 8 characters" style={input}/></label><label><div style={label}>Confirm new password</div><input type="password" autoComplete="new-password" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} placeholder="Enter it again" style={input}/></label></div>{passwordMessage&&<div role="alert" style={{marginTop:12,padding:"10px 12px",borderRadius:11,background:"#FFF3F2",color:"#B42318",fontSize:11.5,fontWeight:700}}>{passwordMessage}</div>}<div className="password-modal-actions"><button className="password-cancel" type="button" onClick={()=>setPasswordOpen(false)}>Cancel</button><button className="password-submit" type="submit" disabled={passwordBusy||newPassword.length<8||confirmPassword.length<8}>{passwordBusy?"Updating…":"Update password"}</button></div></form></div>}
     </div>
   );
 }

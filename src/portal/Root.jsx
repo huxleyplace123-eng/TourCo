@@ -6,10 +6,8 @@ import { Logo } from "../components/Logo.jsx";
 
 const DEMO_SESSION_KEY = "ticowild_portal_session";
 
-// Auth gate. With Supabase configured, this is real passwordless (magic-link)
-// auth: signInWithOtp emails a one-time link, the session persists across
-// devices, and onAuthStateChange keeps us in sync. Without keys, it runs a
-// demo session so the whole portal is clickable.
+// Auth gate. Customers can use a one-time email link or a password. Sessions
+// persist across devices and onAuthStateChange keeps the portal in sync.
 export default function Root() {
   const [session, setSession] = useState(null);
   const [ready, setReady] = useState(false);
@@ -41,6 +39,18 @@ export default function Root() {
     setSession(s);
   };
 
+  const signInWithPassword = async (email, password) => {
+    if (hasSupabase) {
+      const { data, error: authError } = await withTimeout(supabase.auth.signInWithPassword({ email, password }), 12000, "Password sign-in");
+      if (authError) throw friendlyBackendError(authError, "We could not sign you in with that password.");
+      setSession(data.session);
+      return;
+    }
+    const s = { user: { email }, email };
+    localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(s));
+    setSession(s);
+  };
+
   const signOut = async () => {
     if (hasSupabase) await supabase.auth.signOut();
     localStorage.removeItem(DEMO_SESSION_KEY);
@@ -49,7 +59,7 @@ export default function Root() {
 
   if (!ready) return <PortalStatus title="Opening your trip…" />;
   if (error) return <PortalStatus title="Customer portal needs attention" message={error} action="Try again" onAction={() => window.location.reload()} />;
-  if (!session) return <Login onSignIn={signIn} />;
+  if (!session) return <Login onSignIn={signIn} onPasswordSignIn={signInWithPassword} />;
   const email = session.user?.email || session.email || "";
   return <Portal email={email} onSignOut={signOut} />;
 }
