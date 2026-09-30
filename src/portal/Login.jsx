@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Mail, ArrowRight, Check } from "lucide-react";
-import { c, FONT, radius, shadow, grad } from "../theme.js";
+import { Mail, ArrowRight, Check, MapPinned, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
+import { c, FONT, radius } from "../theme.js";
+import { cdnImage } from "../images.js";
 import { hasSupabase } from "./supabase.js";
 
-// Passwordless login. Enter email → we send a one-time link (or, in demo mode,
-// continue instantly). No password, ever. Returning users do the exact same
-// thing from any device; their trip lives on their account, not the browser.
+// Passwordless login: every access link is unique and delivered to the traveler's inbox.
 export default function Login({ onSignIn }) {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
@@ -18,73 +17,51 @@ export default function Login({ onSignIn }) {
     if (!valid) return;
     setBusy(true);
     setError("");
-    try {
-      await onSignIn(email.trim());
-      setSent(true);
-    } catch (err) {
-      setError(err.message || "We could not send the sign-in link. Please try again.");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const input = {
-    width: "100%", background: "rgba(255,255,255,.06)", border: `1px solid ${c.line}`,
-    borderRadius: radius.sm, color: c.charcoal, fontFamily: FONT, fontSize: 16, padding: "14px 16px", outline: "none",
+    try { await onSignIn(email.trim()); setSent(true); }
+    catch (err) { setError(err.message || "We could not send the sign-in link. Please try again."); }
+    finally { setBusy(false); }
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: c.sand, fontFamily: FONT, padding: 18,
-      backgroundImage: "radial-gradient(60% 60% at 15% 0%, rgba(34,211,238,.12), transparent 60%), radial-gradient(50% 50% at 90% 100%, rgba(255,208,0,.09), transparent 60%)" }}>
-      <div style={{ width: "min(420px, 100%)", padding: "36px 32px 30px", borderRadius: radius.xl, background: c.white, border: `1px solid ${c.line}`, boxShadow: shadow.lg, textAlign: "center" }}>
-        <div style={{ fontSize: 30, fontWeight: 800, letterSpacing: -0.5, color: c.charcoal, marginBottom: 4 }}>
-          Tico<span style={{ color: c.gold }}>Wild</span>
-        </div>
-        {sent ? (
-          <>
-            <div style={{ width: 60, height: 60, borderRadius: 999, background: "rgba(52,211,153,.14)", border: "1px solid rgba(52,211,153,.4)", display: "inline-flex", alignItems: "center", justifyContent: "center", margin: "18px 0 14px" }}>
-              <Check size={30} color="#34D399" />
-            </div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 8px", color: c.charcoal }}>Check your email</h2>
-            <p style={{ color: c.stone, fontSize: 14.5, lineHeight: 1.55, margin: "0 auto", maxWidth: 320 }}>
-              We sent a one-time sign-in link to <b style={{ color: c.charcoal }}>{email}</b>. Tap it and you're in — no password needed.
-            </p>
-            <button onClick={() => setSent(false)} style={{ marginTop: 18, background: "none", border: "none", color: c.teal, fontFamily: FONT, fontWeight: 700, fontSize: 13.5, cursor: "pointer" }}>
-              Use a different email
-            </button>
-          </>
-        ) : (
-          <>
-            <div style={{ color: c.stone, fontSize: 13.5, fontWeight: 600, marginBottom: 22 }}>Your trip, all in one place</div>
-            <form onSubmit={submit} style={{ display: "grid", gap: 12, textAlign: "left" }}>
-              <label style={{ position: "relative", display: "block" }}>
-                <Mail size={17} style={{ position: "absolute", left: 15, top: "50%", transform: "translateY(-50%)", color: c.stone }} />
-                <input autoFocus type="email" inputMode="email" autoComplete="email" value={email}
-                  onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com"
-                  style={{ ...input, paddingLeft: 44 }} />
-              </label>
-              <button type="submit" disabled={!valid || busy} style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-                padding: "14px 0", borderRadius: radius.sm, border: "none",
-                background: valid && !busy ? c.gold : "rgba(255,208,0,.35)", color: c.ink,
-                fontFamily: FONT, fontSize: 15.5, fontWeight: 800, cursor: valid && !busy ? "pointer" : "default",
-                boxShadow: valid && !busy ? shadow.glowGold : "none",
-              }}>
-                {busy ? "Sending…" : <>Email me a sign-in link <ArrowRight size={17} strokeWidth={2.6} /></>}
-              </button>
-              {error && <div role="alert" style={{ padding:"10px 12px",borderRadius:radius.sm,border:"1px solid rgba(248,113,113,.28)",background:"rgba(248,113,113,.08)",color:"#FCA5A5",fontSize:12.5,lineHeight:1.5 }}>{error}</div>}
-            </form>
-            <p style={{ color: c.stone, fontSize: 12, lineHeight: 1.5, margin: "16px auto 0", maxWidth: 320 }}>
-              No password to create or remember. We email you a link each time — tap it and you're in from any device.
-            </p>
-            {!hasSupabase && (
-              <div style={{ marginTop: 16, padding: "8px 12px", borderRadius: radius.sm, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.3)", color: c.gold, fontSize: 11.5, fontWeight: 700 }}>
-                Demo mode — “send link” signs you straight in. Add Supabase keys for real email login.
-              </div>
-            )}
-          </>
-        )}
-      </div>
+    <div className="portal-login">
+      <style>{`
+        .portal-login{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(430px,.92fr);background:#F5F4F0;color:#172532;font-family:${FONT}}
+        .portal-login-story{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh;padding:42px clamp(30px,5vw,72px);overflow:hidden;background-position:center;background-size:cover;color:#fff}
+        .portal-login-story:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,23,34,.22),rgba(7,23,34,.9))}
+        .portal-login-story>*{position:relative;z-index:1}
+        .portal-login-brand{font-size:25px;font-weight:900;letter-spacing:-.06em}.portal-login-brand span{color:#FFD000}
+        .portal-login-copy{max-width:620px}.portal-login-copy>span{display:inline-flex;align-items:center;gap:7px;margin-bottom:14px;font-size:10.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#8FE6DA}
+        .portal-login-copy h1{margin:0 0 16px;font-size:clamp(42px,6vw,70px);line-height:.93;letter-spacing:-.065em}
+        .portal-login-copy p{max-width:540px;margin:0;color:rgba(255,255,255,.78);font-size:15px;line-height:1.65}
+        .portal-login-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:30px}
+        .portal-login-proof div{display:grid;gap:7px;padding:15px;border:1px solid rgba(255,255,255,.17);border-radius:16px;background:rgba(255,255,255,.09);backdrop-filter:blur(12px)}
+        .portal-login-proof svg{color:#FFD000}.portal-login-proof b{font-size:12px}.portal-login-proof span{color:rgba(255,255,255,.67);font-size:10.5px;line-height:1.4}
+        .portal-login-panel{display:flex;align-items:center;justify-content:center;padding:32px}
+        .portal-login-card{width:min(430px,100%);padding:34px;border:1px solid #DFE4E6;border-radius:27px;background:#fff;box-shadow:0 28px 75px rgba(19,40,61,.12)}
+        .portal-login-mobile-brand{display:none;margin-bottom:22px;font-size:25px;font-weight:900;letter-spacing:-.05em}.portal-login-mobile-brand span{color:#0A8174}
+        .portal-login-card h2{margin:0 0 7px;font-size:28px;letter-spacing:-.045em}.portal-login-card>p,.portal-login-sent>p{margin:0 0 24px;color:#697781;font-size:13px;line-height:1.55}
+        .portal-login-input{position:relative;display:block}.portal-login-input svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#71808A}
+        .portal-login-input input{width:100%;box-sizing:border-box;min-height:52px;padding:0 15px 0 44px;border:1px solid #D9DFE2;border-radius:13px;background:#F8F9F8;color:#172532;font:500 15px ${FONT};outline:none}
+        .portal-login-input input:focus{border-color:#0A8174;box-shadow:0 0 0 3px rgba(10,129,116,.1)}
+        .portal-login-submit{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;margin-top:11px;border:0;border-radius:13px;background:#13283D;color:#fff;font:850 14px ${FONT};cursor:pointer;box-shadow:0 12px 26px rgba(19,40,61,.18)}
+        .portal-login-submit:disabled{opacity:.4;cursor:default;box-shadow:none}
+        .portal-login-security{display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding:13px;border-radius:14px;background:#EFF8F6;color:#526D68;font-size:10.5px;line-height:1.45}.portal-login-security svg{flex:0 0 auto;color:#078B78}.portal-login-security b{display:block;color:#1D4742;font-size:11.5px}
+        .portal-login-sent{text-align:center}.portal-login-check{width:62px;height:62px;border-radius:20px;background:#E7F7F2;color:#078B78;display:grid;place-items:center;margin:4px auto 18px}
+        @media(max-width:800px){.portal-login{grid-template-columns:1fr;min-height:100dvh}.portal-login-story{display:none}.portal-login-panel{align-items:flex-start;padding:26px 16px 40px}.portal-login-card{margin-top:4vh;padding:27px 22px;border-radius:23px}.portal-login-mobile-brand{display:block}.portal-login-card h2{font-size:26px}}
+      `}</style>
+      <section className="portal-login-story" style={{ backgroundImage:`url(${cdnImage("photo-1530789253388-582c481c54b0",1600)})` }}>
+        <div className="portal-login-brand">Tico<span>Wild</span></div>
+        <div className="portal-login-copy"><span><Sparkles size={14}/> Your Costa Rica journey</span><h1>Every detail.<br/>One beautiful trip.</h1><p>Your itinerary, exact meeting points, booking vouchers, and a real local concierge—all together when you need them.</p><div className="portal-login-proof"><div><MapPinned size={18}/><b>Know where to go</b><span>Exact pins, pickup notes, and directions.</span></div><div><MessageCircle size={18}/><b>Talk to a human</b><span>Your trip conversation stays in one place.</span></div><div><ShieldCheck size={18}/><b>Travel securely</b><span>Private access without a reusable password.</span></div></div></div>
+      </section>
+      <main className="portal-login-panel"><div className="portal-login-card">
+        <div className="portal-login-mobile-brand">Tico<span>Wild</span></div>
+        {sent ? <div className="portal-login-sent"><div className="portal-login-check"><Check size={30}/></div><h2>Check your email</h2><p>We sent a one-time sign-in link to <b style={{color:c.charcoal}}>{email}</b>. Tap it and you’re in—no password needed.</p><button onClick={()=>setSent(false)} style={{background:"none",border:0,color:c.teal,font:`750 13px ${FONT}`,cursor:"pointer"}}>Use a different email</button></div> : <>
+          <h2>Open your trip</h2><p>Enter the email connected to your TicoWild booking. We’ll send you a private one-time access link.</p>
+          <form onSubmit={submit}><label className="portal-login-input"><Mail size={17}/><input autoFocus type="email" inputMode="email" autoComplete="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="you@email.com"/></label><button className="portal-login-submit" type="submit" disabled={!valid||busy}>{busy?"Sending…":<>Email me a secure link <ArrowRight size={17}/></>}</button>{error&&<div role="alert" style={{marginTop:10,padding:"10px 12px",borderRadius:radius.sm,border:"1px solid #F1B9B5",background:"#FFF3F2",color:"#B42318",fontSize:12}}>{error}</div>}</form>
+          <div className="portal-login-security"><ShieldCheck size={18}/><div><b>Why there’s no password</b>Each link is unique and sent only to your inbox, so there is no reusable password to steal, share, or forget.</div></div>
+          {!hasSupabase&&<div style={{marginTop:14,padding:"8px 11px",borderRadius:11,background:"#FFF8D9",border:"1px solid #F1E39C",color:"#796400",fontSize:10.5,fontWeight:750}}>Demo mode—sending a link signs you in immediately.</div>}
+        </>}
+      </div></main>
     </div>
   );
 }

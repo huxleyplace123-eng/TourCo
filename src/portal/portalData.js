@@ -156,3 +156,15 @@ export async function saveProfile(profile) {
   if (error) throw friendlyBackendError(error, "Your profile was not saved.");
   return next;
 }
+
+export async function sendSecureSignInLink(email) {
+  if (!email) throw new Error("Add your sign-in email first.");
+  if (!hasSupabase) return true;
+  const { error } = await withTimeout(
+    supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: `${window.location.origin}/my/` } }),
+    12000,
+    "Secure sign-in email",
+  );
+  if (error) throw friendlyBackendError(error, "We could not send your secure sign-in link.");
+  return true;
+}

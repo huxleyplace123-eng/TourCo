@@ -3,10 +3,11 @@ import QRCode from "qrcode";
 import {
   CalendarDays, MessageCircle, User, MapPin, Clock, Check, Hourglass, Send, LogOut, Backpack, ShieldCheck,
   QrCode, X, LifeBuoy, ChevronRight, Navigation, ExternalLink, Sparkles, Route, ArrowLeft,
+  KeyRound, MailCheck, Smartphone, Headphones, LockKeyhole, CheckCircle2,
 } from "lucide-react";
 import { c, FONT, radius, shadow, grad } from "../theme.js";
 import {
-  getTrip, getMessages, sendMessage, getProfile, saveProfile, activityPhoto, tripStages, DEMO_TRIP,
+  getTrip, getMessages, sendMessage, getProfile, saveProfile, sendSecureSignInLink, activityPhoto, tripStages, DEMO_TRIP,
 } from "./portalData.js";
 import GuestMeetingMap, { guestDirectionsUrl } from "./GuestMeetingMap.jsx";
 
@@ -137,6 +138,68 @@ export default function Portal({ email, onSignOut }) {
         .guest-privacy-note svg{flex:0 0 auto;color:#34D399;margin-top:1px}
         .guest-message-bubble{background:#F2F4F4!important;color:#172532!important;border:1px solid #E3E6E8!important;box-shadow:0 4px 14px rgba(19,40,61,.045)}
         .guest-message-bubble[data-mine="true"]{background:#13283D!important;color:#fff!important;border-color:#13283D!important}
+        .consumer-section-label{margin:0 2px;color:#687581;font-size:10.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+        .concierge-shell{overflow:hidden;border-radius:26px!important}
+        .concierge-head{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid #E6E9EA;background:linear-gradient(135deg,#F7FBFA,#fff)}
+        .concierge-avatar{position:relative;display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:#13283D;color:#fff;font-size:18px;font-weight:900;box-shadow:0 8px 22px rgba(19,40,61,.18)}
+        .concierge-avatar:after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border:3px solid #fff;border-radius:50%;background:#25B889}
+        .concierge-title{display:grid;gap:3px;flex:1}
+        .concierge-title b{font-size:16px;letter-spacing:-.02em}
+        .concierge-title span{color:#687681;font-size:11.5px}
+        .concierge-assurance{display:flex;align-items:center;gap:6px;color:#0A8174;font-size:11px;font-weight:800}
+        .concierge-thread{display:grid;gap:13px;min-height:330px;max-height:480px;overflow:auto;padding:22px;background:#FCFCFA}
+        .guest-message-row{display:grid;gap:4px}
+        .guest-message-row[data-mine="true"]{justify-items:end}
+        .guest-message-meta{padding:0 5px;color:#8A949C;font-size:9.5px;font-weight:700}
+        .concierge-quick{display:flex;gap:7px;overflow-x:auto;padding:0 18px 12px;background:#FCFCFA;scrollbar-width:none}
+        .concierge-quick::-webkit-scrollbar{display:none}
+        .concierge-quick button{flex:0 0 auto;padding:8px 11px;border:1px solid #DDE3E5;border-radius:999px;background:#fff;color:#4E5F6B;font:750 11px ${FONT};cursor:pointer}
+        .concierge-compose{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:14px;border-top:1px solid #E4E8E9;background:#fff}
+        .concierge-compose input{min-height:48px!important;background:#F7F8F7!important}
+        .concierge-compose button{width:48px;border:0;border-radius:14px;background:#13283D;color:#fff;display:grid;place-items:center;cursor:pointer}
+        .account-view{display:grid;gap:18px}
+        .account-hero{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px;padding:24px!important;background:linear-gradient(135deg,#13283D,#0D655F)!important;color:#fff!important;border:0!important}
+        .account-avatar{display:grid;place-items:center;width:66px;height:66px;border-radius:22px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);font-size:23px;font-weight:900;letter-spacing:-.04em}
+        .account-identity{display:grid;gap:4px;min-width:0}
+        .account-identity span{color:rgba(255,255,255,.7);font-size:11px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+        .account-identity h1{margin:0;font-size:25px;letter-spacing:-.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .account-identity p{margin:0;color:rgba(255,255,255,.75);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .account-completion{display:grid;gap:6px;width:170px}
+        .account-completion div{display:flex;justify-content:space-between;gap:10px;font-size:10.5px;font-weight:800}
+        .account-completion-track{height:7px!important;border-radius:999px;background:rgba(255,255,255,.16)!important;overflow:hidden}
+        .account-completion-track i{display:block;height:100%;border-radius:inherit;background:#FFD000}
+        .account-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px;align-items:start}
+        .account-stack{display:grid;gap:18px}
+        .account-card{padding:22px!important}
+        .account-card-head{display:flex;align-items:flex-start;gap:11px;margin-bottom:19px}
+        .account-card-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#EAF6F4;color:#0A8174}
+        .account-card-head div:nth-child(2){display:grid;gap:3px;flex:1}
+        .account-card-head h2{margin:0;font-size:17px;letter-spacing:-.025em}
+        .account-card-head p{margin:0;color:#76828B;font-size:11.5px;line-height:1.45}
+        .account-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+        .account-field-wide{grid-column:1/-1}
+        .account-readonly{background:#F3F5F5!important;color:#697780!important;cursor:not-allowed}
+        .account-save-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:17px;border-top:1px solid #E5E8EA}
+        .account-save{min-height:44px;padding:0 18px;border:0;border-radius:12px;background:#13283D;color:#fff;font:850 13px ${FONT};cursor:pointer}
+        .account-saved{display:inline-flex;align-items:center;gap:5px;color:#07896F;font-size:12px;font-weight:800}
+        .security-status{display:flex;align-items:center;gap:10px;padding:13px;border:1px solid #CDE8E3;border-radius:14px;background:#F1FAF8}
+        .security-status svg{color:#078B78;flex:0 0 auto}
+        .security-status div{display:grid;gap:2px}
+        .security-status b{font-size:12.5px}
+        .security-status span{color:#63736F;font-size:10.5px;line-height:1.4}
+        .security-list{display:grid;margin:15px 0}
+        .security-row{display:flex;align-items:center;gap:10px;padding:12px 1px;border-bottom:1px solid #E8EAEB}
+        .security-row:last-child{border-bottom:0}
+        .security-row svg{color:#6D7B85}
+        .security-row div{display:grid;gap:2px;min-width:0;flex:1}
+        .security-row b{font-size:11.5px}
+        .security-row span{color:#7B878F;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .account-secondary-action{width:100%;min-height:43px;border:1px solid #D8DEE2;border-radius:12px;background:#fff;color:#314451;font:800 12px ${FONT};cursor:pointer}
+        .account-danger-action{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:42px;margin-top:9px;border:0;border-radius:12px;background:#F3F5F5;color:#596771;font:800 12px ${FONT};cursor:pointer}
+        .account-help{padding:20px!important;background:linear-gradient(145deg,#FFF8D7,#fff)!important;border-color:#F2E5A0!important}
+        .account-help h3{margin:0 0 6px;font-size:16px;letter-spacing:-.025em}
+        .account-help p{margin:0 0 14px;color:#6E6B5F;font-size:11.5px;line-height:1.55}
+        .account-help button{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:0;border-radius:11px;background:#13283D;color:#fff;font:800 11.5px ${FONT};cursor:pointer}
         @media(max-width:700px){
           .pt-tabs{justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
           .pt-tabs::-webkit-scrollbar,.guest-progress::-webkit-scrollbar{display:none}
@@ -171,6 +234,21 @@ export default function Portal({ email, onSignOut }) {
           .guest-meeting-copy h3{font-size:19px}
           .guest-directions-button{min-height:48px}
           .customer-help{width:52px;height:52px;padding:0!important;justify-content:center!important;font-size:0!important}
+          .concierge-head{padding:15px}
+          .concierge-assurance{display:none}
+          .concierge-thread{min-height:360px;max-height:none;padding:17px 13px}
+          .concierge-compose{position:sticky;bottom:0;padding:11px}
+          .account-hero{grid-template-columns:auto minmax(0,1fr);gap:13px;padding:19px!important}
+          .account-avatar{width:54px;height:54px;border-radius:18px;font-size:19px}
+          .account-identity h1{font-size:20px;white-space:normal;line-height:1.1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+          .account-completion{grid-column:1/-1;width:auto}
+          .account-grid{grid-template-columns:1fr;gap:14px}
+          .account-stack{gap:14px}
+          .account-card{padding:18px!important}
+          .account-fields{grid-template-columns:1fr;gap:12px}
+          .account-field-wide{grid-column:auto}
+          .account-save-row{align-items:flex-start;flex-direction:column-reverse}
+          .account-save{width:100%;min-height:48px}
         }
       `}</style>
 
@@ -196,7 +274,7 @@ export default function Portal({ email, onSignOut }) {
       <div className="pt-wrap">
         {tab === "trip" && <TripTab trip={sampleMode && trip !== undefined ? DEMO_TRIP : trip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} />}
         {tab === "messages" && <MessagesTab />}
-        {tab === "account" && <AccountTab email={email} />}
+        {tab === "account" && <AccountTab email={email} onSignOut={onSignOut} onMessage={() => setTab("messages")} />}
       </div>
 
       {tab !== "messages" && (
@@ -437,66 +515,97 @@ function MessagesTab() {
   const [busy, setBusy] = useState(false);
   useEffect(() => { getMessages().then(setMessages).catch((err) => setError(err.message)); }, []);
   const send = async () => { const t = draft.trim(); if (!t || busy) return; setBusy(true); setError(""); try { setMessages(await sendMessage(t)); setDraft(""); } catch (err) { setError(err.message); } finally { setBusy(false); } };
+  const time = (value) => { const d = new Date(value); return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); };
+  const prompts = ["What should I pack?", "Confirm my pickup", "I need help with my trip"];
   return (
     <div style={{ display: "grid", gap: 12 }}>
-      <div style={{ ...label, marginLeft: 2 }}>Chat with your TicoWild concierge</div>
-      <div className="pt-card" style={{ padding: 14, display: "grid", gap: 10, minHeight: 300 }}>
-        {messages.length ? messages.map((m) => {
-          const mine = m.from === "customer";
-          return (
-            <div key={m.id} style={{ display: "flex", justifyContent: mine ? "flex-end" : "flex-start" }}>
-              <div className="guest-message-bubble" data-mine={mine} style={{ maxWidth: "80%", padding: "10px 13px", borderRadius: 14, fontSize: 14, lineHeight: 1.45 }}>
-                <div style={{ fontSize: 10.5, fontWeight: 800, opacity: .7, marginBottom: 2 }}>{mine ? "You" : "TicoWild concierge"}</div>
-                {m.text}
+      <div className="consumer-section-label">Your trip support</div>
+      <section className="pt-card concierge-shell">
+        <div className="concierge-head">
+          <div className="concierge-avatar">TW</div>
+          <div className="concierge-title"><b>Your TicoWild concierge</b><span>A real local team coordinating every operator</span></div>
+          <div className="concierge-assurance"><ShieldCheck size={15} /> Private trip conversation</div>
+        </div>
+        <div className="concierge-thread">
+          {messages.length ? messages.map((m) => {
+            const mine = m.from === "customer";
+            return (
+              <div className="guest-message-row" data-mine={mine} key={m.id}>
+                <div className="guest-message-meta">{mine ? "You" : "TicoWild concierge"}{m.at ? ` · ${time(m.at)}` : ""}</div>
+                <div className="guest-message-bubble" data-mine={mine} style={{ maxWidth: "min(78%,560px)", padding: "11px 14px", borderRadius: 15, fontSize: 13.5, lineHeight: 1.5 }}>{m.text}</div>
               </div>
-            </div>
-          );
-        }) : <div style={{ color: c.stone, textAlign: "center", padding: "30px 0" }}>Say hello 👋</div>}
-      </div>
-      <div style={{ display: "flex", gap: 8 }}>
-        <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") send(); }} placeholder="Message your concierge…" style={input} />
-        <button onClick={send} disabled={busy} aria-label="Send message" style={{ padding: "0 16px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontWeight: 800, cursor: busy ? "wait" : "pointer", display: "inline-flex", alignItems: "center", opacity: busy ? .65 : 1 }}><Send size={16} /></button>
-      </div>
-      {error&&<div role="alert" style={{ padding:"10px 12px",borderRadius:radius.sm,border:"1px solid rgba(248,113,113,.28)",background:"rgba(248,113,113,.08)",color:"#FCA5A5",fontSize:12.5 }}>{error}</div>}
-      <div style={{ color: c.stone, fontSize: 12, textAlign: "center" }}>A real human on the TicoWild team replies here — and on WhatsApp.</div>
+            );
+          }) : <div style={{ color: c.stone, textAlign: "center", padding: "40px 0" }}>Start a conversation with your Costa Rica concierge.</div>}
+        </div>
+        <div className="concierge-quick">{prompts.map((prompt) => <button key={prompt} onClick={() => setDraft(prompt)}>{prompt}</button>)}</div>
+        <div className="concierge-compose">
+          <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") send(); }} placeholder="Message your concierge…" style={input} />
+          <button onClick={send} disabled={busy || !draft.trim()} aria-label="Send message" style={{ opacity: busy || !draft.trim() ? .45 : 1 }}><Send size={18} /></button>
+        </div>
+      </section>
+      {error&&<div role="alert" style={{ padding:"10px 12px",borderRadius:radius.sm,border:"1px solid #F1B9B5",background:"#FFF3F2",color:"#B42318",fontSize:12.5 }}>{error}</div>}
+      <div style={{ color: c.stone, fontSize: 11.5, textAlign: "center" }}>Messages stay connected to your trip so the whole TicoWild team can help without making you repeat yourself.</div>
     </div>
   );
 }
 
 // ── Account ─────────────────────────────────────────────────────────────────
-function AccountTab({ email }) {
+function AccountTab({ email, onSignOut, onMessage }) {
   const [f, setF] = useState(null);
   const [saved, setSaved] = useState(false);
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
+  const [linkState,setLinkState]=useState("");
   useEffect(() => { getProfile(email).then((p) => setF({ ...p, email: p.email || email })).catch((err)=>setError(err.message)); }, [email]);
   if (!f) return error?<PortalNotice title="We couldn't load your profile" body={error} tone="error"/>:<PortalNotice title="Loading your account…" body="Getting your saved traveler details."/>;
   const set = (k) => (e) => { setF((x) => ({ ...x, [k]: e.target.value })); setSaved(false); };
   const save = async () => { setBusy(true);setError("");try{setF(await saveProfile(f));setSaved(true);}catch(err){setError(err.message);}finally{setBusy(false);} };
-  const Row = ({ k, lab, ph, type }) => (
-    <label style={{ display: "block" }}><div style={label}>{lab}</div><input type={type || "text"} value={f[k] || ""} onChange={set(k)} placeholder={ph} style={input} /></label>
+  const sendLink = async () => { setLinkState("sending");setError("");try{await sendSecureSignInLink(email);setLinkState("sent");}catch(err){setError(err.message);setLinkState("");} };
+  const initials = String(f.name || email || "TW").split(/\s+|@/).filter(Boolean).slice(0,2).map((part)=>part[0]?.toUpperCase()).join("");
+  const profileChecks = [f.name, f.phone, f.country, f.travelers, f.notes].filter((value)=>String(value || "").trim()).length;
+  const completion = Math.round((profileChecks / 5) * 100);
+  const Row = ({ k, lab, ph, type, wide, readOnly }) => (
+    <label className={wide ? "account-field-wide" : ""} style={{ display: "block" }}><div style={label}>{lab}</div><input className={readOnly ? "account-readonly" : ""} readOnly={readOnly} type={type || "text"} value={f[k] || ""} onChange={readOnly ? undefined : set(k)} placeholder={ph} style={input} /></label>
   );
   return (
-    <div style={{ display: "grid", gap: 14 }}>
-      <div style={{ ...label, marginLeft: 2 }}>Your details</div>
-      <div className="pt-card" style={{ padding: 16, display: "grid", gap: 12 }}>
-        <Row k="name" lab="Full name" ph="Your name" />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <Row k="email" lab="Email" ph="you@email.com" type="email" />
-          <Row k="phone" lab="Phone / WhatsApp" ph="+1 …" />
+    <div className="account-view">
+      <div className="consumer-section-label">Account & travel profile</div>
+      <section className="pt-card account-hero">
+        <div className="account-avatar">{initials || "TW"}</div>
+        <div className="account-identity"><span>TicoWild traveler</span><h1>{f.name || "Complete your traveler profile"}</h1><p>{email}</p></div>
+        <div className="account-completion"><div><span>Profile readiness</span><b>{completion}%</b></div><div className="account-completion-track"><i style={{ width: `${completion}%` }} /></div></div>
+      </section>
+      <div className="account-grid">
+        <div className="account-stack">
+          <section className="pt-card account-card">
+            <div className="account-card-head"><div className="account-card-icon"><User size={19}/></div><div><h2>Personal details</h2><p>Used by your concierge for confirmations, pickups, and operator coordination.</p></div></div>
+            <div className="account-fields">
+              <Row k="name" lab="Full name" ph="Your full name" />
+              <Row k="phone" lab="Mobile / WhatsApp" ph="+1 480 555 0100" type="tel" />
+              <Row k="email" lab="Sign-in email" ph="you@email.com" type="email" readOnly />
+              <Row k="country" lab="Home country" ph="United States" />
+              <Row k="travelers" lab="Number of travelers" ph="2" type="number" />
+              <label className="account-field-wide" style={{ display:"block" }}><div style={label}>Travel notes & preferences</div><textarea value={f.notes || ""} onChange={set("notes")} rows={4} placeholder="Dietary needs, mobility considerations, celebrations, preferred pickup style, or anything that helps us personalize your trip…" style={{ ...input,resize:"vertical",minHeight:105 }} /></label>
+            </div>
+            <div className="account-save-row"><span style={{ color:"#7A858D",fontSize:10.5,lineHeight:1.4 }}>Your details are only shared when needed to operate your bookings.</span><div style={{ display:"flex",alignItems:"center",gap:10 }}>{saved&&<span className="account-saved"><CheckCircle2 size={15}/> Saved</span>}<button className="account-save" onClick={save} disabled={busy}>{busy?"Saving…":"Save traveler profile"}</button></div></div>
+            {error&&<div role="alert" style={{ marginTop:12,padding:"10px 12px",borderRadius:radius.sm,border:"1px solid #F1B9B5",background:"#FFF3F2",color:"#B42318",fontSize:12 }}>{error}</div>}
+          </section>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <Row k="country" lab="Country" ph="USA" />
-          <Row k="travelers" lab="Travelers" ph="2" />
-        </div>
-        <label style={{ display: "block" }}><div style={label}>Anything we should know?</div><textarea value={f.notes || ""} onChange={set("notes")} rows={2} placeholder="Dietary needs, mobility, celebrating something…" style={{ ...input, resize: "vertical" }} /></label>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={save} disabled={busy} style={{ padding: "11px 20px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontFamily: FONT, fontWeight: 800, fontSize: 14, cursor: busy ? "wait" : "pointer", opacity: busy ? .65 : 1 }}>{busy ? "Saving…" : "Save"}</button>
-          {saved && <span style={{ color: "#34D399", fontSize: 13, fontWeight: 700 }}><Check size={14} style={{ verticalAlign: -2 }} /> Saved</span>}
-        </div>
-        {error&&<div role="alert" style={{ padding:"10px 12px",borderRadius:radius.sm,border:"1px solid rgba(248,113,113,.28)",background:"rgba(248,113,113,.08)",color:"#FCA5A5",fontSize:12.5 }}>{error}</div>}
+        <aside className="account-stack">
+          <section className="pt-card account-card">
+            <div className="account-card-head"><div className="account-card-icon"><LockKeyhole size={18}/></div><div><h2>Login & security</h2><p>A clear view of how access to your trip is protected.</p></div></div>
+            <div className="security-status"><ShieldCheck size={21}/><div><b>Secure passwordless account</b><span>No reusable password exists to steal or forget.</span></div></div>
+            <div className="security-list">
+              <div className="security-row"><MailCheck size={17}/><div><b>One-time email link</b><span>{email}</span></div></div>
+              <div className="security-row"><Smartphone size={17}/><div><b>This device</b><span>Currently signed in with an active session</span></div></div>
+              <div className="security-row"><KeyRound size={17}/><div><b>Password</b><span>Not required—each sign-in link is unique</span></div></div>
+            </div>
+            <button className="account-secondary-action" onClick={sendLink} disabled={linkState==="sending"}>{linkState==="sending"?"Sending secure link…":linkState==="sent"?"Secure link sent ✓":"Email me a fresh sign-in link"}</button>
+            <button className="account-danger-action" onClick={onSignOut}><LogOut size={14}/> Sign out of this device</button>
+          </section>
+          <section className="pt-card account-help"><h3>Need something changed?</h3><p>Your concierge can help with traveler names, timing, pickups, accessibility needs, or booking questions.</p><button onClick={onMessage}><Headphones size={15}/> Message your concierge</button></section>
+        </aside>
       </div>
-      <div style={{ color: c.stone, fontSize: 12, textAlign: "center" }}>Signed in as {email} · your inbox is your login — nothing to remember.</div>
     </div>
   );
 }

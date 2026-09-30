@@ -12,6 +12,7 @@ const ticoRanked = read("src/components/TicoRanked.jsx");
 const exploreMap = read("src/pages/ExploreMap.jsx");
 const customerPortal = read("src/portal/Portal.jsx");
 const guestMeetingMap = read("src/portal/GuestMeetingMap.jsx");
+const customerLogin = read("src/portal/Login.jsx");
 
 assert.match(index, /width=device-width, initial-scale=1, viewport-fit=cover/);
 assert.match(index, /button:not\(\.tn-dot\):not\(\.tn-pin\)/);
@@ -71,6 +72,12 @@ assert.match(customerPortal, /Preview a sample trip/, "empty customer accounts n
 assert.match(customerPortal, /Nothing has been added to your account/, "sample trips must be clearly separated from real customer data");
 assert.match(customerPortal, /Next up/, "the customer portal needs a clear next-action summary");
 assert.match(customerPortal, /Meeting details/, "the next activity needs a direct meeting-details action");
+assert.match(customerPortal, /Secure passwordless account/, "customer accounts must explain the real security model");
+assert.match(customerPortal, /Profile readiness/, "customer accounts need visible traveler-profile completeness");
+assert.match(customerPortal, /Email me a fresh sign-in link/, "customer accounts need a secure re-entry control");
+assert.match(customerPortal, /Your TicoWild concierge/, "customer messaging needs a professional concierge identity");
+assert.match(customerLogin, /Why there’s no password/, "customer sign-in must clearly explain passwordless access");
+assert.match(customerLogin, /@media\(max-width:800px\)/, "customer sign-in needs a dedicated mobile layout");
 assert.match(customerPortal, /@media\(max-width:700px\)/, "customer booking details need a dedicated phone layout");
 assert.match(guestMeetingMap, /google\.com\/maps\/dir/, "customer meeting maps need turn-by-turn directions");
 assert.equal(guestMeetingMap.includes("Open operator record"), false, "customer meeting maps must never expose the CRM action");
