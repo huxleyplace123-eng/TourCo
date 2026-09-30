@@ -164,7 +164,7 @@ export function OperatorMapView({ operators, onOpen }) {
     const selectedOperator = visible.find((operator) => operator.id === selectedId);
     if (selectedOperator) map.flyTo([Number(selectedOperator.meetingPoint.lat), Number(selectedOperator.meetingPoint.lng)], 13, { animate: true, duration: 0.8 });
     else if (bounds.length === 1) map.setView(bounds[0], 12, { animate: true });
-    else if (bounds.length > 1) map.fitBounds(bounds, { padding: [70, 70], maxZoom: 11 });
+    else if (bounds.length > 1) map.setView(COSTA_RICA, DEFAULT_ZOOM, { animate: true });
     else map.setView(COSTA_RICA, DEFAULT_ZOOM);
     window.setTimeout(refreshMarkerStyle, 0);
     return () => map.off("zoomend", refreshMarkerStyle);
