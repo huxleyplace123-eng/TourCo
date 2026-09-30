@@ -19,6 +19,11 @@ export const DEMO_TRIP = {
   status: "Confirmed",            // Planning · Deposit paid · Confirmed · In progress · Completed
   total: 3200,
   deposit: 640,                   // 20% paid online
+  concierge: {
+    name: "Sofía",
+    role: "Your Costa Rica trip concierge",
+    availability: "Local coordination for this sample journey",
+  },
   days: [
     { date: "2026-10-12", items: [
       { id: "b1", name: "Sky Trek Zipline", operator: "Sky Adventures", time: "8:00 AM",
@@ -86,6 +91,11 @@ function shapeTrip(row) {
     status: row.status || "Planning",
     total: Number(row.total || 0),
     deposit: Number(row.deposit || 0),
+    concierge: row.concierge_name ? {
+      name: row.concierge_name,
+      role: row.concierge_role || "Your Costa Rica trip concierge",
+      availability: row.concierge_availability || "Available in your private trip conversation",
+    } : null,
     days: [...days.entries()].sort(([a], [b]) => String(a).localeCompare(String(b))).map(([date, items]) => ({ date, items })),
   };
 }
@@ -108,13 +118,14 @@ export async function getTrip() {
 
 // ── Messages (concierge thread) ───────────────────────────────────────────────
 const seedMessages = () => ([
-  { id: "m1", from: "team", text: "¡Pura vida! 🌴 Welcome to TicoWild. Your zipline is confirmed for Sunday 8 AM — pickup at your hotel lobby at 7:30.", at: "2026-09-05T15:10:00Z" },
+  { id: "m1", from: "team", text: "¡Pura vida! 🌴 Welcome to TicoWild. Your zipline is confirmed for Monday at 8 AM — pickup at your hotel lobby at 7:30.", at: "2026-09-05T15:10:00Z" },
   { id: "m2", from: "team", text: "Quick tip: bring closed-toe shoes and sunscreen for the canopy. Anything you're wondering about?", at: "2026-09-05T15:11:00Z" },
 ]);
+const normalizeDemoMessages = (messages) => messages.map((message) => ({ ...message, text: String(message.text || "").replace("Sunday 8 AM", "Monday at 8 AM") }));
 
 export async function getMessages() {
   if (!hasSupabase) {
-    try { const r = localStorage.getItem(DEMO_MSG_KEY); return r ? JSON.parse(r) : seedMessages(); }
+    try { const r = localStorage.getItem(DEMO_MSG_KEY); return r ? normalizeDemoMessages(JSON.parse(r)) : seedMessages(); }
     catch { return seedMessages(); }
   }
   const user = await currentUser();

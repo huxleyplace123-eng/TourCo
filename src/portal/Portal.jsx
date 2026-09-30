@@ -75,6 +75,7 @@ export default function Portal({ email, onSignOut }) {
   const [tripError, setTripError] = useState("");
   const loadTrip = () => { setTrip(undefined); setTripError(""); getTrip().then(setTrip).catch((err) => { setTrip(null); setTripError(err.message); }); };
   useEffect(() => { loadTrip(); }, []);
+  const displayedTrip = sampleMode && trip !== undefined ? DEMO_TRIP : trip;
   const toggleSample = (on) => {
     setSampleMode(on);
     const url = new URL(window.location.href);
@@ -194,6 +195,7 @@ export default function Portal({ email, onSignOut }) {
         .guest-booking-modal{background:#fff!important;color:#172532!important;border:1px solid rgba(255,255,255,.8)!important;box-shadow:0 35px 100px rgba(10,24,38,.34)!important}
         .guest-booking-header{background:#fff;border-bottom:1px solid #E5E7E9!important;color:#172532}
         .guest-booking-header button{color:#50606D!important}
+        .guest-booking-hero{position:relative;display:flex;align-items:flex-end;min-height:230px;padding:26px;background-position:center;background-size:cover;color:#fff;overflow:hidden}.guest-booking-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,20,31,.08),rgba(7,20,31,.86))}.guest-booking-hero-copy{position:relative;z-index:1;display:grid;gap:5px}.guest-booking-hero-status{display:inline-flex;align-items:center;justify-self:start;gap:6px;padding:6px 9px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(9,129,114,.88);font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}.guest-booking-hero h2{margin:0;font-size:32px;line-height:1;letter-spacing:-.045em}.guest-booking-hero p{margin:0;color:rgba(255,255,255,.78);font-size:12px}.guest-booking-hero-meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}.guest-booking-hero-meta span{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:750}
         .guest-booking-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:stretch}
         .guest-voucher-qr{display:block;width:176px;height:176px}
         .guest-booking-summary,.guest-meeting-panel{padding:18px;border:1px solid #E5E7E9;border-radius:20px;background:#FAFAF8;color:#172532}
@@ -222,6 +224,7 @@ export default function Portal({ email, onSignOut }) {
         .concierge-title b{font-size:16px;letter-spacing:-.02em}
         .concierge-title span{color:#687681;font-size:11.5px}
         .concierge-assurance{display:flex;align-items:center;gap:6px;color:#0A8174;font-size:11px;font-weight:800}
+        .trip-concierge-card{display:flex;align-items:center;gap:13px;width:100%;padding:16px 18px;border:1px solid #DDE5E5;border-radius:19px;background:#fff;color:#172532;text-align:left;box-shadow:0 12px 35px rgba(19,40,61,.07);cursor:pointer}.trip-concierge-card:hover{border-color:#A9D4CE}.trip-concierge-avatar{position:relative;display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;border-radius:15px;background:linear-gradient(145deg,#13283D,#0A8174);color:#fff;font-size:15px;font-weight:900}.trip-concierge-avatar:after{content:"";position:absolute;right:-2px;bottom:-2px;width:10px;height:10px;border:3px solid #fff;border-radius:50%;background:#25B889}.trip-concierge-copy{display:grid;gap:2px;min-width:0;flex:1}.trip-concierge-copy span{color:#0A8174;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.trip-concierge-copy b{font-size:14px}.trip-concierge-copy small{color:#71808A;font-size:10.5px}.trip-concierge-action{display:inline-flex;align-items:center;gap:6px;color:#13283D;font-size:11px;font-weight:900}
         .concierge-thread{display:grid;gap:13px;min-height:330px;max-height:480px;overflow:auto;padding:22px;background:#FCFCFA}
         .guest-message-row{display:grid;gap:4px}
         .guest-message-row[data-mine="true"]{justify-items:end}
@@ -317,7 +320,7 @@ export default function Portal({ email, onSignOut }) {
           .itinerary-finder{padding:13px!important}.itinerary-finder-head{align-items:flex-start}.itinerary-finder-title small{max-width:190px;line-height:1.3}.itinerary-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible;padding:0}.itinerary-filter-label{display:none}.itinerary-filter{min-height:40px;padding:0 6px;white-space:normal;line-height:1.15}
           .guest-itinerary-grid{grid-template-columns:1fr;gap:15px!important}
           .guest-booking-photo{height:180px!important}
-          .guest-booking-modal{max-height:calc(100dvh - 20px)!important;border-radius:20px!important}
+          .guest-booking-modal{max-height:calc(100dvh - 20px)!important;border-radius:20px!important}.guest-booking-hero{min-height:190px;padding:20px}.guest-booking-hero h2{font-size:27px}.guest-booking-hero-meta{gap:8px}
           .guest-booking-layout{grid-template-columns:1fr;gap:12px;padding:12px!important}
           .guest-booking-summary,.guest-meeting-panel{padding:14px;border-radius:17px}
           .guest-voucher-qr{width:138px;height:138px}
@@ -331,6 +334,7 @@ export default function Portal({ email, onSignOut }) {
           .concierge-assurance{display:none}
           .concierge-thread{min-height:360px;max-height:none;padding:17px 13px}
           .concierge-compose{position:sticky;bottom:calc(70px + env(safe-area-inset-bottom));padding:11px;box-shadow:0 -10px 24px rgba(19,40,61,.06)}
+          .trip-concierge-card{padding:14px}.trip-concierge-action span{display:none}
           .account-hero{grid-template-columns:auto minmax(0,1fr);gap:13px;padding:19px!important}
           .account-avatar{width:54px;height:54px;border-radius:18px;font-size:19px}
           .account-identity h1{font-size:20px;white-space:normal;line-height:1.1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -368,8 +372,8 @@ export default function Portal({ email, onSignOut }) {
       </div>
 
       <div className="pt-wrap">
-        {tab === "trip" && <TripTab trip={sampleMode && trip !== undefined ? DEMO_TRIP : trip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} onAccount={() => setTab("account")} />}
-        {tab === "messages" && <MessagesTab />}
+        {tab === "trip" && <TripTab trip={displayedTrip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} onAccount={() => setTab("account")} />}
+        {tab === "messages" && <MessagesTab trip={displayedTrip} />}
         {tab === "account" && <AccountTab email={email} onSignOut={onSignOut} onMessage={() => setTab("messages")} />}
       </div>
 
@@ -398,21 +402,27 @@ function Voucher({ booking, trip, onClose }) {
       style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(4,10,20,.7)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 18 }}>
       <div className="pt-card guest-booking-modal" style={{ width: "min(920px,100%)", maxHeight: "calc(100dvh - 36px)", background: c.canvas2, overflow: "auto" }}>
         <div className="guest-booking-header" style={{ display: "flex", alignItems: "center", padding: "14px 18px", borderBottom: `1px solid ${c.line}` }}>
-          <div style={{ flex: 1, fontWeight: 800, fontSize: 15, display: "inline-flex", alignItems: "center", gap: 8 }}><QrCode size={17} color={c.gold} /> Your booking details</div>
+          <div style={{ flex: 1, fontWeight: 800, fontSize: 15, display: "inline-flex", alignItems: "center", gap: 8 }}><Sparkles size={17} color="#0A8174" /> Activity details</div>
           <button onClick={onClose} aria-label="Close" style={{ all: "unset", cursor: "pointer", color: c.stone, display: "flex", padding: 4 }}><X size={20} /></button>
+        </div>
+        <div className="guest-booking-hero" style={{ backgroundImage: `url(${activityPhoto(booking.photo, 1200)})` }}>
+          <div className="guest-booking-hero-copy">
+            <div className="guest-booking-hero-status"><Check size={13}/> Confirmed experience</div>
+            <h2>{booking.name}</h2>
+            <p>Operated by {booking.operator}</p>
+            <div className="guest-booking-hero-meta"><span><CalendarDays size={14}/>{fmt(booking.date)} · {booking.time}</span><span><Users size={14}/>{trip?.travelers || 2} travelers</span></div>
+          </div>
         </div>
         <div className="guest-booking-layout" style={{ padding: 20 }}>
           <div className="guest-booking-summary" style={{ textAlign: "center" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#34D399", fontWeight: 800, fontSize: 13, marginBottom: 14 }}><Check size={15} /> Confirmed</div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#087E71", fontWeight: 900, fontSize: 11, marginBottom: 14, textTransform: "uppercase", letterSpacing: ".07em" }}><QrCode size={15} /> Mobile activity pass</div>
             <div style={{ background: "#fff", borderRadius: 16, padding: 12, display: "inline-block" }}>
               {qr ? <img className="guest-voucher-qr" src={qr} alt="voucher QR" /> : <div className="guest-voucher-qr" />}
             </div>
-            <div style={{ fontWeight: 800, fontSize: 19, marginTop: 15 }}>{booking.name}</div>
-            <div style={{ color: c.stone, fontSize: 13.5, marginTop: 2 }}>{booking.operator}</div>
             <div className="guest-booking-facts">
               <div><b>When</b><span>{fmt(booking.date)}, {booking.time}</span></div>
-              <div><b>Guests</b><span>{trip?.travelers || 2}</span></div>
               <div><b>Bring</b><span>{booking.bring}</span></div>
+              {booking.price > 0 && <div><b>Activity value</b><span>{money(booking.price)}</span></div>}
             </div>
             <div style={{ marginTop: 14, padding: "9px 12px", borderRadius: radius.sm, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.3)", color: c.gold, fontSize: 12.5, fontWeight: 700 }}>
               Show this QR to your guide on arrival. It works offline.
@@ -589,6 +599,9 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
   const confirmedCount = bookings.filter((item) => item.status === "Confirmed").length;
   const allExperiencesReady = confirmedCount === bookings.length;
   const nextUp = bookings.find((item) => item.status === "Confirmed") || bookings[0];
+  const concierge = trip.concierge || { name: "TicoWild Concierge Team", role: "Local trip coordination", availability: "Available in your private trip conversation" };
+  const conciergeInitials = concierge.name === "TicoWild Concierge Team" ? "TW" : concierge.name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+  const todayTitle = until > 1 ? `${until} days until Costa Rica` : until === 1 ? "Costa Rica starts tomorrow" : until === 0 ? "Your adventure starts today" : trip.title;
   const normalizedQuery = itineraryQuery.trim().toLocaleLowerCase();
   const matchesItinerary = (item) => {
     const statusMatches = itineraryFilter === "all" || (itineraryFilter === "confirmed" ? item.status === "Confirmed" : item.status !== "Confirmed");
@@ -611,11 +624,11 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       {/* one connected journey overview: hero, status, and next action */}
       <section className="journey-overview" aria-label="Journey overview">
       <div className="guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
-        <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Sample Costa Rica journey" : "Confirmed Costa Rica journey"}</div>
-        <div className="guest-trip-title" style={{ fontSize: 24, fontWeight: 800, margin: "3px 0 8px" }}>{trip.title}</div>
+        <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Today · Sample journey" : "Today"}</div>
+        <div className="guest-trip-title" style={{ fontSize: 24, fontWeight: 800, margin: "3px 0 8px" }}>{todayTitle}</div>
         <div className="guest-trip-meta" style={{ fontSize: 14, opacity: .95 }}>
-          {trip.region} · {trip.travelers} travelers<br />
-          {fmt(trip.start)} – {fmt(trip.end)} · {until > 0 ? <b>{until} days to go 🌴</b> : until === 0 ? <b>Today!</b> : "In progress"}
+          {trip.title} · {trip.region}<br />
+          {fmt(trip.start)} – {fmt(trip.end)} · {trip.travelers} travelers
         </div>
       </div>
 
@@ -651,6 +664,11 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       </section>
 
       <TripCommandCenter trip={trip} bookings={bookings} onVoucher={setVoucher} />
+      <button className="trip-concierge-card" onClick={onMessage}>
+        <span className="trip-concierge-avatar">{conciergeInitials}</span>
+        <span className="trip-concierge-copy"><span>Your concierge</span><b>{concierge.name}</b><small>{concierge.role} · {concierge.availability}</small></span>
+        <span className="trip-concierge-action"><MessageCircle size={15}/><span>Message concierge</span><ChevronRight size={15}/></span>
+      </button>
       </div>}
 
       {/* itinerary */}
@@ -718,7 +736,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
 }
 
 // ── Messages ────────────────────────────────────────────────────────────────
-function MessagesTab() {
+function MessagesTab({ trip }) {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState("");
@@ -727,21 +745,23 @@ function MessagesTab() {
   const send = async () => { const t = draft.trim(); if (!t || busy) return; setBusy(true); setError(""); try { setMessages(await sendMessage(t)); setDraft(""); } catch (err) { setError(err.message); } finally { setBusy(false); } };
   const time = (value) => { const d = new Date(value); return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); };
   const prompts = ["What should I pack?", "Confirm my pickup", "I need help with my trip"];
+  const concierge = trip?.concierge || { name: "TicoWild Concierge Team", role: "Local trip coordination", availability: "Available in your private trip conversation" };
+  const conciergeInitials = concierge.name === "TicoWild Concierge Team" ? "TW" : concierge.name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <div className="consumer-section-label">Your trip support</div>
       <section className="pt-card concierge-shell">
         <div className="concierge-head">
-          <div className="concierge-avatar"><img src="/ticowild-macaw.svg" alt="" /></div>
-          <div className="concierge-title"><b>Your TicoWild concierge</b><span>A real local team coordinating every operator</span></div>
-          <div className="concierge-assurance"><ShieldCheck size={15} /> Private trip conversation</div>
+          <div className="concierge-avatar">{conciergeInitials}</div>
+          <div className="concierge-title"><b>{concierge.name}</b><span>{concierge.role} · {concierge.availability}</span></div>
+          <div className="concierge-assurance"><ShieldCheck size={15} /> Assigned to your trip</div>
         </div>
         <div className="concierge-thread">
           {messages.length ? messages.map((m) => {
             const mine = m.from === "customer";
             return (
               <div className="guest-message-row" data-mine={mine} key={m.id}>
-                <div className="guest-message-meta">{mine ? "You" : "TicoWild concierge"}{m.at ? ` · ${time(m.at)}` : ""}</div>
+                <div className="guest-message-meta">{mine ? "You" : concierge.name}{m.at ? ` · ${time(m.at)}` : ""}</div>
                 <div className="guest-message-bubble" data-mine={mine} style={{ maxWidth: "min(78%,560px)", padding: "11px 14px", borderRadius: 15, fontSize: 13.5, lineHeight: 1.5 }}>{m.text}</div>
               </div>
             );
