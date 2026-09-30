@@ -103,7 +103,8 @@ assert.match(customerPortal, /No trip details match that search/, "itinerary fil
 assert.match(customerPortal, /View full itinerary/, "the trip home needs one obvious route into the detailed itinerary");
 assert.match(customerPortal, /Back to trip/, "the detailed itinerary needs an obvious return to the trip home");
 assert.equal(customerPortal.includes('aria-label="Trip workspace"'), false, "the customer portal must not bury My Trip beneath a second six-item navigation system");
-assert.match(customerPortal, /Today · Sample journey/, "the trip home needs a clear today-oriented customer entry point");
+assert.match(customerPortal, /Sample journey/, "the trip home needs a clear preview label without competing with the trip title");
+assert.match(customerPortal, /Trip at a glance/, "the trip home needs an immediate utility-first status summary");
 assert.match(customerPortal, /guest-booking-hero/, "confirmed activities need a premium image-led detail experience");
 assert.match(customerPortal, /Assigned to your trip/, "concierge support needs visible trip ownership");
 assert.match(portalData, /concierge_name/, "real trip data must accept an assigned concierge identity from the CRM");

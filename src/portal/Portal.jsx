@@ -134,11 +134,11 @@ export default function Portal({ email, onSignOut }) {
         .guest-trip-hero{position:relative;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:30px!important;border-radius:28px!important;background-position:center!important;background-size:cover!important;color:#fff!important;box-shadow:0 22px 55px rgba(19,40,61,.18)!important}
         .guest-trip-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,24,38,.08),rgba(10,24,38,.82));pointer-events:none}
         .guest-trip-hero>*{position:relative;z-index:1}
-        .journey-overview{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(330px,.7fr);min-height:340px;overflow:hidden;border:0;border-radius:23px;background:#0C2133;box-shadow:0 19px 45px rgba(19,40,61,.15)}
-        .journey-overview .guest-trip-hero{min-height:340px;padding:22px!important;border-radius:0!important;box-shadow:none!important}
+        .journey-overview{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(330px,.7fr);min-height:310px;overflow:hidden;border:0;border-radius:23px;background:#0C2133;box-shadow:0 19px 45px rgba(19,40,61,.15)}
+        .journey-overview .guest-trip-hero{min-height:310px;padding:22px!important;border-radius:0!important;box-shadow:none!important}
         .journey-control-panel{display:flex;flex-direction:column;padding:17px 19px;background:linear-gradient(160deg,#102A3E 0%,#0A514E 100%);color:#fff}
         .journey-control-kicker{display:flex;align-items:center;gap:8px;color:#FFD000;font-size:10px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
-        .journey-control-panel>h2{max-width:300px;margin:6px 0 11px;color:#fff;font-size:21px;line-height:1.02;letter-spacing:-.05em}
+        .journey-glance{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:9px 0}.journey-glance>div{display:grid;gap:1px;padding:9px 10px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.065)}.journey-glance b{color:#fff;font-size:20px;line-height:1;letter-spacing:-.04em}.journey-glance span{color:rgba(255,255,255,.58);font-size:8.5px;font-weight:850;text-transform:uppercase;letter-spacing:.07em}
         .journey-status{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:9px;width:100%;box-sizing:border-box;padding:10px;border:1px solid rgba(255,255,255,.15);border-radius:14px;background:rgba(255,255,255,.08)}
         .journey-status-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#FFD000;color:#13283D;box-shadow:0 7px 18px rgba(0,0,0,.16)}
         .journey-status-copy{display:grid;gap:2px;min-width:0}.journey-status-copy span,.journey-status-detail span{color:rgba(255,255,255,.56);font-size:8.5px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}.journey-status-copy b{color:#fff;font-size:15px;letter-spacing:-.02em}
@@ -148,7 +148,7 @@ export default function Portal({ email, onSignOut }) {
         .journey-control-panel .guest-next-kicker{color:#FFD000}.journey-control-panel .guest-next-copy h2{color:#fff;font-size:16px}.journey-control-panel .guest-next-facts{color:rgba(255,255,255,.65);gap:3px;font-size:10px}
         .journey-control-panel .guest-next-actions{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:6px}.journey-control-panel .guest-next-actions button{min-height:34px;padding:0 7px;font-size:10.5px}.journey-control-panel .guest-next-primary{background:#FFD000;color:#102438}.journey-control-panel .guest-next-secondary{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff}
         .guest-trip-eyebrow{display:inline-flex;align-self:flex-start;margin-bottom:auto;padding:7px 11px;border:1px solid rgba(255,255,255,.48);border-radius:999px;background:rgba(255,255,255,.92);color:#0A8174;font-size:10px!important;font-weight:900!important;letter-spacing:.08em;text-transform:uppercase;opacity:1!important}
-        .guest-trip-title{max-width:650px;font-size:clamp(34px,3.7vw,46px)!important;line-height:.95!important;letter-spacing:-.055em!important}
+        .guest-trip-title{max-width:650px;font-size:clamp(32px,3.5vw,44px)!important;line-height:.95!important;letter-spacing:-.055em!important}
         .guest-trip-meta{font-size:14px!important;opacity:.94!important}
         .guest-progress{padding:18px 20px!important;border-radius:18px!important}
         .guest-progress-label{color:#687581!important}
@@ -311,7 +311,7 @@ export default function Portal({ email, onSignOut }) {
           .guest-empty-visual{min-height:350px;padding:28px}
           .guest-preview-phone{max-width:290px}
           .guest-trip-hero{min-height:220px;padding:22px!important;border-radius:22px!important}
-          .journey-overview{grid-template-columns:1fr;min-height:0;border-radius:19px}.journey-overview .guest-trip-hero{min-height:220px;padding:16px!important;border-radius:0!important}.journey-overview .guest-trip-title{max-width:100%;font-size:clamp(29px,8.7vw,36px)!important;line-height:.95!important}.journey-control-panel{padding:14px}.journey-control-panel>h2{margin:5px 0 11px;font-size:20px}.journey-status{grid-template-columns:32px minmax(0,1fr);padding:10px}.journey-status-mark{width:32px;height:32px;border-radius:10px}.journey-status-copy b{font-size:12.5px}.journey-status-detail{padding-top:7px}.journey-status-detail small{display:block}.journey-control-panel .guest-next-up{grid-template-columns:56px minmax(0,1fr);gap:9px;margin-top:12px;padding-top:10px!important}.journey-control-panel .guest-next-photo{width:56px;height:56px}.journey-control-panel .guest-next-actions{grid-template-columns:1fr 1fr}.journey-control-panel .guest-next-actions button{min-height:42px;padding:0 7px}
+          .journey-overview{grid-template-columns:1fr;min-height:0;border-radius:19px}.journey-overview .guest-trip-hero{min-height:200px;padding:16px!important;border-radius:0!important}.journey-overview .guest-trip-title{max-width:100%;font-size:clamp(28px,8.3vw,34px)!important;line-height:.95!important}.journey-control-panel{padding:14px}.journey-glance{margin:8px 0}.journey-status{grid-template-columns:32px minmax(0,1fr);padding:10px}.journey-status-mark{width:32px;height:32px;border-radius:10px}.journey-status-copy b{font-size:12.5px}.journey-status-detail{padding-top:7px}.journey-status-detail small{display:block}.journey-control-panel .guest-next-up{grid-template-columns:56px minmax(0,1fr);gap:9px;margin-top:12px;padding-top:10px!important}.journey-control-panel .guest-next-photo{width:56px;height:56px}.journey-control-panel .guest-next-actions{grid-template-columns:1fr 1fr}.journey-control-panel .guest-next-actions button{min-height:42px;padding:0 7px}
           .guest-trip-title{font-size:31px!important}
           .guest-progress{overflow:hidden;padding:15px 9px!important}
           .guest-progress>div{min-width:0}
@@ -391,14 +391,6 @@ export default function Portal({ email, onSignOut }) {
         {tab === "account" && <AccountTab email={email} onSignOut={onSignOut} onMessage={() => setTab("messages")} />}
       </div>
 
-      {tab !== "messages" && (
-        <button className="customer-help" onClick={() => setTab("messages")} title="Chat with your concierge"
-          style={{ position: "fixed", right: 18, bottom: 18, zIndex: 40, display: "inline-flex", alignItems: "center", gap: 8,
-            padding: "12px 16px", borderRadius: 999, border: "none", background: c.gold, color: c.ink,
-            fontFamily: FONT, fontSize: 14, fontWeight: 800, cursor: "pointer", boxShadow: shadow.glowGold }}>
-          <LifeBuoy size={17} /> Need help?
-        </button>
-      )}
     </div>
   );
 }
@@ -615,7 +607,6 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
   const nextUp = bookings.find((item) => item.status === "Confirmed") || bookings[0];
   const concierge = trip.concierge || { name: "TicoWild Concierge Team", role: "Local trip coordination", availability: "Available in your private trip conversation" };
   const conciergeInitials = concierge.name === "TicoWild Concierge Team" ? "TW" : concierge.name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-  const todayTitle = until > 1 ? `${until} days until Costa Rica` : until === 1 ? "Costa Rica starts tomorrow" : until === 0 ? "Your adventure starts today" : trip.title;
   const normalizedQuery = itineraryQuery.trim().toLocaleLowerCase();
   const matchesItinerary = (item) => {
     const statusMatches = itineraryFilter === "all" || (itineraryFilter === "confirmed" ? item.status === "Confirmed" : item.status !== "Confirmed");
@@ -638,17 +629,20 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       {/* one connected journey overview: hero, status, and next action */}
       <section className="journey-overview" aria-label="Journey overview">
       <div className="guest-trip-hero" style={{ padding: "20px 22px", backgroundImage: `url(${activityPhoto(heroPhoto, 1400)})`, color: "#fff", border: "none" }}>
-        <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Today · Sample journey" : "Today"}</div>
-        <div className="guest-trip-title" style={{ fontSize: 24, fontWeight: 800, margin: "3px 0 8px" }}>{todayTitle}</div>
+        <div className="guest-trip-eyebrow" style={{ fontSize: 13, fontWeight: 700, opacity: .9 }}>{sampleMode ? "Sample journey" : "Your trip"}</div>
+        <div className="guest-trip-title" style={{ fontSize: 24, fontWeight: 800, margin: "3px 0 8px" }}>{trip.title}</div>
         <div className="guest-trip-meta" style={{ fontSize: 14, opacity: .95 }}>
-          {trip.title} · {trip.region}<br />
+          {trip.region}<br />
           {fmt(trip.start)} – {fmt(trip.end)} · {trip.travelers} travelers
         </div>
       </div>
 
       <aside className="journey-control-panel">
-        <div className="journey-control-kicker"><Sparkles size={14}/> Your journey, handled</div>
-        <h2>Everything important. Nothing to chase.</h2>
+        <div className="journey-control-kicker"><Sparkles size={14}/> Trip at a glance</div>
+        <div className="journey-glance">
+          <div><b>{until > 0 ? until : until === 0 ? "Today" : "Live"}</b><span>{until > 0 ? "days to go" : "trip status"}</span></div>
+          <div><b>{confirmedCount}/{bookings.length}</b><span>experiences ready</span></div>
+        </div>
         <div className="journey-status">
           <div className="journey-status-mark"><Check size={20}/></div>
           <div className="journey-status-copy"><span>Your trip status</span><b>{allExperiencesReady ? "Trip confirmed" : "Trip being finalized"}</b></div>
