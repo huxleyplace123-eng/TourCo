@@ -19,6 +19,11 @@ export default defineConfig({
       input: {
         main: r("index.html"),
         family: r("kid-friendly-costa-rica-activities/index.html"),
+        blog: r("blog/index.html"),
+        blogRoutePlanning: r("blog/plan-costa-rica-activities-around-your-route/index.html"),
+        blogFamilyTravel: r("blog/kid-friendly-costa-rica-activities/index.html"),
+        blogRegionGuide: r("blog/manuel-antonio-uvita-guanacaste-trip-fit/index.html"),
+        blogBookingGuide: r("blog/what-to-confirm-before-booking-costa-rica-tour/index.html"),
         admin: r("admin/index.html"),
         my: r("my/index.html"),
         partners: r("partners/index.html"),

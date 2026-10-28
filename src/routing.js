@@ -1,4 +1,5 @@
 import { activities } from "./data.js";
+import { BLOG_POSTS, blogPostBySlug } from "./blog-data.js";
 
 const PAGE_PATHS = {
   home: "/",
@@ -16,6 +17,7 @@ const PAGE_PATHS = {
   insider: "/insider-guide",
   guide: "/insider-guide",
   eat: "/insider-guide",
+  blog: "/blog",
 };
 
 const PAGE_META = {
@@ -31,6 +33,7 @@ const PAGE_META = {
   map: ["Explore Costa Rica by Map | TicoWild", "Explore Costa Rica destinations, experiences and local planning ideas on the TicoWild map."],
   tico: ["Meet Rico | TicoWild", "Meet Rico, TicoWild's Costa Rica planning companion."],
   insider: ["Costa Rica Insider Guide | TicoWild", "Practical Costa Rica destination, activity and route guidance from TicoWild."],
+  blog: ["Costa Rica Travel Blog & Field Guide | TicoWild", "Plan Costa Rica with route-first travel ideas, family guidance, regional comparisons and practical tour booking checks."],
 };
 
 export function slugify(value = "") {
@@ -42,8 +45,14 @@ export function activityPath(activityOrId) {
   return activity ? `/activities/${slugify(activity.title)}` : "/activities";
 }
 
+export function blogPath(postOrSlug) {
+  const slug = typeof postOrSlug === "string" ? postOrSlug : postOrSlug?.slug;
+  return slug && blogPostBySlug(slug) ? `/blog/${slug}` : "/blog";
+}
+
 export function pathFor(page, activeId = null) {
   if (page === "detail") return activityPath(activeId);
+  if (page === "article") return blogPath(activeId);
   return PAGE_PATHS[page] || "/";
 }
 
@@ -57,6 +66,11 @@ export function routeFromPath(pathname = "/") {
     const activity = activities.find((item) => slugify(item.title) === slug);
     return activity ? { page: "detail", activeId: activity.id } : { page: "activities", activeId: null };
   }
+  if (clean.startsWith("/blog/")) {
+    const slug = clean.slice("/blog/".length);
+    const post = blogPostBySlug(slug);
+    return post ? { page: "article", activeId: post.slug } : { page: "blog", activeId: null };
+  }
   const match = Object.entries(PAGE_PATHS).find(([, path]) => path === clean);
   return match ? { page: match[0], activeId: null } : { page: "home", activeId: null };
 }
@@ -66,6 +80,10 @@ export function metadataFor(page, activeId = null) {
     const activity = activities.find((item) => item.id === activeId);
     if (activity) return [`${activity.title} in ${activity.region} | TicoWild`, `${activity.desc} Request current availability and trip-fit guidance from TicoWild.`];
   }
+  if (page === "article") {
+    const post = blogPostBySlug(activeId);
+    if (post) return [post.seoTitle, post.description];
+  }
   return PAGE_META[page] || PAGE_META.home;
 }
 
@@ -73,11 +91,46 @@ export function isKidFriendlyCandidate(activity) {
   return Boolean(activity?.family && activity.level !== "High");
 }
 
-export function structuredDataFor(page) {
+export function structuredDataFor(page, activeId = null) {
+  const baseUrl = "https://ticowild.com";
+  if (page === "blog") {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: "TicoWild Costa Rica Field Guide",
+      description: PAGE_META.blog[1],
+      url: `${baseUrl}${PAGE_PATHS.blog}`,
+      publisher: { "@type": "Organization", name: "TicoWild", url: baseUrl },
+      blogPost: BLOG_POSTS.map((post) => ({
+        "@type": "BlogPosting",
+        headline: post.title,
+        description: post.description,
+        datePublished: post.datePublished,
+        url: `${baseUrl}${blogPath(post)}`,
+      })),
+    };
+  }
+  if (page === "article") {
+    const post = blogPostBySlug(activeId);
+    if (!post) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.description,
+      datePublished: post.datePublished,
+      dateModified: post.datePublished,
+      author: { "@type": "Organization", name: "TicoWild", url: baseUrl },
+      publisher: { "@type": "Organization", name: "TicoWild", url: baseUrl },
+      mainEntityOfPage: `${baseUrl}${blogPath(post)}`,
+      image: `https://images.unsplash.com/${post.imageId}?auto=format&fit=crop&w=1600&q=82`,
+      articleSection: post.category,
+      isPartOf: { "@type": "Blog", name: "TicoWild Costa Rica Field Guide", url: `${baseUrl}${PAGE_PATHS.blog}` },
+    };
+  }
   if (page !== "kids") return null;
   const [name, description] = PAGE_META.kids;
   const familyActivities = activities.filter((activity) => isKidFriendlyCandidate(activity) && activity.category !== "Private Transportation");
-  const baseUrl = "https://ticowild.com";
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",

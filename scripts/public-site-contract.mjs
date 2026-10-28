@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { activities } from "../src/data.js";
+import { BLOG_POSTS } from "../src/blog-data.js";
 import { planTrip } from "../src/intelligence/planner.js";
-import { metadataFor, routeFromPath, structuredDataFor } from "../src/routing.js";
+import { blogPath, metadataFor, routeFromPath, structuredDataFor } from "../src/routing.js";
 
 const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
@@ -42,6 +43,9 @@ assert.match(home, /go\("kids"\)/, "family discovery should use the in-app famil
 for (const actionId of ["a7", "a10", "a6", "a9"]) assert.ok(home.includes(`"${actionId}"`), `homepage action reel is missing ${actionId}`);
 assert.match(home, /go\("map"\)/, "regional discovery must connect to the live map");
 assert.match(home, /className="home-concierge"/, "homepage needs one concise planning explanation");
+assert.match(home, /className="home-journal"/, "homepage needs a clear editorial preview");
+assert.match(home, /href="\/blog"/, "homepage editorial preview needs a crawlable blog route");
+assert.match(home, /viewBlogPost\(post\.slug\)/, "homepage articles should use in-app article navigation");
 assert.match(home, /className="home-closing"/, "homepage needs a cinematic destination close");
 for (const [label, buttonMarkup] of [["Explore the map", "Explore the map <"], ["Build my trip", "Build my trip</Button>"], ["Start planning", ">Start planning <"]]) {
   assert.equal(home.includes(buttonMarkup), false, `homepage must not use a competing primary CTA: ${label}`);
@@ -97,6 +101,8 @@ assert.match(app, /mobile-plan-bar/, "mobile visitors need a persistent planning
 for (const socialMeta of ["og:title", "og:description", "og:url", "twitter:card", "twitter:title", "twitter:description"]) {
   assert.ok(app.includes(`"${socialMeta}"`), `public routes must update ${socialMeta} metadata`);
 }
+assert.match(app, /"og:image"/, "editorial routes need social share imagery");
+assert.match(app, /"twitter:image"/, "editorial routes need Twitter share imagery");
 assert.match(app, /application\/ld\+json/, "dedicated search landings must publish JSON-LD");
 assert.match(app, /structuredDataFor\(page, activeId\)/, "structured data must follow the active route");
 
@@ -126,13 +132,22 @@ assert.match(detail, /className="detail-hero-badges"/, "activity hero labels nee
 assert.equal(detail.includes('bg="rgba(255,255,255,.92)"'), false, "activity hero badges must not use pale text on white surfaces");
 
 const routing = read("src/routing.js");
-for (const route of ["/activities", "/kid-friendly-costa-rica-activities", "/collections", "/plan", "/why-ticowild", "/insider-guide"]) {
+for (const route of ["/activities", "/kid-friendly-costa-rica-activities", "/collections", "/plan", "/why-ticowild", "/insider-guide", "/blog"]) {
   assert.ok(routing.includes(`"${route}"`), `missing public route ${route}`);
 }
 assert.match(routing, /metadataFor/);
 assert.match(routing, /activityPath/);
 assert.equal(routeFromPath("/kid-friendly-costa-rica-activities").page, "kids", "the kid-friendly URL must restore the dedicated family catalog");
 assert.match(metadataFor("kids")[0], /Kid-Friendly Costa Rica Activities/, "the family catalog needs focused search metadata");
+assert.equal(routeFromPath("/blog").page, "blog", "the blog URL must restore the editorial index");
+for (const post of BLOG_POSTS) {
+  assert.equal(routeFromPath(blogPath(post)).activeId, post.slug, `blog article route did not restore ${post.slug}`);
+  assert.match(metadataFor("article", post.slug)[0], /TicoWild/, `${post.slug} needs focused article metadata`);
+  const articleSchema = structuredDataFor("article", post.slug);
+  assert.equal(articleSchema?.["@type"], "BlogPosting", `${post.slug} needs BlogPosting structured data`);
+  assert.equal(articleSchema?.headline, post.title, `${post.slug} schema headline must match visible content`);
+}
+assert.equal(structuredDataFor("blog")?.["@type"], "Blog", "the blog index needs Blog structured data");
 const familyStructuredData = structuredDataFor("kids");
 assert.equal(familyStructuredData?.["@type"], "CollectionPage", "the family catalog needs CollectionPage structured data");
 assert.ok(familyStructuredData.mainEntity.numberOfItems > 0, "the family structured data needs real activity items");
@@ -183,5 +198,15 @@ assert.match(familyStaticEntry, /<title>Kid-Friendly Costa Rica Excursions \| Ti
 assert.match(familyStaticEntry, /rel="canonical" href="https:\/\/ticowild\.com\/kid-friendly-costa-rica-activities"/, "the family static entry needs its own canonical URL");
 assert.match(familyStaticEntry, /"@type": "CollectionPage"/, "the family static entry needs baseline structured data");
 assert.match(read("vite.config.js"), /family: r\("kid-friendly-costa-rica-activities\/index\.html"\)/, "the family landing page must ship as its own build entry");
+const blogStaticEntry = read("blog/index.html");
+assert.match(blogStaticEntry, /<title>Costa Rica Travel Blog/, "the blog index needs crawlable metadata before JavaScript runs");
+assert.match(blogStaticEntry, /"@type": "Blog"/, "the blog index needs baseline Blog structured data");
+for (const post of BLOG_POSTS) {
+  const entry = read(`blog/${post.slug}/index.html`);
+  assert.ok(sitemap.includes(`https://ticowild.com${blogPath(post)}`), `sitemap is missing ${post.slug}`);
+  assert.match(entry, /"@type": "BlogPosting"/, `${post.slug} needs baseline BlogPosting structured data`);
+  assert.match(entry, /property="og:image"/, `${post.slug} needs a crawlable social share image`);
+  assert.ok(entry.includes(`https://ticowild.com${blogPath(post)}`), `${post.slug} needs its own canonical URL`);
+}
 
 console.log("Public site contract passed: truthful conversion, concise home, URL routing, metadata, and inquiry storage are present.");

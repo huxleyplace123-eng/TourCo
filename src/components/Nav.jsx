@@ -7,13 +7,15 @@ import { pathFor } from "../routing.js";
 const LINKS = [
   ["tico", "Meet Rico"],
   ["activities", "Activities"],
-  ["insider", "Insider Guide"],
+  ["insider", "Guide"],
+  ["blog", "Blog"],
   ["map", "Explore Map"],
   ["deals", "Deals"],
 ];
 
 export function Nav({ page, go, tripCount, openTrip }) {
   const [open, setOpen] = useState(false);
+  const isActive = (id) => page === id || (id === "blog" && page === "article");
   return (
     <header className="site-nav" style={{ position: "sticky", top: 0, zIndex: 60, background: "rgba(11,26,46,.72)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: `1px solid ${c.line}` }}>
       <div className="site-nav-inner" style={{ maxWidth: 1180, margin: "0 auto", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
@@ -22,7 +24,7 @@ export function Nav({ page, go, tripCount, openTrip }) {
         </a>
         <div className="nav-links" style={{ display: "none", gap: 4, alignItems: "center" }}>
           {LINKS.map(([id, label]) => (
-            <a key={id} href={pathFor(id)} onClick={(event) => { event.preventDefault(); go(id); }} style={{ background: page === id ? "rgba(47,107,235,.08)" : "none", cursor: "pointer", padding: "8px 12px", borderRadius: 999, fontWeight: 700, fontSize: 14, color: page === id ? c.emerald : c.charcoal, textDecoration: "none" }}>
+            <a key={id} href={pathFor(id)} onClick={(event) => { event.preventDefault(); go(id); }} style={{ background: isActive(id) ? "rgba(47,107,235,.08)" : "none", cursor: "pointer", padding: "8px 11px", borderRadius: 999, fontWeight: 700, fontSize: 13.5, color: isActive(id) ? c.emerald : c.charcoal, textDecoration: "none" }}>
               {label}
             </a>
           ))}
@@ -52,7 +54,7 @@ export function Nav({ page, go, tripCount, openTrip }) {
       {open && (
         <nav className="mobile-nav-menu" aria-label="Main navigation" style={{ borderTop: `1px solid ${c.line}`, padding: 12, display: "flex", flexDirection: "column", gap: 2, background: "rgba(11,26,46,.96)", backdropFilter: "blur(16px)" }}>
           {LINKS.map(([id, label]) => (
-            <a key={id} href={pathFor(id)} onClick={(event) => { event.preventDefault(); go(id); setOpen(false); }} style={{ background: page === id ? "rgba(47,107,235,.08)" : "none", cursor: "pointer", padding: "12px 14px", borderRadius: 12, fontWeight: 700, fontSize: 15.5, color: page === id ? c.emerald : c.charcoal, textAlign: "left", textDecoration: "none" }}>
+            <a key={id} href={pathFor(id)} onClick={(event) => { event.preventDefault(); go(id); setOpen(false); }} style={{ background: isActive(id) ? "rgba(47,107,235,.08)" : "none", cursor: "pointer", padding: "12px 14px", borderRadius: 12, fontWeight: 700, fontSize: 15.5, color: isActive(id) ? c.emerald : c.charcoal, textAlign: "left", textDecoration: "none" }}>
               {label}
             </a>
           ))}

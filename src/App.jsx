@@ -2,6 +2,8 @@ import React, { useEffect, useState, useLayoutEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { c, FONT, grad } from "./theme.js";
 import { activities } from "./data.js";
+import { blogPostBySlug } from "./blog-data.js";
+import { cdnImage, themedSlides } from "./images.js";
 import { Nav } from "./components/Nav.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { Button } from "./components/ui.jsx";
@@ -18,6 +20,8 @@ import { ExploreMap } from "./pages/ExploreMap.jsx";
 import { MeetTicoPage } from "./pages/MeetTicoPage.jsx";
 import { TicoDock } from "./components/TicoDock.jsx";
 import { InsiderGuide } from "./pages/InsiderGuide.jsx";
+import { Blog } from "./pages/Blog.jsx";
+import { BlogArticle } from "./pages/BlogArticle.jsx";
 import { SoundscapeControl } from "./components/SoundscapeControl.jsx";
 import { ConversionCenter } from "./components/ConversionCenter.jsx";
 import { metadataFor, pathFor, routeFromPath, structuredDataFor } from "./routing.js";
@@ -87,7 +91,7 @@ export default function App() {
   }, []);
 
   const navigate = (nextPage, nextActiveId = null, { replace = false } = {}) => {
-    const resolvedActiveId = nextPage === "detail" ? (nextActiveId || activeId) : null;
+    const resolvedActiveId = ["detail", "article"].includes(nextPage) ? (nextActiveId || activeId) : null;
     setPage(nextPage);
     setActiveId(resolvedActiveId);
     setCartOpen(false);
@@ -141,7 +145,18 @@ export default function App() {
     setMeta("property", "og:url", canonicalUrl);
     setMeta("property", "og:type", "website");
     setMeta("property", "og:site_name", "TicoWild");
-    setMeta("name", "twitter:card", "summary");
+    const activePost = page === "article" ? blogPostBySlug(activeId) : null;
+    const socialImage = activePost ? cdnImage(activePost.imageId, 1600) : page === "blog" ? themedSlides("guide", 1600)[3]?.src : null;
+    const socialImageMeta = document.head.querySelector('meta[property="og:image"]');
+    const twitterImageMeta = document.head.querySelector('meta[name="twitter:image"]');
+    if (socialImage) {
+      setMeta("property", "og:image", socialImage);
+      setMeta("name", "twitter:image", socialImage);
+    } else {
+      socialImageMeta?.remove();
+      twitterImageMeta?.remove();
+    }
+    setMeta("name", "twitter:card", socialImage ? "summary_large_image" : "summary");
     setMeta("name", "twitter:title", title);
     setMeta("name", "twitter:description", description);
 
@@ -177,6 +192,7 @@ export default function App() {
     if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
   }, [page, activeId]);
   const viewActivity = (id) => navigate("detail", id);
+  const viewBlogPost = (slug) => navigate("article", slug);
   const browseActivities = (query = "", date = "") => {
     window.sessionStorage.setItem("ticowild.activitySearch", query.trim());
     if (date) window.sessionStorage.setItem("ticowild.activityDate", date);
@@ -190,7 +206,7 @@ export default function App() {
   const showMobilePlanBar = trip.length === 0 && ["home", "today", "why"].includes(page);
   const showStickyTripBar = trip.length > 0 && ["home", "today", "activities", "kids", "packages", "why"].includes(page);
 
-  const shared = { go, addToTrip, trip, viewActivity, browseActivities, removeFromTrip, startPlan, consumePlannerDraft };
+  const shared = { go, addToTrip, trip, viewActivity, viewBlogPost, browseActivities, removeFromTrip, startPlan, consumePlannerDraft };
 
   return (
     <ConversionCenter>
@@ -202,9 +218,11 @@ export default function App() {
       <Nav page={page} go={go} tripCount={trip.length} openTrip={() => go("portal")} />
 
       {/* keyed wrapper → every page fade-rises in on navigation */}
-      <main className={`public-page public-page-${page}`} key={page + (page === "detail" ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>
+      <main className={`public-page public-page-${page}`} key={page + (["detail", "article"].includes(page) ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>
         {(page === "home" || page === "today") && <Home {...shared} />}
         {(page === "eat" || page === "guide" || page === "insider") && <InsiderGuide {...shared} />}
+        {page === "blog" && <Blog {...shared} />}
+        {page === "article" && <BlogArticle activeId={activeId} {...shared} />}
         {page === "deals" && <Deals {...shared} />}
         {page === "map" && <ExploreMap {...shared} />}
         {page === "tico" && <MeetTicoPage {...shared} />}

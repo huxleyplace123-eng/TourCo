@@ -39,7 +39,7 @@ export function Footer({ go }) {
             Curated Costa Rica experiences, route-aware planning and a clear human handoff.
           </p>
         </div>
-        <Col title="Explore" links={[["tico", "Meet Rico"], ["activities", "Activities"], ["insider", "Insider Guide"], ["deals", "Deals"], ["packages", "Collections"]]} go={go} />
+        <Col title="Explore" links={[["tico", "Meet Rico"], ["activities", "Activities"], ["insider", "Insider Guide"], ["blog", "Blog"], ["deals", "Deals"], ["packages", "Collections"]]} go={go} />
         <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["build", "Build My Trip"], ["portal", "My Trips"], ["operator-agreement", "Operator agreement", () => setAgreement(true)]]} go={go} />
         <div className="footer-support">
           <div style={{ fontWeight: 800, color: "#fff", marginBottom: 8, fontSize: 13 }}>Support</div>

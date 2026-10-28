@@ -50,10 +50,18 @@ const publicPages = [
   "home", "today", "eat", "guide", "insider", "deals", "map", "tico",
   "activities", "kids", "detail", "packages", "build", "builder", "why",
   "partner", "portal",
+  "blog", "article",
 ];
 for (const page of publicPages) {
   assert.ok(app.includes(`page === "${page}"`), `public page ${page} is not covered by the shared mobile shell`);
 }
+
+const blog = read("src/pages/Blog.jsx");
+const article = read("src/pages/BlogArticle.jsx");
+assert.match(blog, /@media\(max-width:620px\)/, "the blog index needs a dedicated phone layout");
+assert.match(blog, /min-height:44px/, "blog category filters need phone-sized touch targets");
+assert.match(article, /@media\(max-width:620px\)/, "blog articles need a dedicated phone layout");
+assert.match(article, /article-aside\{grid-template-columns:1fr\}/, "article supporting guidance must stack on phones");
 
 assert.match(css, /site-section:not\(\.home-band\) \+ \.site-section:not\(\.home-band\)/, "adjacent mobile sections need a visible pause");
 assert.match(activities, /activity-collection-section\+\.activity-collection-section/, "activity collections need chapter breaks on mobile");
