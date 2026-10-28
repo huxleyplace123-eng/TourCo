@@ -69,7 +69,7 @@ export function CinematicHero({ go, onSearch }) {
       onMouseMove={onMove}
       onMouseLeave={() => setMouse({ x: 0, y: 0 })}
       className="tn-hero"
-      style={{ position: "relative", overflow: "hidden", background: c.sand, minHeight: 700 }}
+      style={{ position: "relative", overflow: "hidden", background: c.sand, minHeight: 590 }}
     >
       <style>{`
         @keyframes tnFloat { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-10px) } }
@@ -121,14 +121,14 @@ export function CinematicHero({ go, onSearch }) {
         .tn-hero-search button:hover { transform:scale(1.05);box-shadow:0 16px 36px -12px rgba(255,208,0,1); }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
         @media (min-width: 980px){
-          .tn-hero-content { padding: 58px 28px 72px !important; }
+          .tn-hero-content { padding: 42px 28px 54px !important; }
           .tn-hero .tn-h1 { font-size: clamp(48px,4.7vw,68px) !important; }
           .tn-hero-desktop-copy { font-size: 16px !important; margin-top: 24px !important; }
           .tn-hero-search { width: min(720px,100%); margin-top: 24px; }
           .tn-hero-trust { margin-top: 19px !important; }
         }
         @media (min-width: 821px) and (max-width: 979px){
-          .tn-hero-content { padding: 52px 28px 68px !important; gap: 36px !important; }
+          .tn-hero-content { padding: 44px 28px 56px !important; gap: 32px !important; }
           .tn-hero .tn-h1 { font-size: clamp(46px,6.1vw,60px) !important; }
         }
         /* ── Mobile hero polish ── hide the desktop sun/bird blob, preserve
@@ -136,14 +136,14 @@ export function CinematicHero({ go, onSearch }) {
         @media (max-width: 820px){
           .tn-hero { min-height: auto !important; }
           .tn-hero-scene { display: none !important; }
-          .tn-hero-content { padding: 60px clamp(24px,5vw,40px) 72px !important; }
+          .tn-hero-content { padding: 48px clamp(24px,5vw,40px) 56px !important; }
           .tn-hero-image {
             object-position: var(--mobile-position) !important;
             transform: none !important;
           }
         }
         @media (max-width: 520px){
-          .tn-hero-content { padding: 40px 18px 48px !important; }
+          .tn-hero-content { padding: 34px 18px 42px !important; }
           .tn-hero-copy { width: 100%; max-width: none; overflow: visible; }
           .tn-hero .tn-h1 {
             width: 100%;
