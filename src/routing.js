@@ -3,6 +3,7 @@ import { activities } from "./data.js";
 const PAGE_PATHS = {
   home: "/",
   activities: "/activities",
+  kids: "/kid-friendly-costa-rica-activities",
   packages: "/collections",
   build: "/plan",
   builder: "/plan",
@@ -20,6 +21,7 @@ const PAGE_PATHS = {
 const PAGE_META = {
   home: ["TicoWild | Costa Rica Activities and Trip Planning", "Browse Costa Rica activities by region and build an activity plan around your destinations and dates."],
   activities: ["Costa Rica Experiences | TicoWild", "Explore curated Costa Rica experiences by region, pace and travel style."],
+  kids: ["Kid-Friendly Costa Rica Activities | TicoWild", "Explore kid-friendly Costa Rica activities by region and pace. TicoWild confirms age, height, swimming, weather and operator requirements before payment."],
   packages: ["Costa Rica Experience Collections | TicoWild", "Explore simple Costa Rica experience collections for couples, families, groups and adventure travelers."],
   build: ["Plan My Costa Rica Experiences | TicoWild", "Build a simple Costa Rica activity plan around your dates, route, group and travel style."],
   why: ["How TicoWild Works | TicoWild", "See how TicoWild helps travelers choose experiences, confirm the details and stay supported during their trip."],
@@ -65,4 +67,47 @@ export function metadataFor(page, activeId = null) {
     if (activity) return [`${activity.title} in ${activity.region} | TicoWild`, `${activity.desc} Request current availability and trip-fit guidance from TicoWild.`];
   }
   return PAGE_META[page] || PAGE_META.home;
+}
+
+export function isKidFriendlyCandidate(activity) {
+  return Boolean(activity?.family && activity.level !== "High");
+}
+
+export function structuredDataFor(page) {
+  if (page !== "kids") return null;
+  const [name, description] = PAGE_META.kids;
+  const familyActivities = activities.filter((activity) => isKidFriendlyCandidate(activity) && activity.category !== "Private Transportation");
+  const baseUrl = "https://ticowild.com";
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name,
+    description,
+    url: `${baseUrl}${PAGE_PATHS.kids}`,
+    mainEntity: {
+      "@type": "ItemList",
+      name: "Kid-friendly Costa Rica activities",
+      numberOfItems: familyActivities.length,
+      itemListElement: familyActivities.map((activity, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "TouristTrip",
+          name: activity.title,
+          description: activity.desc,
+          url: `${baseUrl}${activityPath(activity)}`,
+          touristType: "Families with children",
+          areaServed: { "@type": "Country", name: "Costa Rica" },
+          provider: { "@type": "Organization", name: "TicoWild", url: baseUrl },
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "USD",
+            price: activity.price,
+            availability: "https://schema.org/InStock",
+            url: `${baseUrl}${activityPath(activity)}`,
+          },
+        },
+      })),
+    },
+  };
 }

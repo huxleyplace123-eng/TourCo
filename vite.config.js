@@ -18,6 +18,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: r("index.html"),
+        family: r("kid-friendly-costa-rica-activities/index.html"),
         admin: r("admin/index.html"),
         my: r("my/index.html"),
         partners: r("partners/index.html"),

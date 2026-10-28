@@ -4,6 +4,7 @@ import {
   Check,
   Clock3,
   Compass,
+  Heart,
   MapPin,
   Plus,
   ShieldCheck,
@@ -14,7 +15,7 @@ import { ticoActivityVerdict } from "../intelligence/tico.js";
 import { c, gradFor, money } from "../theme.js";
 import { Photo } from "../motion.jsx";
 import { Button } from "./ui.jsx";
-import { activityPath } from "../routing.js";
+import { activityPath, isKidFriendlyCandidate } from "../routing.js";
 
 const CARD_STYLES = `
   .tn-activity-browse-card {
@@ -198,6 +199,17 @@ const CARD_STYLES = `
     display: inline-flex;
     align-items: center;
     gap: 5px;
+  }
+
+  .tn-activity-browse-card__meta .tn-activity-browse-card__family {
+    padding: 5px 8px;
+    margin: -5px 0;
+    color: #FFD000;
+    background: rgba(255, 208, 0, .08);
+    border: 1px solid rgba(255, 208, 0, .2);
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 850;
   }
 
   .tn-activity-browse-card__rico {
@@ -512,6 +524,7 @@ export function ActivityBrowseCard({
             {a.region && <span><MapPin size={13} aria-hidden="true" />{a.region}</span>}
             {a.duration && <span><Clock3 size={13} aria-hidden="true" />{a.duration}</span>}
             {a.level && <span><Compass size={13} aria-hidden="true" />{a.level}</span>}
+            {isKidFriendlyCandidate(a) && <span className="tn-activity-browse-card__family"><Heart size={12} aria-hidden="true" />Kid-friendly</span>}
           </div>
 
           <div

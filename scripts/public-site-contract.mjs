@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { activities } from "../src/data.js";
 import { planTrip } from "../src/intelligence/planner.js";
+import { metadataFor, routeFromPath, structuredDataFor } from "../src/routing.js";
 
 const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
@@ -35,6 +36,9 @@ assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage story scenes n
 assert.match(home, /viewActivity\(activity\.id\)/, "homepage story scenes should use in-app activity navigation");
 assert.match(home, /className="home-regions"/, "homepage needs a cinematic regional discovery chapter");
 assert.match(home, /className="home-action"/, "homepage needs a vivid, activity-led visual chapter");
+assert.match(home, /className="home-family"/, "homepage needs a clear family-travel discovery entry point");
+assert.match(home, /href="\/kid-friendly-costa-rica-activities"/, "family discovery needs a crawlable landing-page URL");
+assert.match(home, /go\("kids"\)/, "family discovery should use the in-app family landing route");
 for (const actionId of ["a7", "a10", "a6", "a9"]) assert.ok(home.includes(`"${actionId}"`), `homepage action reel is missing ${actionId}`);
 assert.match(home, /go\("map"\)/, "regional discovery must connect to the live map");
 assert.match(home, /className="home-concierge"/, "homepage needs one concise planning explanation");
@@ -54,6 +58,8 @@ assert.equal(hero.includes("tn-hero-plan"), false, "the homepage hero must not r
 assert.match(hero, /hero-where/, "the hero needs a destination or activity search field");
 assert.match(hero, /hero-when/, "the hero needs an optional travel date field");
 assert.match(hero, /onSearch\(query, date\)/, "the hero search needs to carry both pieces of context into discovery");
+assert.match(hero, /FAMILY_SEARCH\.test\(query\)/, "family searches must open the dedicated kid-friendly landing page");
+assert.match(hero, /Kid-friendly Costa Rica activities/, "the hero should suggest the family-travel discovery path");
 assert.match(hero, /type="date" aria-label="When"/, "the homepage date control needs an explicit accessible name");
 assert.equal(hero.includes("Start my trip"), false, "the search-first hero should not compete with a second planning CTA");
 assert.equal(hero.includes("Browse activities"), false, "the homepage hero should present one clear primary CTA");
@@ -88,11 +94,23 @@ assert.match(app, /ticowild\.trip\.v1/, "saved consumer trips must survive a ref
 assert.match(app, /ticowild\.activitySearch/, "hero discovery terms must carry into the activity catalog");
 assert.match(app, /ticowild\.activityDate/, "hero travel dates must carry into the activity catalog");
 assert.match(app, /mobile-plan-bar/, "mobile visitors need a persistent planning action after the hero");
+for (const socialMeta of ["og:title", "og:description", "og:url", "twitter:card", "twitter:title", "twitter:description"]) {
+  assert.ok(app.includes(`"${socialMeta}"`), `public routes must update ${socialMeta} metadata`);
+}
+assert.match(app, /application\/ld\+json/, "dedicated search landings must publish JSON-LD");
+assert.match(app, /structuredDataFor\(page, activeId\)/, "structured data must follow the active route");
 
 const activitiesPage = read("src/pages/Activities.jsx");
 assert.match(activitiesPage, /ticowild\.activitySearch/, "the activity catalog must receive the hero search term");
 assert.match(activitiesPage, /ticowild\.activityDate/, "the activity catalog must receive the hero travel date");
 assert.match(activitiesPage, /Planning for/, "the selected travel date must remain visible after searching");
+assert.match(activitiesPage, /className="kid-friendly-route-chip"/, "family discovery needs a visible, crawlable kid-friendly route chip");
+assert.match(activitiesPage, /FAMILY_SEARCH_WORDS/, "family searches must understand kid, child and parent language");
+assert.match(activitiesPage, /Kid-friendly does not mean every activity fits every age/, "family discovery must explain that operator age and ability rules still apply");
+
+const activityCards = read("src/components/ActivityBrowseCard.jsx");
+assert.match(activityCards, /isKidFriendlyCandidate\(a\)[\s\S]*Kid-friendly/, "eligible activity cards need a visible kid-friendly label");
+assert.equal(activityCards.includes("a.family &&"), false, "high-difficulty family records must not receive a kid-friendly card label");
 
 const trips = read("src/pages/MyTrips.jsx");
 assert.match(trips, /Ideas saved/);
@@ -108,11 +126,17 @@ assert.match(detail, /className="detail-hero-badges"/, "activity hero labels nee
 assert.equal(detail.includes('bg="rgba(255,255,255,.92)"'), false, "activity hero badges must not use pale text on white surfaces");
 
 const routing = read("src/routing.js");
-for (const route of ["/activities", "/collections", "/plan", "/why-ticowild", "/insider-guide"]) {
+for (const route of ["/activities", "/kid-friendly-costa-rica-activities", "/collections", "/plan", "/why-ticowild", "/insider-guide"]) {
   assert.ok(routing.includes(`"${route}"`), `missing public route ${route}`);
 }
 assert.match(routing, /metadataFor/);
 assert.match(routing, /activityPath/);
+assert.equal(routeFromPath("/kid-friendly-costa-rica-activities").page, "kids", "the kid-friendly URL must restore the dedicated family catalog");
+assert.match(metadataFor("kids")[0], /Kid-Friendly Costa Rica Activities/, "the family catalog needs focused search metadata");
+const familyStructuredData = structuredDataFor("kids");
+assert.equal(familyStructuredData?.["@type"], "CollectionPage", "the family catalog needs CollectionPage structured data");
+assert.ok(familyStructuredData.mainEntity.numberOfItems > 0, "the family structured data needs real activity items");
+assert.equal(familyStructuredData.mainEntity.itemListElement.some(({ item }) => /ATV|White Water Rafting/.test(item.name)), false, "high-difficulty activities must not be promoted as kid-friendly");
 assert.match(routing, /clean === "\/ask-rico"[\s\S]*canonicalPath: "\/plan"/, "the retired standalone Rico builder must resolve to the canonical planner");
 assert.match(routing, /clean === "\/local-expert"[\s\S]*canonicalPath: "\/meet-rico"/, "the retired expert page must resolve to the canonical Rico page");
 
@@ -148,9 +172,16 @@ assert.match(schema, /create table if not exists public\.public_inquiries/);
 assert.match(schema, /create policy "public can create inquiries"/);
 
 const sitemap = read("public/sitemap.xml");
+assert.match(sitemap, /https:\/\/ticowild\.com\/kid-friendly-costa-rica-activities/, "the family landing page must be included in the sitemap");
 for (const activity of ["offshore-sport-fishing-charter", "sunset-catamaran-cruise", "honeymoon-waterfall-sunset"]) {
   assert.ok(sitemap.includes(`/activities/${activity}`), `sitemap is missing ${activity}`);
 }
 assert.match(read("public/robots.txt"), /Sitemap: https:\/\/ticowild\.com\/sitemap\.xml/);
+
+const familyStaticEntry = read("kid-friendly-costa-rica-activities/index.html");
+assert.match(familyStaticEntry, /<title>Kid-Friendly Costa Rica Excursions \| TicoWild<\/title>/, "the family URL needs crawlable metadata before JavaScript runs");
+assert.match(familyStaticEntry, /rel="canonical" href="https:\/\/ticowild\.com\/kid-friendly-costa-rica-activities"/, "the family static entry needs its own canonical URL");
+assert.match(familyStaticEntry, /"@type": "CollectionPage"/, "the family static entry needs baseline structured data");
+assert.match(read("vite.config.js"), /family: r\("kid-friendly-costa-rica-activities\/index\.html"\)/, "the family landing page must ship as its own build entry");
 
 console.log("Public site contract passed: truthful conversion, concise home, URL routing, metadata, and inquiry storage are present.");

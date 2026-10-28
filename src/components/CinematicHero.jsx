@@ -5,6 +5,7 @@ import { themedSlides } from "../images.js";
 
 // Vivid, fishing-forward home backdrop — distinct from the Meet Tico hero.
 const SLIDES = themedSlides("home", 1900);
+const FAMILY_SEARCH = /\b(kid(?:s)?|child(?:ren)?|famil(?:y|ies))\b/i;
 
 // Time-of-day accent — the glow shifts with the visitor's local hour.
 function timeGrade(hour) {
@@ -47,6 +48,10 @@ export function CinematicHero({ go, onSearch }) {
   const scrub = Math.min(1, scrollY / 700);
   const submitSearch = (event) => {
     event.preventDefault();
+    if (FAMILY_SEARCH.test(query)) {
+      go("kids");
+      return;
+    }
     if (onSearch) onSearch(query, date);
     else go("activities");
   };
@@ -236,7 +241,12 @@ export function CinematicHero({ go, onSearch }) {
             <span className="tn-search-field">
               <MapPin size={20} aria-hidden="true" />
               <label htmlFor="hero-where">Where to?</label>
-              <input id="hero-where" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Place or activity" />
+              <input id="hero-where" list="hero-search-suggestions" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Place or activity" />
+              <datalist id="hero-search-suggestions">
+                <option value="Kid-friendly Costa Rica activities" />
+                <option value="Wildlife tours" />
+                <option value="Beginner surf lessons" />
+              </datalist>
             </span>
             <span className="tn-search-field">
               <CalendarDays size={20} aria-hidden="true" />

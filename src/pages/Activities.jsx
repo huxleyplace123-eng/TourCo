@@ -5,6 +5,7 @@ import {
   ChevronDown,
   Compass,
   Fish,
+  Heart,
   MapPin,
   Mountain,
   Search,
@@ -21,6 +22,7 @@ import { ActivityBrowseCard, ActivityBrowseCardStyles } from "../components/Acti
 import { PageHero } from "../components/PageHero.jsx";
 import { activityImage, themedSlides } from "../images.js";
 import { ticoActivityVerdict } from "../intelligence/tico.js";
+import { isKidFriendlyCandidate } from "../routing.js";
 
 const COLLECTIONS = [
   {
@@ -74,6 +76,12 @@ const CATALOG_ACTIVITIES = activities.filter((activity) => CATALOG_ACTIVITY_IDS.
 const ACTIVITY_BY_ID = new Map(CATALOG_ACTIVITIES.map((activity) => [activity.id, activity]));
 const EXACT_CATEGORIES = ["All", ...Array.from(new Set(CATALOG_ACTIVITIES.map((activity) => activity.category)))];
 const REGIONS = ["All", ...Array.from(new Set(CATALOG_ACTIVITIES.map((activity) => activity.region)))];
+const FAMILY_SEARCH_WORDS = "family family-friendly kid kid-friendly kids child children little ones parents parenting multigenerational";
+const GENERIC_SEARCH_WORDS = new Set(["activity", "activities", "costa", "excursion", "excursions", "experience", "experiences", "rica", "tour", "tours"]);
+const FAMILY_HERO_SLIDES = ["a2", "a4", "a6", "a8", "a11"]
+  .map((id) => ACTIVITY_BY_ID.get(id))
+  .filter(isKidFriendlyCandidate)
+  .map((activity) => ({ src: activityImage(activity, 1600), label: activity.title }));
 
 const MARQUEE = [
   [Fish, "Deep-sea fishing"],
@@ -83,6 +91,17 @@ const MARQUEE = [
   [Fish, "Whale watching"],
   [Mountain, "Jungle ziplining"],
   [Mountain, "White-water rafting"],
+  [Mountain, "Waterfall days"],
+  [Sparkles, "Private yacht days"],
+];
+
+const FAMILY_MARQUEE = [
+  [Fish, "Family fishing"],
+  [Waves, "Sunset sailing"],
+  [Waves, "Reef snorkeling"],
+  [Waves, "Beginner surf lessons"],
+  [Fish, "Whale watching"],
+  [Mountain, "Wildlife walks"],
   [Mountain, "Waterfall days"],
   [Sparkles, "Private yacht days"],
 ];
@@ -105,8 +124,32 @@ function sortActivities(items, sort) {
   return next;
 }
 
-function ActivityMarquee() {
-  const row = [...MARQUEE, ...MARQUEE];
+function normalizeSearch(value = "") {
+  return value
+    .toLowerCase()
+    .replaceAll("-", " ")
+    .replace(/\b(kid|kids|child|children|family friendly|little ones|parents|parenting|multigenerational)\b/g, "family")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function matchesActivitySearch(activity, query) {
+  const terms = normalizeSearch(query).split(" ").filter((term) => term && !GENERIC_SEARCH_WORDS.has(term));
+  if (!terms.length) return true;
+  const searchable = normalizeSearch([
+    activity.title,
+    activity.category,
+    activity.region,
+    activity.desc,
+    ...(activity.bestFor || []),
+    isKidFriendlyCandidate(activity) ? FAMILY_SEARCH_WORDS : "",
+  ].join(" "));
+  return terms.every((term) => searchable.includes(term));
+}
+
+function ActivityMarquee({ familyOnly = false }) {
+  const source = familyOnly ? FAMILY_MARQUEE : MARQUEE;
+  const row = [...source, ...source];
   return (
     <div className="activity-marquee-shell">
       <div className="activity-marquee-row">
@@ -131,7 +174,7 @@ function Toggle({ on, set, label }) {
   );
 }
 
-function CollectionMosaic({ onChoose }) {
+function CollectionMosaic({ onChoose, familyOnly = false }) {
   return (
     <Section bg={c.sand} pad={52}>
       <div className="activity-mosaic-heading">
@@ -141,10 +184,13 @@ function CollectionMosaic({ onChoose }) {
       </div>
       <div className="activity-worlds" aria-label="Activity collections">
         {COLLECTIONS.map((collection) => {
+          const copy = familyOnly && collection.id === "jungle-thrills"
+            ? { kicker: "Canopy, wildlife and waterfalls", body: "Moderate canopy, guided wildlife and waterfall experiences for families." }
+            : collection;
           const availableActivities = [...collection.activityIds]
             .map((id) => ACTIVITY_BY_ID.get(id))
-            .filter(Boolean);
-          const hero = ACTIVITY_BY_ID.get(collection.heroId) || availableActivities[0];
+            .filter((activity) => activity && (!familyOnly || isKidFriendlyCandidate(activity)));
+          const hero = familyOnly ? availableActivities[0] : ACTIVITY_BY_ID.get(collection.heroId) || availableActivities[0];
           const Icon = collection.icon;
           if (!hero) return null;
           return (
@@ -161,9 +207,9 @@ function CollectionMosaic({ onChoose }) {
                 <span className="activity-world-icon"><Icon size={19} /></span>
               </span>
               <span className="activity-world-copy">
-                <span className="activity-world-kicker">{collection.kicker}</span>
+                <span className="activity-world-kicker">{copy.kicker}</span>
                 <strong>{collection.title}</strong>
-                <span>{collection.body}</span>
+                <span>{copy.body}</span>
                 <span className="activity-world-cta">Explore {availableActivities.length} experience{availableActivities.length === 1 ? "" : "s"} <ArrowRight size={15} /></span>
               </span>
             </button>
@@ -174,14 +220,46 @@ function CollectionMosaic({ onChoose }) {
   );
 }
 
-export function Activities({ addToTrip, trip, viewActivity }) {
+function FamilyTrustPanel({ familyCount }) {
+  const proofs = [
+    [Heart, "Family-ready shortlist", `${familyCount} curated options across ocean, wildlife, adventure and private days.`],
+    [Compass, "Match the pace", "Filter by region and difficulty, then save the days that fit your route."],
+    [ShieldCheck, "Requirements confirmed", "TicoWild verifies the current operator rules for your exact group before payment."],
+  ];
+
+  return (
+    <section className="family-trust-shell" aria-labelledby="family-trust-title">
+      <div className="family-trust-panel">
+        <div className="family-trust-heading">
+          <span>Plan with confidence</span>
+          <h2 id="family-trust-title">Family days, without the guesswork.</h2>
+          <p>Start with experiences that work well for many families, then let us confirm the details that make them right for yours.</p>
+        </div>
+        <div className="family-trust-proofs">
+          {proofs.map(([Icon, title, copy]) => (
+            <article key={title}>
+              <span className="family-trust-icon"><Icon size={18} aria-hidden="true" /></span>
+              <div><strong>{title}</strong><p>{copy}</p></div>
+            </article>
+          ))}
+        </div>
+        <p className="family-safety-note">
+          <ShieldCheck size={16} aria-hidden="true" />
+          <span><strong>Kid-friendly does not mean every activity fits every age.</strong> Minimum age or height, swimming ability, weather, transport, operator rules and current availability are confirmed for your specific group before payment.</span>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export function Activities({ addToTrip, trip, viewActivity, go, familyLanding = false }) {
   const [q, setQ] = useState(() => window.sessionStorage.getItem("ticowild.activitySearch") || "");
   const [travelDate] = useState(() => window.sessionStorage.getItem("ticowild.activityDate") || "");
   const [collection, setCollection] = useState("all");
   const [category, setCategory] = useState("All");
   const [region, setRegion] = useState("All");
   const [level, setLevel] = useState("All");
-  const [familyOnly, setFamilyOnly] = useState(false);
+  const [familyOnly, setFamilyOnly] = useState(Boolean(familyLanding));
   const [privateOnly, setPrivateOnly] = useState(false);
   const [sort, setSort] = useState("Featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -202,48 +280,77 @@ export function Activities({ addToTrip, trip, viewActivity }) {
     setCategory("All");
     setRegion("All");
     setLevel("All");
-    setFamilyOnly(false);
+    setFamilyOnly(Boolean(familyLanding));
     setPrivateOnly(false);
     setSort("Featured");
   };
 
   const filtered = sortActivities(
     CATALOG_ACTIVITIES.filter((activity) =>
-      (q === "" || `${activity.title} ${activity.category} ${activity.region}`.toLowerCase().includes(q.toLowerCase())) &&
+      (q === "" || matchesActivitySearch(activity, q)) &&
       (category === "All" || activity.category === category) &&
       (region === "All" || activity.region === region) &&
       (level === "All" || activity.level === level) &&
-      (!familyOnly || activity.family) &&
+      (!familyOnly || isKidFriendlyCandidate(activity)) &&
       (!privateOnly || activity.private)
     ),
     sort,
   );
 
   const grouped = COLLECTIONS
-    .map((item) => ({ ...item, items: filtered.filter((activity) => item.activityIds.has(activity.id)) }))
+    .map((item) => ({
+      ...item,
+      ...(familyLanding && item.id === "jungle-thrills"
+        ? { kicker: "Canopy, wildlife and waterfalls", body: "Moderate canopy, guided wildlife and waterfall experiences for families." }
+        : {}),
+      items: filtered.filter((activity) => item.activityIds.has(activity.id)),
+    }))
     .filter((item) => item.items.length > 0);
   const visibleCount = grouped.reduce((total, item) => total + item.items.length, 0);
 
   const activeFilterCount = [q !== "", category !== "All", region !== "All", level !== "All", familyOnly, privateOnly, sort !== "Featured"].filter(Boolean).length;
+  const familyCount = CATALOG_ACTIVITIES.filter(isKidFriendlyCandidate).length;
 
   return (
     <>
       <PageHero
-        slides={themedSlides("activities")}
+        slides={familyLanding ? FAMILY_HERO_SLIDES : themedSlides("activities")}
         height={380}
-        eyebrow="Activities and tours"
-        title="Costa Rica activities and tours"
-        sub="Browse activities by category and region. Availability, operating details and final pricing are confirmed before payment."
+        eyebrow={familyLanding ? "Kid-friendly Costa Rica" : "Activities and tours"}
+        title={familyLanding ? "Costa Rica activities for families" : "Costa Rica activities and tours"}
+        sub={familyLanding
+          ? "Browse family-ready experiences by region and pace. TicoWild confirms current age, height, swimming, weather and operator requirements before payment."
+          : "Browse activities by category and region. Availability, operating details and final pricing are confirmed before payment."}
       >
-        <ActivityMarquee />
+        <ActivityMarquee familyOnly={familyLanding} />
       </PageHero>
 
-      <CollectionMosaic onChoose={chooseCollection} />
+      {familyLanding && <FamilyTrustPanel familyCount={familyCount} />}
+
+      <CollectionMosaic onChoose={chooseCollection} familyOnly={familyLanding} />
 
       <nav className="activity-discovery-bar" aria-label="Browse and filter activities">
         <div className="activity-discovery-inner">
           <div className="activity-collection-pills" aria-label="Activity collections">
-            <button type="button" aria-pressed={collection === "all"} onClick={() => chooseCollection("all")}>All experiences</button>
+            <button
+              type="button"
+              aria-pressed={!familyLanding && collection === "all"}
+              onClick={() => familyLanding && go ? go("activities") : chooseCollection("all")}
+            >
+              All experiences
+            </button>
+            <a
+              href="/kid-friendly-costa-rica-activities"
+              className="kid-friendly-route-chip"
+              aria-current={familyLanding ? "page" : undefined}
+              onClick={(event) => {
+                if (!go) return;
+                event.preventDefault();
+                go("kids");
+              }}
+            >
+              <Heart size={14} aria-hidden="true" />Kid-friendly
+            </a>
             {COLLECTIONS.map((item) => {
               const Icon = item.icon;
               return (
@@ -274,7 +381,14 @@ export function Activities({ addToTrip, trip, viewActivity }) {
             <Field label="Sort by" htmlFor="activity-sort"><Select id="activity-sort" value={sort} onChange={setSort} options={["Featured", "Rico's ranking", "Price: low", "Price: high", "Top rated"]} icon={Star} /></Field>
           </div>
           <div className="activity-filter-options">
-            <Toggle on={familyOnly} set={setFamilyOnly} label="Family-friendly" />
+            <Toggle
+              on={familyOnly}
+              set={(next) => {
+                if (familyLanding && !next && go) go("activities");
+                else setFamilyOnly(next);
+              }}
+              label="Kid-friendly options"
+            />
             <Toggle on={privateOnly} set={setPrivateOnly} label="Private available" />
             <button type="button" className="activity-reset" onClick={reset}>Reset everything</button>
           </div>
@@ -333,9 +447,16 @@ export function Activities({ addToTrip, trip, viewActivity }) {
 
       <style>{`
         @keyframes activityMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+        .public-page-activities .page-hero-scene,.public-page-kids .page-hero-scene{top:16px;bottom:auto!important}
         .activity-marquee-shell{margin-top:18px;position:relative;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
         .activity-marquee-row{display:inline-flex;gap:9px;white-space:nowrap;animation:activityMarquee 34s linear infinite}
         .activity-marquee-pill{display:inline-flex;align-items:center;gap:7px;flex-shrink:0;background:rgba(11,26,46,.58);backdrop-filter:blur(9px);border:1px solid rgba(255,255,255,.13);color:#fff;font-weight:750;font-size:12.5px;padding:8px 13px;border-radius:999px}
+        .family-trust-shell{padding:34px 20px 8px;background:${c.sand}}
+        .family-trust-panel{position:relative;overflow:hidden;max-width:1180px;margin:0 auto;padding:34px;border:1px solid rgba(127,166,232,.2);border-radius:28px;background:radial-gradient(70% 120% at 100% 0%,rgba(34,211,238,.15),transparent 55%),linear-gradient(145deg,rgba(19,41,74,.98),rgba(7,18,39,.98));box-shadow:0 34px 90px -46px rgba(0,0,0,.9)}
+        .family-trust-panel:after{content:"";position:absolute;right:-95px;top:-120px;width:300px;height:300px;border:1px solid rgba(255,208,0,.16);border-radius:50%;box-shadow:0 0 0 42px rgba(255,208,0,.025),0 0 0 84px rgba(34,211,238,.025);pointer-events:none}
+        .family-trust-heading{position:relative;z-index:1;max-width:760px}.family-trust-heading>span{color:${c.gold};font-size:10.5px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.family-trust-heading h2{margin:7px 0 0;color:#fff;font-size:clamp(27px,3.2vw,40px);line-height:1.06;letter-spacing:-1.1px;text-wrap:balance}.family-trust-heading p{max-width:690px;margin:11px 0 0;color:${c.stone};font-size:14.5px;line-height:1.62}
+        .family-trust-proofs{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:27px}.family-trust-proofs article{display:grid;grid-template-columns:40px minmax(0,1fr);gap:11px;align-items:start;padding:16px;border:1px solid rgba(127,166,232,.15);border-radius:17px;background:rgba(255,255,255,.035)}.family-trust-icon{display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(255,208,0,.28);border-radius:13px;color:${c.gold};background:rgba(255,208,0,.08)}.family-trust-proofs strong{display:block;color:#fff;font-size:13.5px;line-height:1.25}.family-trust-proofs p{margin:5px 0 0;color:${c.stone};font-size:12.5px;line-height:1.5}
+        .family-safety-note{position:relative;z-index:1;display:flex;align-items:flex-start;gap:10px;margin:16px 0 0;padding:13px 15px;border:1px solid rgba(34,211,238,.2);border-radius:14px;color:rgba(227,239,255,.76);background:rgba(34,211,238,.055);font-size:12px;line-height:1.55}.family-safety-note svg{flex:0 0 auto;margin-top:2px;color:${c.teal}}.family-safety-note strong{color:#fff}
         .activity-mosaic-heading{max-width:700px;margin-bottom:30px}
         .activity-mosaic-label{color:${c.stone};font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
         .activity-mosaic-heading h2{color:#fff;font-size:clamp(25px,2.55vw,32px);line-height:1.1;letter-spacing:-.8px;margin:7px 0 0;text-wrap:balance}
@@ -359,8 +480,11 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-discovery-bar{position:sticky;top:64px;z-index:45;background:rgba(7,18,39,.94);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
         .activity-discovery-inner{max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}.activity-date-context{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:7px 10px;border-radius:999px;background:rgba(255,208,0,.1);border:1px solid rgba(255,208,0,.24);color:${c.gold};font-size:11px;font-weight:850}
         .activity-collection-pills{display:flex;align-items:center;gap:7px;overflow-x:auto;scrollbar-width:none;flex:1}.activity-collection-pills::-webkit-scrollbar{display:none}
-        .activity-collection-pills button,.activity-filter-trigger{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;border:1px solid ${c.line};border-radius:999px;background:rgba(255,255,255,.045);color:#fff;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;transition:background .2s ease,border-color .2s ease,color .2s ease}
+        .activity-collection-pills button,.activity-collection-pills a,.activity-filter-trigger{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;border:1px solid ${c.line};border-radius:999px;background:rgba(255,255,255,.045);color:#fff;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;transition:background .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease}
         .activity-collection-pills button[aria-pressed="true"]{background:rgba(34,211,238,.13);border-color:rgba(34,211,238,.48);color:${c.teal}}
+        .activity-collection-pills .kid-friendly-route-chip{border-color:rgba(255,208,0,.34);color:${c.gold};background:rgba(255,208,0,.07)}
+        .activity-collection-pills .kid-friendly-route-chip:hover{border-color:rgba(255,208,0,.7);background:rgba(255,208,0,.12)}
+        .activity-collection-pills .kid-friendly-route-chip[aria-current="page"]{border-color:${c.gold};color:${c.ink};background:${c.gold};box-shadow:0 10px 28px -15px rgba(255,208,0,.85)}
         .activity-filter-trigger{display:inline-flex;border-color:rgba(255,208,0,.28);color:${c.gold}}
         .activity-filter-trigger svg{transition:transform .2s ease}
         .activity-filter-panel{max-width:1240px;margin:0 auto;padding:3px 20px 13px;display:none;gap:10px}
@@ -385,8 +509,17 @@ export function Activities({ addToTrip, trip, viewActivity }) {
         .activity-empty{max-width:720px;margin:64px auto 10px;padding:62px 28px;text-align:center;border:1px solid ${c.line};border-radius:28px;background:rgba(255,255,255,.035)}
         .activity-empty h2{color:#fff;font-size:28px;margin:14px 0 0}.activity-empty p{color:${c.stone};line-height:1.6;margin:10px auto 22px;max-width:480px}
         @media(max-width:1100px){.activity-filter-fields{grid-template-columns:repeat(3,minmax(0,1fr))}.activity-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-        @media(max-width:900px){.activity-worlds{grid-auto-rows:300px}.activity-filter-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-filter-options{flex-wrap:wrap}.activity-reset{margin-left:0}}
+        @media(max-width:900px){.family-trust-proofs{grid-template-columns:minmax(0,1fr)}.activity-worlds{grid-auto-rows:300px}.activity-filter-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-filter-options{flex-wrap:wrap}.activity-reset{margin-left:0}}
         @media(max-width:620px){
+          .public-page-activities .page-hero-scene,.public-page-kids .page-hero-scene{top:10px;right:10px!important}
+          .family-trust-shell{padding:22px 14px 6px}
+          .family-trust-panel{padding:23px 18px;border-radius:22px}
+          .family-trust-heading h2{font-size:27px;letter-spacing:-.7px}
+          .family-trust-heading p{font-size:14px;line-height:1.55}
+          .family-trust-proofs{gap:9px;margin-top:20px}
+          .family-trust-proofs article{grid-template-columns:36px minmax(0,1fr);padding:13px;border-radius:15px}
+          .family-trust-icon{width:36px;height:36px;border-radius:11px}
+          .family-safety-note{font-size:11.5px;padding:12px 13px}
           .activity-mosaic-heading{margin-bottom:20px;max-width:34ch}
           .activity-mosaic-label{font-size:10px;color:${c.stone}}
           .activity-mosaic-heading h2{font-size:22px;line-height:1.2;letter-spacing:-.35px;margin-top:6px}
@@ -404,6 +537,8 @@ export function Activities({ addToTrip, trip, viewActivity }) {
           .activity-world-copy>span:nth-of-type(2){display:none}
           .activity-world-cta{width:auto;min-height:0;margin-top:11px!important;padding:0;border:0;background:transparent;justify-content:flex-start;font-size:11.5px!important;letter-spacing:0}
           .activity-discovery-inner{padding-inline:14px;flex-wrap:wrap}
+          .activity-collection-pills{flex-basis:100%;scroll-snap-type:x proximity;padding-bottom:2px}
+          .activity-collection-pills :is(button,a),.activity-filter-trigger{min-height:44px;scroll-snap-align:start}
           .activity-date-context{order:3;width:100%;justify-content:center;margin-top:-2px}
           .activity-filter-panel{padding:4px 14px 14px}
           .activity-filter-fields{grid-template-columns:1fr}

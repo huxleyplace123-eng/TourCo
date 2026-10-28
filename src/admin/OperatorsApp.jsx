@@ -17,7 +17,10 @@ import {
 import { TempBadge, TempPicker, TypeBadge, TypeSelect, OperatorContacts, CRM_CSS } from "./crm-ui.jsx";
 import { useSelection, SelectCheckbox, BulkBar, ComposeModal, WhatsAppSendModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
 import { gmailComposeHref } from "./email.js";
-import { loadPortal, addMessage } from "./portal-store.js";
+import {
+  loadPortal, loadPortalAll, addMessage, mergePortalTours,
+  KID_SUITABILITY, KID_SUITABILITY_OPTIONS, normalizeKidSuitability, kidSuitabilityMeta,
+} from "./portal-store.js";
 import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import { loadConnectedOperatorOverlay, loadConnectedOperatorPortal, saveConnectedOperatorOverlay, saveConnectedOperatorPortal } from "./operator-data.js";
@@ -699,19 +702,58 @@ function OpsPipeline({ operators, onOpen, onStage }) {
 }
 
 // ── Tours & pricing ───────────────────────────────────────────────────────────
+const suitabilityTone = (value) => {
+  const status = normalizeKidSuitability(value);
+  if (status === KID_SUITABILITY.CONFIRMED) return { color: "#047857", bg: "#ECFDF5", border: "#A7F3D0" };
+  if (status === KID_SUITABILITY.NOT_SUITABLE) return { color: "#C2410C", bg: "#FFF7ED", border: "#FED7AA" };
+  return { color: "#A16207", bg: "#FFFBEB", border: "#FDE68A" };
+};
+
+function CRMKidSuitabilityBadge({ tour }) {
+  const status = normalizeKidSuitability(tour.kidSuitability);
+  const meta = kidSuitabilityMeta(status);
+  const tone = suitabilityTone(status);
+  const detail = [tour.minimumAge != null ? `Minimum age ${tour.minimumAge}` : "", tour.familyNotes].filter(Boolean).join(" · ");
+  return (
+    <div title={detail || meta.label} style={{ display: "grid", gap: 3, minWidth: 120, maxWidth: 190 }}>
+      <span style={{
+        display: "inline-flex", alignItems: "center", gap: 5, width: "fit-content", padding: "3px 8px",
+        borderRadius: 999, border: `1px solid ${tone.border}`, background: tone.bg, color: tone.color,
+        fontSize: 10.5, fontWeight: 850, whiteSpace: "nowrap",
+      }}>
+        <span style={{ width: 6, height: 6, borderRadius: 99, background: tone.color }} />
+        {meta.label}{tour.minimumAge != null ? ` · ${tour.minimumAge}+` : ""}
+      </span>
+      {tour.familyNotes && <span style={{ color: c.stone, fontSize: 10.5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tour.familyNotes}</span>}
+    </div>
+  );
+}
+
 function ToursView({ categories, regions, onOpenOperator }) {
   const [q, setQ] = useState("");
   const [region, setRegion] = useState("");
   const [category, setCategory] = useState("");
+  const [suitability, setSuitability] = useState("");
   const [showBench, setShowBench] = useState(false);
+
+  // Read on each render so edits made in an operator portal are reflected when
+  // the team returns to this workspace. No suitability is inferred from child
+  // pricing; unspecified tours enter the explicit review queue.
+  const catalogTours = mergePortalTours(TOUR_SEED, loadPortalAll());
+  const suitabilityCounts = catalogTours.reduce((counts, tour) => {
+    const key = normalizeKidSuitability(tour.kidSuitability);
+    counts[key] = (counts[key] || 0) + 1;
+    return counts;
+  }, {});
 
   const list = useMemo(() => {
     const query = q.trim().toLowerCase();
-    return TOUR_SEED.filter((t) =>
-      (!query || [t.product, t.operator, t.destination, t.category, t.inclusions].join(" ").toLowerCase().includes(query)) &&
+    return catalogTours.filter((t) =>
+      (!query || [t.product, t.operator, t.destination, t.category, t.inclusions, t.familyNotes, kidSuitabilityMeta(t.kidSuitability).label].join(" ").toLowerCase().includes(query)) &&
       (!region || t.region === region) &&
-      (!category || t.category === category));
-  }, [q, region, category]);
+      (!category || t.category === category) &&
+      (!suitability || normalizeKidSuitability(t.kidSuitability) === suitability));
+  }, [catalogTours, q, region, category, suitability]);
 
   const cell = { padding: "9px 12px", fontSize: 13, verticalAlign: "middle", borderBottom: `1px solid ${c.line}`, whiteSpace: "nowrap", textAlign: "left" };
   return (
@@ -719,7 +761,7 @@ function ToursView({ categories, regions, onOpenOperator }) {
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
         <div style={{ position: "relative", flex: "1 1 220px", maxWidth: 380 }}>
           <Search size={15} style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: c.stone }} />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search 115 priced tours…" style={{ ...inputBase, paddingLeft: 34 }} />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search ${catalogTours.length} tours…`} style={{ ...inputBase, paddingLeft: 34 }} />
         </div>
         <select value={region} onChange={(e) => setRegion(e.target.value)} style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
           <option value="">All regions</option>
@@ -729,6 +771,10 @@ function ToursView({ categories, regions, onOpenOperator }) {
           <option value="">All categories</option>
           {categories.map((x) => <option key={x} value={x}>{x}</option>)}
         </select>
+        <select value={suitability} onChange={(e) => setSuitability(e.target.value)} style={{ ...inputBase, width: "auto", padding: "7px 10px", fontSize: 13 }}>
+          <option value="">All kid suitability</option>
+          {KID_SUITABILITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+        </select>
         <button onClick={() => setShowBench((v) => !v)} style={{
           display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 12px", borderRadius: radius.sm,
           border: `1px solid ${c.line}`, background: "rgba(255,255,255,.05)", color: c.teal,
@@ -737,6 +783,29 @@ function ToursView({ categories, regions, onOpenOperator }) {
           Category benchmarks {showBench ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
         <span style={{ color: c.stone, fontSize: 12.5, marginLeft: "auto" }}>{list.length} tours</span>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 8 }} aria-label="Kid suitability work queue">
+        {KID_SUITABILITY_OPTIONS.slice().reverse().map((option) => {
+          const tone = suitabilityTone(option.value);
+          const active = suitability === option.value;
+          return (
+            <button key={option.value} onClick={() => setSuitability(active ? "" : option.value)} style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, minHeight: 52,
+              padding: "9px 12px", borderRadius: radius.md, border: `1px solid ${active ? tone.color : tone.border}`,
+              background: active ? tone.bg : c.white, color: tone.color, boxShadow: active ? `0 0 0 2px ${tone.border}` : shadow.sm,
+              fontFamily: FONT, textAlign: "left", cursor: "pointer",
+            }}>
+              <span>
+                <span style={{ display: "block", fontSize: 11.5, fontWeight: 850 }}>{option.label}</span>
+                <span style={{ display: "block", color: c.stone, fontSize: 10.5, marginTop: 2 }}>
+                  {option.value === KID_SUITABILITY.NEEDS_REVIEW ? "Operator review queue" : "Explicitly classified"}
+                </span>
+              </span>
+              <strong style={{ fontSize: 20, lineHeight: 1 }}>{suitabilityCounts[option.value] || 0}</strong>
+            </button>
+          );
+        })}
       </div>
 
       {showBench && (
@@ -754,17 +823,17 @@ function ToursView({ categories, regions, onOpenOperator }) {
       )}
 
       <div style={{ borderRadius: radius.md, border: `1px solid ${c.line}`, background: c.white, boxShadow: shadow.sm, overflow: "auto", maxHeight: "62vh" }}>
-        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 1000 }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 1160 }}>
           <thead style={{ position: "sticky", top: 0, zIndex: 2, background: c.canvas2 }}>
             <tr>
-              {["Tour", "Operator", "Where", "Category", "Retail", "Resident", "Child", "Fee %", "Op. net", "Duration", "Source"].map((h) => (
+              {["Tour", "Operator", "Where", "Category", "Kid suitability", "Retail", "Resident", "Child", "Fee %", "Op. net", "Duration", "Source"].map((h) => (
                 <th key={h} style={{ ...cell, fontSize: 11.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".05em", color: c.stone }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {list.map((t) => (
-              <tr key={t.id} className="ops-row">
+              <tr key={`${t.operatorId || "operator"}:${t.id}`} className="ops-row">
                 <td style={{ ...cell, maxWidth: 240, overflow: "hidden", textOverflow: "ellipsis", fontWeight: 700 }} title={t.inclusions || t.product}>{t.product}</td>
                 <td style={cell}>
                   <button onClick={() => onOpenOperator(t.operatorId)} style={{ all: "unset", cursor: "pointer", color: c.teal, fontWeight: 600, fontSize: 13 }}>
@@ -773,6 +842,7 @@ function ToursView({ categories, regions, onOpenOperator }) {
                 </td>
                 <td style={{ ...cell, maxWidth: 170, overflow: "hidden", textOverflow: "ellipsis" }}>{t.destination}</td>
                 <td style={cell}>{t.category}</td>
+                <td style={cell}><CRMKidSuitabilityBadge tour={t} /></td>
                 <td style={{ ...cell, fontWeight: 700 }}>{money(t.retail)}</td>
                 <td style={{ ...cell, color: t.resident !== null ? "#34D399" : c.stone }}>{money(t.resident)}</td>
                 <td style={cell}>{money(t.child)}</td>
@@ -780,14 +850,17 @@ function ToursView({ categories, regions, onOpenOperator }) {
                 <td style={cell}>{money(t.suggestedOperatorNet)}</td>
                 <td style={{ ...cell, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis" }}>{t.duration || "—"}</td>
                 <td style={cell}>
-                  {t.sourceUrl && (
+                  {t.sourceUrl ? (
                     <a href={t.sourceUrl} target="_blank" rel="noreferrer" title={`Confidence: ${t.confidence || "?"}`} style={{ color: c.stone }}>
                       <ExternalLink size={14} />
                     </a>
-                  )}
+                  ) : <span style={{ color: c.stone, fontSize: 11 }}>{t.sourceLabel || "—"}</span>}
                 </td>
               </tr>
             ))}
+            {!list.length && (
+              <tr><td colSpan={12} style={{ ...cell, padding: "28px 16px", textAlign: "center", color: c.stone, whiteSpace: "normal" }}>No tours match these filters. Clear a filter or choose another suitability status.</td></tr>
+            )}
           </tbody>
         </table>
       </div>

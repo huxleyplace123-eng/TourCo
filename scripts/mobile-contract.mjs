@@ -48,7 +48,7 @@ for (const contract of [
 
 const publicPages = [
   "home", "today", "eat", "guide", "insider", "deals", "map", "tico",
-  "activities", "detail", "packages", "build", "builder", "why",
+  "activities", "kids", "detail", "packages", "build", "builder", "why",
   "partner", "portal",
 ];
 for (const page of publicPages) {
@@ -57,6 +57,9 @@ for (const page of publicPages) {
 
 assert.match(css, /site-section:not\(\.home-band\) \+ \.site-section:not\(\.home-band\)/, "adjacent mobile sections need a visible pause");
 assert.match(activities, /activity-collection-section\+\.activity-collection-section/, "activity collections need chapter breaks on mobile");
+assert.match(activities, /\.activity-collection-pills :is\(button,a\),\.activity-filter-trigger\{min-height:44px/, "family discovery and filter chips need phone-sized touch targets");
+assert.match(activities, /\.family-trust-proofs\{grid-template-columns:minmax\(0,1fr\)\}/, "family trust details must stack cleanly before the catalog on smaller screens");
+assert.match(activities, /className="kid-friendly-route-chip"/, "the kid-friendly catalog shortcut must stay visible on mobile");
 assert.match(activities, /activity-mosaic-heading h2\{font-size:22px/, "the second Activities section must read as supporting content on mobile");
 assert.equal(activities.includes("gradText"), false, "the second Activities section must not repeat the hero gradient headline");
 assert.match(ticoRanked, /className="rico-stars"/, "ranked ratings need a stable mobile star row");

@@ -17,6 +17,7 @@ import { operatorType } from "./crm-shared.js";
 import { OperatorAgreement } from "../components/OperatorAgreement.jsx";
 import {
   loadPortal, patchPortal, addMessage, setDayAvailability, effectiveProfile, sampleBookings,
+  KID_SUITABILITY, KID_SUITABILITY_OPTIONS, normalizeKidSuitability, kidSuitabilityMeta,
 } from "./portal-store.js";
 
 const money = (v) => (v === null || v === undefined ? "—" : `$${Math.round(v).toLocaleString()}`);
@@ -117,7 +118,12 @@ export default function OperatorPortal({
         .opp-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
         .opp-cal button { aspect-ratio: 1 / 1; }
         .opp-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .opp-family-status { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+        .opp-family-fields { display: grid; grid-template-columns: minmax(105px, .35fr) minmax(0, 1fr); gap: 8px; }
         @media (max-width: 640px) { .opp-grid2 { grid-template-columns: 1fr; } }
+        @media (max-width: 560px) {
+          .opp-family-status, .opp-family-fields { grid-template-columns: 1fr; }
+        }
         .opp-preview { background: repeating-linear-gradient(45deg, rgba(255,208,0,.12), rgba(255,208,0,.12) 12px, rgba(255,208,0,.05) 12px, rgba(255,208,0,.05) 24px); }
       `}</style>
 
@@ -435,6 +441,29 @@ const netOf = (price, takeRate, fallback) => {
   return fallback != null ? fallback : p;
 };
 
+const suitabilityTone = (value) => {
+  const status = normalizeKidSuitability(value);
+  if (status === KID_SUITABILITY.CONFIRMED) return { color: "#34D399", bg: "rgba(52,211,153,.11)", border: "rgba(52,211,153,.28)" };
+  if (status === KID_SUITABILITY.NOT_SUITABLE) return { color: "#FB7042", bg: "rgba(251,112,66,.11)", border: "rgba(251,112,66,.28)" };
+  return { color: c.gold, bg: "rgba(255,208,0,.1)", border: "rgba(255,208,0,.27)" };
+};
+
+function SuitabilityBadge({ value, minimumAge, compact = false }) {
+  const meta = kidSuitabilityMeta(value);
+  const tone = suitabilityTone(value);
+  return (
+    <span title={minimumAge != null ? `${meta.label}; minimum age ${minimumAge}` : meta.label} style={{
+      display: "inline-flex", alignItems: "center", gap: 5, width: "fit-content", maxWidth: "100%",
+      padding: compact ? "3px 8px" : "4px 9px", borderRadius: 999, border: `1px solid ${tone.border}`,
+      background: tone.bg, color: tone.color, fontSize: compact ? 10.5 : 11, fontWeight: 800, lineHeight: 1.2,
+    }}>
+      <ShieldCheck size={compact ? 11 : 12} />
+      <span>{meta.label}</span>
+      {minimumAge != null && <span style={{ opacity: .78 }}>· {minimumAge}+</span>}
+    </span>
+  );
+}
+
 function ToursTab({ tours, takeRate, onEdit, onAdd, onDelete }) {
   const [adding, setAdding] = useState(false);
   return (
@@ -482,6 +511,8 @@ function TourCard({ t, takeRate, onEdit, onDelete }) {
           </button>
         </div>
         <div style={{ fontWeight: 800, fontSize: 15.5, lineHeight: 1.25, flex: 1 }}>{t.product}</div>
+        <SuitabilityBadge value={t.kidSuitability} minimumAge={t.minimumAge} compact />
+        {t.familyNotes && <div title={t.familyNotes} style={{ color: c.stone, fontSize: 11.5, lineHeight: 1.45, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{t.familyNotes}</div>}
         {t.duration && <div style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.stone, fontSize: 12, fontWeight: 600 }}><Clock size={12} /> {t.duration}</div>}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 8, marginTop: 2, paddingTop: 10, borderTop: `1px solid ${c.line}` }}>
           <div>
@@ -499,9 +530,19 @@ function TourCard({ t, takeRate, onEdit, onDelete }) {
 }
 
 function TourEditor({ init, onSave, onCancel, onDelete }) {
-  const [f, setF] = useState({ product: init?.product || "", category: init?.category || "", retail: init?.retail ?? "", duration: init?.duration || "" });
+  const [f, setF] = useState({
+    product: init?.product || "",
+    category: init?.category || "",
+    retail: init?.retail ?? "",
+    duration: init?.duration || "",
+    kidSuitability: normalizeKidSuitability(init?.kidSuitability),
+    minimumAge: init?.minimumAge ?? "",
+    familyNotes: init?.familyNotes || "",
+  });
   const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }));
-  const canSave = f.product.trim() && String(f.retail).trim() !== "" && !Number.isNaN(Number(f.retail));
+  const parsedAge = f.minimumAge === "" ? null : Number(f.minimumAge);
+  const ageValid = parsedAge === null || (Number.isFinite(parsedAge) && parsedAge >= 0 && parsedAge <= 99);
+  const canSave = f.product.trim() && String(f.retail).trim() !== "" && !Number.isNaN(Number(f.retail)) && ageValid;
   const field = { ...inputBase, fontSize: 14, padding: "9px 11px" };
   return (
     <div className="opp-card" style={{ padding: "14px 15px", display: "grid", gap: 9, border: `1px solid ${c.teal}55` }}>
@@ -515,8 +556,42 @@ function TourEditor({ init, onSave, onCancel, onDelete }) {
         </div>
       </div>
       <input value={f.duration} onChange={set("duration")} placeholder="Duration (e.g. 3 hours)" style={field} />
+      <div style={{ marginTop: 2, paddingTop: 10, borderTop: `1px solid ${c.line}` }}>
+        <div style={{ ...label, marginBottom: 7 }}>Kid-friendly suitability</div>
+        <div className="opp-family-status" role="group" aria-label="Kid-friendly suitability">
+          {KID_SUITABILITY_OPTIONS.map((option) => {
+            const selected = f.kidSuitability === option.value;
+            const tone = suitabilityTone(option.value);
+            return (
+              <button key={option.value} type="button" onClick={() => setF((current) => ({ ...current, kidSuitability: option.value }))}
+                aria-pressed={selected} style={{
+                  minHeight: 38, padding: "7px 8px", borderRadius: 10, border: `1px solid ${selected ? tone.border : c.line}`,
+                  background: selected ? tone.bg : "rgba(255,255,255,.025)", color: selected ? tone.color : c.stone,
+                  fontFamily: FONT, fontSize: 11.5, fontWeight: 800, cursor: "pointer", lineHeight: 1.2,
+                }}>
+                {option.shortLabel}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="opp-family-fields">
+        <label style={{ display: "block" }}>
+          <div style={{ ...label, marginBottom: 5 }}>Minimum age</div>
+          <input type="number" min="0" max="99" inputMode="numeric" value={f.minimumAge} onChange={set("minimumAge")} placeholder="e.g. 8" style={field} />
+        </label>
+        <label style={{ display: "block" }}>
+          <div style={{ ...label, marginBottom: 5 }}>Family notes</div>
+          <textarea value={f.familyNotes} onChange={set("familyNotes")} placeholder="Restrictions, supervision, gear, or family guidance" rows={2} style={{ ...field, resize: "vertical", minHeight: 62 }} />
+        </label>
+      </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
-        <button disabled={!canSave} onClick={() => onSave({ product: f.product.trim(), category: f.category.trim(), retail: Number(f.retail), duration: f.duration.trim() })}
+        <button disabled={!canSave} onClick={() => onSave({
+          product: f.product.trim(), category: f.category.trim(), retail: Number(f.retail), duration: f.duration.trim(),
+          kidSuitability: normalizeKidSuitability(f.kidSuitability),
+          minimumAge: parsedAge === null ? null : Math.round(parsedAge),
+          familyNotes: f.familyNotes.trim(),
+        })}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: radius.sm, border: "none", background: canSave ? c.gold : "rgba(255,255,255,.12)", color: canSave ? c.ink : c.stone, fontFamily: FONT, fontWeight: 800, fontSize: 13.5, cursor: canSave ? "pointer" : "default" }}>
           <Check size={15} /> Save
         </button>

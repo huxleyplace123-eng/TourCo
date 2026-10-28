@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Check, MapPin, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, MapPin, ShieldCheck, Users } from "lucide-react";
 import { c } from "../theme.js";
 import { Button } from "../components/ui.jsx";
 import { Reveal } from "../motion.jsx";
@@ -20,6 +20,7 @@ const REGION_NAMES = ["Manuel Antonio", "Guanacaste", "Uvita", "Dominical"];
 const FEATURED_REGIONS = REGION_NAMES.map((name) => regions.find((region) => region.name === name)).filter(Boolean);
 const HOME_REGION_IMAGE = themedSlides("home", 1800)[6];
 const HOME_CLOSE_IMAGE = themedSlides("home", 1800)[8];
+const FAMILY_ACTIVITY = activities.find((activity) => activity.id === "a2");
 
 const PROMISES = [
   { icon: MapPin, title: "Route planning", body: "Activities are organized around your destinations and travel time." },
@@ -58,6 +59,38 @@ export function Home({ go, viewActivity, browseActivities }) {
               </span>
             </a>
           ))}
+        </div>
+      </section>
+
+      <section className="home-family" aria-labelledby="home-family-title">
+        <div className="home-shell">
+          <div className="home-family-card">
+            <div className="home-family-photo">
+              <img src={activityImage(FAMILY_ACTIVITY, 1400)} alt="Fishing boat set for a guided Costa Rica coastal excursion" loading="lazy" decoding="async" />
+              <span className="home-family-photo-wash" />
+              <span className="home-family-photo-note"><Users size={16} /> Family travel</span>
+            </div>
+            <div className="home-family-copy">
+              <span className="home-kicker">Traveling together</span>
+              <h2 id="home-family-title">Traveling with kids?</h2>
+              <p>Start with easier-paced wildlife, water and beginner activities, then check age and operator requirements before you choose.</p>
+              <div className="home-family-details" aria-label="Family activity planning highlights">
+                <span>Easy-paced picks</span>
+                <span>Age guidance</span>
+                <span>Family planning notes</span>
+              </div>
+              <a
+                className="home-family-link"
+                href="/kid-friendly-costa-rica-activities"
+                onClick={(event) => {
+                  event.preventDefault();
+                  go("kids");
+                }}
+              >
+                Explore kid-friendly activities <ArrowRight size={17} />
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -128,6 +161,8 @@ export function Home({ go, viewActivity, browseActivities }) {
 
         .home-action{padding:92px 0 102px;background:#050f1f;overflow:hidden}.home-action-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.46fr);column-gap:64px;align-items:end;margin-bottom:34px}.home-action-head>.home-kicker{grid-column:1 / -1;margin-bottom:14px}.home-action-head h2{margin:0;color:#fff;font-size:clamp(40px,4.75vw,63px);font-weight:830;letter-spacing:-.05em;line-height:.96}.home-action-head h2 em{color:${c.gold};font:inherit;font-style:normal}.home-action-head p{margin:0 0 4px;color:${c.stone};font-size:15px;line-height:1.65;max-width:400px}.home-action-grid{width:min(1240px,calc(100% - 48px));height:552px;margin:0 auto;display:grid;grid-template-columns:1.18fr .78fr .78fr;grid-template-rows:1fr 1fr;gap:11px}.home-action-scene{position:relative;display:block;min-width:0;overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.13);background:#0b1a2e;box-shadow:0 35px 90px -54px rgba(0,0,0,.95)}.home-action-scene-1{grid-row:1 / 3}.home-action-scene-2{grid-column:2 / 4}.home-action-scene img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.16) contrast(1.03);transition:transform 1.1s cubic-bezier(.2,.7,.2,1),filter .35s ease}.home-action-scene:hover img{transform:scale(1.045);filter:saturate(1.3) contrast(1.04)}.home-action-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(3,12,25,.88) 100%),linear-gradient(110deg,rgba(3,12,25,.2),transparent 56%)}.home-action-copy{position:absolute;z-index:2;left:24px;right:22px;bottom:22px;display:grid;gap:5px;color:#fff}.home-action-copy small{color:${c.teal};font-size:9.5px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.home-action-copy strong{font-size:clamp(22px,2.25vw,33px);line-height:1;letter-spacing:-.038em}.home-action-copy>span{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.78);font-size:11.5px;font-weight:750}.home-action-copy svg{color:${c.gold};transition:transform .2s ease}.home-action-scene:hover .home-action-copy svg{transform:translateX(4px)}
 
+        .home-family{padding:70px 0;background:${c.sand};overflow:hidden}.home-family-card{position:relative;display:grid;grid-template-columns:minmax(340px,.84fr) minmax(0,1.16fr);min-height:390px;overflow:hidden;border:1px solid rgba(127,166,232,.18);border-radius:28px;background:linear-gradient(145deg,#0d213b,#071528);box-shadow:0 34px 90px -58px rgba(3,12,25,.78)}.home-family-card:after{content:"";position:absolute;right:-120px;bottom:-170px;width:380px;height:380px;border-radius:50%;border:1px solid rgba(34,211,238,.13);box-shadow:0 0 0 70px rgba(34,211,238,.024),0 0 0 140px rgba(34,211,238,.015);pointer-events:none}.home-family-photo{position:relative;min-height:390px;overflow:hidden}.home-family-photo img{width:100%;height:100%;display:block;object-fit:cover;object-position:center;filter:saturate(1.06) contrast(1.03);transition:transform .7s cubic-bezier(.2,.7,.2,1)}.home-family-card:hover .home-family-photo img{transform:scale(1.025)}.home-family-photo-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,12,25,.06) 48%,rgba(7,21,40,.82) 100%),linear-gradient(0deg,rgba(3,12,25,.72),transparent 48%)}.home-family-photo-note{position:absolute;left:22px;bottom:21px;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(5,15,30,.72);backdrop-filter:blur(12px);color:#fff;font-size:11px;font-weight:800}.home-family-photo-note svg{color:${c.gold}}.home-family-copy{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:clamp(42px,5vw,72px)}.home-family-copy h2{margin:15px 0;color:#fff;font-size:clamp(36px,4vw,54px);font-weight:830;letter-spacing:-.05em;line-height:.98}.home-family-copy>p{max-width:620px;margin:0;color:${c.stone};font-size:15px;line-height:1.67}.home-family-details{display:flex;flex-wrap:wrap;gap:8px;margin:23px 0 25px}.home-family-details span{display:inline-flex;align-items:center;min-height:31px;padding:0 11px;border:1px solid rgba(34,211,238,.18);border-radius:999px;background:rgba(34,211,238,.055);color:rgba(239,245,255,.8);font-size:10.5px;font-weight:750}.home-family-link{align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:0 18px;border:1px solid rgba(255,208,0,.52);border-radius:14px;background:${c.gold};color:${c.ink};font-size:12.5px;font-weight:900;text-decoration:none;box-shadow:0 15px 34px -20px rgba(255,208,0,.78);transition:transform .2s ease,box-shadow .2s ease}.home-family-link:hover{transform:translateY(-2px);box-shadow:0 19px 38px -19px rgba(255,208,0,.9)}.home-family-link svg{transition:transform .2s ease}.home-family-link:hover svg{transform:translateX(3px)}
+
         .home-concierge{position:relative;padding:92px 0;background:${c.sand};overflow:hidden;border-bottom:1px solid rgba(127,166,232,.12)}
         .home-concierge:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 10% 50%,rgba(34,211,238,.07),transparent 31%),radial-gradient(circle at 92% 28%,rgba(255,208,0,.055),transparent 25%);pointer-events:none}
         .home-concierge:after{content:"";position:absolute;width:520px;height:520px;right:-330px;bottom:-360px;border-radius:50%;border:1px solid rgba(34,211,238,.15);box-shadow:0 0 0 90px rgba(34,211,238,.022),0 0 0 180px rgba(34,211,238,.014);pointer-events:none}
@@ -141,6 +176,7 @@ export function Home({ go, viewActivity, browseActivities }) {
           .home-shell,.home-closing-content{width:calc(100% - 36px)}
           .home-regions{min-height:730px;align-items:flex-start;background-position:60% center}.home-regions:before{background-position:60% center}.home-regions-wash{background:linear-gradient(180deg,rgba(5,15,30,.88) 0%,rgba(5,15,30,.55) 52%,rgba(5,15,30,.94) 100%)}.home-regions-content{padding-top:72px;padding-bottom:190px}.home-regions-content h2{font-size:clamp(44px,12.8vw,60px);line-height:.95}.home-regions-content p{font-size:15px;line-height:1.62}.home-region-dock{left:0;right:0;bottom:18px;transform:none;width:100%;display:flex;overflow-x:auto;border-left:0;border-right:0;border-radius:0;padding:9px 18px;scroll-snap-type:x mandatory}.home-region-dock button{flex:0 0 225px;scroll-snap-align:start;border-right:1px solid rgba(127,166,232,.16)}
           .home-action{padding:76px 0 88px}.home-action-head{display:block;margin-bottom:28px}.home-action-head>.home-kicker{margin-bottom:13px}.home-action-head h2{font-size:clamp(42px,12vw,56px);line-height:.95}.home-action-head p{margin-top:18px;font-size:15px;line-height:1.6}.home-action-grid{width:100%;height:480px;display:flex;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 18px 8px;scroll-padding-left:18px}.home-action-scene{flex:0 0 84vw;height:100%;border-radius:22px;scroll-snap-align:start}.home-action-copy{left:21px;right:18px;bottom:84px}.home-action-copy strong{font-size:38px}.home-action-copy small{font-size:9px}
+          .home-family{padding:52px 0}.home-family-card{grid-template-columns:1fr;min-height:0;border-radius:22px}.home-family-photo{height:240px;min-height:240px}.home-family-photo img{position:absolute;inset:0}.home-family-photo-wash{background:linear-gradient(0deg,rgba(7,21,40,.83),transparent 58%)}.home-family-copy{padding:30px 22px 32px}.home-family-copy h2{font-size:clamp(34px,10.5vw,44px);margin:13px 0}.home-family-copy>p{font-size:14px;line-height:1.62}.home-family-details{margin:20px 0 22px;gap:6px}.home-family-details span{font-size:10px}.home-family-link{width:100%;min-height:50px;padding:0 14px}.home-family-card:after{display:none}
           .home-concierge{padding:76px 0}.home-concierge-grid{gap:32px}.home-concierge-copy h2{font-size:clamp(37px,10.8vw,47px);line-height:.98;margin:16px 0 17px}.home-concierge-copy>p{font-size:15px;line-height:1.62}.home-promise-panel{margin:0 -2px;padding:14px 19px 7px;border-radius:22px}.home-promise-panel:before{top:24px;bottom:24px}.home-promise-row{grid-template-columns:42px 1fr;gap:13px;padding:18px 0}.home-promise-icon{width:40px;height:40px;border-radius:13px}.home-promise-row h3{font-size:16px}.home-promise-row p{font-size:12.5px;line-height:1.5}
           .home-closing{min-height:500px;background-position:66% center}.home-closing:before{background-position:66% center}.home-closing-wash{background:linear-gradient(90deg,rgba(5,16,31,.94),rgba(5,16,31,.66)),linear-gradient(0deg,rgba(5,16,31,.55),transparent)}.home-closing-content{padding:74px 0}.home-closing-content h2{font-size:clamp(42px,12vw,54px);line-height:.98}.home-closing-content p{font-size:15.5px}.home-closing-content .tico-button{width:100%}
         }

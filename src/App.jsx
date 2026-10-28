@@ -20,7 +20,7 @@ import { TicoDock } from "./components/TicoDock.jsx";
 import { InsiderGuide } from "./pages/InsiderGuide.jsx";
 import { SoundscapeControl } from "./components/SoundscapeControl.jsx";
 import { ConversionCenter } from "./components/ConversionCenter.jsx";
-import { metadataFor, pathFor, routeFromPath } from "./routing.js";
+import { metadataFor, pathFor, routeFromPath, structuredDataFor } from "./routing.js";
 
 function usePastOpening(page) {
   const [visible, setVisible] = useState(false);
@@ -110,6 +110,16 @@ export default function App() {
 
   useEffect(() => {
     const [title, description] = metadataFor(page, activeId);
+    const canonicalUrl = `${window.location.origin}${pathFor(page, activeId)}`;
+    const setMeta = (attribute, key, content) => {
+      let element = document.head.querySelector(`meta[${attribute}="${key}"]`);
+      if (!element) {
+        element = document.createElement("meta");
+        element.setAttribute(attribute, key);
+        document.head.appendChild(element);
+      }
+      element.content = content;
+    };
     document.title = title;
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
@@ -124,7 +134,30 @@ export default function App() {
       canonical.rel = "canonical";
       document.head.appendChild(canonical);
     }
-    canonical.href = `${window.location.origin}${pathFor(page, activeId)}`;
+    canonical.href = canonicalUrl;
+
+    setMeta("property", "og:title", title);
+    setMeta("property", "og:description", description);
+    setMeta("property", "og:url", canonicalUrl);
+    setMeta("property", "og:type", "website");
+    setMeta("property", "og:site_name", "TicoWild");
+    setMeta("name", "twitter:card", "summary");
+    setMeta("name", "twitter:title", title);
+    setMeta("name", "twitter:description", description);
+
+    const structuredData = structuredDataFor(page, activeId);
+    let structuredDataScript = document.head.querySelector('script[data-ticowild-structured-data="true"]');
+    if (structuredData) {
+      if (!structuredDataScript) {
+        structuredDataScript = document.createElement("script");
+        structuredDataScript.type = "application/ld+json";
+        structuredDataScript.dataset.ticowildStructuredData = "true";
+        document.head.appendChild(structuredDataScript);
+      }
+      structuredDataScript.textContent = JSON.stringify(structuredData);
+    } else {
+      structuredDataScript?.remove();
+    }
   }, [page, activeId]);
 
   useEffect(() => {
@@ -155,7 +188,7 @@ export default function App() {
   const addToTrip = (id) => { setTrip((t) => (t.some((x) => x.id === id) ? t : [...t, { id, pax: 2 }])); setCartOpen(true); };
   const removeFromTrip = (id) => setTrip((t) => t.filter((x) => x.id !== id));
   const showMobilePlanBar = trip.length === 0 && ["home", "today", "why"].includes(page);
-  const showStickyTripBar = trip.length > 0 && ["home", "today", "activities", "packages", "why"].includes(page);
+  const showStickyTripBar = trip.length > 0 && ["home", "today", "activities", "kids", "packages", "why"].includes(page);
 
   const shared = { go, addToTrip, trip, viewActivity, browseActivities, removeFromTrip, startPlan, consumePlannerDraft };
 
@@ -175,7 +208,7 @@ export default function App() {
         {page === "deals" && <Deals {...shared} />}
         {page === "map" && <ExploreMap {...shared} />}
         {page === "tico" && <MeetTicoPage {...shared} />}
-        {page === "activities" && <Activities {...shared} />}
+        {(page === "activities" || page === "kids") && <Activities {...shared} familyLanding={page === "kids"} />}
         {page === "detail" && <Detail activeId={activeId} {...shared} />}
         {page === "packages" && <Packages {...shared} />}
         {page === "build" && <Build {...shared} initialPlan={plannerDraft} />}
