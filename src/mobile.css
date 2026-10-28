@@ -533,6 +533,17 @@
     justify-content: center;
   }
 
+  .interactive-map .tn-pin .tn-pin-label {
+    display: none;
+  }
+
+  .interactive-map .tn-pin[data-selected="true"] .tn-pin-label {
+    display: inline;
+    max-width: 140px !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
   .page-hero-scene > div:last-child {
     display: none !important;
   }
@@ -629,23 +640,23 @@
 
   /* Long-form and conversational pages. */
   .insider-hero {
-    min-height: 610px !important;
+    min-height: 480px !important;
     align-items: flex-end !important;
   }
 
   .insider-hero-inner {
-    padding: 54px var(--mobile-gutter) 48px !important;
+    padding: 44px var(--mobile-gutter) 34px !important;
   }
 
   .insider-hero h1 {
-    font-size: clamp(36px, 10vw, 48px) !important;
+    font-size: clamp(32px, 9vw, 40px) !important;
     line-height: 1.01 !important;
-    letter-spacing: -1.5px !important;
+    letter-spacing: -1.25px !important;
   }
 
   .insider-hero p {
-    font-size: 16px !important;
-    line-height: 1.55 !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
   }
 
   .insider-jump-rail {
@@ -693,12 +704,21 @@
   }
 
   .public-page-why > div:first-child {
-    min-height: 560px !important;
+    min-height: 440px !important;
+  }
+
+  .public-page-why .page-hero .tn-phero {
+    padding: 60px var(--mobile-gutter) 24px !important;
   }
 
   .public-page-packages > div:first-child {
-    min-height: 390px !important;
-    padding: 72px var(--mobile-gutter) 42px !important;
+    min-height: 340px !important;
+    padding: 58px var(--mobile-gutter) 30px !important;
+  }
+
+  .public-page-packages > div:first-child p {
+    font-size: 15px !important;
+    line-height: 1.5 !important;
   }
 
   .askjohn-grid {

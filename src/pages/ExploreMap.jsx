@@ -150,13 +150,13 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
               const isSel = sel === p;
               const Ico = p.landmark ? LM_ICON[LANDMARK_LAYERS.find((l) => l.key === p.type)?.icon] : null;
               return (
-                <button key={p.type + i} className="tn-pin" aria-label={`Open ${typeLabel(p.type)}: ${pinTitle(p)}`} title={pinTitle(p)} onClick={() => setSel(p)} onMouseEnter={() => setHover(p)} onMouseLeave={() => setHover(null)}
+                <button key={p.type + i} className="tn-pin" data-selected={isSel ? "true" : "false"} aria-label={`Open ${typeLabel(p.type)}: ${pinTitle(p)}`} title={pinTitle(p)} onClick={() => setSel(p)} onMouseEnter={() => setHover(p)} onMouseLeave={() => setHover(null)}
                   style={{ position: "absolute", left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%,-50%)", background: "none", border: "none", cursor: "pointer", padding: 0, zIndex: isSel ? 25 : (p.landmark ? 8 : 5), animation: p.landmark ? `tnPinFloat ${5 + (i % 4)}s ease-in-out infinite` : "none" }}>
                   {p.landmark ? (
                     // landmark = labeled chip with icon
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "rgba(5,15,31,.7)", border: `1.5px solid ${p.color}`, borderRadius: 999, padding: "3px 7px 3px 4px", boxShadow: `0 0 10px -2px ${p.color}` }}>
                       <span style={{ width: 16, height: 16, borderRadius: 999, background: `${p.color}33`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>{Ico && <Ico size={10} color={p.color} />}</span>
-                      <span style={{ color: "#fff", fontSize: 8.5, fontWeight: 700, whiteSpace: "nowrap", maxWidth: 70, overflow: "hidden", textOverflow: "ellipsis" }}>{p.item.name.replace(/ (National Park|N\.P\.|Intl.*|Airstrip.*|Airport.*)/, "")}</span>
+                      <span className="tn-pin-label" style={{ color: "#fff", fontSize: 8.5, fontWeight: 700, whiteSpace: "nowrap", maxWidth: 70, overflow: "hidden", textOverflow: "ellipsis" }}>{p.item.name.replace(/ (National Park|N\.P\.|Intl.*|Airstrip.*|Airport.*)/, "")}</span>
                     </span>
                   ) : (
                     // experience = glowing dot

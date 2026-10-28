@@ -396,6 +396,22 @@ const CARD_STYLES = `
       display: none;
     }
 
+    .tn-activity-browse-card__type {
+      max-width: calc(100% - 44px);
+      overflow: visible;
+      border-radius: 14px;
+      line-height: 1.18;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
+    .tn-activity-browse-card__operator {
+      overflow: visible;
+      line-height: 1.42;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
     .tn-activity-browse-card__price {
       right: 12px;
       bottom: 12px;
