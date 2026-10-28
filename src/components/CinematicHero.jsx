@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { CalendarDays, ChevronDown, MapPin, Search, ShieldCheck, Sparkles, Route } from "lucide-react";
 import { c, glass } from "../theme.js";
 import { themedSlides } from "../images.js";
+import { track } from "../analytics.js";
 
 // Vivid, fishing-forward home backdrop — distinct from the Meet Tico hero.
 const SLIDES = themedSlides("home", 1900);
@@ -48,7 +49,13 @@ export function CinematicHero({ go, onSearch }) {
   const scrub = Math.min(1, scrollY / 700);
   const submitSearch = (event) => {
     event.preventDefault();
-    if (FAMILY_SEARCH.test(query)) {
+    const familyIntent = FAMILY_SEARCH.test(query);
+    track("home_search_submitted", {
+      has_query: Boolean(query.trim()),
+      has_date: Boolean(date),
+      query_category: familyIntent ? "family" : query.trim() ? "general" : "empty",
+    });
+    if (familyIntent) {
       go("kids");
       return;
     }
@@ -93,7 +100,7 @@ export function CinematicHero({ go, onSearch }) {
         .tn-hero-search {
           width: min(820px,100%);
           display: grid;
-          grid-template-columns: minmax(0,1.35fr) minmax(190px,.65fr) 60px;
+          grid-template-columns: minmax(0,1.35fr) minmax(190px,.65fr) minmax(154px,auto);
           align-items: center;
           gap: 0;
           margin-top: 30px;
@@ -110,7 +117,7 @@ export function CinematicHero({ go, onSearch }) {
         .tn-search-field label { color:${c.ink};font-size:14.5px;font-weight:900;letter-spacing:.01em; }
         .tn-search-field input { min-width:0;width:100%;border:0;outline:0;background:transparent;color:${c.ink};font:inherit;font-size:18px;padding:4px 0 0; }
         .tn-search-field input::placeholder { color:rgba(11,26,46,.5); }
-        .tn-hero-search button { width:56px;height:56px;display:grid;place-items:center;border:0;border-radius:50%;background:${c.gold};color:${c.ink};cursor:pointer;box-shadow:0 12px 28px -12px rgba(255,208,0,.9);transition:transform .18s ease,box-shadow .18s ease; }
+        .tn-hero-search button { width:auto;height:56px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border:0;border-radius:20px;background:${c.gold};color:${c.ink};cursor:pointer;font:inherit;font-size:13px;font-weight:900;white-space:nowrap;box-shadow:0 12px 28px -12px rgba(255,208,0,.9);transition:transform .18s ease,box-shadow .18s ease; }
         .tn-hero-search button:hover { transform:scale(1.05);box-shadow:0 16px 36px -12px rgba(255,208,0,1); }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
         @media (min-width: 980px){
@@ -156,20 +163,19 @@ export function CinematicHero({ go, onSearch }) {
             line-height: 1.55 !important;
           }
           .tn-hero-search {
-            grid-template-columns:minmax(0,1fr) 58px;
+            grid-template-columns:1fr;
             margin-top:24px;
-            padding:5px;
+            padding:6px;
             border-radius:20px;
           }
           .tn-search-field { grid-template-columns:22px minmax(0,1fr);column-gap:9px;padding:8px 10px; }
-          .tn-search-field:first-child { grid-column:1 / -1;padding:9px 12px 10px;border-bottom:1px solid rgba(11,26,46,.12); }
-          .tn-search-field + .tn-search-field { border-left:0; }
+          .tn-search-field:first-child { padding:9px 12px 10px;border-bottom:1px solid rgba(11,26,46,.12); }
+          .tn-search-field + .tn-search-field { border-left:0;border-bottom:1px solid rgba(11,26,46,.12); }
           .tn-search-field > svg { width:17px; }
           .tn-search-field label { font-size:12.5px; }
           .tn-search-field input { font-size:15.5px;padding-top:2px; }
-          .tn-hero-search button { width:44px;height:44px;justify-self:end; }
+          .tn-hero-search button { width:100%;height:48px;border-radius:15px; }
           .tn-hero-trust { margin-top: 20px !important; gap: 11px !important; }
-          .tn-hero-trust > span:first-child { display: none !important; }
         }
       `}</style>
 
@@ -231,10 +237,10 @@ export function CinematicHero({ go, onSearch }) {
             </span>
           </h1>
           <p className="rise tn-hero-desktop-copy" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
-            Search by place or activity. Add your travel date if you know it.
+            Tell us where you’re staying or what you want to do. We’ll organize route-friendly options and confirm availability, operator, timing and final price before payment.
           </p>
           <p className="rise tn-hero-mobile-copy" style={{ color: "rgba(243,247,255,.82)", animationDelay: ".16s" }}>
-            Search by place or activity. Add your date if you know it.
+            Find route-friendly experiences. We confirm the details before payment.
           </p>
 
           <form className="rise tn-hero-search" onSubmit={submitSearch} role="search" style={{ animationDelay: ".19s" }}>
@@ -253,12 +259,12 @@ export function CinematicHero({ go, onSearch }) {
               <label htmlFor="hero-when">When</label>
               <input id="hero-when" type="date" aria-label="When" value={date} onChange={(event) => setDate(event.target.value)} />
             </span>
-            <button type="submit" aria-label="Search experiences"><Search size={22} /></button>
+            <button type="submit" aria-label="Find Costa Rica activities"><Search size={19} /><span>Find activities</span></button>
           </form>
 
           {/* refined trust row */}
           <div className="rise tn-hero-trust" style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 24, animationDelay: ".2s" }}>
-            {[[Sparkles, "A smaller, curated selection"], [Route, "Built around your route"], [ShieldCheck, "Details confirmed first"]].map(([Icon, t]) => (
+            {[[Sparkles, "No payment to start"], [Route, "Built around your route"], [ShieldCheck, "Final details confirmed first"]].map(([Icon, t]) => (
               <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "rgba(243,247,255,.72)", fontSize: 13.5, fontWeight: 600 }}>
                 <Icon size={15} color={c.teal} />{t}
               </span>

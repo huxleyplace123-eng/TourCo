@@ -30,7 +30,7 @@ assert.equal(home.includes("home-feeling-wrap"), false, "homepage must not inser
 assert.equal(/0[1-4] ·/.test(home), false, "homepage sections must not use a forced numbered chapter system");
 assert.match(home, /Popular Costa Rica/);
 assert.match(home, /Explore activities/);
-assert.match(home, /Plan your Costa Rica/);
+assert.match(home, /From trip idea to/);
 assert.equal(home.includes("FEATURED_IDS"), false, "homepage must not repeat a disconnected featured catalog before the visual story");
 assert.equal(home.includes("home-featured-track"), false, "homepage must not duplicate activity discovery in a second rail");
 assert.match(home, /href=\{activityPath\(activity\)\}/, "homepage story scenes need real destinations");
@@ -51,10 +51,10 @@ for (const [label, buttonMarkup] of [["Explore the map", "Explore the map <"], [
   assert.equal(home.includes(buttonMarkup), false, `homepage must not use a competing primary CTA: ${label}`);
 }
 assert.equal((home.match(/Plan my trip/g) || []).length, 1, "homepage content must present one clear primary CTA");
-assert.equal((home.match(/onClick=\{\(\) => go\("build"\)\}/g) || []).length, 1, "the homepage primary CTA must open the planner");
-const homeStoryOrder = ["home-action", "home-regions", "home-concierge", "home-closing"].map((token) => home.indexOf(token));
+assert.equal((home.match(/go\("build"\)/g) || []).length, 1, "the homepage primary CTA must open the planner exactly once");
+const homeStoryOrder = ["home-concierge", "home-action", "home-family", "home-regions", "home-journal", "<HomeFAQ />", "home-closing"].map((token) => home.indexOf(token));
 assert.ok(homeStoryOrder.every((position) => position >= 0), "homepage story is missing a required chapter");
-assert.deepEqual([...homeStoryOrder].sort((a, b) => a - b), homeStoryOrder, "homepage must progress from vivid experiences to route to plan to action");
+assert.deepEqual([...homeStoryOrder].sort((a, b) => a - b), homeStoryOrder, "homepage must explain the process before discovery, answer objections, and then ask for action");
 
 const hero = read("src/components/CinematicHero.jsx");
 assert.equal(hero.includes("Where are you staying?"), false, "the homepage must earn the planning ask before requesting a city");
@@ -65,6 +65,8 @@ assert.match(hero, /onSearch\(query, date\)/, "the hero search needs to carry bo
 assert.match(hero, /FAMILY_SEARCH\.test\(query\)/, "family searches must open the dedicated kid-friendly landing page");
 assert.match(hero, /Kid-friendly Costa Rica activities/, "the hero should suggest the family-travel discovery path");
 assert.match(hero, /type="date" aria-label="When"/, "the homepage date control needs an explicit accessible name");
+assert.match(hero, />Find activities<\/span>/, "the homepage search action must use a visible label instead of an icon alone");
+assert.match(hero, /No payment to start/, "the homepage hero must reduce commitment anxiety before discovery");
 assert.equal(hero.includes("Start my trip"), false, "the search-first hero should not compete with a second planning CTA");
 assert.equal(hero.includes("Browse activities"), false, "the homepage hero should present one clear primary CTA");
 
