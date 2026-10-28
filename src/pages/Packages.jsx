@@ -26,14 +26,14 @@ function packageActivityTotal(p) {
 function PackageCard({ p, featured, onOpen }) {
   const activityTotal = packageActivityTotal(p);
   return (
-    <TiltCard max={featured ? 6 : 9} radius={24}
+    <TiltCard className={`package-card ${featured ? "package-card-featured" : "package-card-standard"}`} max={featured ? 6 : 9} radius={24}
       style={{ position: "relative", overflow: "hidden", border: `1px solid ${c.line}`, cursor: "pointer", minHeight: featured ? 410 : 340, display: "flex" }}>
       <div onClick={() => onOpen(p)} style={{ position: "absolute", inset: 0 }}>
         <Photo src={packageImage(p.id, featured ? 1400 : 900)} fallback={grad[p.gradKey] || grad.ocean} alt={p.title} height={featured ? 410 : 340} zoom
           overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.15) 0%, rgba(11,26,46,.35) 45%, rgba(11,26,46,.94) 100%)" }} />} />
       </div>
       {/* content over photo */}
-      <div style={{ position: "relative", zIndex: 2, marginTop: "auto", padding: featured ? 28 : 22, width: "100%", pointerEvents: "none" }}>
+      <div className="package-card-copy" style={{ position: "relative", zIndex: 2, marginTop: "auto", padding: featured ? 28 : 22, width: "100%", pointerEvents: "none" }}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
           {featured && (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: c.gold, color: c.ink, padding: "5px 11px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, letterSpacing: 0.3, boxShadow: "0 0 20px -4px rgba(255,208,0,.8)" }}>
@@ -166,7 +166,7 @@ export function Packages({ go, addToTrip }) {
   return (
     <>
       {/* ── Vivid fishing-forward cinematic hero ── */}
-      <div style={{ position: "relative", overflow: "hidden", padding: "88px 20px 64px", minHeight: 340 }}>
+      <div className="package-page-hero" style={{ position: "relative", overflow: "hidden", padding: "88px 20px 64px", minHeight: 340 }}>
         {PKG_SLIDES.map((s, i) => (
           <img key={s.src} src={s.src} alt="" aria-hidden loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "low"} decoding="async"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
@@ -215,7 +215,7 @@ export function Packages({ go, addToTrip }) {
 
       {/* closing CTA */}
       <Section bg={c.sand} pad={60}>
-        <div className="closing-cta" style={{ position: "relative", borderRadius: 30, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2, padding: "46px 28px", textAlign: "center" }}>
+        <div className="closing-cta package-closing-cta" style={{ position: "relative", borderRadius: 30, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2, padding: "46px 28px", textAlign: "center" }}>
           <div style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 80% at 80% 20%, rgba(34,211,238,.18), transparent 55%), radial-gradient(60% 80% at 15% 90%, rgba(255,208,0,.12), transparent 55%)` }} />
           <div style={{ position: "relative" }}>
             <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,42px)", fontWeight: 800, letterSpacing: -1, margin: 0 }}>Need a custom activity plan?</h2>
@@ -230,7 +230,17 @@ export function Packages({ go, addToTrip }) {
 
       <PackageDrawer p={open} onClose={() => setOpen(null)} addToTrip={addToTrip} />
 
-      <style>{`@media(min-width:1080px){.package-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}`}</style>
+      <style>{`
+        @media(min-width:821px){
+          .package-page-hero{min-height:292px!important;padding:62px 20px 42px!important}
+          .package-card-featured{min-height:342px!important}
+          .package-card-standard{min-height:292px!important}
+          .package-card-copy{padding:20px!important}
+          .package-grid{gap:16px!important;margin-top:16px!important}
+          .package-closing-cta{padding:32px 24px!important;border-radius:24px!important}
+        }
+        @media(min-width:1080px){.package-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+      `}</style>
     </>
   );
 }

@@ -62,7 +62,7 @@ export function Deals({ go, embedded = false, section = "deals" }) {
     <>
       {!embedded && <PageHero slides={themedSlides("deals")} eyebrow="Local value guide" title="Spend smarter across Costa Rica" sub="Browse listed offers, free stops and practical savings from route-relevant businesses and places. We confirm the current terms before you rely on them." trust={["Local businesses + places", "Route-relevant value", "Terms confirmed first"]} />}
 
-      <Section bg={c.sand} pad={embedded ? 26 : 54}>
+      <Section bg={c.sand} pad={embedded ? 26 : 54} className="deals-main-section">
         {!embedded && (
           <div className="deals-chapter-tabs" role="tablist" aria-label="Savings guide sections" style={{ display: "flex", gap: 9, flexWrap: "wrap", marginBottom: 24 }}>
             {CHAPTERS.map(({ id, label, icon: Icon }) => <button key={id} type="button" role="tab" aria-selected={active === id} onClick={() => setChapter(id)} style={{ display: "inline-flex", alignItems: "center", gap: 7, borderRadius: 999, border: active === id ? `1px solid ${c.teal}` : `1px solid ${c.line}`, background: active === id ? "rgba(34,211,238,.13)" : "rgba(255,255,255,.05)", color: active === id ? c.teal : "#fff", padding: "10px 15px", fontWeight: 800, cursor: "pointer" }}><Icon size={15} />{label}</button>)}
@@ -104,7 +104,14 @@ export function Deals({ go, embedded = false, section = "deals" }) {
 
         {!embedded && <div style={{ marginTop: 34, textAlign: "center" }}><Button variant="primary" size="lg" onClick={() => go("build")}>Plan around my route <ArrowRight size={17} /></Button></div>}
       </Section>
-      <style>{`@media(min-width:900px){.deals-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.deals-chapter-tabs{padding:6px;border:1px solid ${c.line};border-radius:999px;background:rgba(255,255,255,.025);width:max-content;max-width:100%}}`}</style>
+      <style>{`
+        @media(min-width:821px){
+          .deals-main-section{padding-block:36px!important}
+          .deals-card-grid{gap:15px!important}
+          .deals-chapter-tabs{margin-bottom:18px!important}
+        }
+        @media(min-width:900px){.deals-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.deals-chapter-tabs{padding:5px;border:1px solid ${c.line};border-radius:999px;background:rgba(255,255,255,.025);width:max-content;max-width:100%}}
+      `}</style>
     </>
   );
 }

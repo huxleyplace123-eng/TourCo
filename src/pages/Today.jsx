@@ -52,11 +52,11 @@ export function Today({ go, addToTrip, trip, viewActivity }) {
   return (
     <>
       {/* live hero band */}
-      <div style={{ position: "relative", overflow: "hidden", minHeight: 430, display: "flex", alignItems: "center" }}>
+      <div className="today-page-hero" style={{ position: "relative", overflow: "hidden", minHeight: 430, display: "flex", alignItems: "center" }}>
         <img src={heroImage(1800)} alt="" aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.4 }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.72), rgba(11,26,46,.97))" }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(45% 60% at 12% 15%, rgba(34,211,238,.2), transparent 55%), radial-gradient(45% 60% at 90% 80%, rgba(255,208,0,.14), transparent 55%)` }} />
-        <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "58px 20px 48px" }}>
+        <div className="today-page-hero-inner" style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "58px 20px 48px" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, ...glass, padding: "7px 14px", borderRadius: 999, marginBottom: 16 }}>
             <span style={{ width: 7, height: 7, borderRadius: 999, background: "#37E36B", boxShadow: "0 0 10px #37E36B" }} />
             <span style={{ color: "#fff", fontSize: 12.5, fontWeight: 700 }}>Live today · {t.season || t.climateNote}</span>
@@ -140,7 +140,9 @@ export function Today({ go, addToTrip, trip, viewActivity }) {
         </Reveal>
       </Section>
 
-      <style>{`@media(min-width:820px){.two-col{grid-template-columns:1fr 1fr!important}}`}</style>
+      <style>{`
+        @media(min-width:821px){.today-page-hero{min-height:350px!important}.today-page-hero-inner{padding:42px 20px 36px!important}.two-col{grid-template-columns:1fr 1fr!important}}
+      `}</style>
     </>
   );
 }

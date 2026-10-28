@@ -56,7 +56,7 @@ export function InsiderGuide({ go, trip = [] }) {
       </nav>
 
       <Section bg={c.sand} pad={46}>
-        <div style={{ maxWidth: 720, marginBottom: 27 }}><Eyebrow><span style={{ color: c.teal }}>Guide sections</span></Eyebrow><h2 style={{ color: "#fff", fontSize: "clamp(30px,4vw,46px)", letterSpacing: -1.2, margin: "8px 0 0" }}>Choose a guide section.</h2><p style={{ color: c.stone, lineHeight: 1.65, fontSize: 16, margin: "12px 0 0" }}>Select restaurants, beaches, savings or free activities.</p></div>
+        <div className="insider-overview-head" style={{ maxWidth: 720, marginBottom: 27 }}><Eyebrow><span style={{ color: c.teal }}>Guide sections</span></Eyebrow><h2 style={{ color: "#fff", fontSize: "clamp(30px,4vw,46px)", letterSpacing: -1.2, margin: "8px 0 0" }}>Choose a guide section.</h2><p style={{ color: c.stone, lineHeight: 1.65, fontSize: 16, margin: "12px 0 0" }}>Select restaurants, beaches, savings or free activities.</p></div>
         <div className="insider-overview-grid" style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(2,minmax(0,1fr))" }}>
           {COLLECTIONS.map((item) => <button key={item.id} type="button" onClick={() => choose(item.id)} className="insider-overview-card" style={{ ...glass, position: "relative", overflow: "hidden", background: active === item.id ? `${item.accent}12` : "rgba(14,26,48,.94)", border: active === item.id ? `1px solid ${item.accent}` : `1px solid ${c.line}`, borderRadius: 20, padding: 20, cursor: "pointer", textAlign: "left", minHeight: 164 }}><div style={{ display: "flex", justifyContent: "space-between", gap: 14 }}><span style={{ width: 42, height: 42, borderRadius: 13, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `${item.accent}18`, border: `1px solid ${item.accent}44` }}><item.icon size={19} color={item.accent} /></span></div><div style={{ color: item.accent, fontSize: 11.5, fontWeight: 900, letterSpacing: .8, textTransform: "uppercase", marginTop: 16 }}>{item.eyebrow}</div><div style={{ color: "#fff", fontSize: 19, fontWeight: 800, marginTop: 4 }}>{item.title}</div><p style={{ color: c.stone, fontSize: 13, lineHeight: 1.48, margin: "7px 0 0" }}>{item.body}</p></button>)}
         </div>
@@ -73,10 +73,32 @@ export function InsiderGuide({ go, trip = [] }) {
       )}
 
       <Section bg={c.sand} pad={48}>
-        <div style={{ position: "relative", overflow: "hidden", borderRadius: 26, border: "1px solid rgba(255,208,0,.3)", background: "linear-gradient(145deg,rgba(255,208,0,.1),rgba(17,32,58,.98) 42%,rgba(8,20,42,.98))", padding: "clamp(25px,5vw,42px)", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}><Wine size={28} color={c.gold} /><div style={{ flex: "1 1 440px" }}><div style={{ color: c.gold, fontWeight: 900, fontSize: 11.5, letterSpacing: 1, textTransform: "uppercase" }}>Trip planning</div><h2 style={{ color: "#fff", fontSize: "clamp(25px,3.5vw,38px)", margin: "6px 0 0", letterSpacing: -.9 }}>Build a trip around the places you want to experience.</h2><p style={{ color: c.stone, lineHeight: 1.6, fontSize: 14.5, margin: "9px 0 0" }}>TicoWild can use your destinations, saved activities and guide choices to organize a route-aware starting plan.</p></div><Button variant="gold" size="lg" onClick={() => go(trip.length ? "portal" : "build")}>{trip.length ? "Continue my trip" : "Plan around what I found"} <ArrowRight size={17} /></Button></div>
+        <div className="insider-planning-card" style={{ position: "relative", overflow: "hidden", borderRadius: 26, border: "1px solid rgba(255,208,0,.3)", background: "linear-gradient(145deg,rgba(255,208,0,.1),rgba(17,32,58,.98) 42%,rgba(8,20,42,.98))", padding: "clamp(25px,5vw,42px)", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}><Wine size={28} color={c.gold} /><div style={{ flex: "1 1 440px" }}><div style={{ color: c.gold, fontWeight: 900, fontSize: 11.5, letterSpacing: 1, textTransform: "uppercase" }}>Trip planning</div><h2 style={{ color: "#fff", fontSize: "clamp(25px,3.5vw,38px)", margin: "6px 0 0", letterSpacing: -.9 }}>Build a trip around the places you want to experience.</h2><p style={{ color: c.stone, lineHeight: 1.6, fontSize: 14.5, margin: "9px 0 0" }}>TicoWild can use your destinations, saved activities and guide choices to organize a route-aware starting plan.</p></div><Button variant="gold" size="lg" onClick={() => go(trip.length ? "portal" : "build")}>{trip.length ? "Continue my trip" : "Plan around what I found"} <ArrowRight size={17} /></Button></div>
       </Section>
 
-      <style>{`.insider-jump-rail{position:sticky;top:64px;z-index:44;background:rgba(8,20,42,.92);border-block:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}.insider-overview-card{transition:transform .2s ease}.insider-overview-card:hover{transform:translateY(-3px)}@media(max-width:680px){.insider-hero{min-height:480px!important}.insider-overview-grid{grid-template-columns:1fr!important}}@media(prefers-reduced-motion:reduce){.insider-overview-card{transition:none!important}}`}</style>
+      <style>{`
+        .insider-jump-rail{position:sticky;top:64px;z-index:44;background:rgba(8,20,42,.92);border-block:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+        .insider-overview-card{transition:transform .2s ease}
+        .insider-overview-card:hover{transform:translateY(-3px)}
+        @media(min-width:681px){
+          .insider-hero{min-height:400px!important}
+          .insider-hero-inner{padding:48px 20px 52px!important}
+          .insider-hero-inner p{font-size:16px!important;line-height:1.55!important;margin-top:16px!important}
+          .insider-hero-inner .mobile-cta-row{margin-top:22px!important}
+          .insider-overview-head{margin-bottom:18px!important}
+          .insider-overview-head h2{font-size:clamp(28px,3.2vw,38px)!important}
+          .insider-overview-head p{font-size:14px!important;margin-top:8px!important}
+          .insider-overview-grid{gap:10px!important}
+          .insider-overview-card{min-height:132px!important;padding:16px 18px!important;border-radius:17px!important}
+          .insider-overview-card>div:first-child span{width:36px!important;height:36px!important;border-radius:11px!important}
+          .insider-overview-card>div:nth-child(2){margin-top:11px!important}
+          .insider-overview-card p{margin-top:5px!important;line-height:1.4!important}
+          .insider-planning-card{padding:25px 28px!important;border-radius:20px!important;gap:18px!important}
+          .insider-planning-card h2{font-size:clamp(24px,2.7vw,32px)!important}
+        }
+        @media(max-width:680px){.insider-hero{min-height:480px!important}.insider-overview-grid{grid-template-columns:1fr!important}}
+        @media(prefers-reduced-motion:reduce){.insider-overview-card{transition:none!important}}
+      `}</style>
     </>
   );
 }

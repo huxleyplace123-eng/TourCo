@@ -70,6 +70,7 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
           @keyframes ticoKen { from{ transform: scale(1.02) } to{ transform: scale(1.12) } }
           @keyframes ticoRise { from{ opacity:0; transform: translateY(20px) } to{ opacity:1; transform: translateY(0) } }
           @keyframes ticoPerch { 0%,100%{ transform: translateY(0) rotate(-1deg) } 50%{ transform: translateY(-8px) rotate(1.5deg) } }
+          @media(min-width:900px){.meet-tico-hero{min-height:540px!important}}
           @media(prefers-reduced-motion:reduce){ [style*="ticoKen"],[style*="ticoPerch"]{ animation:none!important } }
         `}</style>
 
@@ -117,13 +118,13 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
       </div>
 
       {/* ══ WHAT TICO KNOWS ══ proof of genius ══ */}
-      <Section bg={c.sand}>
-        <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 32px" }}>
+      <Section bg={c.sand} className="meet-tico-knowledge-section">
+        <div className="meet-tico-section-intro" style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 32px" }}>
           <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>What Rico helps organize</div>
           <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>A clearer plan before the human confirmation.</h2>
           <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.6, margin: "12px auto 0", maxWidth: 600 }}>Rico helps compare route, timing, season and trip fit. The recommendation is a planning opinion; TicoWild still checks current details with the provider.</p>
         </div>
-        <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))" }}>
+        <div className="meet-tico-knowledge-grid" style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))" }}>
           {GUIDE_KNOWLEDGE.map((k, i) => {
             const Ico = KICON[k.icon] || Sparkles;
             return (
@@ -263,6 +264,13 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
           <Reveal><TicoRanked items={activities} limit={6} onView={viewActivity} onAdd={addToTrip} trip={trip} /></Reveal>
         </div>
       </Section>
+
+      <style>{`
+        @media(min-width:821px){
+          .meet-tico-section-intro{margin-bottom:24px!important}
+          .meet-tico-knowledge-grid{gap:14px!important}
+        }
+      `}</style>
     </>
   );
 }

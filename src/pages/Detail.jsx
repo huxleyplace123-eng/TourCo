@@ -53,7 +53,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
     <>
       {/* Hero image band */}
       <div className="detail-hero" style={{ position: "relative" }}>
-        <Photo src={activityImage(a, 1600)} fallback={gradFor(a.category)} alt={a.title} height={380} zoom={false}
+        <Photo src={activityImage(a, 1600)} fallback={gradFor(a.category)} alt={a.title} height={340} zoom={false}
           overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8,20,45,.35) 0%, transparent 30%, rgba(8,20,45,.72) 100%)" }} />} />
         <div className="detail-hero-content" style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", maxWidth: 1180, margin: "0 auto", padding: "22px 20px 30px", left: 0, right: 0 }}>
           <button className="detail-back-button" onClick={() => go("activities")} style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 7, background: HERO_GLASS, border: "1px solid rgba(255,255,255,.28)", backdropFilter: "blur(10px)", borderRadius: 999, padding: "9px 16px", fontWeight: 800, color: "#fff", cursor: "pointer", fontSize: 14, boxShadow: "0 8px 24px rgba(5,15,33,.22)" }}>
@@ -79,7 +79,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
         </div>
       </div>
 
-      <Section bg={c.sand}>
+      <Section bg={c.sand} className="detail-main-section">
         <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 26, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
             <div style={{ background: c.white, borderRadius: 18, padding: 24, border: "1px solid rgba(255,255,255,.08)" }}>
@@ -168,7 +168,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
         </div>
 
         {/* Related */}
-        <div style={{ marginTop: 46 }}>
+        <div className="detail-related" style={{ marginTop: 46 }}>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: c.charcoal, marginBottom: 20 }}>More experiences near this route</h2>
           <div className="responsive-card-grid" style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
             {alsoLike.map((x, i) => (
@@ -185,6 +185,7 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
         .detail-back-button:hover{background:rgba(15,36,64,.96)!important;border-color:rgba(34,211,238,.65)!important}
         .detail-back-button:focus-visible{outline:3px solid ${c.teal};outline-offset:3px}
         @media(min-width:940px){.detail-grid{grid-template-columns:1fr 360px!important}.detail-grid .two-col{grid-template-columns:1fr 1fr!important}}
+        @media(min-width:821px){.detail-related{margin-top:32px!important}.detail-main-section .detail-grid{gap:20px!important}.detail-main-section .detail-grid>div:first-child{gap:16px!important}}
         @media(max-width:520px){.detail-decision-grid{grid-template-columns:1fr!important}}
       `}</style>
     </>

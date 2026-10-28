@@ -22,14 +22,27 @@
    treatment. The imagery still feels immersive, but the page now reads like
    a premium travel product instead of an oversized presentation. */
 @media (min-width: 821px) {
-  .tn-hero { min-height: 500px !important; }
-  .page-hero { min-height: 340px !important; }
-  .guide-hero { min-height: 340px !important; }
-  .map-hero { min-height: 360px !important; }
-  .build-hero { min-height: 380px !important; }
-  .trips-hero { min-height: 290px !important; }
-  .insider-hero { min-height: 460px !important; }
-  .meet-tico-hero { min-height: min(72vh, 630px) !important; }
+  .tn-hero { min-height: 450px !important; }
+  .page-hero { min-height: 300px !important; }
+  .guide-hero { min-height: 300px !important; }
+  .map-hero { min-height: 320px !important; }
+  .build-hero { min-height: 340px !important; }
+  .trips-hero { min-height: 260px !important; }
+  .insider-hero { min-height: 400px !important; }
+  .meet-tico-hero { min-height: min(64vh, 540px) !important; }
+
+  .page-hero .tn-phero {
+    padding-top: 25px !important;
+    padding-bottom: 23px !important;
+  }
+
+  .map-hero .mh-map { max-width: 350px !important; }
+  .trips-hero .tr-art { max-width: 350px !important; }
+
+  .responsive-card-grid,
+  .mobile-break-grid {
+    gap: 16px !important;
+  }
 
   .tn-activity-browse-card.is-featured,
   .tn-activity-browse-card.is-featured .tn-activity-browse-card__media {

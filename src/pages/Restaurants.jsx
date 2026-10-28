@@ -113,14 +113,14 @@ export function Restaurants({ go, embedded = false }) {
             <Button variant="ghost" onClick={() => { setRegion("All"); setCollection("all"); }}>Clear filters</Button>
           </div>
         ) : (
-          <div className="restaurant-results-grid mobile-break-grid" style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
+          <div className="restaurant-results-grid mobile-break-grid" style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
             {list.map((r, i) => <Reveal key={r.id} delay={(i % 3) * 60}>{mode === "eat" ? <RestaurantCard r={r} /> : <BarCard b={r} />}</Reveal>)}
           </div>
         )}
 
         {/* concierge nudge */}
         <Reveal>
-          <div style={{ marginTop: 30, ...glass, borderRadius: 20, padding: "22px 24px", display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ marginTop: 22, ...glass, borderRadius: 18, padding: "18px 20px", display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
             <TicoAvatar size={44} />
             <div style={{ flex: 1, minWidth: 220 }}>
               <div style={{ color: "#fff", fontWeight: 800, fontSize: 15.5 }}>Building a trip? Rico pairs dinner to your day.</div>

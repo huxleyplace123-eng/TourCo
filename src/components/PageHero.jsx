@@ -9,7 +9,7 @@ import { Eyebrow } from "./ui.jsx";
 // (string; last word auto-accents unless `accent={false}`), `sub`, `align`,
 // `trust` (compact confidence points), `children` (extra content under the
 // copy), and `height`.
-export function PageHero({ image, slides, eyebrow, title, sub, trust = [], align = "left", children, height = 410, accentWord }) {
+export function PageHero({ image, slides, eyebrow, title, sub, trust = [], align = "left", children, height = 360, accentWord }) {
   const center = align === "center";
   // Optional vivid cross-fading backdrop (slides = [{src,label}]). Falls back to
   // the single `image` when no slides are passed.
@@ -21,7 +21,7 @@ export function PageHero({ image, slides, eyebrow, title, sub, trust = [], align
     return () => clearInterval(id);
   }, [useSlides, slides && slides.length]);
   // A taller, more cinematic hero when running the vivid slide treatment.
-  const h = useSlides ? Math.max(height, 380) : height;
+  const h = useSlides ? Math.max(height, 340) : height;
   const renderTitle = () => {
     if (typeof title !== "string" || accentWord === null) return title;
     const words = title.trim().split(" ");
@@ -83,7 +83,7 @@ export function PageHero({ image, slides, eyebrow, title, sub, trust = [], align
         .page-hero-trust-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:${c.teal};box-shadow:0 0 0 4px rgba(34,211,238,.12)}
         @media(max-width:820px){.page-hero-trust{display:none}}`}</style>
 
-      <div className="tn-phero" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "34px 20px 28px", width: "100%", textAlign: center ? "center" : "left" }}>
+      <div className="tn-phero" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "28px 20px 24px", width: "100%", textAlign: center ? "center" : "left" }}>
         {eyebrow && <Eyebrow><span style={{ color: c.gold }}>{eyebrow}</span></Eyebrow>}
         <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "4px 0 0", textShadow: "0 6px 30px rgba(0,0,0,.5)" }}>
           {renderTitle()}

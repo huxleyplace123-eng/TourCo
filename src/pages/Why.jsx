@@ -35,8 +35,8 @@ export function Why({ go }) {
         </div>
       </PageHero>
 
-      <Section bg={c.sand} pad={68}>
-        <div style={{ textAlign: "center", maxWidth: 670, margin: "0 auto 36px" }}>
+      <Section bg={c.sand} pad={68} className="why-process-section">
+        <div className="why-section-intro" style={{ textAlign: "center", maxWidth: 670, margin: "0 auto 36px" }}>
           <span style={{ color: c.teal, fontWeight: 800, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase" }}>Planning process</span>
           <h2 style={{ color: "#fff", fontSize: "clamp(30px,4.6vw,46px)", lineHeight: 1.06, letterSpacing: -1.3, margin: "9px 0 12px" }}>Plan your trip in three steps.</h2>
           <p style={{ color: c.stone, fontSize: 16, lineHeight: 1.7, margin: 0 }}>The planner is free. Adding something to a trip does not reserve it or charge you.</p>
@@ -44,7 +44,7 @@ export function Why({ go }) {
         <div className="why-step-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
           {STEPS.map(({ icon: Icon, title, body }, index) => (
             <Reveal key={title} delay={index * 80}>
-              <div style={{ ...glass, borderRadius: 22, padding: 24, height: "100%" }}>
+              <div className="why-step-card" style={{ ...glass, borderRadius: 22, padding: 24, height: "100%" }}>
                 <span style={{ width: 48, height: 48, borderRadius: 15, background: index === 2 ? "rgba(255,208,0,.13)" : "rgba(34,211,238,.12)", color: index === 2 ? c.gold : c.teal, display: "grid", placeItems: "center" }}><Icon size={22} /></span>
                 <div style={{ color: "rgba(255,255,255,.25)", fontWeight: 900, fontSize: 13, marginTop: 21 }}>0{index + 1}</div>
                 <h3 style={{ color: "#fff", fontSize: 19, margin: "5px 0 8px" }}>{title}</h3>
@@ -55,11 +55,11 @@ export function Why({ go }) {
         </div>
       </Section>
 
-      <Section bg={c.sand} pad={54}>
+      <Section bg={c.sand} pad={54} className="why-clarity-section">
         <div className="why-clear-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
           {CLEAR.map(({ icon: Icon, title, items }, index) => (
             <Reveal key={title} delay={index * 90}>
-              <div style={{ background: index ? grad.hero : c.canvas2, border: `1px solid ${c.line}`, borderRadius: 24, padding: "clamp(24px,4vw,38px)", height: "100%" }}>
+              <div className="why-clarity-card" style={{ background: index ? grad.hero : c.canvas2, border: `1px solid ${c.line}`, borderRadius: 24, padding: "clamp(24px,4vw,38px)", height: "100%" }}>
                 <span style={{ color: index ? c.gold : c.teal, display: "inline-flex", alignItems: "center", gap: 9, fontSize: 13, fontWeight: 800, letterSpacing: ".07em", textTransform: "uppercase" }}><Icon size={18} />{title}</span>
                 <div style={{ display: "grid", gap: 13, marginTop: 22 }}>
                   {items.map((item) => <div key={item} style={{ color: "rgba(255,255,255,.84)", display: "flex", alignItems: "center", gap: 10, fontSize: 15 }}><Check size={16} color={index ? c.gold : c.teal} />{item}</div>)}
@@ -70,7 +70,7 @@ export function Why({ go }) {
         </div>
       </Section>
 
-      <Section bg={c.sand} pad={68}>
+      <Section bg={c.sand} pad={68} className="why-difference-section">
         <Reveal>
           <div className="why-difference" style={{ display: "grid", gridTemplateColumns: ".8fr 1.2fr", gap: "clamp(30px,7vw,86px)", alignItems: "center", padding: "clamp(26px,5vw,50px)", borderRadius: 28, ...glass }}>
             <div style={{ width: "min(220px,60vw)", aspectRatio: 1, borderRadius: 999, margin: "0 auto", background: "radial-gradient(circle at 34% 28%, rgba(255,208,0,.9), rgba(34,211,238,.58) 42%, rgba(11,26,46,.2) 70%)", boxShadow: "0 35px 90px -35px rgba(34,211,238,.8)", display: "grid", placeItems: "center" }}>
@@ -86,8 +86,8 @@ export function Why({ go }) {
         </Reveal>
       </Section>
 
-      <Section bg={c.sand} pad={68}>
-        <div style={{ borderRadius: 28, background: grad.hero, padding: "clamp(28px,5vw,54px)", textAlign: "center" }}>
+      <Section bg={c.sand} pad={68} className="why-final-section">
+        <div className="why-final-card" style={{ borderRadius: 28, background: grad.hero, padding: "clamp(28px,5vw,54px)", textAlign: "center" }}>
           <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", margin: 0, letterSpacing: -1.2 }}>Build my Costa Rica plan.</h2>
           <p style={{ color: "rgba(255,255,255,.75)", fontSize: 16.5, lineHeight: 1.65, maxWidth: 560, margin: "13px auto 24px" }}>Start with your route. TicoWild will help connect the experiences and the people who run them.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
@@ -97,7 +97,21 @@ export function Why({ go }) {
         </div>
       </Section>
 
-      <style>{`@media(max-width:760px){.why-step-grid,.why-clear-grid,.why-difference{grid-template-columns:1fr!important}}`}</style>
+      <style>{`
+        @media(min-width:821px){
+          .why-process-section,.why-difference-section,.why-final-section{padding-block:36px!important}
+          .why-clarity-section{padding-block:32px!important}
+          .why-section-intro{margin-bottom:26px!important}
+          .why-step-card{padding:20px!important;border-radius:18px!important}
+          .why-step-card>div{margin-top:14px!important}
+          .why-clarity-card{padding:26px!important;border-radius:20px!important}
+          .why-clarity-card>div{margin-top:16px!important;gap:10px!important}
+          .why-difference{gap:42px!important;padding:32px!important;border-radius:22px!important}
+          .why-difference>div:first-child{width:176px!important}
+          .why-final-card{padding:34px 24px!important;border-radius:22px!important}
+        }
+        @media(max-width:760px){.why-step-grid,.why-clear-grid,.why-difference{grid-template-columns:1fr!important}}
+      `}</style>
     </>
   );
 }

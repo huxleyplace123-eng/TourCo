@@ -239,7 +239,7 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
           <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.55, margin: 0 }}>Start with what each coastal hub is known for, then fit the places and locally operated experiences around the route you actually want to travel.</p>
         </div>
 
-        <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))" }}>
+        <div className="map-region-grid" style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))" }}>
           {REGION_GUIDE.map((r, i) => (
             <div key={r.name} style={{ background: c.white, border: `1px solid ${c.line}`, borderRadius: 20, overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 20px 50px -34px rgba(0,0,0,.7)" }}>
               {/* granular real photo */}
@@ -277,7 +277,14 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
         </div>
       </Section>
 
-      <style>{`@media(min-width:900px){.map-grid{grid-template-columns:1.6fr 340px!important}}`}</style>
+      <style>{`
+        @media(min-width:821px){
+          .interactive-map{min-height:390px!important;aspect-ratio:1.38/1!important;border-radius:22px!important}
+          .map-grid{gap:16px!important}
+          .map-region-grid{gap:15px!important}
+        }
+        @media(min-width:900px){.map-grid{grid-template-columns:1.6fr 320px!important}}
+      `}</style>
     </>
   );
 }

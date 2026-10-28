@@ -36,11 +36,11 @@ export function Partner({ go }) {
         sub="A partner network built around guides, captains, drivers and independent experience businesses—not around replacing them."
         trust={["Your brand", "Your operating rules", "Your availability", "A clearer traveler handoff"]} />
 
-      <Section bg={c.sand}>
-        <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))" }}>
+      <Section bg={c.sand} className="partner-perks-section">
+        <div className="partner-perks-grid" style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))" }}>
           {PERKS.map((p, i) => (
             <Reveal key={p.title} delay={(i % 3) * 70}>
-              <div style={{ background: c.white, borderRadius: 20, padding: 26, height: "100%", border: "1px solid rgba(255,255,255,.08)" }}>
+              <div className="partner-perk-card" style={{ background: c.white, borderRadius: 20, padding: 26, height: "100%", border: "1px solid rgba(255,255,255,.08)" }}>
                 <span style={{ width: 48, height: 48, borderRadius: 14, background: grad.sunset, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                   <p.icon size={23} color={c.charcoal} />
                 </span>
@@ -52,7 +52,7 @@ export function Partner({ go }) {
         </div>
       </Section>
 
-      <Section bg={c.sand}>
+      <Section bg={c.sand} className="partner-application-section">
         <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 30, alignItems: "start" }}>
           <div>
             <SectionHead eyebrow="Requirements" title="TicoWild partner requirements" />
@@ -72,7 +72,7 @@ export function Partner({ go }) {
           </div>
 
           {/* Apply form */}
-          <div style={{ background: c.surface2, borderRadius: 22, padding: 28, border: "1px solid rgba(255,255,255,.08)" }}>
+          <div className="partner-application-card" style={{ background: c.surface2, borderRadius: 22, padding: 28, border: "1px solid rgba(255,255,255,.08)" }}>
             <>
                 <h3 style={{ margin: "0 0 18px", fontSize: 20, fontWeight: 800, color: c.charcoal }}>Apply to partner</h3>
                 <Field label="Your name"><TextInput value={form.name} onChange={(v) => setForm({ ...form, name: v })} placeholder="Full name" /></Field>
@@ -90,7 +90,16 @@ export function Partner({ go }) {
         </div>
       </Section>
 
-      <style>{`@media(min-width:900px){.detail-grid{grid-template-columns:1fr 420px!important}}`}</style>
+      <style>{`
+        @media(min-width:821px){
+          .partner-perks-grid{gap:14px!important}
+          .partner-perk-card{padding:20px!important;border-radius:18px!important}
+          .partner-perk-card>span{width:42px!important;height:42px!important}
+          .partner-perk-card h3{margin-top:12px!important}
+          .partner-application-card{padding:22px!important;border-radius:18px!important}
+        }
+        @media(min-width:900px){.detail-grid{grid-template-columns:1fr 420px!important}}
+      `}</style>
     </>
   );
 }

@@ -28,7 +28,7 @@ export function BuildHero() {
   }, []);
 
   return (
-    <div className="build-hero" style={{ position: "relative", overflow: "hidden", minHeight: 460, display: "flex", alignItems: "center" }}>
+    <div className="build-hero" style={{ position: "relative", overflow: "hidden", minHeight: 400, display: "flex", alignItems: "center" }}>
       <style>{`
         @keyframes bhKen { from{ transform: scale(1.04) } to{ transform: scale(1.14) } }
         @keyframes bhRise { from{ opacity:0; transform: translateY(18px) } to{ opacity:1; transform: translateY(0) } }
@@ -49,7 +49,7 @@ export function BuildHero() {
       <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(100deg, rgba(11,26,46,.92) 0%, rgba(11,26,46,.66) 46%, rgba(11,26,46,.28) 100%)" }} />
       <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(45% 60% at 12% 20%, rgba(34,211,238,.2), transparent 55%)" }} />
 
-      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "44px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 28, alignItems: "center" }} className="bh-grid">
+      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "34px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 24, alignItems: "center" }} className="bh-grid">
         {/* ── copy ── */}
         <div className="bh-copy">
           <div style={{ animation: "bhRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>Plan with local context</span></Eyebrow></div>
@@ -107,7 +107,7 @@ export function BuildHero() {
       </div>
 
       <style>{`
-        @media(min-width:900px){ .build-hero{min-height:420px!important}.bh-grid{ grid-template-columns: 1fr .92fr!important }.bh-plan{gap:10px!important} }
+        @media(min-width:900px){ .build-hero{min-height:340px!important}.bh-grid{ grid-template-columns: 1fr .92fr!important }.bh-plan{gap:8px!important} }
         @media(max-width:620px){.build-hero{min-height:330px!important}.build-hero .bh-grid{padding:34px 22px!important}.build-hero .bh-plan{display:none!important}.build-hero .bh-copy p{max-width:34ch}.build-hero .bh-copy h1{font-size:36px!important}}
       `}</style>
     </div>

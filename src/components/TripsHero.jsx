@@ -21,7 +21,7 @@ export function TripsHero({ count = 0 }) {
   }, []);
 
   return (
-    <div className="trips-hero" style={{ position: "relative", overflow: "hidden", minHeight: 340, background: "radial-gradient(130% 120% at 80% 15%, #0e3358 0%, #071a30 55%, #050f1f 100%)", display: "flex", alignItems: "center" }}>
+    <div className="trips-hero" style={{ position: "relative", overflow: "hidden", minHeight: 290, background: "radial-gradient(130% 120% at 80% 15%, #0e3358 0%, #071a30 55%, #050f1f 100%)", display: "flex", alignItems: "center" }}>
       <style>{`
         @keyframes trRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
         @keyframes trDraw{to{stroke-dashoffset:0}}
@@ -34,7 +34,7 @@ export function TripsHero({ count = 0 }) {
       {/* soft grid + glow */}
       <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(127,166,232,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(127,166,232,.05) 1px,transparent 1px)", backgroundSize: "42px 42px", maskImage: "radial-gradient(120% 100% at 75% 30%,#000 40%,transparent 82%)" }} />
 
-      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 20, alignItems: "center" }} className="tr-grid">
+      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "30px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 18, alignItems: "center" }} className="tr-grid">
         {/* copy */}
         <div className="tr-copy">
           <div style={{ animation: "trRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>My route, in one place</span></Eyebrow></div>
@@ -49,7 +49,7 @@ export function TripsHero({ count = 0 }) {
         </div>
 
         {/* illustrated route */}
-        <div className="tr-art" style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: 420 }}>
+        <div className="tr-art" style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: 360 }}>
           <svg viewBox="0 0 100 72" className="tr-svg" style={{ width: "100%", height: "auto", overflow: "visible" }}>
             {/* sun */}
             <circle cx="84" cy="16" r="7" fill={c.gold} opacity="0.9" style={{ animation: "trBob 6s ease-in-out infinite", filter: "drop-shadow(0 0 8px rgba(255,208,0,.6))" }} />

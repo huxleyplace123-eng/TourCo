@@ -30,7 +30,7 @@ function Signal({ label, detail }) {
 // preview of the interactive tool below. Nothing else on the site looks like it.
 export function MapHero() {
   return (
-    <div className="map-hero" style={{ position: "relative", overflow: "hidden", minHeight: 440, background: "radial-gradient(130% 120% at 78% 18%, #0e3358 0%, #071a30 55%, #050f1f 100%)", display: "flex", alignItems: "center" }}>
+    <div className="map-hero" style={{ position: "relative", overflow: "hidden", minHeight: 360, background: "radial-gradient(130% 120% at 78% 18%, #0e3358 0%, #071a30 55%, #050f1f 100%)", display: "flex", alignItems: "center" }}>
       <style>{`
         @keyframes mhDraw { to { stroke-dashoffset: 0 } }
         @keyframes mhRoute { to { stroke-dashoffset: 0 } }
@@ -47,7 +47,7 @@ export function MapHero() {
       <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(127,166,232,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(127,166,232,.06) 1px, transparent 1px)", backgroundSize: "44px 44px", maskImage: "radial-gradient(120% 100% at 70% 30%, #000 40%, transparent 80%)" }} />
       <div aria-hidden style={{ position: "absolute", right: "8%", top: "12%", width: 420, height: 420, borderRadius: 999, background: "radial-gradient(circle, rgba(34,211,238,.18), transparent 65%)", filter: "blur(12px)", animation: "mhGlow 9s ease-in-out infinite" }} />
 
-      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 20, alignItems: "center" }} className="mh-grid">
+      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "30px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 18, alignItems: "center" }} className="mh-grid">
         {/* ── copy + stats ── */}
         <div className="mh-copy">
           <div style={{ animation: "mhRise .6s .05s both" }}>
@@ -67,7 +67,7 @@ export function MapHero() {
         </div>
 
         {/* ── the living map ── */}
-        <div className="mh-map" style={{ position: "relative", aspectRatio: "1 / 1", maxWidth: 440, width: "100%", margin: "0 auto", justifySelf: "center" }}>
+        <div className="mh-map" style={{ position: "relative", aspectRatio: "1 / 1", maxWidth: 380, width: "100%", margin: "0 auto", justifySelf: "center" }}>
           {/* radar sweep */}
           <div aria-hidden style={{ position: "absolute", left: "48%", top: "56%", width: "130%", height: "130%", background: "conic-gradient(from 0deg, rgba(34,211,238,.16), transparent 28%, transparent 100%)", borderRadius: "50%", animation: "mhRadar 16s linear infinite", pointerEvents: "none" }} />
 

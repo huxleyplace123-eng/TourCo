@@ -64,13 +64,13 @@ export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
     return (<>{words.join(" ")} <span style={{ color: c.gold }}>{last}</span></>);
   };
   return (
-    <div className="section-head" style={{ maxWidth: 720, margin: center ? "0 auto" : 0, textAlign: center ? "center" : "left", marginBottom: 40 }}>
+    <div className="section-head" style={{ maxWidth: 700, margin: center ? "0 auto" : 0, textAlign: center ? "center" : "left", marginBottom: 28 }}>
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-      <h2 style={{ fontSize: "clamp(42px,5vw,66px)", lineHeight: .99, fontWeight: 820, letterSpacing: "-.045em", color: light ? "#fff" : c.charcoal, margin: 0 }}>
+      <h2 style={{ fontSize: "clamp(35px,4.1vw,52px)", lineHeight: 1, fontWeight: 820, letterSpacing: "-.042em", color: light ? "#fff" : c.charcoal, margin: 0 }}>
         {renderTitle()}
       </h2>
       {sub && (
-        <p style={{ marginTop: 14, fontSize: 17, lineHeight: 1.6, color: light ? "rgba(255,255,255,.85)" : c.stone }}>
+        <p style={{ marginTop: 11, fontSize: 16, lineHeight: 1.55, color: light ? "rgba(255,255,255,.85)" : c.stone }}>
           {sub}
         </p>
       )}
@@ -80,8 +80,13 @@ export function SectionHead({ eyebrow, title, sub, center, light, accent }) {
 
 // ── Section wrapper ──
 export function Section({ children, bg, pad = 52, id, className = "", style = {} }) {
+  // The public site uses a deliberately compact desktop rhythm. Pages can ask
+  // for a tighter section, but large legacy values are capped so one page
+  // cannot fall back to oversized presentation spacing. Mobile keeps its own
+  // comfortable reading rhythm in mobile.css.
+  const desktopPad = Math.min(pad, 36);
   return (
-    <section className={`site-section ${className}`.trim()} id={id} style={{ background: bg, padding: `${pad}px 20px`, ...style }}>
+    <section className={`site-section ${className}`.trim()} id={id} style={{ background: bg, padding: `${desktopPad}px 20px`, ...style }}>
       <div className="site-section-inner" style={{ maxWidth: 1180, margin: "0 auto" }}>{children}</div>
     </section>
   );

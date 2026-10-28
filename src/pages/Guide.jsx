@@ -104,7 +104,7 @@ export function Guide({ go, embedded = false }) {
 
       <Section bg={c.sand}>
         <SectionHead eyebrow="Regions" title="Compare Costa Rica regions" accent />
-        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
+        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
           {regions.map((r, i) => (
             <Reveal key={r.name} delay={(i % 3) * 70}>
               <Lift style={{ overflow: "hidden", cursor: "pointer" }} onClick={() => go("activities")}>
@@ -132,7 +132,7 @@ export function Guide({ go, embedded = false }) {
             <BeachChip key={t.key} on={beachTag === t.key} onClick={() => setBeachTag(t.key)}>{t.label}</BeachChip>
           ))}
         </div>
-        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
+        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))" }}>
           {shownBeaches.map((b, i) => (
             <Reveal key={b.id} delay={(i % 3) * 60}><BeachCard b={b} /></Reveal>
           ))}
@@ -141,9 +141,9 @@ export function Guide({ go, embedded = false }) {
 
       <Section bg={c.sand}>
         <SectionHead eyebrow="Travel information" title="Costa Rica travel tips" center />
-        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
+        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
           {TIPS.map((t) => (
-            <div key={t.title} style={{ background: c.surface2, borderRadius: 18, padding: 24 }}>
+            <div key={t.title} style={{ background: c.surface2, borderRadius: 18, padding: 20 }}>
               <span style={{ width: 44, height: 44, borderRadius: 12, background: grad.jungle, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                 <t.icon size={21} color="#fff" />
               </span>
@@ -158,10 +158,10 @@ export function Guide({ go, embedded = false }) {
       <Section bg={c.sand} pad={40}>
         <SectionHead eyebrow="Local advice" title="Practical Costa Rica travel advice" center accent
           sub="Transportation, timing, safety and regional advice for your trip." />
-        <div style={{ display: "grid", gap: 22, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
+        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
           {PLAYBOOK.map((p, i) => (
             <Reveal key={p.title} delay={(i % 3) * 70}>
-              <div style={{ background: c.white, borderRadius: 18, padding: 22, border: `1px solid ${c.line}`, height: "100%" }}>
+              <div style={{ background: c.white, borderRadius: 18, padding: 19, border: `1px solid ${c.line}`, height: "100%" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
                   <span style={{ width: 40, height: 40, borderRadius: 11, background: "rgba(34,211,238,.12)", border: "1px solid rgba(34,211,238,.25)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <p.icon size={19} color={c.teal} />
