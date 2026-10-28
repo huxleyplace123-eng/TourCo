@@ -7,8 +7,9 @@ import { Eyebrow } from "./ui.jsx";
 // accent on the last word of the title. Consistent everywhere so no page has a
 // random flat gradient band. Pass `image` (any Photo URL), `eyebrow`, `title`
 // (string; last word auto-accents unless `accent={false}`), `sub`, `align`,
-// `children` (extra content under the copy), and `height`.
-export function PageHero({ image, slides, eyebrow, title, sub, align = "left", children, height = 410, accentWord }) {
+// `trust` (compact confidence points), `children` (extra content under the
+// copy), and `height`.
+export function PageHero({ image, slides, eyebrow, title, sub, trust = [], align = "left", children, height = 410, accentWord }) {
   const center = align === "center";
   // Optional vivid cross-fading backdrop (slides = [{src,label}]). Falls back to
   // the single `image` when no slides are passed.
@@ -74,7 +75,13 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
         .tn-phero > *{animation:tnHeroRise .7s cubic-bezier(.2,.7,.2,1) both}
         .tn-phero > *:nth-child(2){animation-delay:.06s}
         .tn-phero > *:nth-child(3){animation-delay:.12s}
-        .tn-phero > *:nth-child(4){animation-delay:.18s}`}</style>
+        .tn-phero > *:nth-child(4){animation-delay:.18s}
+        .page-hero-trust{list-style:none;display:flex;align-items:center;gap:0;width:max-content;max-width:100%;padding:0;margin:16px 0 0;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(6,19,35,.48);box-shadow:0 16px 40px rgba(2,12,25,.18);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);overflow:hidden}
+        .page-hero-trust.is-centered{margin-left:auto;margin-right:auto}
+        .page-hero-trust li{position:relative;display:flex;align-items:center;gap:8px;padding:9px 14px;color:rgba(248,251,255,.9);font-size:11px;font-weight:760;letter-spacing:.015em;white-space:nowrap}
+        .page-hero-trust li+li:before{content:"";position:absolute;left:0;top:25%;height:50%;width:1px;background:rgba(255,255,255,.18)}
+        .page-hero-trust-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:${c.teal};box-shadow:0 0 0 4px rgba(34,211,238,.12)}
+        @media(max-width:820px){.page-hero-trust{display:none}}`}</style>
 
       <div className="tn-phero" style={{ position: "relative", zIndex: 2, maxWidth: 1180, margin: "0 auto", padding: "34px 20px 28px", width: "100%", textAlign: center ? "center" : "left" }}>
         {eyebrow && <Eyebrow><span style={{ color: c.gold }}>{eyebrow}</span></Eyebrow>}
@@ -83,6 +90,13 @@ export function PageHero({ image, slides, eyebrow, title, sub, align = "left", c
         </h1>
         {sub && (
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: 15.5, lineHeight: 1.55, maxWidth: 560, margin: center ? "10px auto 0" : "10px 0 0" }}>{sub}</p>
+        )}
+        {Array.isArray(trust) && trust.length > 0 && (
+          <ul className={`page-hero-trust${center ? " is-centered" : ""}`} aria-label="Why travelers can plan with confidence">
+            {trust.map((item) => (
+              <li key={item}><span className="page-hero-trust-dot" aria-hidden />{item}</li>
+            ))}
+          </ul>
         )}
         {children}
       </div>

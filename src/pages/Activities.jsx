@@ -21,7 +21,6 @@ import { Section, Field, TextInput, Select, Button } from "../components/ui.jsx"
 import { ActivityBrowseCard, ActivityBrowseCardStyles } from "../components/ActivityBrowseCard.jsx";
 import { PageHero } from "../components/PageHero.jsx";
 import { activityImage, themedSlides } from "../images.js";
-import { ticoActivityVerdict } from "../intelligence/tico.js";
 import { isKidFriendlyCandidate } from "../routing.js";
 
 const COLLECTIONS = [
@@ -41,7 +40,7 @@ const COLLECTIONS = [
     number: "02",
     title: "Adventure and wildlife",
     kicker: "Zip lines, rafting and wildlife",
-    body: "Zip lining, rafting, waterfalls and wildlife tours with approved guides.",
+    body: "Zip lining, rafting, waterfalls and wildlife experiences with independent providers.",
     icon: Mountain,
     accent: "#67E8A5",
     heroId: "a7",
@@ -63,7 +62,7 @@ const COLLECTIONS = [
     number: "04",
     title: "Fishing",
     kicker: "Offshore and inshore fishing",
-    body: "Offshore sport fishing and inshore trips with approved local captains.",
+    body: "Offshore sport fishing and inshore trips with independent local providers.",
     icon: Fish,
     accent: c.blue,
     heroId: "a1",
@@ -119,8 +118,6 @@ function sortActivities(items, sort) {
   const next = [...items];
   if (sort === "Price: low") return next.sort((a, b) => a.price - b.price);
   if (sort === "Price: high") return next.sort((a, b) => b.price - a.price);
-  if (sort === "Top rated") return next.sort((a, b) => b.rating - a.rating);
-  if (sort === "Rico's ranking") return next.sort((a, b) => ticoActivityVerdict(b).score - ticoActivityVerdict(a).score);
   return next;
 }
 
@@ -222,18 +219,18 @@ function CollectionMosaic({ onChoose, familyOnly = false }) {
 
 function FamilyTrustPanel({ familyCount }) {
   const proofs = [
-    [Heart, "Family-ready shortlist", `${familyCount} curated options across ocean, wildlife, adventure and private days.`],
+    [Heart, "Family-ready shortlist", `${familyCount} starting options across ocean, wildlife, adventure and private days.`],
     [Compass, "Match the pace", "Filter by region and difficulty, then save the days that fit your route."],
-    [ShieldCheck, "Requirements confirmed", "TicoWild verifies the current operator rules for your exact group before payment."],
+    [ShieldCheck, "Requirements confirmed", "TicoWild checks the current provider rules for your exact group before payment."],
   ];
 
   return (
     <section className="family-trust-shell" aria-labelledby="family-trust-title">
       <div className="family-trust-panel">
         <div className="family-trust-heading">
-          <span>Plan with confidence</span>
-          <h2 id="family-trust-title">Family days, without the guesswork.</h2>
-          <p>Start with experiences that work well for many families, then let us confirm the details that make them right for yours.</p>
+          <span>Plan for your actual group</span>
+          <h2 id="family-trust-title">Family days, with the important details checked.</h2>
+          <p>Choose by pace, region and difficulty. Before payment, TicoWild checks the current participation rules with the provider for your specific group.</p>
         </div>
         <div className="family-trust-proofs">
           {proofs.map(([Icon, title, copy]) => (
@@ -316,11 +313,14 @@ export function Activities({ addToTrip, trip, viewActivity, go, familyLanding = 
       <PageHero
         slides={familyLanding ? FAMILY_HERO_SLIDES : themedSlides("activities")}
         height={380}
-        eyebrow={familyLanding ? "Kid-friendly Costa Rica" : "Activities and tours"}
-        title={familyLanding ? "Costa Rica activities for families" : "Costa Rica activities and tours"}
+        eyebrow={familyLanding ? "Costa Rica with your family" : "Experiences across Costa Rica"}
+        title={familyLanding ? "Find activities that fit your actual group." : "Find the right experience for your route."}
         sub={familyLanding
-          ? "Browse family-ready experiences by region and pace. TicoWild confirms current age, height, swimming, weather and operator requirements before payment."
-          : "Browse activities by category and region. Availability, operating details and final pricing are confirmed before payment."}
+          ? "Start with family-ready ideas, then let TicoWild check age, height, swimming, weather and current provider requirements before payment."
+          : "Browse by region and activity. TicoWild helps organize your shortlist, then checks the current provider, timing, availability and final price before payment."}
+        trust={familyLanding
+          ? ["Family-ready starting points", "Route-aware planning", "Current rules checked first"]
+          : ["Independent providers", "Route-aware planning", "Current details confirmed first"]}
       >
         <ActivityMarquee familyOnly={familyLanding} />
       </PageHero>
@@ -378,7 +378,7 @@ export function Activities({ addToTrip, trip, viewActivity, go, familyLanding = 
             <Field label="Activity type" htmlFor="activity-type"><Select id="activity-type" value={category} onChange={setCategory} options={EXACT_CATEGORIES} icon={Compass} /></Field>
             <Field label="Region" htmlFor="activity-region"><Select id="activity-region" value={region} onChange={setRegion} options={REGIONS} icon={MapPin} /></Field>
             <Field label="Adventure level" htmlFor="activity-level"><Select id="activity-level" value={level} onChange={setLevel} options={["All", "Easy", "Moderate", "High"]} icon={Mountain} /></Field>
-            <Field label="Sort by" htmlFor="activity-sort"><Select id="activity-sort" value={sort} onChange={setSort} options={["Featured", "Rico's ranking", "Price: low", "Price: high", "Top rated"]} icon={Star} /></Field>
+            <Field label="Sort by" htmlFor="activity-sort"><Select id="activity-sort" value={sort} onChange={setSort} options={["Featured", "Price: low", "Price: high"]} icon={Star} /></Field>
           </div>
           <div className="activity-filter-options">
             <Toggle
@@ -398,7 +398,7 @@ export function Activities({ addToTrip, trip, viewActivity, go, familyLanding = 
       <main id="activity-catalog" className="activity-catalog">
         <ActivityBrowseCardStyles />
         <div className="activity-results-summary">
-          <span><ShieldCheck size={15} color={c.teal} />{visibleCount} approved experience{visibleCount === 1 ? "" : "s"}</span>
+          <span><ShieldCheck size={15} color={c.teal} />{visibleCount} published experience{visibleCount === 1 ? "" : "s"}</span>
           <span>{grouped.length} collection{grouped.length === 1 ? "" : "s"} in view</span>
         </div>
 
@@ -406,12 +406,11 @@ export function Activities({ addToTrip, trip, viewActivity, go, familyLanding = 
           <div className="activity-empty">
             <Compass size={38} color={c.teal} />
             <h2>No experience fits those filters yet.</h2>
-            <p>Open the search back up and Rico will put the strongest matches back in view.</p>
+            <p>Open the search back up to bring more local experience ideas into view.</p>
             <Button variant="primary" onClick={reset}>Show all experiences</Button>
           </div>
         ) : grouped.map((item) => {
           const Icon = item.icon;
-          const ricoPick = [...item.items].sort((a, b) => ticoActivityVerdict(b).score - ticoActivityVerdict(a).score)[0];
           return (
             <section
               key={item.id}
@@ -432,7 +431,6 @@ export function Activities({ addToTrip, trip, viewActivity, go, familyLanding = 
                   <ActivityBrowseCard
                     key={activity.id}
                     a={activity}
-                    ricoPick={activity.id === ricoPick.id}
                     collectionAccent={item.accent}
                     onAdd={addToTrip}
                     onView={viewActivity}

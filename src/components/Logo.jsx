@@ -33,7 +33,7 @@ export function Logo({ fontSize = 22, tagline = false, surface = "dark" }) {
         </span>
         {tagline && (
           <span style={{ color: onLight ? "#637582" : "#7FA6E8", fontWeight: 600, fontSize: Math.max(8, fontSize * 0.33), letterSpacing: fontSize * 0.14, textTransform: "uppercase" }}>
-            Costa Rica · Tour Guides
+            Costa Rica · Planned Locally
           </span>
         )}
       </span>

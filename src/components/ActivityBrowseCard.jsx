@@ -8,10 +8,8 @@ import {
   MapPin,
   Plus,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { activityImage } from "../images.js";
-import { ticoActivityVerdict } from "../intelligence/tico.js";
 import { c, gradFor, money } from "../theme.js";
 import { Photo } from "../motion.jsx";
 import { Button } from "./ui.jsx";
@@ -474,17 +472,15 @@ export function ActivityBrowseCard({
   onView,
   inTrip,
   featured = false,
-  ricoPick = false,
   collectionAccent,
 }) {
   if (!a) return null;
 
-  const rico = ticoActivityVerdict(a);
   const accent = collectionAccent || c.teal;
 
   return (
       <article
-        className={`tn-activity-browse-card${featured ? " is-featured" : ""}${ricoPick ? " is-rico-pick" : ""}`}
+        className={`tn-activity-browse-card${featured ? " is-featured" : ""}`}
         style={{ "--activity-accent": accent }}
       >
         <div className="tn-activity-browse-card__media">
@@ -516,21 +512,16 @@ export function ActivityBrowseCard({
             </span>
             <span
               className="tn-activity-browse-card__approved"
-              title="A curated TicoWild experience idea"
+              title="An independently operated Costa Rica experience"
             >
               <ShieldCheck size={13} aria-hidden="true" />
-              <span>Curated</span>
+              <span>Independent</span>
             </span>
           </div>
 
           <div className="tn-activity-browse-card__price" aria-label={`From ${money(a.price)} per person`}>
             <small>from</small> {money(a.price)} <small>/ person</small>
           </div>
-          {ricoPick ? (
-            <div className="tn-activity-browse-card__top-pick">
-              <Sparkles size={12} aria-hidden="true" />Rico's top pick
-            </div>
-          ) : null}
         </div>
 
         <div className="tn-activity-browse-card__body">
@@ -543,21 +534,8 @@ export function ActivityBrowseCard({
             {isKidFriendlyCandidate(a) && <span className="tn-activity-browse-card__family"><Heart size={12} aria-hidden="true" />Kid-friendly</span>}
           </div>
 
-          <div
-            className="tn-activity-browse-card__rico"
-            title={`Rico rates this ${rico.score} out of 5: ${rico.label}`}
-          >
-            <span className="tn-activity-browse-card__rico-score" aria-hidden="true">
-              {rico.score.toFixed(1)}
-            </span>
-            <span className="tn-activity-browse-card__rico-copy">
-              <strong><Sparkles size={11} aria-hidden="true" />Rico's read</strong>
-              {rico.label}
-            </span>
-          </div>
-
           <div className="tn-activity-browse-card__operator">
-            <strong>Current availability and operator are confirmed before payment.</strong>
+            <strong>Current provider, timing and final price are confirmed before payment.</strong>
           </div>
 
           <div className="tn-activity-browse-card__actions">

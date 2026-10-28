@@ -86,9 +86,9 @@ export default function PartnerAuth({ onSession, onDemo }) {
           <div className="partner-brand-desktop"><Logo fontSize={25} tagline /></div>
           <div className="partner-brand-mobile"><Logo fontSize={22} /></div>
           <div className="partner-story-copy">
-            <div style={{ display:"inline-flex", alignItems:"center", gap:8, color:c.teal, fontSize:12, fontWeight:800, letterSpacing:".1em", textTransform:"uppercase" }}><Sparkles size={15}/> TicoWild Partner Center</div>
+            <div style={{ display:"inline-flex", alignItems:"center", gap:8, color:c.teal, fontSize:12, fontWeight:800, letterSpacing:".1em", textTransform:"uppercase" }}><Sparkles size={15}/> For independent Costa Rican operators</div>
             <h1 style={{ margin:"16px 0 14px", maxWidth:620, fontSize:"clamp(38px,5vw,66px)", lineHeight:.98, letterSpacing:"-.055em" }}>Your tours.<br/><span style={{ color:c.gold }}>One command center.</span></h1>
-            <p style={{ maxWidth:570, margin:0, color:c.stone, fontSize:17, lineHeight:1.7 }}>Manage the details that help TicoWild send you the right guests and deliver a smoother experience every time.</p>
+            <p style={{ maxWidth:570, margin:0, color:c.stone, fontSize:17, lineHeight:1.7 }}>Manage the details that help travelers understand the local business behind each experience and help TicoWild coordinate a clearer handoff.</p>
             <div className="partner-benefits">
               {benefits.map(([Icon,title,text]) => <div className="partner-benefit" key={title}>
                 <div style={{ width:42,height:42,borderRadius:13,display:"grid",placeItems:"center",background:"rgba(34,211,238,.11)",color:c.teal }}><Icon size={20}/></div>
@@ -96,7 +96,7 @@ export default function PartnerAuth({ onSession, onDemo }) {
               </div>)}
             </div>
           </div>
-          <div className="partner-auth-foot" style={{ color:c.stone,fontSize:11.5 }}>Built for approved TicoWild partners across Costa Rica.</div>
+          <div className="partner-auth-foot" style={{ color:c.stone,fontSize:11.5 }}>Built for independent TicoWild partners across Costa Rica.</div>
         </section>
 
         <section className="partner-auth-card-wrap">

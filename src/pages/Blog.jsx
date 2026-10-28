@@ -37,9 +37,10 @@ export function Blog({ viewBlogPost, go }) {
       <PageHero
         slides={themedSlides("guide", 1900)}
         height={340}
-        eyebrow="TicoWild Field Guide"
+        eyebrow="Local field notes"
         title="Plan Costa Rica with better context"
-        sub="Route-first ideas, family guidance, regional comparisons and practical booking checks—written to help you make the next decision."
+        sub="Route-first ideas, family guidance, regional comparisons and the questions worth asking the people who run the experiences."
+        trust={["Local route context", "Practical family guidance", "Provider-aware planning"]}
       />
 
       <main className="blog-index">
@@ -55,7 +56,7 @@ export function Blog({ viewBlogPost, go }) {
 
         <section className="blog-planning-cta">
           <span className="blog-planning-icon"><Map size={22} /></span>
-          <div><span>Turn reading into a route</span><h2>Build the trip around your actual stops.</h2><p>Choose destinations, dates, group size and activities. TicoWild organizes the ideas before confirming live details.</p></div>
+          <div><span>Turn reading into a route</span><h2>Build the trip around your actual stops.</h2><p>Choose destinations, dates, group size and activities. TicoWild organizes the ideas, then checks current details with the independent providers.</p></div>
           <Button variant="gold" size="lg" onClick={() => go("build")}>Build my trip <ArrowRight size={17} /></Button>
         </section>
       </main>

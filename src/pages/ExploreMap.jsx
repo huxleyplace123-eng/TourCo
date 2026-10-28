@@ -222,9 +222,9 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
             ) : (
               <div style={{ ...glass, borderRadius: 22, padding: "34px 24px", textAlign: "center" }}>
                 <span style={{ width: 56, height: 56, borderRadius: 999, background: "rgba(34,211,238,.12)", border: "1px solid rgba(34,211,238,.25)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}><Sparkles size={26} color={c.teal} /></span>
-                <h3 style={{ color: "#fff", fontWeight: 800, fontSize: 18, margin: "0 0 6px" }}>Explore the whole country</h3>
-                <p style={{ color: c.stone, fontSize: 14, lineHeight: 1.5, margin: "0 0 16px" }}>Toggle layers, tap a pin. Parks, waterfalls, wildlife, airports and every experience — at its real location.</p>
-                <Button variant="primary" onClick={() => go("build")}>Build my Costa Rica <ArrowRight size={15} /></Button>
+                <h3 style={{ color: "#fff", fontWeight: 800, fontSize: 18, margin: "0 0 6px" }}>Choose a pin to understand the area.</h3>
+                <p style={{ color: c.stone, fontSize: 14, lineHeight: 1.5, margin: "0 0 16px" }}>See what is nearby, then add the region or experience to your trip.</p>
+                <Button variant="primary" onClick={() => go("build")}>Plan around a region <ArrowRight size={15} /></Button>
               </div>
             )}
           </div>
@@ -234,9 +234,9 @@ export function ExploreMap({ go, addToTrip, viewActivity }) {
       {/* ── WHERE TO GO & WHAT TO DO ── the field guide the map needed ── */}
       <Section bg={c.sand} pad={40}>
         <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 30px" }}>
-          <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>Your field guide</div>
-          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 6px" }}>Where to go & what to do</h2>
-          <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.55, margin: 0 }}>Seven coastal hubs, each with its own personality. Here's what each is known for, exactly where it is, and the moves that make it worth the drive.</p>
+          <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>Local route context</div>
+          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 6px" }}>Seven regions. Seven different trip rhythms.</h2>
+          <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.55, margin: 0 }}>Start with what each coastal hub is known for, then fit the places and locally operated experiences around the route you actually want to travel.</p>
         </div>
 
         <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))" }}>

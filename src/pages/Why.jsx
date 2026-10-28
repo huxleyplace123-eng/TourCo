@@ -8,14 +8,14 @@ import { Reveal } from "../motion.jsx";
 import { useConversion } from "../components/ConversionCenter.jsx";
 
 const STEPS = [
-  { icon: MapPin, title: "Tell us about your trip", body: "Add your destinations, dates, group size and preferred activities." },
-  { icon: Route, title: "Review recommended activities", body: "TicoWild suggests activities based on your route, schedule and preferences." },
-  { icon: CalendarCheck, title: "Confirm availability and price", body: "We check availability, start time, pickup, operator and final price before payment." },
+  { icon: MapPin, title: "Share your route", body: "Add your destinations, dates, group size and interests." },
+  { icon: Route, title: "Choose the experiences", body: "Review options that fit your route, pace and available time." },
+  { icon: CalendarCheck, title: "We check with the provider", body: "TicoWild confirms current availability, timing, operator and final price before payment." },
 ];
 
 const CLEAR = [
-  { icon: Search, title: "What the website shows", items: ["A curated starting selection", "Estimated pricing", "Typical duration and difficulty", "Seasonal and route guidance"] },
-  { icon: ShieldCheck, title: "What TicoWild confirms", items: ["Current availability", "The operating partner", "Exact pickup and starting time", "Final price and next steps"] },
+  { icon: Search, title: "What the website helps you explore", items: ["A focused starting selection", "Planning estimates", "Typical duration and difficulty", "Seasonal and route guidance"] },
+  { icon: ShieldCheck, title: "What we confirm with the provider", items: ["Current availability", "The independent operator", "Exact pickup and starting time", "Final price and next steps"] },
 ];
 
 export function Why({ go }) {
@@ -24,12 +24,13 @@ export function Why({ go }) {
     <>
       <PageHero
         image={pageHero("why")}
-        eyebrow="How TicoWild works"
-        title="How TicoWild trip planning works"
-        sub="Tell us where you are staying, your dates and the activities you want. TicoWild organizes the options and confirms the details before payment."
+        eyebrow="How planning stays connected"
+        title="A clearer path from idea to local provider."
+        sub="TicoWild organizes activities around your route and checks current availability, timing, operator and final price with the provider before payment."
+        trust={["Route-aware planning", "Independent local providers", "Details confirmed first"]}
       >
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 22 }}>
-          <Button variant="primary" size="lg" onClick={() => go("build")}>Start my plan <ArrowRight size={18} /></Button>
+          <Button variant="primary" size="lg" onClick={() => go("build")}>Build my plan <ArrowRight size={18} /></Button>
           <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask Rico</Button>
         </div>
       </PageHero>
@@ -77,9 +78,9 @@ export function Why({ go }) {
             </div>
             <div>
               <span style={{ color: c.gold, fontSize: 12, fontWeight: 800, letterSpacing: ".09em", textTransform: "uppercase" }}>The real difference</span>
-              <h2 style={{ color: "#fff", fontSize: "clamp(29px,4.4vw,45px)", lineHeight: 1.05, letterSpacing: -1.2, margin: "9px 0 14px" }}>What TicoWild shows and confirms.</h2>
-              <p style={{ color: c.stone, fontSize: 16.5, lineHeight: 1.72, margin: 0 }}>Instead of scrolling through hundreds of nearly identical listings, you get a smaller set of experiences that fit your route, pace and available time.</p>
-              <div style={{ marginTop: 22 }}><Button variant="primary" onClick={() => go("activities")}><Sparkles size={16} />Explore the curated list</Button></div>
+              <h2 style={{ color: "#fff", fontSize: "clamp(29px,4.4vw,45px)", lineHeight: 1.05, letterSpacing: -1.2, margin: "9px 0 14px" }}>Less scrolling. A clearer local handoff.</h2>
+              <p style={{ color: c.stone, fontSize: 16.5, lineHeight: 1.72, margin: 0 }}>TicoWild narrows the options by route, pace and time, then brings provider-confirmed details back before you decide.</p>
+              <div style={{ marginTop: 22 }}><Button variant="primary" onClick={() => go("activities")}><Sparkles size={16} />Explore the starting collection</Button></div>
             </div>
           </div>
         </Reveal>
@@ -87,8 +88,8 @@ export function Why({ go }) {
 
       <Section bg={c.sand} pad={68}>
         <div style={{ borderRadius: 28, background: grad.hero, padding: "clamp(28px,5vw,54px)", textAlign: "center" }}>
-          <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", margin: 0, letterSpacing: -1.2 }}>Start planning your Costa Rica trip.</h2>
-          <p style={{ color: "rgba(255,255,255,.75)", fontSize: 16.5, lineHeight: 1.65, maxWidth: 560, margin: "13px auto 24px" }}>Enter your travelers, destinations, dates and activity preferences.</p>
+          <h2 style={{ color: "#fff", fontSize: "clamp(28px,4.5vw,44px)", margin: 0, letterSpacing: -1.2 }}>Build my Costa Rica plan.</h2>
+          <p style={{ color: "rgba(255,255,255,.75)", fontSize: 16.5, lineHeight: 1.65, maxWidth: 560, margin: "13px auto 24px" }}>Start with your route. TicoWild will help connect the experiences and the people who run them.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
             <Button variant="primary" size="lg" onClick={() => go("build")}>Build my plan <ArrowRight size={18} /></Button>
             <Button variant="glass" size="lg" onClick={() => openConcierge({ intent: "planning" })}><MessageCircle size={18} />Ask Rico</Button>

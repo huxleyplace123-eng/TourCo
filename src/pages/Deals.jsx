@@ -60,7 +60,7 @@ export function Deals({ go, embedded = false, section = "deals" }) {
 
   return (
     <>
-      {!embedded && <PageHero slides={themedSlides("deals")} eyebrow="Deals and discounts" title="Costa Rica deals and promo codes" sub={`${deals.length} listed offers, ${codeCount} promo codes, plus free and low-cost activities.`} />}
+      {!embedded && <PageHero slides={themedSlides("deals")} eyebrow="Local value guide" title="Spend smarter across Costa Rica" sub="Browse listed offers, free stops and practical savings from route-relevant businesses and places. We confirm the current terms before you rely on them." trust={["Local businesses + places", "Route-relevant value", "Terms confirmed first"]} />}
 
       <Section bg={c.sand} pad={embedded ? 26 : 54}>
         {!embedded && (
@@ -78,7 +78,7 @@ export function Deals({ go, embedded = false, section = "deals" }) {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 22 }}>
               {DEAL_TAGS.map((item) => <button key={item.key} type="button" onClick={() => setTag(item.key)} style={{ padding: "8px 13px", borderRadius: 999, cursor: "pointer", fontWeight: 750, fontSize: 13, background: tag === item.key ? "rgba(34,211,238,.14)" : "rgba(255,255,255,.05)", border: tag === item.key ? `1px solid ${c.teal}` : `1px solid ${c.line}`, color: tag === item.key ? c.teal : c.charcoal }}>{item.label}</button>)}
             </div>
-            <div className="mobile-break-grid" style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))" }}>
+            <div className="mobile-break-grid deals-card-grid" style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))" }}>
               {visibleDeals.map((deal, index) => <Reveal key={deal.id} delay={(index % 4) * 45}><DealCard deal={deal} /></Reveal>)}
             </div>
           </div>
@@ -104,6 +104,7 @@ export function Deals({ go, embedded = false, section = "deals" }) {
 
         {!embedded && <div style={{ marginTop: 34, textAlign: "center" }}><Button variant="primary" size="lg" onClick={() => go("build")}>Plan around my route <ArrowRight size={17} /></Button></div>}
       </Section>
+      <style>{`@media(min-width:900px){.deals-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.deals-chapter-tabs{padding:6px;border:1px solid ${c.line};border-radius:999px;background:rgba(255,255,255,.025);width:max-content;max-width:100%}}`}</style>
     </>
   );
 }

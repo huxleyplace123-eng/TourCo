@@ -14,8 +14,8 @@ const HERO = themedSlides("guide", 1900)[0];
 const COLLECTIONS = [
   { id: "dining", icon: Utensils, eyebrow: "Eat & drink", title: `${restaurants.length} restaurants · ${bars.length} bars`, body: "Open the dining guide and filter by mood or region.", accent: c.gold },
   { id: "coast", icon: MapPinned, eyebrow: "Beaches & regions", title: `${regions.length} regions · ${beaches.length} beaches`, body: "Compare the coast by swimming, surf, snorkeling and sunset fit.", accent: c.teal },
-  { id: "savings", icon: BadgePercent, eyebrow: "Listed savings", title: `${deals.length} offers`, body: "See listed offers and codes with a clear confirmation warning.", accent: c.coral },
-  { id: "free", icon: Gift, eyebrow: "Free & low-cost", title: `${freeThings.length} local stops`, body: "Find beaches, viewpoints and other budget-friendly ideas.", accent: "#37E36B" },
+  { id: "savings", icon: BadgePercent, eyebrow: "Listed savings", title: `${deals.length} offers`, body: "See listed offers and confirm the current terms before relying on them.", accent: c.coral },
+  { id: "free", icon: Gift, eyebrow: "Free & low-cost", title: `${freeThings.length} local stops`, body: "Find beaches, viewpoints and budget-friendly ideas that fit the route.", accent: "#37E36B" },
 ];
 
 export function InsiderGuide({ go, trip = [] }) {
@@ -28,22 +28,22 @@ export function InsiderGuide({ go, trip = [] }) {
 
   return (
     <>
-      <div className="insider-hero" style={{ position: "relative", minHeight: 570, overflow: "hidden", display: "flex", alignItems: "center" }}>
+      <div className="insider-hero" style={{ position: "relative", minHeight: 520, overflow: "hidden", display: "flex", alignItems: "center" }}>
         <img src={HERO?.src} alt="Costa Rica coast" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(96deg,rgba(6,16,34,.97),rgba(6,16,34,.82) 50%,rgba(6,16,34,.28))" }} />
-        <div className="insider-hero-inner" style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "84px 20px 88px" }}>
+        <div className="insider-hero-inner" style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "70px 20px 76px" }}>
           <div style={{ maxWidth: 720 }}>
-            <Eyebrow><span style={{ color: c.gold }}>TicoWild Insider Guide</span></Eyebrow>
+            <Eyebrow><span style={{ color: c.gold }}>Local places, organized for your route</span></Eyebrow>
             <h1 className="tico-page-title" style={{ color: "#fff", margin: "14px 0 0", fontWeight: 830 }}>
-              Costa Rica restaurants,<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>beaches and deals.</span>
+              Eat, explore and spend<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>with better context.</span>
             </h1>
-            <p style={{ color: "rgba(243,247,255,.82)", maxWidth: 630, fontSize: 18, lineHeight: 1.65, margin: "24px 0 0" }}>Browse restaurants, nightlife, beaches, local tips, discounts and free activities.</p>
+            <p style={{ color: "rgba(243,247,255,.82)", maxWidth: 650, fontSize: 18, lineHeight: 1.65, margin: "22px 0 0" }}>Browse restaurants, beaches, nightlife, savings and free stops across Costa Rica, then fit the ones you like around your route.</p>
             <div className="mobile-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 29 }}>
               <Button variant="primary" size="lg" onClick={() => choose("dining")}>Open the guide <ArrowRight size={18} /></Button>
               <Button variant="glass" size="lg" onClick={() => go("build")}>Plan around my route</Button>
             </div>
             <div style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 27 }}>
-              {[[CheckCircle2, `${restaurants.length + bars.length} places to eat and drink`], [MapPin, `${beaches.length} beaches`], [Compass, `${deals.length + freeThings.length} ways to save`]].map(([Icon, label]) => <span key={label} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "rgba(243,247,255,.72)", fontSize: 13, fontWeight: 700 }}><Icon size={15} color={c.teal} />{label}</span>)}
+              {[[CheckCircle2, "Organized by region"], [MapPin, "Practical route context"], [Compass, "Offers confirmed before you rely on them"]].map(([Icon, label]) => <span key={label} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "rgba(243,247,255,.72)", fontSize: 13, fontWeight: 700 }}><Icon size={15} color={c.teal} />{label}</span>)}
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@ export function InsiderGuide({ go, trip = [] }) {
       )}
 
       <Section bg={c.sand} pad={48}>
-        <div style={{ position: "relative", overflow: "hidden", borderRadius: 26, border: "1px solid rgba(255,208,0,.3)", background: "linear-gradient(145deg,rgba(255,208,0,.1),rgba(17,32,58,.98) 42%,rgba(8,20,42,.98))", padding: "clamp(25px,5vw,42px)", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}><Wine size={28} color={c.gold} /><div style={{ flex: "1 1 440px" }}><div style={{ color: c.gold, fontWeight: 900, fontSize: 11.5, letterSpacing: 1, textTransform: "uppercase" }}>Trip planning</div><h2 style={{ color: "#fff", fontSize: "clamp(25px,3.5vw,38px)", margin: "6px 0 0", letterSpacing: -.9 }}>Add guide choices to your trip.</h2><p style={{ color: c.stone, lineHeight: 1.6, fontSize: 14.5, margin: "9px 0 0" }}>TicoWild can use your destinations, saved activities and preferences when planning your trip.</p></div><Button variant="gold" size="lg" onClick={() => go(trip.length ? "portal" : "build")}>{trip.length ? "Continue my trip" : "Start my trip"} <ArrowRight size={17} /></Button></div>
+        <div style={{ position: "relative", overflow: "hidden", borderRadius: 26, border: "1px solid rgba(255,208,0,.3)", background: "linear-gradient(145deg,rgba(255,208,0,.1),rgba(17,32,58,.98) 42%,rgba(8,20,42,.98))", padding: "clamp(25px,5vw,42px)", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}><Wine size={28} color={c.gold} /><div style={{ flex: "1 1 440px" }}><div style={{ color: c.gold, fontWeight: 900, fontSize: 11.5, letterSpacing: 1, textTransform: "uppercase" }}>Trip planning</div><h2 style={{ color: "#fff", fontSize: "clamp(25px,3.5vw,38px)", margin: "6px 0 0", letterSpacing: -.9 }}>Build a trip around the places you want to experience.</h2><p style={{ color: c.stone, lineHeight: 1.6, fontSize: 14.5, margin: "9px 0 0" }}>TicoWild can use your destinations, saved activities and guide choices to organize a route-aware starting plan.</p></div><Button variant="gold" size="lg" onClick={() => go(trip.length ? "portal" : "build")}>{trip.length ? "Continue my trip" : "Plan around what I found"} <ArrowRight size={17} /></Button></div>
       </Section>
 
       <style>{`.insider-jump-rail{position:sticky;top:64px;z-index:44;background:rgba(8,20,42,.92);border-block:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}.insider-overview-card{transition:transform .2s ease}.insider-overview-card:hover{transform:translateY(-3px)}@media(max-width:680px){.insider-hero{min-height:480px!important}.insider-overview-grid{grid-template-columns:1fr!important}}@media(prefers-reduced-motion:reduce){.insider-overview-card{transition:none!important}}`}</style>

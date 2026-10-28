@@ -13,20 +13,20 @@ const KICON = { waves: Waves, sun: Sun, bird: Bird, shield: ShieldCheck, cloud: 
 
 const PLATFORM_PROOF = [
   { value: activities.length, suffix: "", label: "published experiences", sub: "in the current starting collection" },
-  { value: regions.length, suffix: "", label: "regions in the guide", sub: "organized around the route" },
+  { value: regions.length, suffix: "", label: "regions organized", sub: "with the route kept in view" },
   { value: 0, suffix: "", label: "cost to start", sub: "$0 · no signup or payment needed" },
-  { value: 100, suffix: "%", label: "confirmed first", sub: "current details before payment" },
+  { text: "Human", label: "confirmation", sub: "before payment" },
 ];
 
 const GUIDE_KNOWLEDGE = [
-  { icon: "map", title: "Route fit", img: "photo-1519046904884-53103b34b206", stat: "less zig-zag", line: "I compare the region and likely transfer time so the activities in a day make geographic sense." },
-  { icon: "sun", title: "Seasonal context", img: "photo-1441974231531-c6227db76b6e", stat: "date-aware", line: "Give me dates and I can use the seasonal planning model. Leave them blank and I won’t pretend to know the month." },
-  { icon: "waves", title: "A realistic day", img: "photo-1502680390469-be75c86b636f", stat: "time-aware", line: "Full-day experiences stay on their own. Shorter activities are paired only when their timing and location fit." },
-  { icon: "shield", title: "Confirmation before payment", img: "photo-1544551763-46a013bb70d5", stat: "details first", line: "The website gives you a planning estimate. TicoWild confirms the operator, availability, timing and final total before payment." },
+  { icon: "map", title: "Route fit", img: "photo-1519046904884-53103b34b206", stat: "less zig-zag", line: "Rico compares the region and likely transfer time so the experiences in a day make geographic sense." },
+  { icon: "sun", title: "Seasonal context", img: "photo-1441974231531-c6227db76b6e", stat: "date-aware", line: "Travel dates add seasonal context. Without dates, Rico keeps the guidance general instead of guessing." },
+  { icon: "waves", title: "A realistic day", img: "photo-1502680390469-be75c86b636f", stat: "time-aware", line: "Full-day experiences stay on their own. Shorter options are paired only when their timing and location fit." },
+  { icon: "shield", title: "Confirmation before payment", img: "photo-1544551763-46a013bb70d5", stat: "details first", line: "The site provides a planning estimate. TicoWild checks the provider, availability, timing and final total before payment." },
 ];
 
 // A single live credential counter (animates when the hero mounts).
-function Stat({ value, suffix, label, sub, delay = 0 }) {
+function Stat({ value = 0, text, suffix = "", label, sub, delay = 0 }) {
   const [go, setGo] = useState(false);
   useEffect(() => { const t = setTimeout(() => setGo(true), delay); return () => clearTimeout(t); }, [delay]);
   const n = useCountUp(go ? value : 0, 1100);
@@ -34,7 +34,7 @@ function Stat({ value, suffix, label, sub, delay = 0 }) {
   return (
     <div style={{ textAlign: "center", minWidth: 96 }}>
       <div style={{ fontSize: "clamp(24px,3.4vw,34px)", fontWeight: 900, color: "#fff", letterSpacing: -1, lineHeight: 1, textShadow: "0 2px 20px rgba(34,211,238,.5)" }}>
-        {shown}{suffix}
+        {text || shown}{text ? "" : suffix}
       </div>
       <div style={{ color: c.gold, fontWeight: 800, fontSize: 12, marginTop: 5, textTransform: "uppercase", letterSpacing: 0.4 }}>{label}</div>
       <div style={{ color: "rgba(243,247,255,.6)", fontSize: 11, marginTop: 2, maxWidth: 130, marginInline: "auto", lineHeight: 1.3 }}>{sub}</div>
@@ -85,17 +85,17 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
           {/* His billing */}
           <div style={{ order: 1 }} className="tico-hero-copy">
             <div style={{ display: "inline-flex", alignItems: "center", gap: 7, ...glass, color: c.gold, padding: "6px 13px", borderRadius: 999, fontSize: 12, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 16, animation: "ticoRise .5s .05s both" }}>
-              <Sparkles size={14} /> Meet Rico the Tico · your local intelligence
+              <Sparkles size={14} /> Meet Rico · TicoWild's planning companion
             </div>
             <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: 0, animation: "ticoRise .5s .12s both" }}>
-              Meet Rico, your<br /><span style={{ color: c.gold }}>Costa Rica planning guide.</span>
+              Meet Rico, your guide<br /><span style={{ color: c.gold }}>through the choices.</span>
             </h1>
             <p style={{ color: "rgba(243,247,255,.9)", fontSize: "clamp(16px,2vw,18px)", lineHeight: 1.55, margin: "18px 0 0", maxWidth: 520, animation: "ticoRise .5s .2s both" }}>
-              I'm Rico the Tico — the personality behind TicoWild's planning tools. I use your route, travel style and seasonal patterns to make a giant list of choices feel much smaller.
+              Rico uses your route, group and travel dates to organize TicoWild's starting collection. When you request current details, the TicoWild team checks them with the independent provider.
             </p>
             <div className="mobile-cta-row" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 24, animation: "ticoRise .5s .28s both" }}>
-              <Button variant="primary" size="lg" onClick={() => go("build")}>Plan with me <ArrowRight size={18} /></Button>
-              <Button variant="glass" size="lg" onClick={() => go("activities")}>See what I rate</Button>
+              <Button variant="primary" size="lg" onClick={() => go("build")}>Build my Costa Rica plan <ArrowRight size={18} /></Button>
+              <Button variant="glass" size="lg" onClick={() => go("activities")}>Browse activities</Button>
             </div>
           </div>
         </div>
@@ -119,8 +119,9 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
       {/* ══ WHAT TICO KNOWS ══ proof of genius ══ */}
       <Section bg={c.sand}>
         <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 32px" }}>
-          <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>Why travelers trust the bird</div>
-          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>What Rico can help with</h2>
+          <div style={{ color: c.teal, fontWeight: 800, fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>What Rico helps organize</div>
+          <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, letterSpacing: -1, margin: "8px 0 0" }}>A clearer plan before the human confirmation.</h2>
+          <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.6, margin: "12px auto 0", maxWidth: 600 }}>Rico helps compare route, timing, season and trip fit. The recommendation is a planning opinion; TicoWild still checks current details with the provider.</p>
         </div>
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))" }}>
           {GUIDE_KNOWLEDGE.map((k, i) => {
@@ -153,24 +154,23 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
         </div>
       </Section>
 
-      {/* ══ HOW I RATE ══ the honesty system ══ */}
+      {/* ══ HOW RICO ORGANIZES ══ transparent planning signals ══ */}
       <Section bg={c.sand} pad={30}>
         <Reveal>
           <div style={{ ...glass, borderRadius: 22, padding: "clamp(22px,4vw,32px)", maxWidth: 820, margin: "0 auto" }}>
             <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8 }}>
               <TicoFace size={44} mood="proud" />
-              <h2 style={{ margin: 0, color: "#fff", fontSize: 22, fontWeight: 800 }}>How activity recommendations are rated</h2>
+              <h2 style={{ margin: 0, color: "#fff", fontSize: 22, fontWeight: 800 }}>How Rico organizes the starting options</h2>
             </div>
             <p style={{ color: c.stone, fontSize: 15, lineHeight: 1.6, margin: "0 0 18px" }}>
-              I don't hand out stars for fun. Each score is a planning opinion based on trip fit, seasonal patterns, value and the information available in TicoWild. The team still confirms the current operator and details before payment:
+              Rico does not replace a local provider or promise that an experience is available. The starting order is a planning opinion based on the information currently in TicoWild. The team still checks the provider and current details before payment.
             </p>
             <div style={{ display: "grid", gap: 10 }}>
               {[
-                { mood: "excited", label: "A perch-topper", range: "4.9–5.0", body: "This is a 10. I'd fly across the country for it.", bar: "100%", col: c.gold },
-                { mood: "proud", label: "Rico's Pick", range: "4.7+", body: "Yes. This is the good stuff. Book it.", bar: "88%", col: c.teal },
-                { mood: "happy", label: "Really solid", range: "4.4+", body: "You'll be glad you did it. No notes.", bar: "70%", col: c.blue },
-                { mood: "chill", label: "Worth it if it fits", range: "4.0+", body: "Good, not life-changing. Do it if it fits the day.", bar: "52%", col: c.blue },
-                { mood: "unimpressed", label: "Only if you're curious", range: "<4.0", body: "Eh. I've got better for you, honestly.", bar: "32%", col: c.stone },
+                { mood: "excited", label: "Route fit", range: "Where it belongs", body: "Does it work with the regions already in your plan?", bar: "100%", col: c.gold },
+                { mood: "proud", label: "Time fit", range: "What the day can hold", body: "Does the likely duration leave a realistic Costa Rica day?", bar: "82%", col: c.teal },
+                { mood: "happy", label: "Group fit", range: "Who is traveling", body: "Does it make sense for your group, pace and interests?", bar: "68%", col: c.blue },
+                { mood: "chill", label: "Seasonal context", range: "When you are there", body: "What should be checked because of your travel dates?", bar: "54%", col: c.blue },
               ].map((r) => (
                 <div key={r.label} style={{ display: "flex", gap: 12, alignItems: "center", background: "rgba(34,211,238,.05)", border: `1px solid ${c.line}`, borderRadius: 13, padding: "12px 14px" }}>
                   <TicoFace size={34} mood={r.mood} glow={false} animate={false} />
@@ -230,10 +230,11 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
         <style>{`@media(min-width:760px){.two-col{grid-template-columns:1fr 1fr!important}}`}</style>
       </Section>
 
-      {/* ══ HIS LEGEND ══ the myth, briefly ══ */}
+      {/* ══ MASCOT STORY ══ character lore, not business evidence ══ */}
       <Section bg={c.sand} pad={30}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          <h2 style={{ color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.5, margin: "0 0 20px", textAlign: "center" }}>About Rico</h2>
+          <h2 style={{ color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.5, margin: "0 0 8px", textAlign: "center" }}>Rico's mascot story</h2>
+          <p style={{ color: c.stone, fontSize: 13.5, lineHeight: 1.55, margin: "0 auto 20px", maxWidth: 590, textAlign: "center" }}>A little character lore for the bird behind the planning tools—not a claim of firsthand provider experience.</p>
           <div style={{ position: "relative", paddingLeft: 26 }}>
             <div aria-hidden style={{ position: "absolute", left: 7, top: 6, bottom: 6, width: 2, background: `linear-gradient(${c.teal},${c.blue})`, opacity: 0.4 }} />
             {LORE.map((l, i) => (
@@ -254,8 +255,8 @@ export function MeetTicoPage({ go, addToTrip, trip, viewActivity }) {
         <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 18, maxWidth: 820, marginInline: "auto" }}>
           <TicoFace size={44} mood="excited" />
           <div>
-            <h2 style={{ margin: 0, color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.4 }}>Recommended activities</h2>
-            <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 14 }}><b style={{ color: c.teal }}>Rico:</b> <span style={{ fontStyle: "italic" }}>"If you only did my top few, you'd still go home happy. Ranked, most-loved first."</span></p>
+            <h2 style={{ margin: 0, color: "#fff", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, letterSpacing: -0.4 }}>Route-aware starting points</h2>
+            <p style={{ margin: "4px 0 0", color: c.stone, fontSize: 14 }}><b style={{ color: c.teal }}>Rico:</b> <span style={{ fontStyle: "italic" }}>"Start with the experiences that best fit the route, then check the current details with the provider."</span></p>
           </div>
         </div>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Compass, MapPin, Navigation } from "lucide-react";
 import { c } from "../theme.js";
 import { Eyebrow } from "./ui.jsx";
-import { useCountUp } from "../motion.jsx";
 
 // Real Costa Rica silhouette (0–100 viewBox), shared with ExploreMap.
 const CR_OUTLINE = "M12,30 L22,22 L30,25 L28,33 L21,36 L26,42 L19,47 L14,45 L12,52 Q18,54 23,57 L30,54 L33,60 L40,62 L47,68 L53,72 L59,78 L65,84 L71,88 Q75,90 79,88 L75,82 L71,76 L67,68 L73,66 L79,70 L85,68 L90,62 L94,55 L97,47 L95,39 L89,33 L83,29 L77,25 L69,21 L60,18 L52,16 L44,17 L36,15 L28,13 L20,17 Z";
@@ -16,14 +15,11 @@ const PINS = [
   { x: 74, y: 80, label: "Osa", d: 2.0 },
 ];
 
-function Stat({ to, suffix, label, delay }) {
-  const [go, setGo] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setGo(true), delay); return () => clearTimeout(t); }, [delay]);
-  const n = useCountUp(go ? to : 0, 1100);
+function Signal({ label, detail }) {
   return (
-    <div style={{ textAlign: "center" }}>
-      <div style={{ fontSize: "clamp(20px,3vw,28px)", fontWeight: 900, color: "#fff", letterSpacing: -0.8, lineHeight: 1, textShadow: "0 2px 16px rgba(34,211,238,.4)" }}>{n}{suffix}</div>
-      <div style={{ color: c.gold, fontWeight: 800, fontSize: 11, marginTop: 4, textTransform: "uppercase", letterSpacing: 0.4 }}>{label}</div>
+    <div style={{ minWidth: 128 }}>
+      <div style={{ color: "#fff", fontWeight: 850, fontSize: 12.5, lineHeight: 1.25 }}>{label}</div>
+      <div style={{ color: c.gold, fontWeight: 800, fontSize: 9.5, marginTop: 4, textTransform: "uppercase", letterSpacing: 0.55 }}>{detail}</div>
     </div>
   );
 }
@@ -55,18 +51,18 @@ export function MapHero() {
         {/* ── copy + stats ── */}
         <div className="mh-copy">
           <div style={{ animation: "mhRise .6s .05s both" }}>
-            <Eyebrow><span style={{ color: c.gold }}>Explore the map</span></Eyebrow>
+            <Eyebrow><span style={{ color: c.gold }}>Plan by place, not just activity</span></Eyebrow>
           </div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "mhRise .6s .12s both" }}>
-            Explore Costa Rica<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>by region.</span>
+            See Costa Rica<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>by route and region.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 480, margin: "16px 0 0", animation: "mhRise .6s .2s both" }}>
-            Find activities, beaches, restaurants, national parks, waterfalls and airports on the map.
+            Compare activity areas, beaches, food and key stops, then shape a route that keeps travel time in view.
           </p>
           <div style={{ display: "flex", gap: 26, marginTop: 24, flexWrap: "wrap", animation: "mhRise .6s .28s both" }}>
-            <Stat to={120} suffix="+" label="mapped spots" delay={500} />
-            <Stat to={7} suffix="" label="coastal regions" delay={650} />
-            <Stat to={12} suffix="" label="national parks" delay={800} />
+            <Signal label="Activities + places" detail="One route view" />
+            <Signal label="Seven starting regions" detail="Easy to compare" />
+            <Signal label="Provider details" detail="Confirmed first" />
           </div>
         </div>
 

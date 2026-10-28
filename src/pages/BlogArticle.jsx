@@ -42,7 +42,7 @@ export function BlogArticle({ activeId, go, viewBlogPost }) {
 
           <aside className="article-aside">
             <div className="article-takeaway"><span><BookOpen size={18} />The short version</span><p>{post.takeaway}</p></div>
-            <div className="article-confirm"><ShieldCheck size={18} /><div><strong>Before payment</strong><p>TicoWild confirms current availability, timing, operator requirements and final price for the actual booking.</p></div></div>
+            <div className="article-confirm"><ShieldCheck size={18} /><div><strong>Before payment</strong><p>TicoWild checks current availability, timing, provider requirements and final price with the independent local provider.</p></div></div>
             <Button variant="gold" full onClick={() => go(post.cta.page)}>{post.cta.label} <ArrowRight size={16} /></Button>
           </aside>
         </div>

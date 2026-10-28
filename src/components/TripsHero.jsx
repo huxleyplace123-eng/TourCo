@@ -37,14 +37,14 @@ export function TripsHero({ count = 0 }) {
       <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 20, alignItems: "center" }} className="tr-grid">
         {/* copy */}
         <div className="tr-copy">
-          <div style={{ animation: "trRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>My Trips</span></Eyebrow></div>
+          <div style={{ animation: "trRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>My route, in one place</span></Eyebrow></div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "trRise .6s .12s both" }}>
-            Your saved Costa Rica<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>activities.</span>
+            Your saved Costa Rica<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>route and experiences.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.82)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "trRise .6s .2s both" }}>
             {count > 0
-              ? `${count} saved activit${count !== 1 ? "ies" : "y"}. Review the suggested schedule or request current availability.`
-              : "Activities you save appear here. Nothing is reserved and no payment is taken until availability and pricing are confirmed."}
+              ? `${count} saved activit${count !== 1 ? "ies" : "y"}. Review how they fit together, then ask TicoWild to confirm the current details with each local provider.`
+              : "Save local experiences here and shape them into a route. Nothing is reserved and no payment is taken until provider details are confirmed."}
           </p>
         </div>
 

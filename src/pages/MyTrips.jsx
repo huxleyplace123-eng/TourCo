@@ -14,8 +14,8 @@ import { useConversion } from "../components/ConversionCenter.jsx";
 // How the trip works — three simple, reassuring steps.
 const STEPS = [
   { icon: PlusCircle, number: "01", title: "Save activities", body: "Keep the activities you want to review." },
-  { icon: Route, number: "02", title: "Review the suggested schedule", body: "Activities are arranged by location and timing." },
-  { icon: CalendarCheck, number: "03", title: "Confirm when ready", body: "We verify every detail before you pay." },
+  { icon: Route, number: "02", title: "Review the route", body: "Activities are arranged by location, timing and realistic travel flow." },
+  { icon: CalendarCheck, number: "03", title: "Confirm when ready", body: "We check every current detail with the local provider before you pay." },
 ];
 
 // What a great Costa Rica trip actually looks like — descriptive, not a list of
@@ -34,7 +34,7 @@ function EmptyState({ go }) {
         <div className="trip-start-intro">
           <span>How saved trips work</span>
           <h2>Save activities and request availability.</h2>
-          <p>Save activities here, review the suggested schedule and request confirmed details when ready.</p>
+          <p>Save locally operated experiences here, review the route and request provider-confirmed details when ready.</p>
         </div>
         <ol className="trip-start-progress" aria-label="Three steps from inspiration to confirmation">
           {STEPS.map((s) => (

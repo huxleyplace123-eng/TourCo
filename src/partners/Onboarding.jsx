@@ -103,7 +103,7 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
         `}</style>
         <aside className="onboard-card onboard-side" style={{ padding:20,alignSelf:"start",position:"sticky",top:20 }}>
           <div style={{ color:c.teal,fontSize:11,fontWeight:800,textTransform:"uppercase",letterSpacing:".1em" }}>Partner onboarding</div>
-          <h2 style={{ margin:"8px 0 6px",fontSize:22 }}>Build a profile guests can trust.</h2>
+          <h2 style={{ margin:"8px 0 6px",fontSize:22 }}>Show travelers the local business behind the experience.</h2>
           <p style={{ margin:"0 0 20px",color:c.stone,fontSize:12.5,lineHeight:1.6 }}>TicoWild reviews every partner before publishing or sending bookings.</p>
           {[['Business details',Building2],['Services and regions',MapPin],['Review details',BadgeCheck],['Agreement and submit',FileSignature]].map(([label,Icon],i)=>{
             const n=i+1,on=step===n,done=step>n;

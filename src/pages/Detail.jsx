@@ -6,7 +6,6 @@ import { activityImage } from "../images.js";
 import { Section, Button, Badge } from "../components/ui.jsx";
 import { Photo, Reveal } from "../motion.jsx";
 import { ActivityCard } from "../components/ActivityCard.jsx";
-import { depositTerms } from "../intelligence/trust.js";
 import { VibeScores } from "../components/VibeScores.jsx";
 import { useConversion } from "../components/ConversionCenter.jsx";
 
@@ -40,13 +39,12 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
       <Section bg={c.sand} pad={80}>
         <div style={{ maxWidth: 620, margin: "0 auto", textAlign: "center" }}>
           <h1 style={{ color: c.charcoal, marginBottom: 10 }}>Experience unavailable</h1>
-          <p style={{ color: c.stone }}>This experience is not currently approved for publication.</p>
-          <Button variant="primary" onClick={() => go("activities")}>Browse approved experiences</Button>
+          <p style={{ color: c.stone }}>This experience is not currently available in the published collection.</p>
+          <Button variant="primary" onClick={() => go("activities")}>Browse published experiences</Button>
         </div>
       </Section>
     );
   }
-  const terms = depositTerms(a.price, 1);
   const inTrip = trip.some((t) => t.id === a.id);
   const related = activities.filter((x) => x.category === a.category && x.id !== a.id).slice(0, 3);
   const alsoLike = related.length ? related : activities.filter((x) => x.id !== a.id).slice(0, 3);
@@ -63,9 +61,9 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
           </button>
           <div>
             <div className="detail-hero-badges" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-              <Badge icon={ShieldCheck} bg={HERO_GLASS} color={c.teal}>Curated by TicoWild</Badge>
-              {a.family && <Badge bg={HERO_GLASS} color="#fff">Family-friendly</Badge>}
-              {a.private && <Badge bg={HERO_GLASS} color={c.gold}>Private available</Badge>}
+              <Badge icon={ShieldCheck} bg={HERO_GLASS} color={c.teal}>Independent provider</Badge>
+              {a.family && <Badge bg={HERO_GLASS} color="#fff">Family starting point</Badge>}
+              {a.private && <Badge bg={HERO_GLASS} color={c.gold}>Private option listed</Badge>}
             </div>
             <div style={{ color: c.gold, fontWeight: 800, fontSize: 14, letterSpacing: 0.5 }}>{a.category}</div>
             <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "4px 0 0", maxWidth: 900 }}>{a.title}</h1>
@@ -74,6 +72,9 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Clock size={15} />{a.duration}</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Compass size={15} />{a.level}</span>
             </div>
+            <p style={{ maxWidth: 760, margin: "11px 0 0", color: "rgba(255,255,255,.82)", fontSize: 14, lineHeight: 1.55 }}>
+              TicoWild helps fit this experience into your route and checks the current details with the provider before you decide.
+            </p>
           </div>
         </div>
       </div>
@@ -87,9 +88,9 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
             </div>
 
             <div className="detail-decision-block" style={{ padding: "clamp(22px,4vw,30px)", borderRadius: 22, background: c.canvas2, border: `1px solid ${c.line}` }}>
-              <div style={{ color: c.teal, fontSize: 11.5, fontWeight: 900, letterSpacing: ".09em", textTransform: "uppercase" }}>No surprises at checkout</div>
-              <h2 style={{ color: "#fff", fontSize: "clamp(22px,3vw,30px)", letterSpacing: -.6, margin: "7px 0 8px" }}>Availability, operator and pricing</h2>
-              <p style={{ color: c.stone, fontSize: 14, lineHeight: 1.55, margin: "0 0 20px" }}>These details arrive with the availability confirmation, so you can make the decision with the full picture.</p>
+              <div style={{ color: c.teal, fontSize: 11.5, fontWeight: 900, letterSpacing: ".09em", textTransform: "uppercase" }}>Checked with the people running it</div>
+              <h2 style={{ color: "#fff", fontSize: "clamp(22px,3vw,30px)", letterSpacing: -.6, margin: "7px 0 8px" }}>Current details, confirmed with the provider.</h2>
+              <p style={{ color: c.stone, fontSize: 14, lineHeight: 1.55, margin: "0 0 20px" }}>Before payment, TicoWild checks who is operating, availability, start and pickup details, final total, inclusions and the provider's cancellation terms.</p>
               <div className="detail-decision-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 10 }}>
                 {[
                   [ShieldCheck, "Confirmed operator"],
@@ -134,20 +135,20 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
           <aside className="detail-book-panel" style={{ position: "sticky", top: 92, display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ background: c.white, borderRadius: 20, padding: 24, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
-                <span style={{ color: c.stone, fontWeight: 700, marginBottom: 7, marginRight: 2 }}>From</span>
+                <span style={{ color: c.stone, fontWeight: 700, marginBottom: 7, marginRight: 2 }}>Planning estimate from</span>
                 <span style={{ fontSize: 32, fontWeight: 800, color: c.charcoal }}>{money(a.price)}</span>
                 <span style={{ color: c.stone, fontWeight: 600, marginBottom: 6 }}>/ person</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, color: c.teal, fontWeight: 700, fontSize: 13.5, marginTop: 4 }}>
                 <ShieldCheck size={15} />Final price and availability confirmed first
               </div>
-              <Button variant={inTrip ? "dark" : "primary"} full size="lg" style={{ marginTop: 18 }} onClick={() => addToTrip(a.id)}>
-                {inTrip ? <><Check size={17} />Saved to your trip</> : <><Plus size={17} />Save to trip</>}
+              <Button variant="primary" full size="lg" style={{ marginTop: 18 }} onClick={() => openInquiry({ intent: "activity", activity: a, destination: a.region })}>
+                <MessageCircle size={17} />Check current availability
               </Button>
-              <Button variant="ghost" full size="sm" style={{ marginTop: 10 }} onClick={() => openInquiry({ intent: "activity", activity: a, destination: a.region })}>
-                <MessageCircle size={15} />Request current availability
+              <Button variant={inTrip ? "dark" : "ghost"} full size="sm" style={{ marginTop: 10 }} onClick={() => addToTrip(a.id)}>
+                {inTrip ? <><Check size={15} />Saved to my trip</> : <><Plus size={15} />Save to my trip</>}
               </Button>
-              <p style={{ color: c.stone, fontSize: 12, lineHeight: 1.5, marginTop: 14, marginBottom: 0 }}>Adding this to your trip does not reserve it or charge you. TicoWild confirms the exact details first. If you continue, the estimated deposit is {money(terms.deposit)} per person.</p>
+              <p style={{ color: c.stone, fontSize: 12, lineHeight: 1.5, marginTop: 14, marginBottom: 0 }}>No reservation or charge is created here. The provider and final details are confirmed first.</p>
             </div>
 
             {/* Clear next steps instead of publishing unverified operator claims. */}
@@ -161,14 +162,14 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
                   </div>
                 ))}
               </div>
-              <button onClick={() => openConcierge({ intent: "activity", activity_title: a.title, destination: a.region })} style={{ marginTop: 16, background: "none", border: 0, padding: 0, color: c.teal, fontWeight: 800, cursor: "pointer" }}>Ask Rico first →</button>
+              <button onClick={() => openConcierge({ intent: "activity", activity_title: a.title, destination: a.region })} style={{ marginTop: 16, background: "none", border: 0, padding: 0, color: c.teal, fontWeight: 800, cursor: "pointer" }}>Ask Rico about this activity →</button>
             </div>
           </aside>
         </div>
 
         {/* Related */}
         <div style={{ marginTop: 46 }}>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: c.charcoal, marginBottom: 20 }}>Related activities</h2>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: c.charcoal, marginBottom: 20 }}>More experiences near this route</h2>
           <div className="responsive-card-grid" style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
             {alsoLike.map((x, i) => (
               <Reveal key={x.id} delay={(i % 3) * 70}>

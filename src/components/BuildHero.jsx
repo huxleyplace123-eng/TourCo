@@ -52,17 +52,17 @@ export function BuildHero() {
       <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1180, margin: "0 auto", padding: "44px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 28, alignItems: "center" }} className="bh-grid">
         {/* ── copy ── */}
         <div className="bh-copy">
-          <div style={{ animation: "bhRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>Build My Costa Rica</span></Eyebrow></div>
+          <div style={{ animation: "bhRise .6s .05s both" }}><Eyebrow><span style={{ color: c.gold }}>Plan with local context</span></Eyebrow></div>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 900, margin: "6px 0 0", animation: "bhRise .6s .12s both" }}>
-            Build your Costa Rica<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>activity plan.</span>
+            Build a route that<br /><span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>connects the local pieces.</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.85)", fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.55, maxWidth: 470, margin: "16px 0 0", animation: "bhRise .6s .2s both" }}>
-            Add your travelers, destinations, dates and preferences. We’ll create a suggested activity schedule for your trip.
+            Share your dates, destinations, group and pace. TicoWild organizes a starting plan around independent Costa Rican experiences, then confirms current details with the providers.
           </p>
           {/* Tico "planning" status line */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 9, marginTop: 20, background: "rgba(11,26,46,.55)", backdropFilter: "blur(8px)", border: `1px solid ${c.line}`, padding: "8px 13px", borderRadius: 999, animation: "bhRise .6s .28s both" }}>
             <TicoFace size={24} glow={false} mood="excited" animate={false} />
-            <span style={{ color: "#fff", fontSize: 13, fontWeight: 700 }}>Creating your activity plan</span>
+            <span style={{ color: "#fff", fontSize: 13, fontWeight: 700 }}>Matching your route to local experiences</span>
             <span style={{ display: "inline-flex", gap: 3 }}>
               {[0, 1, 2].map((i) => <span key={i} style={{ width: 5, height: 5, borderRadius: 999, background: c.teal, animation: `bhDot 1.4s ease-in-out ${i * 0.2}s infinite` }} />)}
             </span>
@@ -100,14 +100,14 @@ export function BuildHero() {
               <span style={{ display: "inline-flex", gap: 3 }}>
                 {[0, 1, 2].map((i) => <span key={i} style={{ width: 5, height: 5, borderRadius: 999, background: c.gold, animation: `bhDot 1.4s ease-in-out ${i * 0.2}s infinite` }} />)}
               </span>
-              Adding recommendations based on your preferences
+              Organizing local options around your route
             </div>
           )}
         </div>
       </div>
 
       <style>{`
-        @media(min-width:900px){ .bh-grid{ grid-template-columns: 1fr .92fr!important } }
+        @media(min-width:900px){ .build-hero{min-height:420px!important}.bh-grid{ grid-template-columns: 1fr .92fr!important }.bh-plan{gap:10px!important} }
         @media(max-width:620px){.build-hero{min-height:330px!important}.build-hero .bh-grid{padding:34px 22px!important}.build-hero .bh-plan{display:none!important}.build-hero .bh-copy p{max-width:34ch}.build-hero .bh-copy h1{font-size:36px!important}}
       `}</style>
     </div>

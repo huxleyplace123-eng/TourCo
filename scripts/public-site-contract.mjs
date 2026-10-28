@@ -129,7 +129,7 @@ assert.match(trips, /Availability check/);
 assert.match(trips, /Confirm and pay/);
 
 const detail = read("src/pages/Detail.jsx");
-assert.match(detail, /Availability, operator and pricing/);
+assert.match(detail, /Current details, confirmed with the provider/);
 assert.match(detail, /Cancellation terms/);
 assert.match(detail, /const HERO_GLASS = "rgba\(5,15,33,\.86\)"/, "activity hero controls need a high-contrast dark surface");
 assert.match(detail, /className="detail-back-button"/, "the activity back control needs explicit contrast styling");
@@ -179,7 +179,7 @@ assert.equal(insider.includes("without throwing away the depth"), false, "intern
 const why = read("src/pages/Why.jsx");
 assert.equal(why.includes("TicoWild should win"), false, "internal positioning language must not appear on the public site");
 const dealsPage = read("src/pages/Deals.jsx");
-assert.match(dealsPage, /title="Costa Rica deals and promo codes"/, "the deals page needs a direct descriptive title");
+assert.match(dealsPage, /title="Spend smarter across Costa Rica"/, "the deals page needs a direct descriptive title");
 assert.equal(dealsPage.includes('title="Spend less on the right things" accentWord="less"'), false, "the deals hero must not duplicate its accent word");
 for (const phrase of ["Now shape the route", "We’ll keep it practical", "See the kind of day", "Choose your kind of wild", "Less searching. Better Costa Rica days.", "Spend smarter. Do more.", "Where does this trip take shape?", "What should this trip feel like?", "Private Signature Days"]) {
   assert.equal(publicSource.includes(phrase), false, `public copy must use direct language instead of: ${phrase}`);

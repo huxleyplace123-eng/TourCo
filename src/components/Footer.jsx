@@ -36,7 +36,7 @@ export function Footer({ go }) {
         <div className="footer-brand">
           <div style={{ marginBottom: 8 }}><Logo fontSize={18} tagline /></div>
           <p style={{ fontSize: 12.5, lineHeight: 1.48, maxWidth: 220, margin: 0 }}>
-            Curated Costa Rica experiences, route-aware planning and a clear human handoff.
+            Costa Rica experiences from independent local providers, organized around your route and confirmed before payment.
           </p>
         </div>
         <Col title="Explore" links={[["tico", "Meet Rico"], ["activities", "Activities"], ["insider", "Insider Guide"], ["blog", "Blog"], ["deals", "Deals"], ["packages", "Collections"]]} go={go} />

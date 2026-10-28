@@ -5,7 +5,7 @@ import { c, grad, glass, money, gradText } from "../theme.js";
 import { packages, activities } from "../data.js";
 import { packageImage, activityImage, heroImage, themedSlides } from "../images.js";
 
-const PKG_SLIDES = themedSlides("fishing", 1800);
+const PKG_SLIDES = themedSlides("activities", 1800);
 import { Section, Eyebrow, Button } from "../components/ui.jsx";
 import { TiltCard, Photo, Reveal } from "../motion.jsx";
 import { useConversion } from "../components/ConversionCenter.jsx";
@@ -27,9 +27,9 @@ function PackageCard({ p, featured, onOpen }) {
   const activityTotal = packageActivityTotal(p);
   return (
     <TiltCard max={featured ? 6 : 9} radius={24}
-      style={{ position: "relative", overflow: "hidden", border: `1px solid ${c.line}`, cursor: "pointer", minHeight: featured ? 460 : 380, display: "flex" }}>
+      style={{ position: "relative", overflow: "hidden", border: `1px solid ${c.line}`, cursor: "pointer", minHeight: featured ? 410 : 340, display: "flex" }}>
       <div onClick={() => onOpen(p)} style={{ position: "absolute", inset: 0 }}>
-        <Photo src={packageImage(p.id, featured ? 1400 : 900)} fallback={grad[p.gradKey] || grad.ocean} alt={p.title} height={featured ? 460 : 380} zoom
+        <Photo src={packageImage(p.id, featured ? 1400 : 900)} fallback={grad[p.gradKey] || grad.ocean} alt={p.title} height={featured ? 410 : 340} zoom
           overlay={<div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,26,46,.15) 0%, rgba(11,26,46,.35) 45%, rgba(11,26,46,.94) 100%)" }} />} />
       </div>
       {/* content over photo */}
@@ -42,6 +42,7 @@ function PackageCard({ p, featured, onOpen }) {
           )}
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, ...glass, color: "#fff", padding: "5px 11px", borderRadius: 999, fontSize: 12, fontWeight: 700 }}><Clock size={12} />{p.length}</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, ...glass, color: "#fff", padding: "5px 11px", borderRadius: 999, fontSize: 12, fontWeight: 700 }}><Users size={12} />{p.bestFor}</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, ...glass, color: c.teal, padding: "5px 11px", borderRadius: 999, fontSize: 12, fontWeight: 750 }}><MapPin size={12} />Locally operated</span>
         </div>
         <h3 style={{ margin: 0, fontSize: featured ? 34 : 25, fontWeight: 800, letterSpacing: -1, color: "#fff", lineHeight: 1.05, textShadow: "0 4px 24px rgba(0,0,0,.6)" }}>{p.title}</h3>
         <p style={{ color: "rgba(243,247,255,.82)", fontSize: featured ? 15.5 : 14, lineHeight: 1.5, margin: "8px 0 0", maxWidth: 460 }}>{p.blurb}</p>
@@ -65,7 +66,7 @@ function PackageCard({ p, featured, onOpen }) {
             <div style={{ fontSize: 12, color: "rgba(243,247,255,.6)", fontWeight: 600 }}>listed experiences from</div>
             <div style={{ fontSize: featured ? 30 : 24, fontWeight: 800, ...gradText(`linear-gradient(100deg,${c.teal},${c.gold})`) }}>{money(activityTotal)}<span style={{ fontSize: 13, color: "rgba(243,247,255,.6)", WebkitTextFillColor: "rgba(243,247,255,.6)", fontWeight: 600 }}>/person</span></div>
           </div>
-          <Button variant="primary" size={featured ? "md" : "sm"} onClick={() => onOpen(p)}>View this trip <ArrowRight size={15} /></Button>
+          <Button variant="primary" size={featured ? "md" : "sm"} onClick={() => onOpen(p)}>View collection <ArrowRight size={15} /></Button>
         </div>
       </div>
     </TiltCard>
@@ -129,7 +130,7 @@ function PackageDrawer({ p, onClose, addToTrip }) {
 
           {/* trust row */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
-            {[["Current details confirmed", ShieldCheck], ["No payment in the planner", Sparkles], ["Human help available", MessageCircle]].map(([t, Icon]) => (
+            {[["Independent local operators", MapPin], ["Details confirmed before payment", ShieldCheck], ["Human coordination", MessageCircle]].map(([t, Icon]) => (
               <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(34,211,238,.08)", border: "1px solid rgba(34,211,238,.2)", color: c.teal, padding: "7px 12px", borderRadius: 999, fontWeight: 700, fontSize: 12.5 }}><Icon size={14} />{t}</span>
             ))}
           </div>
@@ -137,7 +138,7 @@ function PackageDrawer({ p, onClose, addToTrip }) {
           {/* footer / price + actions */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap", marginTop: 24, paddingTop: 20, borderTop: `1px dashed ${c.line}` }}>
             <div>
-              <div style={{ fontSize: 12, color: c.stone }}>listed experiences · estimated 20% after confirmation {money(activityTotal * 0.2)}</div>
+              <div style={{ fontSize: 12, color: c.stone }}>Listed experiences · planning estimate</div>
               <div style={{ fontSize: 28, fontWeight: 800, color: c.charcoal }}>{money(activityTotal)}<span style={{ fontSize: 14, color: c.stone, fontWeight: 600 }}>/person</span></div>
               <div style={{ maxWidth: 470, marginTop: 6, color: c.stone, fontSize: 12.5, lineHeight: 1.5 }}>This total covers the listed experiences currently matched in TicoWild. Lodging, transport, meals and custom additions are only included when they appear in your confirmed quote.</div>
             </div>
@@ -187,12 +188,12 @@ export function Packages({ go, addToTrip }) {
           </div>
         </div>
         <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
-          <Eyebrow><span style={{ color: c.gold }}>Activity packages</span></Eyebrow>
+          <Eyebrow><span style={{ color: c.gold }}>Locally fulfilled collections</span></Eyebrow>
           <h1 className="tico-page-title" style={{ color: "#fff", fontWeight: 830, margin: "6px 0 10px" }}>
-            Costa Rica activity <span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>packages</span>
+            Curated Costa Rica <span style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.18)" }}>activity collections</span>
           </h1>
           <p style={{ color: "rgba(243,247,255,.8)", fontSize: 18, maxWidth: 560, lineHeight: 1.6 }}>
-            Review ready-made activity packages with estimated pricing. Open a package to see the schedule and included activities.
+            Start with a route-ready collection. Independent Costa Rican operators deliver the experiences; TicoWild organizes the route and confirms the final details.
           </p>
         </div>
       </div>
@@ -214,7 +215,7 @@ export function Packages({ go, addToTrip }) {
 
       {/* closing CTA */}
       <Section bg={c.sand} pad={60}>
-        <div className="closing-cta" style={{ position: "relative", borderRadius: 30, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2, padding: "56px 28px", textAlign: "center" }}>
+        <div className="closing-cta" style={{ position: "relative", borderRadius: 30, overflow: "hidden", border: `1px solid ${c.line}`, background: c.canvas2, padding: "46px 28px", textAlign: "center" }}>
           <div style={{ position: "absolute", inset: 0, background: `radial-gradient(60% 80% at 80% 20%, rgba(34,211,238,.18), transparent 55%), radial-gradient(60% 80% at 15% 90%, rgba(255,208,0,.12), transparent 55%)` }} />
           <div style={{ position: "relative" }}>
             <h2 style={{ color: "#fff", fontSize: "clamp(26px,4vw,42px)", fontWeight: 800, letterSpacing: -1, margin: 0 }}>Need a custom activity plan?</h2>
@@ -228,6 +229,8 @@ export function Packages({ go, addToTrip }) {
       </Section>
 
       <PackageDrawer p={open} onClose={() => setOpen(null)} addToTrip={addToTrip} />
+
+      <style>{`@media(min-width:1080px){.package-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}`}</style>
     </>
   );
 }

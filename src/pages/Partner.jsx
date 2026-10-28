@@ -7,12 +7,12 @@ import { PageHero } from "../components/PageHero.jsx";
 import { pageHero } from "../images.js";
 
 const PERKS = [
-  { icon: Users, title: "Qualified travelers", body: "We send you guests who've already chosen their experience — fewer no-shows, higher-value bookings." },
-  { icon: TrendingUp, title: "Fill your calendar", body: "Steady demand across seasons, with a concierge handling the back-and-forth so you can focus on guiding." },
-  { icon: ShieldCheck, title: "Fair, transparent terms", body: "Clear commissions, fast payouts, and no exclusivity lock-in. You stay in control of your operation." },
+  { icon: Users, title: "Right-fit traveler requests", body: "Travelers arrive with a route, dates and experience in mind, so you can review a clearer request." },
+  { icon: TrendingUp, title: "Your business stays visible", body: "Travelers see the independent local business behind the experience, not a faceless inventory listing." },
+  { icon: ShieldCheck, title: "Clear, non-exclusive partnership", body: "You keep control of your availability, operating rules and final confirmation." },
 ];
 
-const CHECKLIST = ["Licensed & insured in Costa Rica", "Consistent 4.5★+ guest experience", "Responsive within a business day", "A genuine love for what you do"];
+const CHECKLIST = ["Licensed and insured where required", "Clear experience, pickup and pricing details", "Responsive traveler coordination", "A genuine commitment to the local experience"];
 
 export function Partner({ go }) {
   const [form, setForm] = useState({ name: "", operator: "", region: "Manuel Antonio", email: "", type: "Tours & activities" });
@@ -32,8 +32,9 @@ export function Partner({ go }) {
 
   return (
     <>
-      <PageHero image={pageHero("partner")} align="center" eyebrow="For operators" title="Partner with TicoWild" accentWord="TicoWild"
-        sub="Join a curated network of Costa Rica's best local operators. We bring the travelers — you deliver the adventure." />
+      <PageHero image={pageHero("partner")} eyebrow="For independent Costa Rican operators" title="Grow with TicoWild" accentWord="TicoWild"
+        sub="A partner network built around guides, captains, drivers and independent experience businesses—not around replacing them."
+        trust={["Your brand", "Your operating rules", "Your availability", "A clearer traveler handoff"]} />
 
       <Section bg={c.sand}>
         <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))" }}>
@@ -66,7 +67,7 @@ export function Partner({ go }) {
               ))}
             </div>
             <p style={{ color: c.stone, fontSize: 14.5, lineHeight: 1.6, marginTop: 20 }}>
-              Sound like you? Send your details and our operator team will reach out within two business days.
+              Sound like you? Send your details for a manual review. Nothing is published automatically.
             </p>
           </div>
 
@@ -83,7 +84,7 @@ export function Partner({ go }) {
                 <Button variant="dark" full size="lg" style={{ marginTop: 8 }} onClick={beginApplication}>
                   <Send size={17} />Continue secure application
                 </Button>
-                <p style={{ margin:"10px 0 0",color:c.stone,fontSize:11.5,textAlign:"center",lineHeight:1.5 }}>You’ll create a secure partner account, sign the agreement, and submit the complete application in the Partner Center.</p>
+                <p style={{ margin:"10px 0 0",color:c.stone,fontSize:11.5,textAlign:"center",lineHeight:1.5 }}>You’ll create a secure partner account and submit the complete application. Nothing is published until the team reviews the business and operating details.</p>
               </>
           </div>
         </div>

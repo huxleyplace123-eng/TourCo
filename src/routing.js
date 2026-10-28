@@ -21,19 +21,19 @@ const PAGE_PATHS = {
 };
 
 const PAGE_META = {
-  home: ["TicoWild | Costa Rica Activities and Trip Planning", "Browse Costa Rica activities by region and build an activity plan around your destinations and dates."],
-  activities: ["Costa Rica Experiences | TicoWild", "Explore curated Costa Rica experiences by region, pace and travel style."],
-  kids: ["Kid-Friendly Costa Rica Activities | TicoWild", "Explore kid-friendly Costa Rica activities by region and pace. TicoWild confirms age, height, swimming, weather and operator requirements before payment."],
-  packages: ["Costa Rica Experience Collections | TicoWild", "Explore simple Costa Rica experience collections for couples, families, groups and adventure travelers."],
-  build: ["Plan My Costa Rica Experiences | TicoWild", "Build a simple Costa Rica activity plan around your dates, route, group and travel style."],
-  why: ["How TicoWild Works | TicoWild", "See how TicoWild helps travelers choose experiences, confirm the details and stay supported during their trip."],
-  partner: ["Become a TicoWild Partner", "Apply to offer your Costa Rica experiences through TicoWild."],
-  portal: ["My Costa Rica Trip | TicoWild", "Review the Costa Rica experiences saved to your TicoWild trip."],
-  deals: ["Costa Rica Experience Offers | TicoWild", "Explore current TicoWild experience offers and trip ideas."],
-  map: ["Explore Costa Rica by Map | TicoWild", "Explore Costa Rica destinations, experiences and local planning ideas on the TicoWild map."],
-  tico: ["Meet Rico | TicoWild", "Meet Rico, TicoWild's Costa Rica planning companion."],
-  insider: ["Costa Rica Insider Guide | TicoWild", "Practical Costa Rica destination, activity and route guidance from TicoWild."],
-  blog: ["Costa Rica Travel Blog & Field Guide | TicoWild", "Plan Costa Rica with route-first travel ideas, family guidance, regional comparisons and practical tour booking checks."],
+  home: ["TicoWild | Costa Rica, Planned Locally", "Build a route-aware Costa Rica trip with independent local providers and current details confirmed before payment."],
+  activities: ["Local Costa Rica Experiences | TicoWild", "Explore Costa Rica experiences by region, pace and travel style, then ask TicoWild to confirm the current provider details."],
+  kids: ["Kid-Friendly Costa Rica Activities | TicoWild", "Find family-ready Costa Rica activities and have TicoWild check current age, height, swimming, weather and provider requirements before payment."],
+  packages: ["Costa Rica Experience Collections | TicoWild", "Start with a route-aware collection for couples, families, groups or adventure travelers, built around independent local experiences."],
+  build: ["Plan My Costa Rica Route | TicoWild", "Organize Costa Rica experiences around your dates, destinations, group and pace, with current provider details confirmed before payment."],
+  why: ["How TicoWild Connects Your Costa Rica Trip", "See how TicoWild organizes your route, narrows the choices and confirms current details with independent local providers."],
+  partner: ["Become a Local TicoWild Partner", "Connect your independent Costa Rica experience with travelers planning around your region and route."],
+  portal: ["My Costa Rica Trip | TicoWild", "Review the local experiences and route ideas saved to your TicoWild trip."],
+  deals: ["Costa Rica Experience Offers | TicoWild", "Explore listed offers from Costa Rica experiences and confirm the current terms before relying on them."],
+  map: ["Explore Costa Rica by Route and Region | TicoWild", "Compare Costa Rica activity areas, beaches, food and key stops while keeping route and travel time in view."],
+  tico: ["Meet Rico, Your Costa Rica Planning Companion | TicoWild", "Meet Rico, the planning companion that helps organize local Costa Rica experiences around your route."],
+  insider: ["Costa Rica Local Places and Route Guide | TicoWild", "Browse local places, activities and practical Costa Rica context, organized around the route you want to travel."],
+  blog: ["Costa Rica Travel Blog & Local Field Guide | TicoWild", "Plan Costa Rica with route-first ideas, local context, family guidance and practical provider questions."],
 };
 
 export function slugify(value = "") {
