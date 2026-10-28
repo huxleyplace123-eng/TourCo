@@ -22,7 +22,7 @@
    treatment. The imagery still feels immersive, but the page now reads like
    a premium travel product instead of an oversized presentation. */
 @media (min-width: 821px) {
-  .tn-hero { min-height: 570px !important; }
+  .tn-hero { min-height: 500px !important; }
   .page-hero { min-height: 340px !important; }
   .guide-hero { min-height: 340px !important; }
   .map-hero { min-height: 360px !important; }
