@@ -98,38 +98,47 @@ export function CinematicHero({ go, onSearch }) {
         .tn-hero-accent-finish { display: inline-block; }
         .tn-hero-accent-finish { margin-left: .22em; }
         .tn-hero-search {
-          width: min(820px,100%);
+          width: min(860px,100%);
           display: grid;
-          grid-template-columns: minmax(0,1.35fr) minmax(190px,.65fr) minmax(154px,auto);
+          grid-template-columns: minmax(300px,1.25fr) minmax(235px,.8fr) minmax(170px,auto);
           align-items: center;
-          gap: 0;
+          gap: 7px;
           margin-top: 30px;
-          padding: 8px;
+          padding: 7px;
           border: 1px solid rgba(255,255,255,.6);
-          border-radius: 28px;
-          background: rgba(251,253,255,.94);
+          border-radius: 24px;
+          background: rgba(242,247,252,.96);
           box-shadow: 0 30px 80px -34px rgba(0,0,0,.9), 0 0 42px -22px rgba(34,211,238,.8);
           backdrop-filter: blur(18px);
         }
-        .tn-search-field { min-width:0;display:grid;grid-template-columns:28px minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:10px 18px; }
-        .tn-search-field + .tn-search-field { border-left:1px solid rgba(11,26,46,.14); }
+        .tn-search-field { min-width:0;min-height:64px;display:grid;grid-template-columns:28px minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:9px 15px;border:1px solid rgba(11,26,46,.1);border-radius:16px;background:#fff;box-shadow:0 8px 22px -20px rgba(11,26,46,.55);transition:border-color .18s ease,box-shadow .18s ease; }
+        .tn-search-field + .tn-search-field { border-left:1px solid rgba(11,26,46,.1); }
+        .tn-search-field:focus-within { border-color:rgba(5,141,161,.7);box-shadow:0 0 0 3px rgba(34,211,238,.14),0 10px 24px -20px rgba(11,26,46,.62); }
         .tn-search-field > svg { grid-row:1 / 3;color:#058da1; }
-        .tn-search-field label { color:${c.ink};font-size:14.5px;font-weight:900;letter-spacing:.01em; }
-        .tn-search-field input { min-width:0;width:100%;border:0;outline:0;background:transparent;color:${c.ink};font:inherit;font-size:18px;padding:4px 0 0; }
+        .tn-search-field label { color:${c.ink};font-size:13.5px;font-weight:900;letter-spacing:.01em; }
+        .tn-search-field input { min-width:0;width:100%;border:0;outline:0;background:transparent;color:${c.ink};font:inherit;font-size:16.5px;padding:3px 0 0; }
+        .tn-search-field input[type="date"] { color-scheme:light;padding-right:2px; }
+        .tn-search-field input[type="date"]::-webkit-calendar-picker-indicator { width:18px;height:18px;margin:0;cursor:pointer;opacity:.78; }
         .tn-search-field input::placeholder { color:rgba(11,26,46,.5); }
-        .tn-hero-search button { width:auto;height:56px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border:0;border-radius:20px;background:${c.gold};color:${c.ink};cursor:pointer;font:inherit;font-size:13px;font-weight:900;white-space:nowrap;box-shadow:0 12px 28px -12px rgba(255,208,0,.9);transition:transform .18s ease,box-shadow .18s ease; }
-        .tn-hero-search button:hover { transform:scale(1.05);box-shadow:0 16px 36px -12px rgba(255,208,0,1); }
+        .tn-hero-search button { width:auto;height:64px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border:0;border-radius:16px;background:${c.gold};color:${c.ink};cursor:pointer;font:inherit;font-size:13px;font-weight:900;white-space:nowrap;box-shadow:0 12px 28px -12px rgba(255,208,0,.9);transition:transform .18s ease,box-shadow .18s ease; }
+        .tn-hero-search button:hover { transform:translateY(-1px);box-shadow:0 16px 36px -12px rgba(255,208,0,1); }
         @media (prefers-reduced-motion: reduce){ .tn-hero *{ animation:none!important } }
         @media (min-width: 980px){
           .tn-hero-content { padding: 42px 28px 54px !important; }
           .tn-hero .tn-h1 { font-size: clamp(48px,4.7vw,68px) !important; }
           .tn-hero-desktop-copy { font-size: 16px !important; margin-top: 24px !important; }
-          .tn-hero-search { width: min(720px,100%); margin-top: 24px; }
+          .tn-hero-search { width: min(860px,100%); margin-top: 24px; }
           .tn-hero-trust { margin-top: 19px !important; }
         }
         @media (min-width: 821px) and (max-width: 979px){
           .tn-hero-content { padding: 44px 28px 56px !important; gap: 32px !important; }
           .tn-hero .tn-h1 { font-size: clamp(46px,6.1vw,60px) !important; }
+        }
+        @media (min-width: 521px) and (max-width: 979px){
+          .tn-hero-search { width:100%;grid-template-columns:minmax(240px,1fr) 180px;gap:7px; }
+          .tn-search-field:first-child { grid-column:1 / -1; }
+          .tn-search-field:nth-child(2) { grid-column:1; }
+          .tn-hero-search button { grid-column:2;width:100%;height:64px; }
         }
         /* ── Mobile hero polish ── hide the desktop sun/bird blob, preserve
            readable line lengths, and give the stacked layout room to breathe. */
@@ -165,16 +174,17 @@ export function CinematicHero({ go, onSearch }) {
           .tn-hero-search {
             grid-template-columns:1fr;
             margin-top:24px;
-            padding:6px;
+            gap:7px;
+            padding:7px;
             border-radius:20px;
           }
-          .tn-search-field { grid-template-columns:22px minmax(0,1fr);column-gap:9px;padding:8px 10px; }
-          .tn-search-field:first-child { padding:9px 12px 10px;border-bottom:1px solid rgba(11,26,46,.12); }
-          .tn-search-field + .tn-search-field { border-left:0;border-bottom:1px solid rgba(11,26,46,.12); }
+          .tn-search-field,.tn-search-field:first-child,.tn-search-field:nth-child(2),.tn-hero-search button { grid-column:1 / -1; }
+          .tn-search-field { min-height:60px;grid-template-columns:22px minmax(0,1fr);column-gap:9px;padding:8px 12px;border:1px solid rgba(11,26,46,.1);border-radius:14px; }
+          .tn-search-field + .tn-search-field { border-left:1px solid rgba(11,26,46,.1); }
           .tn-search-field > svg { width:17px; }
           .tn-search-field label { font-size:12.5px; }
-          .tn-search-field input { font-size:15.5px;padding-top:2px; }
-          .tn-hero-search button { width:100%;height:48px;border-radius:15px; }
+          .tn-search-field input { font-size:16px;padding-top:2px; }
+          .tn-hero-search button { width:100%;height:50px;border-radius:14px; }
           .tn-hero-trust { margin-top: 20px !important; gap: 11px !important; }
         }
       `}</style>
