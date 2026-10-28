@@ -241,16 +241,16 @@ export function CinematicHero({ go, onSearch }) {
           <h1 className="rise tn-h1" style={{ color: "#fff", fontSize: "clamp(58px,5.8vw,84px)", lineHeight: .98, fontWeight: 800, letterSpacing: "clamp(-3.8px,-.22vw,-2px)", margin: 0, animationDelay: ".08s", textWrap: "balance" }}>
             <span className="tn-hero-title-line">Costa Rica,</span>
             <span className="tn-hero-accent-line">
-              <span className="tn-hero-accent-lead" style={{ color: "#fff", textShadow: "0 8px 30px rgba(0,0,0,.35)" }}>made</span>
-              <span className="tn-hero-accent-finish" style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.2)" }}>simple.</span>
+              <span className="tn-hero-accent-lead" style={{ color: "#fff", textShadow: "0 8px 30px rgba(0,0,0,.35)" }}>planned</span>
+              {" "}<span className="tn-hero-accent-finish" style={{ color: c.gold, textShadow: "0 0 28px rgba(255,208,0,.2)" }}>locally.</span>
               <span aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 2, borderRadius: 999, background: c.teal, boxShadow: "0 0 18px rgba(34,211,238,.24)", opacity: 0.72 }} />
             </span>
           </h1>
           <p className="rise tn-hero-desktop-copy" style={{ color: "rgba(243,247,255,.78)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, marginTop: 32, animationDelay: ".16s" }}>
-            Tell us where you’re staying or what you want to do. We’ll organize route-friendly options and confirm availability, operator, timing and final price before payment.
+            Tell us where you’re staying. TicoWild uses local knowledge and provider relationships to find route-friendly experiences, then confirms the current details before payment.
           </p>
           <p className="rise tn-hero-mobile-copy" style={{ color: "rgba(243,247,255,.82)", animationDelay: ".16s" }}>
-            Find route-friendly experiences. We confirm the details before payment.
+            Local knowledge. Independent providers. One clear plan before payment.
           </p>
 
           <form className="rise tn-hero-search" onSubmit={submitSearch} role="search" style={{ animationDelay: ".19s" }}>
@@ -274,7 +274,7 @@ export function CinematicHero({ go, onSearch }) {
 
           {/* refined trust row */}
           <div className="rise tn-hero-trust" style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 24, animationDelay: ".2s" }}>
-            {[[Sparkles, "No payment to start"], [Route, "Built around your route"], [ShieldCheck, "Final details confirmed first"]].map(([Icon, t]) => (
+            {[[Sparkles, "Independent local providers"], [Route, "Built around your route"], [ShieldCheck, "Confirmed with the provider"]].map(([Icon, t]) => (
               <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "rgba(243,247,255,.72)", fontSize: 13.5, fontWeight: 600 }}>
                 <Icon size={15} color={c.teal} />{t}
               </span>

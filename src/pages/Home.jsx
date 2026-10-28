@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Check, MapPin, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, MapPin, ShieldCheck, Users } from "lucide-react";
 import { c } from "../theme.js";
 import { Button } from "../components/ui.jsx";
 import { Reveal } from "../motion.jsx";
@@ -27,9 +27,9 @@ const HOME_FAMILY_IMAGE = "/images/tico-wild-family-coast-v1.jpg";
 const HOME_ARTICLES = BLOG_POSTS.slice(0, 3);
 
 const PROMISES = [
-  { icon: MapPin, step: "01", title: "Choose what fits", body: "Share your destinations, dates and the experiences that interest you." },
-  { icon: ShieldCheck, step: "02", title: "We confirm the details", body: "TicoWild checks availability, timing, operator requirements and final price." },
-  { icon: Check, step: "03", title: "You review one clear plan", body: "See the organized details before you decide or make any payment." },
+  { icon: MapPin, step: "01", title: "Share your route", body: "Add your destinations, dates and who is traveling." },
+  { icon: Users, step: "02", title: "We match the local fit", body: "TicoWild organizes experiences around your group, pace and travel time." },
+  { icon: ShieldCheck, step: "03", title: "The provider confirms", body: "We check current timing, availability, requirements and final price before payment." },
 ];
 
 export function Home({ go, viewActivity, viewBlogPost, browseActivities }) {
@@ -41,10 +41,10 @@ export function Home({ go, viewActivity, viewBlogPost, browseActivities }) {
         <div className="home-shell home-concierge-grid">
           <Reveal>
             <div className="home-concierge-copy">
-              <span className="home-kicker">How TicoWild works</span>
-              <h2 id="home-concierge-title">From trip idea to<br /><span>clear next step.</span></h2>
-              <p>Explore first. When you are ready, TicoWild organizes the details and confirms what is current before payment.</p>
-              <span className="home-concierge-assurance"><ShieldCheck size={16} /> No payment. No obligation. Details confirmed first.</span>
+              <span className="home-kicker">How local planning works</span>
+              <h2 id="home-concierge-title">From your route to<br /><span>the right local fit.</span></h2>
+              <p>Choose what interests you. TicoWild organizes the options and checks current details with the people providing the experience.</p>
+              <span className="home-concierge-assurance"><ShieldCheck size={16} /> Local connection. Clear details. No payment to plan.</span>
             </div>
           </Reveal>
 
@@ -64,9 +64,9 @@ export function Home({ go, viewActivity, viewBlogPost, browseActivities }) {
 
       <section className="home-action" aria-labelledby="home-action-title">
         <div className="home-shell home-action-head">
-          <span className="home-kicker">Activities and tours</span>
-          <h2 id="home-action-title">Popular Costa Rica<br /><em>activities.</em></h2>
-          <p>Browse zip lining, rafting, surfing and wildlife tours.</p>
+          <span className="home-kicker">Local experiences</span>
+          <h2 id="home-action-title">Costa Rica experiences,<br /><em>connected locally.</em></h2>
+          <p>Explore activities run by independent providers who know their region.</p>
         </div>
         <div className="home-action-grid">
           {ACTIONS.map((activity, index) => (
@@ -101,9 +101,9 @@ export function Home({ go, viewActivity, viewBlogPost, browseActivities }) {
               <span className="home-family-photo-note"><Users size={16} /> Family travel</span>
             </div>
             <div className="home-family-copy">
-              <span className="home-kicker">Traveling together</span>
+              <span className="home-kicker">Local guidance for families</span>
               <h2 id="home-family-title">Traveling with kids?</h2>
-              <p>Start with easier-paced wildlife, water and beginner activities, then check age and operator requirements before you choose.</p>
+              <p>Use provider guidance on pace, ages, water conditions and transfer times so your family can choose with local context.</p>
               <div className="home-family-details" aria-label="Family activity planning highlights">
                 <span>Easy-paced picks</span>
                 <span>Age guidance</span>
@@ -129,9 +129,9 @@ export function Home({ go, viewActivity, viewBlogPost, browseActivities }) {
         <div className="home-regions-wash" />
         <div className="home-shell home-regions-content">
           <Reveal>
-            <span className="home-kicker">Costa Rica regions</span>
-            <h2>Explore activities<br /><em>by region.</em></h2>
-            <p>See activities in Manuel Antonio, Guanacaste, Uvita and Dominical, along with route information.</p>
+            <span className="home-kicker">Know the communities</span>
+            <h2>Explore beyond<br /><em>the map.</em></h2>
+            <p>Each region has its own rhythm, roads and local providers. Start with where you’re staying and see what fits nearby.</p>
           </Reveal>
         </div>
         <div className="home-region-dock" aria-label="Explore Costa Rica regions">
@@ -147,11 +147,11 @@ export function Home({ go, viewActivity, viewBlogPost, browseActivities }) {
         <div className="home-shell">
           <div className="home-journal-head">
             <div>
-              <span className="home-kicker">TicoWild field guide</span>
-              <h2 id="home-journal-title">Know more before<br /><em>you choose.</em></h2>
+              <span className="home-kicker">From the community</span>
+              <h2 id="home-journal-title">Know the place before<br /><em>you go.</em></h2>
             </div>
             <div>
-              <p>Practical Costa Rica planning notes for routes, families, regions and the questions worth asking before you book.</p>
+              <p>Practical notes shaped by local routes, providers, communities and the questions worth asking before you book.</p>
               <a href="/blog" onClick={(event) => { event.preventDefault(); go("blog"); }}>Explore the blog <ArrowRight size={16} /></a>
             </div>
           </div>
@@ -176,11 +176,11 @@ export function Home({ go, viewActivity, viewBlogPost, browseActivities }) {
         <div className="home-closing-wash" />
         <div className="home-closing-content">
           <Reveal>
-            <span className="home-kicker">Plan your trip</span>
-            <h2>Leave the guesswork.<br />Keep the adventure.</h2>
-            <p>Tell us your route, dates and interests. Review one organized plan before any payment.</p>
-            <Button variant="primary" size="lg" onClick={() => { track("home_plan_clicked", { placement: "closing" }); go("build"); }}>Plan my trip <ArrowRight size={18} /></Button>
-            <small className="home-closing-note"><ShieldCheck size={14} /> No payment or obligation. Current details are confirmed first.</small>
+            <span className="home-kicker">Plan with local insight</span>
+            <h2>Costa Rica feels better<br />when it’s connected.</h2>
+            <p>Share your route and interests. We’ll connect the local pieces and confirm current details with the people providing each experience.</p>
+            <Button variant="primary" size="lg" onClick={() => { track("home_plan_clicked", { placement: "closing" }); go("build"); }}>Build my Costa Rica plan <ArrowRight size={18} /></Button>
+            <small className="home-closing-note"><ShieldCheck size={14} /> No payment to plan. Current details are confirmed first.</small>
           </Reveal>
         </div>
       </section>
