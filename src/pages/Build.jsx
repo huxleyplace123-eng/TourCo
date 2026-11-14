@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Sparkles, Heart, Users, Calendar, Car, Mountain, Waves, RotateCcw, Plus, MessageCircle, ArrowDown, ArrowUp, ArrowRight, ChevronLeft, MapPinned, Trash2, Send, Check } from "lucide-react";
 import { c, grad, glass } from "../theme.js";
 import { Section, Button, Field, Select } from "../components/ui.jsx";
@@ -77,18 +77,20 @@ function solIntro(form, result) {
 
 const contactInput = { width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,.07)", border: `1.5px solid ${c.line}`, borderRadius: 12, color: "#fff", padding: "12px 13px", fontSize: 14, outline: "none" };
 
-function PlanContactCard({ plannerForm, result }) {
+export function PlanContactCard({ plannerForm, result, deliver=deliverInquiry }) {
   const [contact, setContact] = useState({ name: "", email: "", phone: "", notes: "", website: "" });
   const [status, setStatus] = useState("editing");
   const [fallbackHref, setFallbackHref] = useState("");
+  const sending=useRef(false);
   const setContactField = (key) => (event) => setContact((current) => ({ ...current, [key]: event.target.value }));
 
   const submit = async (event) => {
     event.preventDefault();
     if (contact.website) return setStatus("sent");
+    if(sending.current)return;sending.current=true;setFallbackHref("");
     setStatus("sending");
-    const activities = result.plan.days.flatMap((day) => day.activities);
-    const response = await deliverInquiry({
+    try { const activities = result.plan.days.flatMap((day) => day.activities);
+    const response = await deliver({
       ...contact,
       notes: [contact.notes, `Group: ${plannerForm.who}; interests: ${plannerForm.vibe}`, `Budget per experience: ${{ low:'under USD 100', mid:'USD 100–200', high:'premium', any:'open' }[plannerForm.budget] || plannerForm.budget}`, `Requirements: ${[plannerForm.youngKids && 'young children; confirm ages and suitability', plannerForm.avoidLongDrives && 'avoid long drives', ...(plannerForm.fears || []).map(item => `avoid ${item}`)].filter(Boolean).join('; ') || 'none specified'}`, ...result.plan.days.map((day,index) => `Day ${index + 1}: ${day.activities.map(activity => activity.title).join('; ')}`)].filter(Boolean).join('\n'),
       intent: "planning",
@@ -103,7 +105,7 @@ function PlanContactCard({ plannerForm, result }) {
     else {
       setFallbackHref(response.fallbackHref);
       setStatus("error");
-    }
+    } } catch {setStatus("error");} finally{sending.current=false;}
   };
 
   if (status === "sent") return (
@@ -129,7 +131,7 @@ function PlanContactCard({ plannerForm, result }) {
           <Field label="Anything else? (optional)"><input maxLength={5000} value={contact.notes} onChange={setContactField("notes")} style={contactInput} placeholder="Hotel, timing or special needs" /></Field>
         </div>
         <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}><label>Website<input tabIndex={-1} autoComplete="off" value={contact.website} onChange={setContactField("website")} /></label></div>
-        {status === "error" && <p role="alert" className="plan-contact-error">We couldn’t save the request automatically. <a href={fallbackHref}>Open a ready-to-send email instead.</a></p>}
+        {status === "error" && <p role="alert" className="plan-contact-error">We couldn’t save the request automatically. {fallbackHref?<a href={fallbackHref}>Open a ready-to-send email instead.</a>:"Your details are still here. Please try again."}</p>}
         <Button type="submit" variant="primary" size="lg" disabled={status === "sending"}>{status === "sending" ? "Sending your plan…" : <><Send size={17} />Send my plan to TicoWild</>}</Button>
         <small>No payment. We confirm availability and exact details first.</small>
       </form>

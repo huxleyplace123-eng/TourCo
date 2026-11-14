@@ -162,7 +162,7 @@ assert.match(routing, /clean === "\/local-expert"[\s\S]*canonicalPath: "\/meet-r
 
 const conversion = read("src/components/ConversionCenter.jsx");
 assert.match(conversion, /No payment is taken here/);
-assert.match(conversion, /instead of pretending your request was delivered/);
+assert.match(conversion, /We could not confirm delivery/);
 assert.match(conversion, /ticowild:open-rico/, "Ask Rico actions must open the on-site guide instead of a different form");
 
 const packages = read("src/pages/Packages.jsx");

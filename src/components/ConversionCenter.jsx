@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Check, Mail, MessageCircle, Send, X } from "lucide-react";
 import { c, glass } from "../theme.js";
 import { Button, Field } from "./ui.jsx";
@@ -7,7 +7,7 @@ import { deliverInquiry, inquiryMessage, whatsappHref } from "../conversion.js";
 const ConversionContext = createContext(null);
 const inputStyle = { width: "100%", boxSizing: "border-box", border: `1px solid ${c.line}`, borderRadius: 12, background: "rgba(255,255,255,.06)", color: c.charcoal, padding: "12px 13px", fontSize: 14.5, outline: "none", colorScheme: "dark" };
 
-function InquiryModal({ request, onClose }) {
+export function InquiryModal({ request, onClose, deliver=deliverInquiry }) {
   const [form, setForm] = useState(() => ({
     name: "", email: "", phone: "", destination: request.destination || "",
     arrival: request.arrival || "", departure: request.departure || "",
@@ -15,6 +15,7 @@ function InquiryModal({ request, onClose }) {
   }));
   const [state, setState] = useState("editing");
   const [fallbackHref, setFallbackHref] = useState("");
+  const [error,setError]=useState("");const sending=useRef(false);
   const set = (key) => (event) => setForm((current) => ({ ...current, [key]: event.target.value }));
   const activityTitles = request.activity_titles || (request.activity ? [request.activity.title] : []);
   const payload = useMemo(() => ({
@@ -45,14 +46,15 @@ function InquiryModal({ request, onClose }) {
       return;
     }
     if (!form.name.trim() || !form.email.trim()) return;
+    if(sending.current)return;sending.current=true;setError("");
     setState("sending");
-    const result = await deliverInquiry(payload);
+    try { const result = await deliver(payload);
     if (result.delivered) setState("sent");
     else {
       setFallbackHref(result.fallbackHref);
       setState("email");
-      window.location.href = result.fallbackHref;
-    }
+
+    } } catch(e){setError("We could not send your request. Your details are still here; please try again.");setState("editing");} finally{sending.current=false;}
   };
 
   return (
@@ -70,11 +72,12 @@ function InquiryModal({ request, onClose }) {
           <div style={{ textAlign: "center", padding: "42px 8px 24px" }}>
             <span style={{ width: 58, height: 58, borderRadius: 999, background: "rgba(255,208,0,.14)", color: c.gold, display: "inline-grid", placeItems: "center" }}><Mail size={27} /></span>
             <h2 style={{ color: "#fff", margin: "18px 0 8px", fontSize: 27 }}>Finish in your email app</h2>
-            <p style={{ color: c.stone, lineHeight: 1.65, maxWidth: 450, margin: "0 auto 22px" }}>The website is not connected to its inquiry inbox yet, so we opened a ready-to-send email instead of pretending your request was delivered.</p>
-            <a href={fallbackHref} style={{ textDecoration: "none" }}><Button variant="primary"><Mail size={17} />Open the email again</Button></a>
+            <p style={{ color: c.stone, lineHeight: 1.65, maxWidth: 450, margin: "0 auto 22px" }}>We could not confirm delivery. Open the prepared email below and send it to TicoWild, or return to your request and try again.</p>
+            <a href={fallbackHref} style={{ textDecoration: "none" }}><Button variant="primary"><Mail size={17} />Open prepared email</Button></a><button type="button" onClick={()=>setState("editing")}>Back to my request</button>
           </div>
         ) : (
           <form onSubmit={submit}>
+            {error&&<p role="alert">{error}</p>}
             <div style={{ color: c.teal, fontSize: 12, fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", marginTop: 6 }}>Request current availability</div>
             <h2 style={{ color: "#fff", fontSize: "clamp(25px,5vw,34px)", letterSpacing: -1, margin: "7px 58px 8px 0" }}>{activityTitles.length ? activityTitles.join(" + ") : "Request Costa Rica trip planning"}</h2>
             <p style={{ color: c.stone, margin: "0 0 22px", lineHeight: 1.6 }}>Send the basics. We’ll confirm what is available, the exact price and what happens next. No payment is taken here.</p>

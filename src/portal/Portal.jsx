@@ -1,7 +1,7 @@
+import {useSavedList} from './useSavedList.js';
 import TravelerNames from './TravelerNames.jsx';
 import {tripCalendar} from './calendar.js';
 import SavedIdeas from './SavedIdeas.jsx';
-import {getPreference,savePreference} from './preferences.js';
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
 import {
@@ -487,18 +487,12 @@ function TripCommandCenter({ trip, bookings, onVoucher, compact = false }) {
   }, new Map()).values()];
   const [panel, setPanel] = useState("");
   const [notice, setNotice] = useState("");
-  const [packed, setPacked] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(storageKey) || "[]"); } catch { return []; }
-  });
-  const [packingBusy,setPackingBusy]=useState(trip.id!=="demo-trip");
-  const packingLock=useRef(false);
-  const [packingError,setPackingError]=useState("");
-  useEffect(()=>{let live=true;if(trip.id!=="demo-trip")getPreference(storageKey,[]).then(x=>{if(live)setPacked(Array.isArray(x)?x:[]);}).catch(e=>{if(live)setPackingError(e.message);}).finally(()=>{if(live)setPackingBusy(false);});return()=>{live=false;};},[storageKey]);
-  const setPacking = async (item) => {
-    if(packingLock.current||packingBusy)return;packingLock.current=true;setPackingBusy(true);
-    const next = packed.includes(item) ? packed.filter((value) => value !== item) : [...packed, item];
-    try { if(trip.id!=="demo-trip")await savePreference(storageKey,next);setPacked(next);localStorage.setItem(storageKey,JSON.stringify(next));setPackingError(""); } catch(e){setPackingError(e.message);}finally{packingLock.current=false;setPackingBusy(false);}
-  };
+  const packingState=useSavedList(storageKey,{demo:trip.id==='demo-trip'});
+  const packed=packingState.value;
+  const packingBusy=packingState.busy||!packingState.ready;
+  const packingError=packingState.error;
+  const setPacking=(item)=>packingState.save(packed.includes(item)?packed.filter(value=>value!==item):[...packed,item]);
+  const packedCount=packing.filter(item=>packed.includes(item)).length;
   const share = async () => {
     const data = { title: trip.title, text: `My TicoWild Costa Rica journey: ${trip.region}, ${fmt(trip.start)} – ${fmt(trip.end)}`, url: window.location.href };
     try {
@@ -506,7 +500,7 @@ function TripCommandCenter({ trip, bookings, onVoucher, compact = false }) {
       else { await navigator.clipboard.writeText(`${data.text}\n${data.url}`); setNotice("Trip summary copied. The link requires your account; it does not give others access."); }
     } catch (error) { if (error?.name !== "AbortError") setNotice("Your trip is ready to share from this page."); }
   };
-  const packPercent = packing.length ? Math.round((packed.length / packing.length) * 100) : 100;
+  const packPercent = packing.length ? Math.round((packedCount / packing.length) * 100) : 100;
   const togglePanel = (name) => { setPanel((current) => current === name ? "" : name); setNotice(""); };
   return (
     <section className={`pt-card trip-command${compact ? " is-compact" : ""}`} aria-label="Trip essentials">
@@ -520,7 +514,7 @@ function TripCommandCenter({ trip, bookings, onVoucher, compact = false }) {
         <button className="trip-tool-action" onClick={share}><span className="trip-tool-icon"><Share2 size={17}/></span><span>Share journey</span></button>
       </div>
       {panel === "passes" && <div className="trip-tool-panel"><div className="trip-tool-panel-head"><div><b>Your trip wallet</b><span>Open any confirmed pass for its QR code, meeting pin, and arrival details.</span></div><button onClick={() => setPanel("")} aria-label="Close trip wallet"><X size={15}/></button></div><div className="trip-pass-grid">{bookings.map((item) => <button key={item.id} className="trip-pass" disabled={item.status !== "Confirmed"} onClick={() => item.status === "Confirmed" && onVoucher(item)}><span className="trip-pass-icon">{item.status === "Confirmed" ? <QrCode size={16}/> : <Hourglass size={15}/>}</span><span className="trip-pass-copy"><b>{item.name}</b><span>{item.status === "Confirmed" ? `${fmt(item.date)} · Ready to open` : "TicoWild is coordinating this"}</span></span><ChevronRight size={14}/></button>)}</div></div>}
-      {panel === "packing" && <div className="trip-tool-panel"><div className="trip-tool-panel-head"><div><b>Your smart packing list</b><span>Built from your itinerary. Checkmarks save to your account.</span></div><button onClick={() => setPanel("")} aria-label="Close packing list"><X size={15}/></button></div><div className="packing-progress"><div className="packing-progress-ring">{packPercent}%</div><div><b>{packed.length === packing.length ? "You are packed" : `${packing.length - packed.length} items still to pack`}</b><span>Tap each item as it goes into your bag.</span></div></div>{packingError&&<p role="alert">{packingError}</p>}<div className="packing-list">{packing.map((item) => <button key={item} disabled={packingBusy} className="packing-item" data-checked={packed.includes(item)} onClick={() => setPacking(item)}><span className="packing-check">{packed.includes(item) && <Check size={13}/>}</span>{item}</button>)}</div></div>}
+      {panel === "packing" && <div className="trip-tool-panel"><div className="trip-tool-panel-head"><div><b>Your smart packing list</b><span>Built from your itinerary. Checkmarks save to your account.</span></div><button onClick={() => setPanel("")} aria-label="Close packing list"><X size={15}/></button></div><div className="packing-progress"><div className="packing-progress-ring">{packPercent}%</div><div><b>{packedCount === packing.length ? "You are packed" : `${packing.length - packedCount} items still to pack`}</b><span>Tap each item as it goes into your bag.</span></div></div>{packingError&&<p role="alert">{packingError} {!packingState.ready&&<button onClick={packingState.retry}>Retry loading packing list</button>}</p>}<div className="packing-list">{packing.map((item) => <button key={item} disabled={packingBusy} className="packing-item" data-checked={packed.includes(item)} onClick={() => setPacking(item)}><span className="packing-check">{packed.includes(item) && <Check size={13}/>}</span>{item}</button>)}</div></div>}
       {notice && <div className="trip-tool-toast">{notice}</div>}
     </section>
   );

@@ -1,3 +1,12 @@
-import {useEffect,useRef,useState} from 'react';
-import {getPreference,savePreference} from './preferences.js';
-export default function TravelerNames({trip}){const [names,setNames]=useState([]),[status,setStatus]=useState(''),[busy,setBusy]=useState(true);const lock=useRef(false);const key='travelers_'+trip.id;useEffect(()=>{let live=true;getPreference(key,[]).then(x=>{if(live)setNames(Array.isArray(x)?x:[]);}).catch(e=>{if(live)setStatus(e.message);}).finally(()=>{if(live)setBusy(false);});return()=>{live=false;};},[key]);async function save(e){e.preventDefault();if(lock.current)return;lock.current=true;setBusy(true);try{await savePreference(key,names.map(x=>String(x).trim().slice(0,120)));setStatus('Traveler names saved to your account.');}catch(e){setStatus(e.message);}finally{setBusy(false);lock.current=false;}}return <form className="portal-account-tools" onSubmit={save} style={{marginTop:20}}><h3>Traveler names</h3><p>Keep names here for your records. Send any operator coordination requests through Messages. These names do not create separate logins.</p>{Array.from({length:Math.min(100,Math.max(1,Number(trip.travelers)||1))},(_,i)=><label key={i} style={{display:'grid',gap:6,marginBottom:10}}>Traveler {i+1}<input maxLength={120} value={names[i]||''} disabled={busy||trip.id==='demo-trip'} onChange={e=>setNames(n=>{const next=[...n];next[i]=e.target.value;return next;})}/></label>)}<button disabled={busy||trip.id==='demo-trip'}>Save traveler names</button><p role="status">{status}</p></form>;}
+import {useState} from 'react';
+import {useSavedList} from './useSavedList.js';
+export default function TravelerNames({trip}) {
+ const [status,setStatus]=useState('');
+ const names=useSavedList('travelers_'+trip.id,{demo:trip.id==='demo-trip'});
+ const count=Math.min(100,Math.max(1,Number(trip.travelers)||1));
+ async function save(e){e.preventDefault();setStatus('');if(await names.save(Array.from({length:count},(_,i)=>String(names.value[i]||'').trim().slice(0,120))))setStatus('Traveler names saved to your account.');}
+ return <form className="portal-account-tools" onSubmit={save} style={{marginTop:20}}><h3>Traveler names</h3><p>Keep names here for your records. Send any operator coordination requests through Messages. These names do not create separate logins.</p>
+ {names.error&&<p role="alert">{names.error} {!names.ready&&<button type="button" onClick={names.retry}>Retry loading names</button>}</p>}
+ {Array.from({length:count},(_,i)=><label key={i} style={{display:'grid',gap:6,marginBottom:10}}>Traveler {i+1}<input maxLength={120} value={names.value[i]||''} disabled={names.busy||!names.ready||trip.id==='demo-trip'} onChange={e=>{setStatus('');names.setValue(n=>{const next=[...n];next[i]=e.target.value;return next;});}}/></label>)}
+ <button disabled={names.busy||!names.ready||trip.id==='demo-trip'}>Save traveler names</button><p role="status">{names.busy?'Loading or saving traveler names…':status}</p></form>;
+}

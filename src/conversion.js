@@ -26,9 +26,9 @@ export function inquiryMessage(inquiry) {
 
 export async function deliverInquiry(inquiry) {
   const payload = {
-    name: inquiry.name.trim(),
-    email: inquiry.email.trim(),
-    phone: inquiry.phone.trim(),
+    name: String(inquiry.name||'').trim(),
+    email: String(inquiry.email||'').trim(),
+    phone: String(inquiry.phone||'').trim(),
     destination: inquiry.destination || "",
     arrival: inquiry.arrival || null,
     departure: inquiry.departure || null,
@@ -48,7 +48,7 @@ export async function deliverInquiry(inquiry) {
     } catch { /* safe local + email fallback below */ }
   }
 
-  queueInquiry(payload);
+  try { queueInquiry(payload); } catch { /* Email remains available when browser storage is full or disabled. */ }
 
   const body = [
     inquiryMessage(payload),
