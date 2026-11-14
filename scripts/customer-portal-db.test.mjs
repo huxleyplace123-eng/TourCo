@@ -33,4 +33,6 @@ await as(team,'team@example.test',()=>publish(edit,1));
 await assert.rejects(as(team,'team@example.test',()=>publish(edit,1)),/another session/);
 await assert.rejects(as(team,'team@example.test',()=>publish({...edit,bookings:[{...draft.bookings[0],date:'2027-01-01'}]},2)),/Invalid activity/);
 assert.equal((await db.query('select portal_revision from trips where id=$1',[tid])).rows[0].portal_revision,2);
+await db.exec(await readFile('scripts/customer-portal-live-qa.sql','utf8'));
+assert.equal((await db.query("select count(*)::int as n from auth.users where email like 'portal-qa-%'")).rows[0].n,0);
 await db.close();console.log('PostgreSQL integration passed: migrations, verified publish, retry idempotency, conflict detection, transaction rollback, two-account isolation, customer write restrictions, messaging and preferences.');
