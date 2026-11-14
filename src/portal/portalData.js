@@ -90,8 +90,8 @@ function shapeTrip(row) {
     end: row.end_date,
     travelers: row.travelers || 1,
     status: row.status || "Planning",
-    total: Number(row.total || 0),
-    deposit: Number(row.deposit || 0),
+    total: row.total == null ? null : Number(row.total),
+    deposit: row.deposit == null ? null : Number(row.deposit),
     concierge: row.concierge_name ? {
       name: row.concierge_name,
       role: row.concierge_role || "Your Costa Rica trip concierge",
@@ -101,21 +101,16 @@ function shapeTrip(row) {
   };
 }
 
-export async function getTrip() {
-  if (!hasSupabase) return DEMO_TRIP;
+export async function getTrips() {
+  if (!hasSupabase) return [DEMO_TRIP];
   try {
     const user = await currentUser();
-    const { data, error } = await withTimeout(
-      supabase.from("trips").select("*, bookings(*)").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
-      12000,
-      "Your trip",
-    );
-    if (error) throw error;
-    return shapeTrip(data);
-  } catch (error) {
-    throw friendlyBackendError(error, "We could not load your trip.");
-  }
+    const { data, error } = await withTimeout(supabase.from("trips").select("*, bookings(*)").eq("user_id",user.id).order("created_at",{ascending:false}),12000,"Your trips");
+    if(error)throw error;
+    return (data||[]).map(shapeTrip);
+  } catch(error){throw friendlyBackendError(error,"We could not load your trips.");}
 }
+export async function getTrip(){return (await getTrips())[0]||null;}
 
 // ── Messages (concierge thread) ───────────────────────────────────────────────
 const seedMessages = () => ([

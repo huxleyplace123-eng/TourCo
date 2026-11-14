@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {calendarStart,tripCalendar,validCalendarDate} from '../src/portal/calendar.js';
+import {tripDraft,validateTrip,needsReply} from '../src/admin/customer-portal-model.js';
+assert.equal(calendarStart('2026-12-01','8:30 AM'),'DTSTART:20261201T143000Z');
+assert.equal(calendarStart('2026-12-01','23:30'),'DTSTART:20261202T053000Z');
+assert.equal(calendarStart('2026-12-01','Time pending'),'DTSTART;VALUE=DATE:20261201');
+assert.equal(calendarStart('2026-12-01','12:00 AM'),'DTSTART:20261201T060000Z');
+assert.equal(validCalendarDate('2026-02-30'),false);assert.throws(()=>calendarStart('2026-02-30','08:00'));assert.throws(()=>calendarStart('2026-12-01','25:00'));
+const output=tripCalendar({title:'A;B,C\\D'},[{id:'b1',date:'2026-12-01',time:'08:00',name:'Hike',status:'Requested'},{id:'b2',date:'2026-12-01',name:'Cancelled hike',status:'Cancelled'}],new Date('2026-11-14T12:00:00Z'));
+assert.match(output,/DTSTAMP:20261114T120000Z/);assert.ok(output.includes('A\\;B\\,C\\\\D'));assert.ok(!output.includes('Cancelled hike'));
+assert.ok(tripCalendar({title:'🌴'.repeat(100)},[]).split('\r\n').every(x=>Buffer.byteLength(x)<=75));
+const draft=tripDraft({name:'Adam',travelStart:'2026-12-01',travelEnd:'2026-12-03',travelers:'2',quoteItems:[{title:'Hike',operator:'Test'}]});assert.equal(draft.bookings[0].name,'Hike');assert.equal(draft.bookings[0].status,'Requested');assert.ok(draft.request_id);validateTrip(draft);assert.throws(()=>validateTrip({...draft,end_date:'2026-11-01'}));assert.throws(()=>validateTrip({...draft,travelers:0}));assert.throws(()=>validateTrip({...draft,bookings:[{name:'Hike',date:'2026-12-30'}]}));
+assert.equal(needsReply([{user_id:'a',from:'customer'}],'a'),true);assert.equal(needsReply([{user_id:'a',from:'customer'},{user_id:'a',from:'team'}],'a'),false);
+console.log('Customer portal models: calendar timezone, valid dates, text escaping, line folding, canceled events, draft mapping, publish validation and reply status passed.');

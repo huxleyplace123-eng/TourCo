@@ -1,3 +1,4 @@
+import CustomerPortalApp from './CustomerPortalApp.jsx';
 import { useState } from "react";
 import Login, { AUTH_KEY, isAdminSessionValid } from "./Login.jsx";
 import App from "./App.jsx";
@@ -29,7 +30,7 @@ export default function Root() {
   };
 
   if (!signedIn) return <Login onSuccess={() => setSignedIn(true)} />;
-  return workspace === "email" ? (
+  return workspace === "portal" ? (<CustomerPortalApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut}/>) : workspace === "email" ? (
     <EmailApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
   ) : workspace === "templates" ? (
     <TemplatesApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />

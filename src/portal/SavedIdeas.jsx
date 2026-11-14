@@ -1,0 +1,4 @@
+import {useEffect,useState} from 'react';
+import {getPreference} from './preferences.js';
+import {activities} from '../data.js';
+export default function SavedIdeas(){const [items,setItems]=useState([]),[error,setError]=useState('');useEffect(()=>{let live=true;getPreference('saved-ideas',[]).then(x=>{if(live)setItems(Array.isArray(x)?x:[]);}).catch(e=>{if(live)setError(e.message);});return()=>{live=false;};},[]);return <section className="pt-card" style={{padding:20}}><h2>Your saved ideas</h2><p>These are activities you saved to your account, not confirmed reservations.</p>{error&&<p role="alert">{error}</p>}{items.map(x=>{const a=activities.find(a=>a.id===x.id);return a?<p key={x.id}><b>{a.title||a.name}</b> · {x.pax} travelers</p>:null;})}{!items.length&&!error&&<p>No account ideas saved yet.</p>}<a href="/trip">Browse and manage saved ideas</a></section>;}

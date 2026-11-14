@@ -61,7 +61,7 @@ export default function Root() {
   if (error) return <PortalStatus title="Customer portal needs attention" message={error} action="Try again" onAction={() => window.location.reload()} />;
   if (!session) return <Login onSignIn={signIn} onPasswordSignIn={signInWithPassword} />;
   const email = session.user?.email || session.email || "";
-  return <Portal email={email} onSignOut={signOut} />;
+  return <Portal key={session.user?.id||email} email={email} onSignOut={signOut} />;
 }
 
 function PortalStatus({ title, message = "Securely connecting to TicoWild.", action, onAction }) {
