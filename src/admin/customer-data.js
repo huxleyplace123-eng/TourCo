@@ -68,7 +68,9 @@ export async function loadConnectedCustomers(localCustomers = []) {
     if (!access) return { connected: false, customers: localCustomers, imported: 0 };
     const [customersResult, inquiriesResult] = await Promise.all([
       supabase.from("crm_customers").select("id,record,updated_at").order("updated_at", { ascending: false }),
-      supabase.from("public_inquiries").select("*").eq("status", "new").order("created_at", { ascending: true }),
+      // Reconcile imported requests too: older versions could mark a repeat
+      // request imported without retaining its details. Merge is idempotent.
+      supabase.from("public_inquiries").select("*").in("status", ["new", "imported"]).order("created_at", { ascending: true }),
     ]);
     if (customersResult.error) throw customersResult.error;
     if (inquiriesResult.error) throw inquiriesResult.error;
@@ -83,7 +85,7 @@ export async function loadConnectedCustomers(localCustomers = []) {
     const localOnly = localCustomers.filter((item) => !remoteIds.has(item.id) && !remoteByFingerprint.has(customerFingerprint(item)));
     const merged = mergeInquiries([...mergedRemote, ...localOnly], (inquiriesResult.data || []).map(inquiryToCustomer));
     if (merged.changed.length) await saveConnectedCustomers(merged.changed);
-    const inquiryIds = (inquiriesResult.data || []).map((item) => item.id);
+    const inquiryIds = (inquiriesResult.data || []).filter(item => item.status === 'new').map((item) => item.id);
     if (inquiryIds.length) {
       const { error } = await supabase.from("public_inquiries").update({ status: "imported" }).in("id", inquiryIds);
       if (error) throw error;
