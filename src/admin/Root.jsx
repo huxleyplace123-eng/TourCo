@@ -4,6 +4,8 @@ import App from "./App.jsx";
 import OperatorsApp from "./OperatorsApp.jsx";
 import ApplicationsApp from "./ApplicationsApp.jsx";
 import TemplatesApp from "./TemplatesApp.jsx";
+import EmailApp from "./EmailApp.jsx";
+import { disconnectMail } from "./mail-client.js";
 
 const WS_KEY = "ticowild_crm_workspace";
 
@@ -11,19 +13,23 @@ const WS_KEY = "ticowild_crm_workspace";
 // partner applications share the CRM while approvals require staff auth.
 export default function Root() {
   const [signedIn, setSignedIn] = useState(() => isAdminSessionValid());
-  const [workspace, setWorkspaceState] = useState(() => localStorage.getItem(WS_KEY) || "customers");
+  const [workspace, setWorkspaceState] = useState(() => new URLSearchParams(window.location.search).get("workspace") || localStorage.getItem(WS_KEY) || "customers");
 
   const setWorkspace = (ws) => {
     localStorage.setItem(WS_KEY, ws);
+    window.history.replaceState(null, "", `/admin/?workspace=${encodeURIComponent(ws)}`);
     setWorkspaceState(ws);
   };
   const signOut = () => {
+    disconnectMail().catch(() => {});
     localStorage.removeItem(AUTH_KEY);
     setSignedIn(false);
   };
 
   if (!signedIn) return <Login onSuccess={() => setSignedIn(true)} />;
-  return workspace === "templates" ? (
+  return workspace === "email" ? (
+    <EmailApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
+  ) : workspace === "templates" ? (
     <TemplatesApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
   ) : workspace === "applications" ? (
     <ApplicationsApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />

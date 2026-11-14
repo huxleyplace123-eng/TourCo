@@ -12,6 +12,7 @@
     "test:public": "node scripts/public-site-contract.mjs"
   },
   "dependencies": {
+    "@azure/msal-browser": "^5.29.1",
     "@supabase/supabase-js": "^2.110.7",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.383.0",

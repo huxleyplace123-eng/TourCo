@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import { recipients, outgoingMessage, messageMatches } from "../src/admin/mail-model.js";
+assert.equal(recipients("a@example.com; b@example.com, a@example.com").length, 2);
+assert.throws(() => recipients("bad@example.com\r\nBcc: other@example.com"));
+assert.throws(() => outgoingMessage({to:"",bcc:"",subject:"Test",body:"Hello"}));
+assert.throws(() => outgoingMessage({to:"a@example.com",bcc:"",subject:"Hi {{name}}",body:"Hello"}));
+const m = outgoingMessage({to:"",bcc:"a@example.com,b@example.com",subject:"Costa Rica — ¡Hola!",body:"Line one\n\nLine two + three"});
+assert.equal(m.toRecipients.length, 0);
+assert.equal(m.bccRecipients.length, 2);
+assert.equal(m.body.content,"Line one\n\nLine two + three");
+assert.equal(m.body.contentType,"Text");
+assert.equal(messageMatches({subject:"Trip",from:{emailAddress:{address:"JOHN@example.com"}}},"john@EXAMPLE.com"),true);
+assert.equal(messageMatches({subject:"Trip",toRecipients:[{emailAddress:{address:"guest@example.com"}}]},"guest@"),true);
+assert.equal(messageMatches({subject:"Trip"},"missing"),false);
+console.log("Mail model passed: recipient validation, Bcc privacy, placeholder blocking, text preservation, contact matching.");

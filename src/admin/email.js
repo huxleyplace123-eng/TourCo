@@ -1,10 +1,10 @@
-// Sign in to Outlook with the business mailbox; compose links do not set From.
+// CRM mailbox workspace handles Microsoft authorization and sending.
 export const TICO_EMAIL = "info@ticowild.com";
 export function businessComposeHref({ to = "", bcc = "", subject = "", body = "" } = {}) {
-  const params = new URLSearchParams();
+  const params = new URLSearchParams({ workspace: "email" });
   if (to) params.set("to", to);
   if (bcc) params.set("bcc", bcc);
   if (subject) params.set("subject", subject);
   if (body) params.set("body", body);
-  return `https://outlook.cloud.microsoft/mail/deeplink/compose?${params.toString().replace(/\+/g, "%20")}`;
+  return `/admin/?${params.toString().replace(/\+/g, "%20")}`;
 }

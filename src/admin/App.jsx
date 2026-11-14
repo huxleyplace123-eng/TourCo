@@ -358,7 +358,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     const s = new Set(picked.filter((x) => x.email).map((x) => x.id));
     setCustomers((cs) => cs.map((x) => s.has(x.id) ? {
       ...x, lastContacted: todayIso(), updatedAt: new Date().toISOString(),
-      notes: [...(x.notes || []), { id: noteId(), at: new Date().toISOString(), kind: "email", text: `Bulk email draft opened in TicoWild Outlook${subject ? `: ${subject}` : ""}` }],
+      notes: [...(x.notes || []), { id: noteId(), at: new Date().toISOString(), kind: "email", text: `Bulk email draft opened in CRM email${subject ? `: ${subject}` : ""}` }],
     } : x));
     setCompose(null);
   };
@@ -1086,7 +1086,7 @@ function CustomerTemplateComposer({ cust, onLog }) {
       <input value={subject} onChange={(e) => setSubject(e.target.value)} style={{ ...inputBase, marginBottom: 8, fontWeight: 700 }} aria-label="Email subject" />
       <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={7} style={{ ...inputBase, resize: "vertical", lineHeight: 1.5 }} aria-label="Email body" />
       <div style={{ display: "flex", gap: 8, marginTop: 9, flexWrap: "wrap" }}>
-        <a href={href} target="_blank" rel="noreferrer" onClick={() => cust.email && onLog(cust.id, "email")} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, background: c.gold, color: c.ink, textDecoration: "none", fontSize: 13, fontWeight: 800, opacity: cust.email ? 1 : .45, pointerEvents: cust.email ? "auto" : "none" }}><Mail size={14} /> Open TicoWild Outlook</a>
+        <a href={href} target="_blank" rel="noreferrer" onClick={() => cust.email && onLog(cust.id, "email")} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, background: c.gold, color: c.ink, textDecoration: "none", fontSize: 13, fontWeight: 800, opacity: cust.email ? 1 : .45, pointerEvents: cust.email ? "auto" : "none" }}><Mail size={14} /> Open CRM email</a>
         <button onClick={copy} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "transparent", color: c.charcoal, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}><Copy size={14} /> {copied ? "Copied" : "Copy message"}</button>
       </div>
     </div>

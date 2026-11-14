@@ -304,7 +304,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
         if (!op.email) continue;
         next = patchOperator(next, op.id, {
           lastContacted: todayIso(),
-          notes: [...(op.notes || []), { id: noteId(), at: new Date().toISOString(), text: `Bulk email draft opened in TicoWild Outlook${subject ? `: ${subject}` : ""}` }],
+          notes: [...(op.notes || []), { id: noteId(), at: new Date().toISOString(), text: `Bulk email draft opened in CRM email${subject ? `: ${subject}` : ""}` }],
         });
       }
       return next;
@@ -995,7 +995,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
               <MessageCircle size={15} /> WhatsApp
             </a>
             <a href={op.email ? businessComposeHref({ to: op.email }) : undefined} target="_blank" rel="noreferrer"
-              onClick={() => op.email && logTouch(op.id, "Email opened in TicoWild Outlook")}
+              onClick={() => op.email && logTouch(op.id, "Email opened in CRM email")}
               style={bigAction("rgba(34,211,238,.1)", c.teal, "rgba(34,211,238,.35)", !!op.email)}>
               <Mail size={15} /> Email
             </a>
