@@ -69,7 +69,7 @@ function solIntro(form, result) {
   if (form.stops.length > 1) bits.push(`I kept your stops in the order you chose: ${form.stops.map((stop) => stop.region).join(" → ")}`);
   if (result.brief?.inSeason.length) bits.push(`the seasonal pattern favors ${result.brief.inSeason[0].toLowerCase()}, so I built around it`);
   if (form.avoidLongDrives) bits.push("I kept the driving short and grouped each day by area");
-  if (form.youngKids) bits.push("everything's paced and safe for the little ones");
+  if (form.youngKids) bits.push("your young-child requirements still need confirmation with each provider");
   if (form.fears.length) bits.push(`and I steered clear of ${form.fears.join(" & ")}`);
   const tail = bits.length ? ` — ${bits.join(", ")}.` : ".";
   return `I sequenced each day using TicoWild's route and timing model${tail} Enter your contact details below and TicoWild will confirm the current timing, conditions, operator and availability.`;
@@ -90,6 +90,7 @@ function PlanContactCard({ plannerForm, result }) {
     const activities = result.plan.days.flatMap((day) => day.activities);
     const response = await deliverInquiry({
       ...contact,
+      notes: [contact.notes, `Group: ${plannerForm.who}; interests: ${plannerForm.vibe}`, `Budget per experience: ${{ low:'under USD 100', mid:'USD 100–200', high:'premium', any:'open' }[plannerForm.budget] || plannerForm.budget}`, `Requirements: ${[plannerForm.youngKids && 'young children; confirm ages and suitability', plannerForm.avoidLongDrives && 'avoid long drives', ...(plannerForm.fears || []).map(item => `avoid ${item}`)].filter(Boolean).join('; ') || 'none specified'}`, ...result.plan.days.map((day,index) => `Day ${index + 1}: ${day.activities.map(activity => activity.title).join('; ')}`)].filter(Boolean).join('\n'),
       intent: "planning",
       destination: plannerForm.stops.map((stop) => stop.region).join(", "),
       arrival: plannerForm.arrival,

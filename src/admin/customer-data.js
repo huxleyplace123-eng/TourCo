@@ -1,18 +1,13 @@
 import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "../portal/supabase.js";
 import { blankCustomer, normalizeCustomer, todayIso } from "./store.js";
 import { createRecordSync } from "./sync-patches.js";
+import { customerFingerprint, mergeInquiries } from './inquiry-merge.js';
 const customerSync = createRecordSync(async (id, changes, expected) => {
   const { error } = await withTimeout(supabase.rpc('patch_crm_record', { record_kind:'customer', record_id:id, changes, expected }), 12000, 'Customer save');
   if (error) throw new Error(error.message || 'Customer save failed. Your changes remain on this device.');
 });
 
 const noteId = () => `n_${crypto.randomUUID()}`;
-
-function customerFingerprint(customer) {
-  const email = String(customer?.email || "").trim().toLowerCase();
-  const start = customer?.travelStart || "";
-  return email ? `${email}|${start}` : `id:${customer?.id || ""}`;
-}
 
 function mergeLocalIntoRemote(remote, local) {
   const notes = [...(remote.notes || []), ...(local.notes || [])];
@@ -86,21 +81,14 @@ export async function loadConnectedCustomers(localCustomers = []) {
     const mergedRemote = remote;
     const remoteIds = new Set(remote.map((item) => item.id));
     const localOnly = localCustomers.filter((item) => !remoteIds.has(item.id) && !remoteByFingerprint.has(customerFingerprint(item)));
-    const known = new Set([...mergedRemote, ...localOnly].map(customerFingerprint));
-    const fresh = (inquiriesResult.data || []).map(inquiryToCustomer).filter((item) => {
-      const fingerprint = customerFingerprint(item);
-      if (known.has(fingerprint)) return false;
-      known.add(fingerprint);
-      return true;
-    });
-    const mergedById = new Map([...mergedRemote, ...localOnly].map((item) => [item.id, normalizeCustomer(item)]));
-    fresh.forEach((item) => mergedById.set(item.id, item));
-    if (fresh.length) {
-      await saveConnectedCustomers(fresh);
-    }
+    const merged = mergeInquiries([...mergedRemote, ...localOnly], (inquiriesResult.data || []).map(inquiryToCustomer));
+    if (merged.changed.length) await saveConnectedCustomers(merged.changed);
     const inquiryIds = (inquiriesResult.data || []).map((item) => item.id);
-    if (inquiryIds.length) await supabase.from("public_inquiries").update({ status: "imported" }).in("id", inquiryIds);
-    return { connected: true, customers: [...mergedById.values()], imported: fresh.length, member: access.member };
+    if (inquiryIds.length) {
+      const { error } = await supabase.from("public_inquiries").update({ status: "imported" }).in("id", inquiryIds);
+      if (error) throw error;
+    }
+    return { connected: true, customers: merged.records, imported: merged.changed.length, member: access.member };
   } catch (error) {
     throw friendlyBackendError(error, "The CRM could not sync with the live database.");
   }

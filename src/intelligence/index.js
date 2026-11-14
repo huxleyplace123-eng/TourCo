@@ -17,7 +17,7 @@ export function recommendActivities(profile = {}) {
   const scored = activities.map((a) => {
     let s = a.rating || 0;
     const reasons = [];
-    if (profile.who === "family" && a.family) { s += 3; reasons.push("kid-safe"); }
+    if (profile.who === "family" && a.family) { s += 3; reasons.push("listed for families"); }
     if (profile.who === "couple" && a.bestFor?.includes("Couples")) { s += 3; reasons.push("great for two"); }
     if (profile.who === "group" && a.bestFor?.includes("Groups")) { s += 3; reasons.push("built for groups"); }
     const isAdventure = /ATV|Zip|Rafting|Paragl|Waterfall|Surf/.test(a.category);
@@ -64,7 +64,10 @@ export function buildMyCostaRica(profile = {}) {
   const perDay = profile.avoidLongDrives ? 2 : 2;
   const want = days * perDay + 1; // a little extra so the optimizer can choose
   const routeRegions = (profile.regions || []).filter((region) => region && region !== "Not sure yet");
-  const allRanked = recommendActivities(profile).filter((r) => r.score > 0);
+  const allRanked = recommendActivities(profile).filter((r) => r.score > 0
+    && (profile.budget !== 'low' || r.a.price < 100)
+    && (profile.budget !== 'mid' || r.a.price <= 200)
+    && (!profile.youngKids || (r.a.family && r.a.level !== 'High')));
   const ranked = (routeRegions.length ? allRanked.filter((r) => routeRegions.includes(r.a.region)) : allRanked).slice(0, want);
   const reasonById = Object.fromEntries(ranked.map((r) => [r.a.id, r.reasons]));
   const plan = planTrip(ranked.map((r) => r.a), {
