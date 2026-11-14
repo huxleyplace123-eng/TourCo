@@ -62,7 +62,7 @@ export default function Portal({ email, onSignOut }) {
   return (
     <div className="customer-portal" style={{ minHeight: "100vh", background: "#F2F1EC", color: "#172532", fontFamily: FONT }}>
       <style>{`
-        .pt-wrap{max-width:1180px;margin:0 auto;padding:14px clamp(16px,3vw,34px) 64px}
+        .customer-trip-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;padding:12px 14px;background:#fff;border:1px solid #dce5e7;border-radius:14px}.customer-trip-toolbar label{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:750}.customer-trip-toolbar select{max-width:100%;min-width:180px}.customer-trip-toolbar button,.customer-trip-toolbar select,.portal-account-tools button,.portal-account-tools input{font:inherit;padding:9px 12px;border:1px solid #cbd9dd;border-radius:9px;background:#fff;color:#173748}.customer-trip-toolbar button,.portal-account-tools button{cursor:pointer;font-size:12px;font-weight:750}.customer-trip-toolbar button:hover,.portal-account-tools button:hover{background:#eaf7f4}.customer-trip-toolbar button:focus-visible,.customer-trip-toolbar select:focus-visible,.portal-account-tools input:focus-visible{outline:2px solid #078d80;outline-offset:2px}@media(max-width:600px){.customer-trip-toolbar label{width:100%;flex-wrap:wrap}.customer-trip-toolbar select{width:100%}}.pt-wrap{max-width:1180px;margin:0 auto;padding:14px clamp(16px,3vw,34px) 64px}
         .customer-app-bar{position:sticky;top:0;z-index:12;display:grid!important;grid-template-columns:1fr auto 1fr;background:#0C2133!important;border-bottom:1px solid rgba(255,255,255,.08)!important;backdrop-filter:blur(16px)}
         .customer-brand{display:flex;align-items:center}.customer-brand>span{padding:0;background:transparent;box-shadow:none}
         .customer-signout{justify-self:end;border-color:rgba(255,255,255,.18)!important;background:rgba(255,255,255,.07)!important;color:#fff!important}
@@ -368,7 +368,7 @@ export default function Portal({ email, onSignOut }) {
       </div>
 
       <div className="pt-wrap">
-        {tab === "trip" && !sampleMode && <div style={{display:"flex",gap:12,alignItems:"center",flexWrap:"wrap",marginBottom:16}}><label>Your trips <select aria-label="Choose trip" value={trip?.id||""} onChange={e=>setTrip(trips.find(t=>t.id===e.target.value))}>{!trips.length&&<option value="">No published trips yet</option>}{trips.map(t=><option key={t.id} value={t.id}>{t.title} · {t.start||"Dates pending"}</option>)}</select></label><button onClick={loadTrip}>Refresh trips</button><button onClick={()=>setTab("ideas")}>Saved ideas</button></div>}
+        {tab === "trip" && !sampleMode && <div className="customer-trip-toolbar"><label>Your trips <select aria-label="Choose trip" value={trip?.id||""} onChange={e=>setTrip(trips.find(t=>t.id===e.target.value))}>{!trips.length&&<option value="">No published trips yet</option>}{trips.map(t=><option key={t.id} value={t.id}>{t.title} · {t.start||"Dates pending"}</option>)}</select></label><button onClick={loadTrip}>Refresh trips</button><button onClick={()=>setTab("ideas")}>Saved ideas</button></div>}
         {tab === "ideas" && <SavedIdeas/>}
         {tab === "trip" && <TripTab key={displayedTrip?.id||"empty"} trip={displayedTrip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} onAccount={() => setTab("account")} />}
         {tab === "messages" && <MessagesTab trip={trip} />}
