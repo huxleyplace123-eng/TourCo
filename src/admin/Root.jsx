@@ -6,6 +6,7 @@ import ApplicationsApp from "./ApplicationsApp.jsx";
 import TemplatesApp from "./TemplatesApp.jsx";
 import EmailApp from "./EmailApp.jsx";
 import { disconnectMail } from "./mail-client.js";
+import { signOutTeam } from "./applications-data.js";
 
 const WS_KEY = "ticowild_crm_workspace";
 
@@ -21,6 +22,7 @@ export default function Root() {
     setWorkspaceState(ws);
   };
   const signOut = () => {
+    signOutTeam().catch(() => {});
     disconnectMail().catch(() => {});
     localStorage.removeItem(AUTH_KEY);
     setSignedIn(false);

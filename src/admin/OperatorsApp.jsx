@@ -120,7 +120,6 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [syncState, setSyncState] = useState("checking");
   const [syncMessage, setSyncMessage] = useState("");
   const fileRef = useRef(null);
-  const syncTimer = useRef(null);
 
   useEffect(() => saveOverlay(overlay), [overlay]);
   useEffect(() => {
@@ -132,9 +131,10 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   }, []);
   useEffect(() => {
     if (syncState !== "connected") return undefined;
-    clearTimeout(syncTimer.current);
-    syncTimer.current = setTimeout(() => saveConnectedOperatorOverlay(overlay).catch((error) => { setSyncState("error"); setSyncMessage(error.message); }), 450);
-    return () => clearTimeout(syncTimer.current);
+    setSyncMessage("Saving changes…");
+    saveConnectedOperatorOverlay(overlay)
+      .then(() => setSyncMessage("Changes saved to the shared database. Reopen Operators to load teammates’ latest edits."))
+      .catch((error) => { setSyncState("error"); setSyncMessage(error.message); });
   }, [overlay]);
 
   const operators = useMemo(() => mergedOperators(overlay), [overlay]);

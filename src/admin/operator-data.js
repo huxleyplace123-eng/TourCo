@@ -1,4 +1,9 @@
 import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "../portal/supabase.js";
+import { createRecordSync } from "./sync-patches.js";
+const operatorSync = createRecordSync(async (id, changes, expected) => {
+  const { error } = await withTimeout(supabase.rpc('patch_crm_record', { record_kind:'operator', record_id:id, changes, expected }), 12000, 'Operator save');
+  if (error) throw new Error(error.message || 'Operator save failed. Your changes remain on this device.');
+});
 
 async function isTeamMember() {
   if (!hasSupabase) return false;
@@ -40,6 +45,8 @@ export async function loadConnectedOperatorOverlay(local = {}) {
     }]));
     const remote = { ...partners };
     for (const row of overlayResult.data || []) remote[row.operator_id] = { ...(remote[row.operator_id] || {}), ...(row.overlay || {}) };
+    operatorSync.seed(remote, Object.fromEntries((overlayResult.data || []).map(row => [row.operator_id, row.overlay])));
+    if (Object.keys(local).length) localStorage.setItem('ticowild_operator_recovery_' + Date.now(), JSON.stringify(local));
     return { connected: true, overlay: { ...local, ...remote } };
   } catch (error) {
     throw friendlyBackendError(error, "The operator CRM could not sync.");
@@ -47,10 +54,7 @@ export async function loadConnectedOperatorOverlay(local = {}) {
 }
 
 export async function saveConnectedOperatorOverlay(overlay) {
-  const rows = Object.entries(overlay).map(([operator_id, value]) => ({ operator_id, overlay: value, updated_at: new Date().toISOString() }));
-  if (!rows.length) return;
-  const { error } = await withTimeout(supabase.from("crm_operator_overlays").upsert(rows, { onConflict: "operator_id" }), 12000, "Operator CRM");
-  if (error) throw friendlyBackendError(error, "The operator CRM could not save.");
+  await operatorSync.save(overlay);
 }
 
 export async function loadConnectedOperatorPortal(operatorId, fallback) {

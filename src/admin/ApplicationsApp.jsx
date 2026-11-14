@@ -38,7 +38,7 @@ function StatusPill({ status }) {
 }
 
 function TeamGate({ access, onReady }) {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("info@ticowild.com");
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");

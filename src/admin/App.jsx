@@ -180,7 +180,6 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   const [syncState, setSyncState] = useState("checking"); // checking | connected | local | error | saving
   const [syncMessage, setSyncMessage] = useState("");
   const fileRef = useRef(null);
-  const syncTimer = useRef(null);
 
   useEffect(() => {
     const queued = takeQueuedInquiries();
@@ -229,14 +228,10 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   useEffect(() => saveCustomers(customers), [customers]);
   useEffect(() => {
     if (syncState !== "connected") return undefined;
-    clearTimeout(syncTimer.current);
     setSyncMessage("Saving changes…");
-    syncTimer.current = setTimeout(() => {
-      saveConnectedCustomers(customers)
+    saveConnectedCustomers(customers)
         .then(() => { setSyncState("connected"); setSyncMessage("Live and up to date"); })
         .catch((error) => { setSyncState("error"); setSyncMessage(error.message); });
-    }, 450);
-    return () => clearTimeout(syncTimer.current);
   }, [customers]);
   useEffect(() => saveColumnPrefs(columns), [columns]);
 

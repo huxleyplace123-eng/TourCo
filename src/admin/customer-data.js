@@ -1,5 +1,10 @@
 import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "../portal/supabase.js";
 import { blankCustomer, normalizeCustomer, todayIso } from "./store.js";
+import { createRecordSync } from "./sync-patches.js";
+const customerSync = createRecordSync(async (id, changes, expected) => {
+  const { error } = await withTimeout(supabase.rpc('patch_crm_record', { record_kind:'customer', record_id:id, changes, expected }), 12000, 'Customer save');
+  if (error) throw new Error(error.message || 'Customer save failed. Your changes remain on this device.');
+});
 
 const noteId = () => `n_${crypto.randomUUID()}`;
 
@@ -74,11 +79,11 @@ export async function loadConnectedCustomers(localCustomers = []) {
     if (inquiriesResult.error) throw inquiriesResult.error;
 
     const remote = (customersResult.data || []).map((row) => normalizeCustomer({ ...row.record, id: row.id }));
+    customerSync.seed(Object.fromEntries(remote.map(item => [item.id, item])), Object.fromEntries((customersResult.data || []).map(row => [row.id, row.record])));
+    if (localCustomers.length) localStorage.setItem('ticowild_customer_recovery_' + Date.now(), JSON.stringify(localCustomers));
     const remoteByFingerprint = new Map(remote.map((item) => [customerFingerprint(item), item]));
-    const mergedRemote = remote.map((item) => {
-      const local = localCustomers.find((candidate) => customerFingerprint(candidate) === customerFingerprint(item));
-      return local ? mergeLocalIntoRemote(item, local) : item;
-    });
+    // Database is authoritative for existing records; preserve the previous browser copy above.
+    const mergedRemote = remote;
     const localOnly = localCustomers.filter((item) => !remoteByFingerprint.has(customerFingerprint(item)));
     const known = new Set([...mergedRemote, ...localOnly].map(customerFingerprint));
     const fresh = (inquiriesResult.data || []).map(inquiryToCustomer).filter((item) => {
@@ -102,17 +107,7 @@ export async function loadConnectedCustomers(localCustomers = []) {
 
 export async function saveConnectedCustomers(customers) {
   if (!hasSupabase || !customers.length) return;
-  const rows = customers.map((customer) => ({
-    id: customer.id,
-    record: customer,
-    updated_at: customer.updatedAt || new Date().toISOString(),
-  }));
-  const { error } = await withTimeout(
-    supabase.from("crm_customers").upsert(rows, { onConflict: "id" }),
-    12000,
-    "CRM sync",
-  );
-  if (error) throw friendlyBackendError(error, "The CRM could not save to the live database.");
+  await customerSync.save(Object.fromEntries(customers.map(item => [item.id,item])));
 }
 
 export async function deleteConnectedCustomers(ids) {
