@@ -12,6 +12,7 @@ async function client() {
     auth: { clientId: mailConfig.clientId, authority: `https://login.microsoftonline.com/${mailConfig.tenantId}`,
       redirectUri: `${window.location.origin}/admin/mail-auth.html` },
     cache: { cacheLocation: "sessionStorage" },
+    system: { popupBridgeTimeout: 600000 },
     });
     await app.initialize();
     return app;
