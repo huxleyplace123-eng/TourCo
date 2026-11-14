@@ -1,0 +1,5 @@
+import assert from 'node:assert/strict';import {signedDocument} from '../src/agreements/document.js';import {notificationItems} from '../src/notifications/model.js';
+const record={id:'qa',company_name:'<script>bad</script>',version:'v1',sections:[{h:'Heading',p:'Frozen <terms>'}],signed_at:'2026-11-14T00:00:00Z',recipient_email:'qa@example.test',signed_data:{signerName:'<img src=x onerror=bad()>',signature:'javascript:bad()'}};
+const html=signedDocument(record);assert.ok(html.includes('&lt;script&gt;'));assert.ok(html.includes('Frozen &lt;terms&gt;'));assert.ok(!html.includes('src="javascript:'));assert.throws(()=>signedDocument({...record,signed_at:null}),/not been signed/);
+const alerts=notificationItems('team',{agreements:[record,{...record,id:'unsigned',signed_at:null}]});assert.equal(alerts.length,1);assert.equal(alerts[0].target,'operators');assert.equal(notificationItems('customer',{agreements:[record]}).length,0);
+console.log('PASS: signed-copy escaping, unsigned download denial, frozen terms and team-only signed-agreement alerts.');

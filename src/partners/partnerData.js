@@ -40,7 +40,7 @@ export async function sendMagicLink(email) {
   const { error } = await withTimeout(supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${window.location.origin}/partners/`,
+      emailRedirectTo: `${window.location.origin}/partners/${/^[0-9a-f-]{36}$/i.test(new URLSearchParams(window.location.search).get("agreement")||"") ? "?agreement="+new URLSearchParams(window.location.search).get("agreement") : ""}`,
       data: { account_type: "operator" },
     },
   }), 12000, "Partner sign-in email");
@@ -52,7 +52,7 @@ export async function createAccount({ companyName, email, password }) {
     email,
     password,
     options: {
-      emailRedirectTo: `${window.location.origin}/partners/`,
+      emailRedirectTo: `${window.location.origin}/partners/${/^[0-9a-f-]{36}$/i.test(new URLSearchParams(window.location.search).get("agreement")||"") ? "?agreement="+new URLSearchParams(window.location.search).get("agreement") : ""}`,
       data: { account_type: "operator", company_name: companyName.trim() },
     },
   }), 15000, "Partner account");

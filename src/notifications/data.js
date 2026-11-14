@@ -6,12 +6,13 @@ export async function loadNotifications(scope,operatorId){
  const account=await user();let data={};
  if(scope==='team'){
   const team=await rows(supabase.from('team_members').select('user_id').eq('user_id',account.id));if(!team.length)throw new Error('Connect your team account in Applications to see CRM alerts.');
-  const [messages,operatorMessages,bookings,applications,inquiries]=await Promise.all([
+  const [messages,operatorMessages,bookings,applications,inquiries,agreements]=await Promise.all([
    rows(supabase.from('messages').select('*').eq('from','customer').order('at',{ascending:false}).limit(50)),
    rows(supabase.from('operator_messages').select('*').eq('sender_role','operator').order('created_at',{ascending:false}).limit(50)),
    rows(supabase.from('bookings').select('*').order('notification_updated_at',{ascending:false,nullsFirst:false}).order('created_at',{ascending:false}).limit(50)),
    rows(supabase.from('operator_applications').select('id,status,updated_at').eq('status','pending').order('updated_at',{ascending:false}).limit(50)),
-   rows(supabase.from('public_inquiries').select('id,status,created_at').eq('status','new').order('created_at',{ascending:false}).limit(50))]);data={messages,operatorMessages,bookings,applications,inquiries};
+   rows(supabase.from('public_inquiries').select('id,status,created_at').eq('status','new').order('created_at',{ascending:false}).limit(50)),
+   rows(supabase.from('operator_agreement_requests').select('id,company_name,signed_at').order('signed_at',{ascending:false,nullsFirst:false}).limit(50))]);data={messages,operatorMessages,bookings,applications,inquiries,agreements};
  }else if(scope==='customer'){
   const [messages,bookings,trips]=await Promise.all([
    rows(supabase.from('messages').select('*').eq('user_id',account.id).eq('from','team').order('at',{ascending:false}).limit(50)),

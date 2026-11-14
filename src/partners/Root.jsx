@@ -1,3 +1,4 @@
+import {AgreementLanding} from "../agreements/AgreementCenter.jsx";
 import {createVersionedPortalSaver} from './portal-save.js';
 import {loadOperatorBookings,respondToBooking} from './booking-data.js';
 import { useEffect, useState, useRef } from "react";
@@ -44,6 +45,8 @@ export default function Root() {
 
   if (session === undefined) return <Loading />;
   if (!session) return <PartnerAuth onSession={setSession} onDemo={(intent, profile) => setSession(demoSession(intent, profile))} />;
+  const agreementId=new URLSearchParams(window.location.search).get("agreement");
+  if(agreementId&&!session.demo)return <AgreementLanding key={sessionKey+agreementId} id={agreementId} onExit={leave}/>;
   if (error) return <ErrorScreen message={error} onRetry={() => setReload(n=>n+1)} onSignOut={leave} />;
   if (loading || !context || context.sessionKey!==sessionKey) return <Loading />;
 

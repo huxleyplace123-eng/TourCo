@@ -4,18 +4,11 @@ import { c, glass } from "../theme.js";
 
 // TicoWild's email — where signed agreements are sent.
 const TICOWILD_EMAIL = "info@ticowild.com";
-export const AGREEMENT_VERSION = "2026-07-operator-partner-v1";
+export {AGREEMENT_VERSION} from "../agreements/terms.js";
+import {AGREEMENT_VERSION,AGREEMENT_SECTIONS} from "../agreements/terms.js";
 
 // The agreement, section by section (condensed from the PDF for on-screen review).
-const SECTIONS = [
-  { h: "Operator Partner, Booking Fee & Indemnity Agreement", p: "This Agreement is between TicoWild LLC (\"TicoWild\", \"Platform\") and the Operator named below. TicoWild is a travel discovery, referral, booking and concierge platform. The Operator is an independent provider of the tours, activities, transport, guide, restaurant, rental or experience services (\"Operator Services\"). TicoWild is not the operator, carrier, employer, guide or controlling party for any Operator Service." },
-  { h: "1 · Booking model & the TicoWild fee", p: "Unless agreed otherwise in writing, the customer pays TicoWild a 20% reservation deposit / booking fee of the customer-facing price. The Operator delivers the service and collects the remaining 80% directly from the customer at or before the time of service. The Operator will not circumvent TicoWild or collect the 20% fee directly." },
-  { h: "2 · Cancellations & refunds", p: "Non-fault (weather, unsafe conditions, closures, force majeure): if the deposit isn't fully refunded, the 20% is split equally — TicoWild keeps 10%, Operator receives 10%. Full refund: neither party is paid. Operator-fault (overbooking, staffing/equipment failure, missing permits, late arrival, unsafe conduct, nonperformance): Operator receives no deposit share and reimburses TicoWild for refunds, chargebacks, fees, credits and replacement costs." },
-  { h: "3 · Legal, permits, insurance & safety", p: "Operator warrants it is legally formed and holds all licenses, permits, registrations and insurance required to provide Operator Services, and complies with all applicable Costa Rica and local laws. Operator maintains appropriate liability insurance (recommended min. USD $1,000,000 per occurrence / $2,000,000 aggregate, higher for high-risk activities) and, where available, names TicoWild as additional insured. Operator is solely responsible for safety, equipment, qualified staff, briefings, gear, capacity limits, conditions monitoring and signed customer waivers." },
-  { h: "4 · Indemnity & limitation of liability", p: "To the fullest extent permitted by law, Operator defends, indemnifies and holds TicoWild harmless from claims arising out of the Operator Services, including injury, death, property damage, transport/vessel/equipment, staff conduct, unsafe conditions, cancellations, inaccurate listings, legal/tax/permit failures, data misuse and breach of this Agreement. TicoWild's total liability to Operator is capped at the lesser of fees retained in the prior 3 months or USD $1,000." },
-  { h: "5 · No circumvention & price parity", p: "For any customer introduced through TicoWild, the Operator will not bypass the Platform, solicit direct bookings to avoid fees, or undercut the TicoWild price — during the term and for 24 months after the customer's last interaction. Violations carry liquidated damages as stated in the full agreement." },
-  { h: "6 · Term, media, data & general", p: "Either party may terminate for convenience on 15–30 days' notice; TicoWild may suspend immediately for insurance/permit lapses, safety or reputational risk. Operator grants TicoWild a license to use its listing materials for marketing. Customer data is used only to fulfill bookings. Disputes: good-faith talks, then binding arbitration. This on-screen summary reflects the full TicoWild LLC Operator Partner Agreement, which governs; a complete copy is available on request." },
-];
+
 
 // A field the operator fills in.
 const FIELDS = [
@@ -68,11 +61,12 @@ function SignaturePad({ onChange }) {
   );
 }
 
-export function OperatorAgreement({ onClose, onSigned, initialValues = {}, delivery = "email" }) {
+export function OperatorAgreement({ onClose, onSigned, initialValues = {}, delivery = "email", sections=AGREEMENT_SECTIONS, version=AGREEMENT_VERSION, onDownload }) {
   const [form, setForm] = useState(Object.fromEntries(FIELDS.map((f) => [f.key, initialValues[f.key] || ""])));
   const [sig, setSig] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [done, setDone] = useState(false);
+ const [saving,setSaving]=useState(false),[saveError,setSaveError]=useState("");const submitLock=useRef(false);
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const missing = FIELDS.some((f) => !form[f.key].trim()) || !sig || !agreed;
@@ -82,7 +76,7 @@ export function OperatorAgreement({ onClose, onSigned, initialValues = {}, deliv
   // clean signed document — no backend needed).
   const buildDoc = () => {
     const rows = FIELDS.map((f) => `<tr><td style="padding:6px 12px;color:#5b6b82">${f.label}</td><td style="padding:6px 12px;font-weight:700">${escapeHtml(form[f.key])}</td></tr>`).join("");
-    const secs = SECTIONS.map((s) => `<h3 style="margin:18px 0 4px;color:#0B1A2E">${s.h}</h3><p style="margin:0;color:#333;line-height:1.55;font-size:13px">${s.p}</p>`).join("");
+    const secs = sections.map((s) => `<h3 style="margin:18px 0 4px;color:#0B1A2E">${s.h}</h3><p style="margin:0;color:#333;line-height:1.55;font-size:13px">${s.p}</p>`).join("");
     return `<!doctype html><html><head><meta charset="utf-8"><title>TicoWild Operator Agreement — ${escapeHtml(form.legalName)}</title></head>
 <body style="font-family:Arial,Helvetica,sans-serif;max-width:760px;margin:24px auto;padding:0 20px;color:#0B1A2E">
 <h1 style="color:#0B1A2E">TicoWild LLC — Operator Partner Agreement</h1>
@@ -97,6 +91,7 @@ ${secs}
   };
 
   const download = () => {
+    if(onDownload){onDownload();return;}
     const blob = new Blob([buildDoc()], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -104,25 +99,16 @@ ${secs}
     a.click(); URL.revokeObjectURL(url);
   };
 
-  const submit = () => {
-    download(); // give them the signed copy
-    if (delivery === "email") {
-      const body = `New signed Operator Partner Agreement:%0D%0A%0D%0A` +
-        FIELDS.map((f) => `${f.label}: ${form[f.key]}`).join("%0D%0A") +
-        `%0D%0ASigned: ${today}%0D%0A%0D%0A(The signed agreement file has been downloaded — please attach it to this email before sending.)`;
-      window.location.href = `mailto:${TICOWILD_EMAIL}?subject=${encodeURIComponent("Signed Operator Agreement — " + (form.legalName || ""))}&body=${body}`;
-    }
-    setDone(true);
-    onSigned?.({
-      ...form,
-      signature: sig,
-      acceptedAt: new Date().toISOString(),
-      agreementVersion: AGREEMENT_VERSION,
-    });
-  };
+  const submit = async () => {
+ if(missing||submitLock.current)return;submitLock.current=true;setSaving(true);setSaveError('');
+ try {if(delivery==='email')throw new Error('Open the operator portal to save your signed agreement securely.');
+ await onSigned?.({...form,signature:sig,acceptedAt:new Date().toISOString(),agreementVersion:version});setDone(true);
+ }catch(error){setSaveError(error.message||'Could not save. Your signature is still here; please retry.');}
+ finally{submitLock.current=false;setSaving(false);}
+ };
 
   return (
-    <div className="agreement-modal-backdrop" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(5,12,26,.75)", backdropFilter: "blur(6px)", display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 14px" }}>
+    <div className="agreement-modal-backdrop" onClick={saving?undefined:onClose} style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(5,12,26,.75)", backdropFilter: "blur(6px)", display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 14px" }}>
       <div className="agreement-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()} style={{ ...glass, background: "rgba(10,20,40,.97)", borderRadius: 22, width: "min(680px,100%)", boxShadow: "0 40px 100px -40px rgba(0,0,0,.95)", overflow: "hidden" }}>
         {/* header */}
         <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "16px 18px", borderBottom: `1px solid ${c.line}`, background: "linear-gradient(135deg, rgba(34,211,238,.1), transparent)" }}>
@@ -131,7 +117,7 @@ ${secs}
             <div style={{ color: "#fff", fontWeight: 800, fontSize: 16 }}>Become a TicoWild operator</div>
             <div style={{ color: c.stone, fontSize: 12 }}>Review, fill in, sign & send — all online.</div>
           </div>
-          <button onClick={onClose} aria-label="Close" style={{ background: "none", border: "none", color: c.stone, cursor: "pointer" }}><X size={19} /></button>
+          <button onClick={saving?undefined:onClose} aria-label="Close" style={{ background: "none", border: "none", color: c.stone, cursor: "pointer" }}><X size={19} /></button>
         </div>
 
         {done ? (
@@ -139,18 +125,18 @@ ${secs}
             <span style={{ width: 64, height: 64, borderRadius: 999, background: "rgba(55,227,107,.14)", border: "1px solid rgba(55,227,107,.4)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}><Check size={32} color="#37E36B" /></span>
             <h3 style={{ color: "#fff", fontSize: 21, fontWeight: 800, margin: "0 0 8px" }}>Signed — ¡pura vida!</h3>
             <p style={{ color: c.stone, fontSize: 14.5, lineHeight: 1.55, maxWidth: 420, margin: "0 auto 18px" }}>
-              {delivery === "email" ? <>Your signed agreement downloaded, and an email to <b style={{ color: "#fff" }}>{TICOWILD_EMAIL}</b> opened — just attach the file and hit send.</> : <>Your signed copy downloaded and the agreement is now attached to your TicoWild application.</>}
+              {delivery === "email" ? <>Your signed agreement downloaded, and an email to <b style={{ color: "#fff" }}>{TICOWILD_EMAIL}</b> opened — just attach the file and hit send.</> : <>Your signed agreement has been saved. You can download a copy below.</>}
             </p>
             <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-              <button onClick={download} style={btnGhost}><Download size={15} />Download again</button>
-              <button onClick={onClose} style={btnPrimary}>Done</button>
+              <button onClick={download} style={btnGhost}><Download size={15} />Download signed copy</button>
+              <button onClick={saving?undefined:onClose} style={btnPrimary}>Done</button>
             </div>
           </div>
         ) : (
           <div style={{ maxHeight: "calc(100vh - 180px)", overflowY: "auto", padding: "18px" }}>
             {/* agreement text */}
             <div style={{ background: "rgba(255,255,255,.04)", border: `1px solid ${c.line}`, borderRadius: 14, padding: "16px 18px", maxHeight: 240, overflowY: "auto", marginBottom: 20 }}>
-              {SECTIONS.map((s) => (
+              {sections.map((s) => (
                 <div key={s.h} style={{ marginBottom: 12 }}>
                   <h4 style={{ color: c.teal, fontSize: 13.5, fontWeight: 800, margin: "0 0 4px" }}>{s.h}</h4>
                   <p style={{ color: "rgba(243,247,255,.82)", fontSize: 12.5, lineHeight: 1.55, margin: 0 }}>{s.p}</p>
@@ -158,6 +144,7 @@ ${secs}
               ))}
             </div>
 
+            {delivery!=="email"&&<>
             {/* fields */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }} className="oa-fields">
               {FIELDS.map((f) => (
@@ -181,10 +168,12 @@ ${secs}
               <span style={{ color: "rgba(243,247,255,.85)", fontSize: 12.5, lineHeight: 1.5 }}>I have read and agree to the TicoWild LLC Operator Partner Agreement above, and I'm authorized to sign on behalf of the Operator.</span>
             </label>
 
-            <button onClick={submit} disabled={missing} style={{ ...btnPrimary, width: "100%", opacity: missing ? 0.5 : 1, cursor: missing ? "not-allowed" : "pointer", justifyContent: "center" }}>
-              {delivery === "email" ? <Mail size={16} /> : <Check size={16} />}{delivery === "email" ? "Sign & send to TicoWild" : "Sign agreement"}
+            </>}
+            <button onClick={delivery==="email"?()=>{window.location.href="/partners/";}:submit} disabled={delivery!=="email"&&(missing||saving)} style={{ ...btnPrimary, width: "100%", opacity: delivery!=="email"&&missing ? 0.5 : 1, cursor: delivery!=="email"&&missing ? "not-allowed" : "pointer", justifyContent: "center" }}>
+              {delivery === "email" ? <Mail size={16} /> : <Check size={16} />}{delivery==="email"?"Continue to secure operator portal":saving ? "Saving signed agreement…" : "Sign and save agreement"}
             </button>
-            {missing && <p style={{ color: c.stone, fontSize: 11.5, textAlign: "center", margin: "8px 0 0" }}>Fill every field, sign, and check the box to continue.</p>}
+            {saveError&&<p role="alert" style={{color:"#fca5a5"}}>{saveError}</p>}
+ {delivery!=="email"&&missing && <p style={{ color: c.stone, fontSize: 11.5, textAlign: "center", margin: "8px 0 0" }}>Fill every field, sign, and check the box to continue.</p>}
           </div>
         )}
       </div>

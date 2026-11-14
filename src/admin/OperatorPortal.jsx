@@ -1,3 +1,5 @@
+import {listAgreements} from "../agreements/data.js";
+import {AgreementDocuments} from "../agreements/AgreementCenter.jsx";
 import {validPoint} from '../portal/meeting-point.js';
 import NotificationCenter from '../notifications/NotificationCenter.jsx';
 import OperatorConversation from '../partners/OperatorConversation.jsx';
@@ -59,6 +61,8 @@ export default function OperatorPortal({
 }) {
   const [tab, setTab] = useState("home");
   const partnerMode = mode === "partner";
+ const [savedAgreement,setSavedAgreement]=useState({status:'View documents'});
+ useEffect(()=>{let live=true;if(!demo)listAgreements(op.id).then(rows=>{if(!live)return;const r=rows[0];setSavedAgreement({status:r?.signed_at?'Signed':r?'Awaiting signature':'View documents'});}).catch(()=>{if(live)setSavedAgreement({status:'Check connection'});});return()=>{live=false;};},[op.id,demo,tab]);
   const [portal, setPortal] = useState(() => portalDefaults(initialPortal || loadPortal(op.id)));
   const portalRef=useRef(portal);portalRef.current=portal;
   const saveEpoch=useRef(0);const [saveStatus,setSaveStatus]=useState(''),[saveError,setSaveError]=useState(null);
@@ -201,12 +205,12 @@ export default function OperatorPortal({
       <div className="opp-body">
         <div className="opp-wrap">
           {bookingError&&<p role="alert" style={{color:"#FCA5A5"}}>{bookingError}</p>}{responding&&<p role="status">Saving booking response…</p>}
-          {tab === "home" && <HomeTab prof={prof} bookings={bookings} responses={responses} availableDays={availableDays} tours={effTours} agreement={portal.agreement} go={setTab} />}
+          {tab === "home" && <HomeTab prof={prof} bookings={bookings} responses={responses} availableDays={availableDays} tours={effTours} agreement={demo?portal.agreement:savedAgreement} go={setTab} />}
           {tab === "calendar" && <CalendarTab availability={portal.availability} bookings={calBookings} onSetSlot={(date, hour, cur) => patch({ availability: applySlot(portal.availability, date, hour, cur) })} availableDays={availableDays} />}
           {tab === "bookings" && <BookingsTab bookings={bookings} responses={responses} onRespond={responding?undefined:respond} />}
           {tab === "tours" && <ToursTab tours={effTours} takeRate={op.takeRate} onEdit={editTour} onAdd={addTour} onDelete={deleteTour} />}
           {tab === "messages" && (demo?<MessagesTab messages={portal.messages} onSend={sendMessage} name={prof.name}/>:<OperatorConversation key={op.id} operatorId={op.id} operatorName={prof.name}/>)}
-          {tab === "business" && <BusinessTab shared={!!onPortalChange} prof={prof} agreement={portal.agreement} onSave={(profile) => patch({ profile: { ...portal.profile, ...profile } })} onSign={(name) => patch({ agreement: { status: "Signed", signedName: name, signedAt: new Date().toISOString() } })} />}
+          {tab === "business" && <BusinessTab operatorId={op.id} shared={!!onPortalChange} prof={prof} agreement={portal.agreement} onSave={(profile) => patch({ profile: { ...portal.profile, ...profile } })} onSign={(name) => patch({ agreement: { status: "Signed", signedName: name, signedAt: new Date().toISOString() } })} />}
         </div>
       </div>
     </div>
@@ -666,7 +670,7 @@ function MessagesTab({ messages, onSend, name }) {
 
 // ── My Business ───────────────────────────────────────────────────────────────
 function BusinessField({k,lab,ph,values,onChange}){return <label style={{display:'block'}}><div style={label}>{lab}</div><input value={values[k]||''} onChange={onChange(k)} placeholder={ph} style={inputBase}/></label>;}
-function BusinessTab({ prof, agreement, onSave, onSign, shared }) {
+function BusinessTab({ operatorId, prof, agreement, onSave, onSign, shared }) {
   const [f, setF] = useState({ name: prof.name, phone: prof.phone, whatsapp: prof.whatsapp, email: prof.email, website: prof.website, blurb: prof.blurb, logo: prof.logo });
   const [saved, setSaved] = useState(false);const [saving,setSaving]=useState(false);
   const [showAgreement, setShowAgreement] = useState(false);
@@ -717,36 +721,8 @@ function BusinessTab({ prof, agreement, onSave, onSign, shared }) {
         </div>
       </div>
 
-      {/* agreement */}
-      <div>
-        <SectionTitle>Partner agreement</SectionTitle>
-        <div className="opp-card" style={{ padding: "16px", display: "grid", gap: 12, border: `1px solid ${signed ? "rgba(52,211,153,.4)" : c.line}` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <ShieldCheck size={22} color={signed ? "#34D399" : c.gold} />
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 800, fontSize: 14 }}>Operator Partner & Booking Fee Agreement</div>
-              <div style={{ color: signed ? "#34D399" : c.stone, fontSize: 12.5, fontWeight: 700 }}>
-                {signed ? `✓ Signed & completed by ${agreement.signedName} on ${fmtDate(agreement.signedAt)}` : "Not signed yet — required to receive bookings"}
-              </div>
-            </div>
-          </div>
-          {signed ? (
-            <div style={{ fontSize: 12.5, color: c.stone }}>A signed copy is on file with TicoWild. You downloaded your own copy when you signed.</div>
-          ) : (
-            <button onClick={() => setShowAgreement(true)}
-              style={{ padding: "12px 18px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontFamily: FONT, fontWeight: 800, fontSize: 14, cursor: "pointer" }}>
-              Review & sign agreement
-            </button>
-          )}
-        </div>
-      </div>
+      <AgreementDocuments operatorId={operatorId}/>
 
-      {showAgreement && (
-        <OperatorAgreement
-          onClose={() => setShowAgreement(false)}
-          onSigned={(info) => onSign(info.signerName || info.legalName || "Operator")}
-        />
-      )}
     </div>
   );
 }

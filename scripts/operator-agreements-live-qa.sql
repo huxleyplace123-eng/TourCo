@@ -1,0 +1,22 @@
+begin;
+insert into auth.users(id,email,email_confirmed_at) values('65000000-0000-0000-0000-00000000ab01','agreement-qa@example.invalid',now()),('65000000-0000-0000-0000-00000000ab02','agreement-other@example.invalid',now());
+select set_config('request.jwt.claim.sub',(select user_id::text from public.team_members limit 1),true);
+set local role authenticated;
+select public.prepare_operator_agreement('agreement-qa-rollback','QA rollback operator','agreement-qa@example.invalid','qa-v1','[{"h":"QA","p":"Synthetic rollback test only"}]');
+reset role;
+select set_config('request.jwt.claim.sub','65000000-0000-0000-0000-00000000ab02',true);
+set local role authenticated;
+do $$begin if exists(select 1 from public.operator_agreement_requests where operator_id='agreement-qa-rollback') then raise exception 'FAIL cross-account visibility';end if;end$$;
+reset role;
+select set_config('request.jwt.claim.sub','65000000-0000-0000-0000-00000000ab01',true);
+set local role authenticated;
+do $$declare rid uuid;r public.operator_agreement_requests;begin
+ select id into rid from public.operator_agreement_requests where operator_id='agreement-qa-rollback';
+ perform public.open_operator_agreement(rid);
+ select * into r from public.sign_operator_agreement(rid,'{"legalName":"QA Company","signerName":"QA Signer","title":"Owner","signature":"data:image/png;base64,QUFB"}');
+ if r.signed_at is null or r.signed_data->>'email'<>'agreement-qa@example.invalid' then raise exception 'FAIL signed receipt';end if;
+ select * into r from public.sign_operator_agreement(rid,'{"signerName":"Changed"}');
+ if r.signed_data->>'signerName'<>'QA Signer' then raise exception 'FAIL immutable signature';end if;
+end$$;
+rollback;
+select 'PASS: live agreement isolation, verified-recipient opening, saved signature, immutable retry; all QA data rolled back.' as verification;

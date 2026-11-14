@@ -1,5 +1,6 @@
 import React from 'react';import TestRenderer,{act} from 'react-test-renderer';import assert from 'node:assert/strict';import Root from '../src/partners/Root.jsx';
 export async function run(){
+ globalThis.window={location:{search:""}};
  let initial,active=false,secondResolve,ui,calls=[];
  globalThis.__partnerTest={getSession:()=>new Promise(r=>initial=r),load:async s=>{calls.push(s.user.id);if(s.user.id==='other')return new Promise(r=>secondResolve=r);return active?{kind:'active',operator:{id:'qa',name:'Verified QA operator'},portal:{},bookings:[]}:{kind:'application',application:{status:'pending',company_name:'QA Company'}};}};
  await act(async()=>{ui=TestRenderer.create(<Root/>);});

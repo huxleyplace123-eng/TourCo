@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import {listAgreements} from "../agreements/data.js";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, BadgeCheck, Building2, Check, Clock3, FileSignature, Globe2, LogOut, MapPin, ShieldCheck } from "lucide-react";
 import { Logo } from "../components/Logo.jsx";
 import { AGREEMENT_VERSION, OperatorAgreement } from "../components/OperatorAgreement.jsx";
@@ -68,6 +69,7 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
   const [showAgreement, setShowAgreement] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  useEffect(()=>{if(agreement)return;let live=true;listAgreements().then(rows=>{const signed=rows.find(r=>r.signed_at&&r.recipient_email===user.email.toLowerCase()&&r.company_name.toLowerCase()===values.companyName.toLowerCase());if(live&&signed)setAgreement(signed.signed_data);}).catch(()=>{});return()=>{live=false;};},[user.email]);
   const set = (key) => (event) => setValues((v) => ({ ...v, [key]: event.target.value }));
   const toggle = (key, value) => setValues((v) => ({ ...v, [key]: v[key].includes(value) ? v[key].filter((x) => x !== value) : [...v[key], value] }));
   const complete = useMemo(() => [values.companyName, values.contactName, values.phone, values.regions.length, values.categories.length, hasMeetingPoint({ meetingPoint: values.meetingPoint }), values.description].filter(Boolean).length, [values]);
@@ -88,12 +90,7 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
     finally { setBusy(false); }
   };
 
-  const signedAgreement = async (signed) => {
-    setAgreement(signed);
-    setError("");
-    try { await saveApplication(user, values, false, signed); }
-    catch (err) { setError(err.message || "We couldn't attach the signed agreement."); }
-  };
+  const signedAgreement = async (signed) => {setError("");await saveApplication(user,values,false,signed);setAgreement(signed);};
 
   return (
     <Shell onSignOut={onSignOut}>
@@ -152,7 +149,7 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
               <div><div style={{ fontWeight:850,fontSize:15 }}>Operator Partner, Booking Fee & Indemnity Agreement</div><div style={{ marginTop:4,color:agreement?"#6EE7B7":c.stone,fontSize:12.5,lineHeight:1.55 }}>{agreement?`Signed by ${agreement.signerName} on ${new Date(agreement.acceptedAt).toLocaleDateString()}`:"Review the booking model, fees, cancellations, safety, insurance, indemnity and non-circumvention terms."}</div></div>
             </div>
             <button type="button" onClick={()=>setShowAgreement(true)} style={{ ...button(true),width:"100%",padding:13 }}>{agreement?<><FileSignature size={17}/> Review or sign again</>:<><FileSignature size={17}/> Review and sign agreement</>}</button>
-            <div style={{ display:"flex",gap:10,alignItems:"flex-start",padding:14,borderRadius:14,border:`1px solid ${c.line}`,background:"rgba(255,255,255,.025)" }}><ShieldCheck size={19} color={c.teal}/><div style={{ fontSize:12.5,lineHeight:1.55,color:c.stone }}><b style={{ color:c.charcoal }}>The application cannot be approved without this agreement.</b> Your signed copy downloads automatically and the acceptance record stays attached to your application.</div></div>
+            <div style={{ display:"flex",gap:10,alignItems:"flex-start",padding:14,borderRadius:14,border:`1px solid ${c.line}`,background:"rgba(255,255,255,.025)" }}><ShieldCheck size={19} color={c.teal}/><div style={{ fontSize:12.5,lineHeight:1.55,color:c.stone }}><b style={{ color:c.charcoal }}>The application cannot be approved without this agreement.</b> Your acceptance record stays attached to your application. Download your copy after signing.</div></div>
           </div>}
 
           {error && <div style={{ marginTop:18,padding:11,borderRadius:12,color:"#FCA5A5",background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.28)",fontSize:12.5 }}>{error}</div>}

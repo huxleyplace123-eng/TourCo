@@ -1,3 +1,4 @@
+import {AgreementCenter} from "../agreements/AgreementCenter.jsx";
 import {createVersionedPortalSaver} from '../partners/portal-save.js';
 import OperatorConversation from '../partners/OperatorConversation.jsx';
 import {loadOperatorBookings,respondToBooking} from '../partners/booking-data.js';
@@ -897,23 +898,7 @@ function TeamMessages({op}) {return <OperatorConversation key={op.id} operatorId
 
 // Agreement status (read from the portal store the operator signs against), so
 // the team sees signed/completed exactly as the operator does.
-function AgreementStatus({ op }) {
-  const [agreement, setAgreement] = useState({ status: "Not sent" });
-  useEffect(() => { setAgreement(loadPortal(op.id).agreement || { status: "Not sent" }); }, [op.id]);
-  const signed = agreement.status === "Signed";
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 13px", borderRadius: radius.md,
-      border: `1px solid ${signed ? "rgba(52,211,153,.4)" : c.line}`, background: signed ? "rgba(52,211,153,.08)" : "rgba(255,255,255,.03)" }}>
-      <BadgeCheck size={18} color={signed ? "#34D399" : c.stone} />
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 12.5, fontWeight: 800 }}>Partner agreement</div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: signed ? "#34D399" : c.stone }}>
-          {signed ? `✓ Signed & completed by ${agreement.signedName} on ${fmtDate(agreement.signedAt)}` : "Not signed yet"}
-        </div>
-      </div>
-    </div>
-  );
-}
+function AgreementStatus({op}){return <AgreementCenter key={op.id} op={op}/>;}
 
 // ── Operator drawer ───────────────────────────────────────────────────────────
 function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPortal, onClose, onWhatsAppSync }) {
