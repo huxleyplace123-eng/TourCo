@@ -61,7 +61,7 @@ export async function createAccount({ companyName, email, password }) {
 }
 
 export async function signOut() {
-  if (hasSupabase) await supabase.auth.signOut();
+  if(hasSupabase){const {error}=await withTimeout(supabase.auth.signOut({scope:"local"}),10000,"Sign out");if(error)throw error;}
 }
 
 function setupError(error) {

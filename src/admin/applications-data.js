@@ -26,7 +26,7 @@ export async function sendTeamMagicLink(email) {
 }
 
 export async function signOutTeam() {
-  if (supabase) await supabase.auth.signOut();
+  if(supabase){const {error}=await withTimeout(supabase.auth.signOut({scope:"local"}),10000,"Team sign out");if(error)throw error;}
 }
 
 export async function loadApplications() {

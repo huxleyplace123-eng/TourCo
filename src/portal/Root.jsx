@@ -15,12 +15,13 @@ export default function Root() {
 
   useEffect(() => {
     if (hasSupabase) {
+      let live=true,receivedAuthEvent=false;
       withTimeout(supabase.auth.getSession(), 10000, "Customer portal")
-        .then(({ data, error: authError }) => { if (authError) throw authError; setSession(data.session); })
-        .catch((err) => setError(friendlyBackendError(err, "The customer portal could not connect.").message))
-        .finally(() => setReady(true));
-      const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
-      return () => sub.subscription.unsubscribe();
+        .then(({ data, error: authError }) => { if (authError) throw authError; if(live&&!receivedAuthEvent)setSession(data.session); })
+        .catch((err) => {if(live&&!receivedAuthEvent)setError(friendlyBackendError(err, "The customer portal could not connect.").message);})
+        .finally(() => {if(live)setReady(true);});
+      const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {receivedAuthEvent=true;if(live){setSession(s);setReady(true);setError("");}});
+      return () => {live=false;sub.subscription.unsubscribe();};
     }
     try { const r = localStorage.getItem(DEMO_SESSION_KEY); if (r) setSession(JSON.parse(r)); } catch { /* noop */ }
     setReady(true);
@@ -52,9 +53,10 @@ export default function Root() {
   };
 
   const signOut = async () => {
-    if (hasSupabase) await supabase.auth.signOut();
-    localStorage.removeItem(DEMO_SESSION_KEY);
-    setSession(null);
+    try{
+      if(hasSupabase){const {error}=await withTimeout(supabase.auth.signOut({scope:"local"}),10000,"Sign out");if(error)throw error;}
+      localStorage.removeItem(DEMO_SESSION_KEY);setSession(null);
+    }catch(error){setError(error.message||"Sign out failed. Please try again.");}
   };
 
   if (!ready) return <PortalStatus title="Opening your trip…" />;

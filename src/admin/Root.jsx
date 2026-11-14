@@ -14,6 +14,7 @@ const WS_KEY = "ticowild_crm_workspace";
 // Auth gate + workspace routing. Customer sales, operator outreach, and live
 // partner applications share the CRM while approvals require staff auth.
 export default function Root() {
+  const [logoutError,setLogoutError]=useState("");
   const [signedIn, setSignedIn] = useState(() => isAdminSessionValid());
   const [workspace, setWorkspaceState] = useState(() => new URLSearchParams(window.location.search).get("workspace") || localStorage.getItem(WS_KEY) || "customers");
 
@@ -22,15 +23,14 @@ export default function Root() {
     window.history.replaceState(null, "", `/admin/?workspace=${encodeURIComponent(ws)}`);
     setWorkspaceState(ws);
   };
-  const signOut = () => {
-    signOutTeam().catch(() => {});
-    disconnectMail().catch(() => {});
-    localStorage.removeItem(AUTH_KEY);
-    setSignedIn(false);
+  const signOut = async () => {
+    setLogoutError("");
+    try{await signOutTeam();await disconnectMail();localStorage.removeItem(AUTH_KEY);setSignedIn(false);}
+    catch(error){setLogoutError(error.message||"Sign out failed. Please try again.");}
   };
 
   if (!signedIn) return <Login onSuccess={() => setSignedIn(true)} />;
-  return workspace === "portal" ? (<CustomerPortalApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut}/>) : workspace === "email" ? (
+  const content=workspace === "portal" ? (<CustomerPortalApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut}/>) : workspace === "email" ? (
     <EmailApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
   ) : workspace === "templates" ? (
     <TemplatesApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
@@ -41,4 +41,5 @@ export default function Root() {
   ) : (
     <App workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
   );
+  return <>{logoutError&&<div role="alert" style={{padding:12,background:"#532c34",color:"white"}}>{logoutError}</div>}{content}</>;
 }

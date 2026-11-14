@@ -7,3 +7,5 @@ assert.equal(row.guest,'Actual Guest');assert.equal(row.pax,4);assert.equal(row.
 assert.equal(partnerBooking({name:'Activity'}).guest,'Guest name pending');
 assert.equal(partnerBooking({status:'Cancelled'}).response,null);
 console.log('Partner display and optional coordinates passed.');
+
+const pinned=partnerBooking({meeting_point_name:'Gate',meeting_point_lat:0,meeting_point_lng:0,meeting_instructions:'Arrive early'});assert.equal(pinned.pickup,'Gate');assert.equal(pinned.meetingPoint.lat,0);assert.equal(pinned.meetingPoint.instructions,'Arrive early');

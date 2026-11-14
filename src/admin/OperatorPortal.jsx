@@ -1,3 +1,4 @@
+import {validPoint} from '../portal/meeting-point.js';
 import OperatorConversation from '../partners/OperatorConversation.jsx';
 // OPERATOR PORTAL (prototype) — the scoped, operator-facing view of one
 // operator's TicoWild relationship. Opened from the CRM via "Preview portal",
@@ -429,6 +430,7 @@ function BookingCard({ b, status, onRespond, compact }) {
 
         {b.operatorNet > 0 && <span style={{ color: c.gold, fontWeight: 800, fontSize: 13 }}>You earn {money(b.operatorNet)}</span>}
       </div>
+      {!compact&&b.meetingPoint&&<div style={{fontSize:12.5,overflowWrap:'anywhere'}}>{b.meetingPoint.name&&<b>{b.meetingPoint.name}</b>}{b.meetingPoint.instructions&&<p>{b.meetingPoint.instructions}</p>}{validPoint(b.meetingPoint)&&<a style={{color:c.teal}} href={'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(b.meetingPoint.lat+','+b.meetingPoint.lng)} target="_blank" rel="noreferrer">Open guest meeting point</a>}</div>}
       {!compact && b.pending && !status && onRespond && (
         <div style={{ display: "flex", gap: 8 }}>
           <button onClick={() => onRespond(b.id, "accepted")} style={{ ...pillBtn, background: "#34D399", color: c.ink, border: "none" }}><Check size={15} /> Accept</button>
