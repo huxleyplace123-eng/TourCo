@@ -19,6 +19,8 @@ import { allEmailTemplates } from "./email-templates.js";
 import { businessComposeHref, TICO_EMAIL } from "./email.js";
 import { takeQueuedInquiries } from "../inquiry-queue.js";
 import { deleteConnectedCustomers, loadConnectedCustomers, saveConnectedCustomers } from "./customer-data.js";
+import WhatsAppSync, { WhatsAppLogo } from './WhatsAppSync.jsx';
+import { prepareWhatsAppNotes } from './whatsapp-import.js';
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
@@ -177,6 +179,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
   const [columns, setColumns] = useState(() => loadColumnPrefs(DEFAULT_COLUMNS));
   const [compose, setCompose] = useState(null); // "email" | "text" | null
   const [waOpen, setWaOpen] = useState(false);
+  const [waSync, setWaSync] = useState(null);
   const [syncState, setSyncState] = useState("checking"); // checking | connected | local | error | saving
   const [syncMessage, setSyncMessage] = useState("");
   const fileRef = useRef(null);
@@ -307,6 +310,17 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
 
   const buckets = useMemo(() => followUpBuckets(filtered), [filtered]);
   const selected = customers.find((x) => x.id === selectedId) || null;
+  const importWhatsApp = async (id, source) => {
+    if (syncState !== 'connected') throw new Error('Connect the team database before saving shared messages.');
+    const customer = customers.find(item => item.id === id);
+    if (!customer) throw new Error('Choose an existing customer.');
+    const { notes } = await prepareWhatsAppNotes(source, customer.notes);
+    if (!notes.length) return 0;
+    const updated = { ...customer, notes: [...(customer.notes || []), ...notes], updatedAt: new Date().toISOString() };
+    await saveConnectedCustomers([updated]);
+    setCustomers(current => current.map(item => item.id === id ? updated : item));
+    return notes.length;
+  };
   const filtersOn = stageFilter || assigneeFilter || sourceFilter || tagFilter || tempFilter || query;
 
   // ── Bulk selection ── scoped to the visible (sorted+filtered) table; clears
@@ -485,6 +499,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           <button onClick={() => setShowColumns((v) => !v)} style={headerBtn} title="Choose table columns">
             <Columns3 size={15} /> <span className="crm-hide-mobile">Columns</span>
           </button>
+          <button onClick={() => setWaSync({ id: selectedId || '' })} style={{ ...headerBtn, color:'#25D366' }} title="Manually import WhatsApp conversations"><WhatsAppLogo /> WhatsApp sync</button>
           <button onClick={() => fileRef.current?.click()} style={headerBtn} title="Import customers from CSV">
             <Upload size={15} /> <span className="crm-hide-mobile">Import</span>
           </button>
@@ -637,6 +652,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           cust={selected} customers={customers} update={update} addNote={addNote}
           setStage={setStage} logContact={logContact} onDelete={removeCustomer}
           onClose={() => setSelectedId(null)}
+          onWhatsAppSync={() => setWaSync({ id: selected.id })}
         />
       )}
       {showAdd && (
@@ -647,6 +663,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
           onOpenExisting={(id) => { setShowAdd(false); setSelectedId(id); }}
         />
       )}
+      {waSync && <WhatsAppSync customers={customers} initialId={waSync.id} connected={syncState === 'connected'} onSave={importWhatsApp} onClose={() => setWaSync(null)} />}
 
       {/* Shared datalists — the drawer and the add-form both use them. */}
       <datalist id="crm-sources">{sources.map((s) => <option key={s} value={s} />)}</datalist>
@@ -1129,7 +1146,7 @@ function QuoteBuilder({ cust, update, addNote }) {
 }
 
 // ── Drawer (customer side panel) ─────────────────────────────────────────────
-function Drawer({ cust, customers, update, addNote, setStage, logContact, onDelete, onClose }) {
+function Drawer({ cust, customers, update, addNote, setStage, logContact, onDelete, onClose, onWhatsAppSync }) {
   const [noteDraft, setNoteDraft] = useState("");
   const dupes = findDuplicates(customers, cust, cust.id);
   const phone = normPhone(cust.phone);
@@ -1186,6 +1203,7 @@ function Drawer({ cust, customers, update, addNote, setStage, logContact, onDele
               <Phone size={15} /> Call
             </a>
           </div>
+          <button onClick={onWhatsAppSync} style={{...bigAction('rgba(37,211,102,.12)', '#25D366', 'rgba(37,211,102,.4)'),marginTop:10,width:'100%'}}><WhatsAppLogo/> WhatsApp sync</button>
         </div>
 
         {/* body */}
