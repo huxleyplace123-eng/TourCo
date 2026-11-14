@@ -6,5 +6,5 @@ export function businessComposeHref({ to = "", bcc = "", subject = "", body = ""
   if (bcc) params.set("bcc", bcc);
   if (subject) params.set("subject", subject);
   if (body) params.set("body", body);
-  return `https://outlook.office.com/mail/deeplink/compose?${params.toString()}`;
+  return `https://outlook.cloud.microsoft/mail/deeplink/compose?${params.toString().replace(/\+/g, "%20")}`;
 }
