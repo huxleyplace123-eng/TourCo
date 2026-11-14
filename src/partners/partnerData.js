@@ -118,18 +118,21 @@ export async function loadPartnerContext(session) {
   }
 
   const user = session.user;
-  const membershipResult = await supabase
+  const {error:inviteError}=await withTimeout(supabase.rpc("accept_operator_invitation"),12000,"Operator invitation");
+  if(inviteError)throw inviteError;
+  const membershipResult = await withTimeout(supabase
     .from("operator_memberships")
     .select("role,status,operator:operators(*)")
     .eq("user_id", user.id)
     .eq("status", "active")
-    .maybeSingle();
+    .maybeSingle(),12000,"Operator membership");
   if (membershipResult.error) throw setupError(membershipResult.error);
 
   if (membershipResult.data?.operator) {
+    if(!["active","onboarding"].includes(membershipResult.data.operator.status))throw new Error("This operator account is not active. Contact TicoWild for assistance.");
     const operator = normalizeOperator(membershipResult.data.operator);
     const [portalResult, bookings] = await Promise.all([
-      supabase.from("operator_portal_state").select("state").eq("operator_id", operator.id).maybeSingle(),
+      withTimeout(supabase.from("operator_portal_state").select("state").eq("operator_id", operator.id).maybeSingle(),12000,"Operator profile"),
       loadOperatorBookings(operator.id),
     ]);
     if (portalResult.error) throw setupError(portalResult.error);
@@ -142,11 +145,11 @@ export async function loadPartnerContext(session) {
     };
   }
 
-  const applicationResult = await supabase
+  const applicationResult = await withTimeout(supabase
     .from("operator_applications")
     .select("*")
     .eq("user_id", user.id)
-    .maybeSingle();
+    .maybeSingle(),12000,"Operator application");
   if (applicationResult.error) throw setupError(applicationResult.error);
   return { kind: "application", application: applicationResult.data, email: user.email };
 }

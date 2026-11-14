@@ -12,3 +12,8 @@ export function validateTrip(trip) {
   return trip;
 }
 export function needsReply(messages,userId) { const last=messages.filter(x=>x.user_id===userId).at(-1);return last?.from==='customer'; }
+
+export function bookingsNeedingAssignment(trips,operators){
+ const eligible=new Set(operators.map(o=>o.id));
+ return trips.filter(t=>!['Cancelled','Completed'].includes(t.status)).flatMap(trip=>(trip.bookings||[]).filter(b=>!['Cancelled','Completed','Declined'].includes(b.status)&&(!b.operator_id||!eligible.has(b.operator_id))).map(booking=>({trip,booking,reason:booking.operator_id?'Assigned operator unavailable':'No operator assigned'})));
+}

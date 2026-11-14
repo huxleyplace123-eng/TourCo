@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';
+import {bookingsNeedingAssignment} from '../src/admin/customer-portal-model.js';
+const trips=[{id:'active',status:'Planning',bookings:[{id:'a',status:'Requested'},{id:'b',operator_id:'ready',status:'Confirmed'},{id:'c',operator_id:'suspended',status:'Requested'},{id:'d',status:'Cancelled'},{id:'e',status:'Completed'},{id:'f',status:'Declined'}]},{id:'cancelled',status:'Cancelled',bookings:[{id:'g',status:'Requested'}]},{id:'completed',status:'Completed',bookings:[{id:'h',status:'Requested'}]}];
+const queue=bookingsNeedingAssignment(trips,[{id:'ready'}]);assert.deepEqual(queue.map(x=>x.booking.id),['a','c']);assert.equal(queue[1].reason,'Assigned operator unavailable');assert.equal(trips[0].bookings[0].operator_id,undefined);console.log('PASS: assignment queue includes unassigned/unavailable active bookings, excludes completed/cancelled/declined work, and never changes assignments.');

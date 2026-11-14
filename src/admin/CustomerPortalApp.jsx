@@ -2,7 +2,7 @@ import {operatorMeetingFields} from './booking-meeting-point.js';
 import {useEffect,useRef,useState} from 'react';
 import WorkspaceSwitch from './WorkspaceSwitch.jsx';
 import {loadPortalWorkspace,publishPortalTrip,replyToCustomer} from './customer-portal-data.js';
-import {tripDraft,validateTrip,needsReply} from './customer-portal-model.js';
+import {tripDraft,validateTrip,needsReply,bookingsNeedingAssignment} from './customer-portal-model.js';
 import './customer-portal.css';
 export default function CustomerPortalApp({workspace,onWorkspace,onSignOut}) {
   const [data,setData]=useState({profiles:[],operators:[],customers:[],trips:[],messages:[]});
@@ -11,6 +11,7 @@ export default function CustomerPortalApp({workspace,onWorkspace,onSignOut}) {
   const lock=useRef(false),request=useRef(0);
   async function refresh(){const n=++request.current;try{const next=await loadPortalWorkspace();if(n===request.current){setData(next);setError('');}}catch(e){if(n===request.current)setError(e.message);}finally{if(n===request.current)setLoading(false);}}
   useEffect(()=>{refresh();const timer=setInterval(()=>{if(!lock.current)refresh();},30000);return()=>{request.current++;clearInterval(timer);};},[]);
+  const assignmentQueue=bookingsNeedingAssignment(data.trips,data.operators);
   const customer=data.customers.find(x=>x.id===selected);
   const profile=customer&&data.profiles.find(x=>x.email?.trim().toLowerCase()===customer.email?.trim().toLowerCase());
   const thread=profile?data.messages.filter(x=>x.user_id===profile.id):[];
@@ -23,6 +24,7 @@ export default function CustomerPortalApp({workspace,onWorkspace,onSignOut}) {
     <p>Publish customer itineraries and answer messages from their private portal. <a href="/my/" target="_blank" rel="noreferrer">Open customer portal</a></p>
     {error&&<p role="alert" className="cp-error">{error}</p>}{notice&&<p role="status">{notice}</p>}
     <button disabled={busy} onClick={refresh}>Refresh</button> {loading&&<span>Loading customer accounts…</span>}
+    {!loading&&<details><summary>Bookings needing operator assignment ({assignmentQueue.length})</summary>{assignmentQueue.length?<><p>Select a booking to review its operator and meeting point before publishing.</p>{assignmentQueue.map(({trip,booking,reason})=><div key={booking.id}><b>{booking.name}</b> · {booking.date} · {reason}<button disabled={busy||!!draft||!data.customers.some(c=>c.id===trip.source_customer_id)} onClick={()=>{choose(trip.source_customer_id);setDraft(tripDraft(null,trip));}}>Review {trip.title}</button></div>)}{draft&&<p>Finish or cancel the current edit before opening another booking.</p>}</>:<p>No active bookings are waiting for operator assignment.</p>}</details>}
     <div className="cp-layout"><aside><label>Find customer<input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Name or email"/></label>
       {data.customers.filter(x=>`${x.name} ${x.email}`.toLowerCase().includes(query.toLowerCase())).map(x=>{const p=data.profiles.find(p=>p.email?.toLowerCase()===x.email?.trim().toLowerCase());return <button className="cp-customer" aria-pressed={selected===x.id} key={x.id} disabled={busy} onClick={()=>choose(x.id)}><b>{x.name||x.email}</b><small>{x.email||'Email needed'}</small>{p&&needsReply(data.messages,p.id)&&<strong>Reply needed</strong>}</button>;})}
       {data.profiles.filter(p=>!data.customers.some(c=>c.email?.trim().toLowerCase()===p.email?.toLowerCase())&&data.messages.some(m=>m.user_id===p.id)).map(p=><UnlinkedThread key={p.id} profile={p} messages={data.messages} onReply={(text)=>act(()=>replyToCustomer(p.id,text),'Reply sent to customer portal.')} busy={busy}/>)}
