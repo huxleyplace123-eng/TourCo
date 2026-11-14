@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { profilePayload } from '../src/portal/profile-model.js';
+const user={id:'customer-a',email:'verified@example.com'};
+const saved=profilePayload({id:'customer-b',email:'other@example.com',name:' Adam ',travelers:'2',role:'admin',created_at:'fake'},user);
+assert.equal(saved.id,user.id);
+assert.equal(saved.email,user.email);
+assert.equal(saved.name,'Adam');
+assert.equal(saved.travelers,'2');
+assert.equal(saved.role,undefined);
+assert.equal(saved.created_at,undefined);
+for(const travelers of ['0','-1','1.5','101','abc']) assert.throws(()=>profilePayload({travelers},user));
+assert.throws(()=>profilePayload({notes:'x'.repeat(5001)},user));
+assert.equal(profilePayload({},user).notes,'');
+console.log('Portal profile: verified identity, editable fields only, valid traveler count and length limits passed.');

@@ -84,10 +84,14 @@ alter table public.bookings enable row level security;
 alter table public.messages enable row level security;
 alter table public.public_inquiries enable row level security;
 
-create policy "own profile"   on public.profiles for all using (auth.uid() = id)      with check (auth.uid() = id);
-create policy "own trips"     on public.trips    for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-create policy "own bookings"  on public.bookings for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-create policy "own messages"  on public.messages for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own profile" on public.profiles for all to authenticated using (auth.uid() = id)
+  with check (auth.uid() = id and lower(email) = lower(auth.jwt() ->> 'email'));
+create policy "customer reads own trips" on public.trips for select to authenticated using (auth.uid() = user_id);
+create policy "customer reads own bookings" on public.bookings for select to authenticated
+  using (auth.uid() = user_id and exists (select 1 from public.trips t where t.id = trip_id and t.user_id = auth.uid()));
+create policy "customer reads own messages" on public.messages for select to authenticated using (auth.uid() = user_id);
+create policy "customer sends own messages" on public.messages for insert to authenticated
+  with check (auth.uid() = user_id and "from" = 'customer' and length(trim(text)) between 1 and 5000);
 drop policy if exists "public can create inquiries" on public.public_inquiries;
 create policy "public can create inquiries" on public.public_inquiries for insert with check (
   true

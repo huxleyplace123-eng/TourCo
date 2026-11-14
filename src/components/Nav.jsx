@@ -30,6 +30,7 @@ export function Nav({ page, go, tripCount, openTrip }) {
           ))}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <a className="customer-signin" href="/my/" style={{ color:c.charcoal, textDecoration:"none", fontSize:13, fontWeight:750, whiteSpace:"nowrap", padding:"8px" }}>Sign in</a>
           <button
             className="nav-trip-button"
             onClick={tripCount > 0 ? openTrip : () => go("build")}
@@ -53,6 +54,7 @@ export function Nav({ page, go, tripCount, openTrip }) {
       </div>
       {open && (
         <nav className="mobile-nav-menu" aria-label="Main navigation" style={{ borderTop: `1px solid ${c.line}`, padding: 12, display: "flex", flexDirection: "column", gap: 2, background: "rgba(11,26,46,.96)", backdropFilter: "blur(16px)" }}>
+          <a href="/my/" style={{padding:"12px 14px",color:c.charcoal,fontWeight:750,textDecoration:"none"}}>Customer sign in / My account</a>
           {LINKS.map(([id, label]) => (
             <a key={id} href={pathFor(id)} onClick={(event) => { event.preventDefault(); go(id); setOpen(false); }} style={{ background: isActive(id) ? "rgba(47,107,235,.08)" : "none", cursor: "pointer", padding: "12px 14px", borderRadius: 12, fontWeight: 700, fontSize: 15.5, color: isActive(id) ? c.emerald : c.charcoal, textAlign: "left", textDecoration: "none" }}>
               {label}
@@ -62,6 +64,9 @@ export function Nav({ page, go, tripCount, openTrip }) {
       )}
       <style>{`
         .nav-trip-button{transition:background .2s ease,border-color .2s ease,transform .2s ease}
+        .customer-signin:focus-visible{outline:2px solid ${c.teal};outline-offset:2px}
+        @media(max-width:520px){.customer-signin{display:none}}
+        @media(max-width:420px){.customer-signin{padding:6px 2px!important;font-size:11px!important}.site-nav-inner{padding-inline:10px!important;gap:6px!important}}
         .nav-trip-button:hover{transform:translateY(-1px);filter:brightness(1.04)}
         .nav-trip-button[data-mode="saved"]:hover{background:rgba(34,211,238,.11)!important;border-color:rgba(34,211,238,.4)!important}
         .nav-trip-button:focus-visible{outline:3px solid rgba(34,211,238,.42);outline-offset:2px}

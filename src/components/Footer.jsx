@@ -42,6 +42,7 @@ export function Footer({ go }) {
         <Col title="Explore" links={[["tico", "Meet Rico"], ["activities", "Activities"], ["insider", "Insider Guide"], ["blog", "Blog"], ["deals", "Deals"], ["packages", "Collections"]]} go={go} />
         <Col title="Company" links={[["why", "Why TicoWild"], ["partner", "Partner with us"], ["build", "Build My Trip"], ["portal", "My Trips"], ["operator-agreement", "Operator agreement", () => setAgreement(true)]]} go={go} />
         <div className="footer-support">
+          <a href="/my/" style={{display:"block",color:"#fff",fontWeight:750,marginBottom:12}}>Customer sign in / My account</a>
           <div style={{ fontWeight: 800, color: "#fff", marginBottom: 8, fontSize: 13 }}>Support</div>
           <Button variant="gold" size="sm" onClick={() => openConcierge({ intent: "support" })}>
             <MessageCircle size={15} />Ask Rico

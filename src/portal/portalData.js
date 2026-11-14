@@ -4,6 +4,7 @@
 // the schema in supabase/schema.sql — the shapes already match.
 import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "./supabase.js";
 import { cdnImage } from "../images.js";
+import { profilePayload } from './profile-model.js';
 
 const DEMO_MSG_KEY = "ticowild_portal_demo_messages";
 const DEMO_PROFILE_KEY = "ticowild_portal_demo_profile";
@@ -135,6 +136,8 @@ export async function getMessages() {
 }
 
 export async function sendMessage(text) {
+  text = String(text || '').trim();
+  if (!text || text.length > 5000) throw new Error('Write a message of 1 to 5,000 characters.');
   const msg = { id: `m_${Date.now().toString(36)}`, from: "customer", text, at: new Date().toISOString() };
   if (!hasSupabase) {
     const all = [...(await getMessages()), msg];
@@ -162,7 +165,7 @@ export async function getProfile(fallbackEmail = "") {
 export async function saveProfile(profile) {
   if (!hasSupabase) { localStorage.setItem(DEMO_PROFILE_KEY, JSON.stringify(profile)); return profile; }
   const user = await currentUser();
-  const next = { ...profile, id: user.id, email: profile.email || user.email };
+  const next = profilePayload(profile, user);
   const { error } = await withTimeout(supabase.from("profiles").upsert(next, { onConflict: "id" }), 12000, "Profile save");
   if (error) throw friendlyBackendError(error, "Your profile was not saved.");
   return next;

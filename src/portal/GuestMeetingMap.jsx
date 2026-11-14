@@ -3,7 +3,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./guest-meeting-map.css";
 
-const validPoint = (point) => Number.isFinite(Number(point?.lat)) && Number.isFinite(Number(point?.lng));
+import { validPoint } from './meeting-point.js';
 
 export const guestDirectionsUrl = (booking) => {
   const point = booking?.meetingPoint;

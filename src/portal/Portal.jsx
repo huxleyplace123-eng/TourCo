@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
 import {
   CalendarDays, MessageCircle, User, MapPin, Clock, Check, Hourglass, Send, LogOut, Backpack, ShieldCheck,
@@ -394,7 +394,7 @@ export default function Portal({ email, onSignOut }) {
 
       <div className="pt-wrap">
         {tab === "trip" && <TripTab trip={displayedTrip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} onAccount={() => setTab("account")} />}
-        {tab === "messages" && <MessagesTab trip={displayedTrip} />}
+        {tab === "messages" && <MessagesTab trip={trip} />}
         {tab === "account" && <AccountTab email={email} onSignOut={onSignOut} onMessage={() => setTab("messages")} />}
       </div>
 
@@ -420,7 +420,7 @@ function Voucher({ booking, trip, onClose }) {
         </div>
         <div className="guest-booking-hero" style={{ backgroundImage: `url(${activityPhoto(booking.photo, 1200)})` }}>
           <div className="guest-booking-hero-copy">
-            <div className="guest-booking-hero-status"><Check size={13}/> Confirmed experience</div>
+            <div className="guest-booking-hero-status"><Check size={13}/> {booking.status || 'Requested'} experience</div>
             <h2>{booking.name}</h2>
             <p>Operated by {booking.operator}</p>
             <div className="guest-booking-hero-meta"><span><CalendarDays size={14}/>{fmt(booking.date)} · {booking.time}</span><span><Users size={14}/>{trip?.travelers || 2} travelers</span></div>
@@ -438,7 +438,7 @@ function Voucher({ booking, trip, onClose }) {
               {booking.price > 0 && <div><b>Activity value</b><span>{money(booking.price)}</span></div>}
             </div>
             <div style={{ marginTop: 14, padding: "9px 12px", borderRadius: radius.sm, background: "rgba(255,208,0,.1)", border: "1px solid rgba(255,208,0,.3)", color: c.gold, fontSize: 12.5, fontWeight: 700 }}>
-              Show this QR to your guide on arrival. It works offline.
+              This QR contains your booking reference. Confirm admission and meeting details with TicoWild before traveling.
             </div>
           </div>
           <div className="guest-meeting-panel">
@@ -610,7 +610,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
   const heroPhoto = trip.days?.[0]?.items?.[0]?.photo;
   const bookings = trip.days.flatMap((day) => day.items.map((item) => ({ ...item, date: day.date })));
   const confirmedCount = bookings.filter((item) => item.status === "Confirmed").length;
-  const allExperiencesReady = confirmedCount === bookings.length;
+  const allExperiencesReady = bookings.length > 0 && confirmedCount === bookings.length;
   const nextUp = bookings.find((item) => item.status === "Confirmed") || bookings[0];
   const concierge = trip.concierge || { name: "TicoWild Concierge Team", role: "Local trip coordination", availability: "Available in your private trip conversation" };
   const conciergeInitials = concierge.name === "TicoWild Concierge Team" ? "TW" : concierge.name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -742,8 +742,11 @@ function MessagesTab({ trip }) {
   const [draft, setDraft] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  useEffect(() => { getMessages().then(setMessages).catch((err) => setError(err.message)); }, []);
-  const send = async () => { const t = draft.trim(); if (!t || busy) return; setBusy(true); setError(""); try { setMessages(await sendMessage(t)); setDraft(""); } catch (err) { setError(err.message); } finally { setBusy(false); } };
+  const sendLock = useRef(false);
+  const messageRequest = useRef(0);
+  const refreshMessages = async () => { if (sendLock.current) return; const request = ++messageRequest.current; try { const data = await getMessages(); if (request === messageRequest.current) { setMessages(data); setError(''); } } catch (err) { if (request === messageRequest.current) setError(err.message); } };
+  useEffect(() => { refreshMessages(); const timer=setInterval(refreshMessages,30000); return () => { messageRequest.current++; clearInterval(timer); }; }, []);
+  const send = async () => { const t = draft.trim(); if (!t || sendLock.current) return; sendLock.current=true; messageRequest.current++; setBusy(true); setError(""); try { setMessages(await sendMessage(t)); setDraft(""); } catch (err) { setError(err.message); } finally { sendLock.current=false;setBusy(false); } };
   const time = (value) => { const d = new Date(value); return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); };
   const prompts = ["What should I pack?", "Confirm my pickup", "I need help with my trip"];
   const concierge = trip?.concierge || { name: "TicoWild Concierge Team", role: "Local trip coordination", availability: "Available in your private trip conversation" };
@@ -753,6 +756,7 @@ function MessagesTab({ trip }) {
       <div className="consumer-section-label">Your trip support</div>
       <section className="pt-card concierge-shell">
         <div className="concierge-head">
+          <button type="button" onClick={refreshMessages} disabled={busy}>Refresh messages</button>
           <div className="concierge-avatar">{conciergeInitials}</div>
           <div className="concierge-title"><b>{concierge.name}</b><span>{concierge.role} · {concierge.availability}</span></div>
           <div className="concierge-assurance"><ShieldCheck size={15} /> Assigned to your trip</div>
@@ -770,7 +774,7 @@ function MessagesTab({ trip }) {
         </div>
         <div className="concierge-quick">{prompts.map((prompt) => <button key={prompt} onClick={() => setDraft(prompt)}>{prompt}</button>)}</div>
         <div className="concierge-compose">
-          <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") send(); }} placeholder="Message your concierge…" style={input} />
+          <input value={draft} disabled={busy} maxLength={5000} aria-label="Message your concierge" onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) send(); }} placeholder="Message your concierge…" style={input} />
           <button onClick={send} disabled={busy || !draft.trim()} aria-label="Send message" style={{ opacity: busy || !draft.trim() ? .45 : 1 }}><Send size={18} /></button>
         </div>
       </section>
@@ -781,6 +785,9 @@ function MessagesTab({ trip }) {
 }
 
 // ── Account ─────────────────────────────────────────────────────────────────
+function ProfileField({ profile, onChange, disabled, k, lab, ph, type, wide, readOnly }) {
+  return <label className={wide ? "account-field-wide" : ""} style={{display:"block"}}><div style={label}>{lab}</div><input className={readOnly ? "account-readonly" : ""} readOnly={readOnly} disabled={disabled} type={type || "text"} min={type === "number" ? 1 : undefined} max={type === "number" ? 100 : undefined} value={profile[k] || ""} onChange={readOnly ? undefined : onChange(k)} placeholder={ph} style={input}/></label>;
+}
 function AccountTab({ email, onSignOut, onMessage }) {
   const [f, setF] = useState(null);
   const [saved, setSaved] = useState(false);
@@ -813,9 +820,6 @@ function AccountTab({ email, onSignOut, onMessage }) {
   const initials = String(f.name || email || "TW").split(/\s+|@/).filter(Boolean).slice(0,2).map((part)=>part[0]?.toUpperCase()).join("");
   const profileChecks = [f.name, f.phone, f.country, f.travelers, f.notes].filter((value)=>String(value || "").trim()).length;
   const completion = Math.round((profileChecks / 5) * 100);
-  const Row = ({ k, lab, ph, type, wide, readOnly }) => (
-    <label className={wide ? "account-field-wide" : ""} style={{ display: "block" }}><div style={label}>{lab}</div><input className={readOnly ? "account-readonly" : ""} readOnly={readOnly} type={type || "text"} value={f[k] || ""} onChange={readOnly ? undefined : set(k)} placeholder={ph} style={input} /></label>
-  );
   return (
     <div className="account-view">
       <div className="consumer-section-label">Account & travel profile</div>
@@ -829,12 +833,12 @@ function AccountTab({ email, onSignOut, onMessage }) {
           <section className="pt-card account-card">
             <div className="account-card-head"><div className="account-card-icon"><User size={19}/></div><div><h2>Personal details</h2><p>Used by your concierge for confirmations, pickups, and operator coordination.</p></div></div>
             <div className="account-fields">
-              <Row k="name" lab="Full name" ph="Your full name" />
-              <Row k="phone" lab="Mobile / WhatsApp" ph="+1 480 555 0100" type="tel" />
-              <Row k="email" lab="Sign-in email" ph="you@email.com" type="email" readOnly />
-              <Row k="country" lab="Home country" ph="United States" />
-              <Row k="travelers" lab="Number of travelers" ph="2" type="number" />
-              <label className="account-field-wide" style={{ display:"block" }}><div style={label}>Travel notes & preferences</div><textarea value={f.notes || ""} onChange={set("notes")} rows={4} placeholder="Dietary needs, mobility considerations, celebrations, preferred pickup style, or anything that helps us personalize your trip…" style={{ ...input,resize:"vertical",minHeight:105 }} /></label>
+              <ProfileField profile={f} onChange={set} disabled={busy} k="name" lab="Full name" ph="Your full name" />
+              <ProfileField profile={f} onChange={set} disabled={busy} k="phone" lab="Mobile / WhatsApp" ph="+1 480 555 0100" type="tel" />
+              <ProfileField profile={f} onChange={set} disabled={busy} k="email" lab="Sign-in email" ph="you@email.com" type="email" readOnly />
+              <ProfileField profile={f} onChange={set} disabled={busy} k="country" lab="Home country" ph="United States" />
+              <ProfileField profile={f} onChange={set} disabled={busy} k="travelers" lab="Number of travelers" ph="2" type="number" />
+              <label className="account-field-wide" style={{ display:"block" }}><div style={label}>Travel notes & preferences</div><textarea disabled={busy} maxLength={5000} value={f.notes || ""} onChange={set("notes")} rows={4} placeholder="Dietary needs, mobility considerations, celebrations, preferred pickup style, or anything that helps us personalize your trip…" style={{ ...input,resize:"vertical",minHeight:105 }} /></label>
             </div>
             <div className="account-save-row"><span style={{ color:"#7A858D",fontSize:10.5,lineHeight:1.4 }}>Your details are only shared when needed to operate your bookings.</span><div style={{ display:"flex",alignItems:"center",gap:10 }}>{saved&&<span className="account-saved"><CheckCircle2 size={15}/> Saved</span>}<button className="account-save" onClick={save} disabled={busy||!dirty}>{busy?"Saving…":dirty?"Save traveler profile":saved?"Saved":"No changes"}</button></div></div>
             {error&&<div role="alert" style={{ marginTop:12,padding:"10px 12px",borderRadius:radius.sm,border:"1px solid #F1B9B5",background:"#FFF3F2",color:"#B42318",fontSize:12 }}>{error}</div>}
