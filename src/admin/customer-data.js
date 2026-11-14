@@ -84,7 +84,8 @@ export async function loadConnectedCustomers(localCustomers = []) {
     const remoteByFingerprint = new Map(remote.map((item) => [customerFingerprint(item), item]));
     // Database is authoritative for existing records; preserve the previous browser copy above.
     const mergedRemote = remote;
-    const localOnly = localCustomers.filter((item) => !remoteByFingerprint.has(customerFingerprint(item)));
+    const remoteIds = new Set(remote.map((item) => item.id));
+    const localOnly = localCustomers.filter((item) => !remoteIds.has(item.id) && !remoteByFingerprint.has(customerFingerprint(item)));
     const known = new Set([...mergedRemote, ...localOnly].map(customerFingerprint));
     const fresh = (inquiriesResult.data || []).map(inquiryToCustomer).filter((item) => {
       const fingerprint = customerFingerprint(item);
