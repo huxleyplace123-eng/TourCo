@@ -10,7 +10,7 @@ import {
 import { c, FONT, radius, shadow } from "../theme.js";
 import { addDaysIso, todayIso } from "./store.js";
 import { allEmailTemplates } from "./email-templates.js";
-import { gmailComposeHref, TICO_GMAIL } from "./email.js";
+import { businessComposeHref, TICO_EMAIL } from "./email.js";
 
 // ── Selection hook ────────────────────────────────────────────────────────────
 // `visibleIds` is the id list of the currently filtered/sorted rows. `resetKey`
@@ -153,7 +153,7 @@ export function BulkBar({
 
 // ── Email / Text compose modal ────────────────────────────────────────────────
 // `recipients`: [{ id, name, email, phone }]. Email mode opens the dedicated
-// TicoWild Gmail composer with everyone BCC'd; text mode is inert for now.
+// TicoWild Outlook composer with everyone BCC'd; text mode is inert for now.
 export function ComposeModal({ mode, entityLabel = "recipient", recipients, onClose, onSend }) {
   const isEmail = mode === "email";
   const [subject, setSubject] = useState("");
@@ -190,7 +190,7 @@ export function ComposeModal({ mode, entityLabel = "recipient", recipients, onCl
 
           {isEmail && (
             <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "10px 13px", borderRadius: radius.sm, background: "rgba(52,211,153,.09)", border: "1px solid rgba(52,211,153,.3)", color: "#34D399", fontSize: 12.5, fontWeight: 700 }}>
-              <Mail size={15} /> Sending account: {TICO_GMAIL}
+              <Mail size={15} /> Sign in to Outlook as: {TICO_EMAIL}
             </div>
           )}
 
@@ -249,7 +249,7 @@ export function ComposeModal({ mode, entityLabel = "recipient", recipients, onCl
               background: canSend ? c.gold : "rgba(255,255,255,.12)", color: canSend ? c.ink : c.stone,
               fontFamily: FONT, fontWeight: 800, fontSize: 13.5, cursor: canSend ? "pointer" : "not-allowed",
             }}>
-            <Send size={15} /> {isEmail ? "Open TicoWild Gmail" : "Send text"}
+            <Send size={15} /> {isEmail ? "Open TicoWild Outlook" : "Send text"}
           </button>
         </div>
       </div>
@@ -426,12 +426,12 @@ export function downloadCsv(text, filename) {
   URL.revokeObjectURL(a.href);
 }
 
-// Open the dedicated business Gmail account with every address BCC'd so
+// Open Outlook (sign in with the business mailbox) with every address BCC'd so
 // recipients cannot see one another. Returns the count actually addressed.
 export function openBulkEmail(emails, subject, body) {
   const list = [...new Set(emails.filter(Boolean))];
   if (!list.length) return 0;
-  window.open(gmailComposeHref({ bcc: list.join(","), subject, body }), "_blank", "noopener,noreferrer");
+  window.open(businessComposeHref({ bcc: list.join(","), subject, body }), "_blank", "noopener,noreferrer");
   return list.length;
 }
 

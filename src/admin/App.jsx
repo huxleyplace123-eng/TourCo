@@ -16,7 +16,7 @@ import { TempBadge, TempPicker, CustomerContacts, CRM_CSS } from "./crm-ui.jsx";
 import { useSelection, SelectCheckbox, BulkBar, ComposeModal, WhatsAppSendModal, downloadCsv, openBulkEmail } from "./bulk.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import { allEmailTemplates } from "./email-templates.js";
-import { gmailComposeHref, TICO_GMAIL } from "./email.js";
+import { businessComposeHref, TICO_EMAIL } from "./email.js";
 import { takeQueuedInquiries } from "../inquiry-queue.js";
 import { deleteConnectedCustomers, loadConnectedCustomers, saveConnectedCustomers } from "./customer-data.js";
 
@@ -358,7 +358,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
     const s = new Set(picked.filter((x) => x.email).map((x) => x.id));
     setCustomers((cs) => cs.map((x) => s.has(x.id) ? {
       ...x, lastContacted: todayIso(), updatedAt: new Date().toISOString(),
-      notes: [...(x.notes || []), { id: noteId(), at: new Date().toISOString(), kind: "email", text: `Bulk email draft opened in TicoWild Gmail${subject ? `: ${subject}` : ""}` }],
+      notes: [...(x.notes || []), { id: noteId(), at: new Date().toISOString(), kind: "email", text: `Bulk email draft opened in TicoWild Outlook${subject ? `: ${subject}` : ""}` }],
     } : x));
     setCompose(null);
   };
@@ -1069,7 +1069,7 @@ function CustomerTemplateComposer({ cust, onLog }) {
     setBody(mergeTemplate(template?.body, cust, quoteTotal));
   }, [templateId, cust.id]);
 
-  const href = cust.email ? gmailComposeHref({ to: cust.email, subject, body }) : undefined;
+  const href = cust.email ? businessComposeHref({ to: cust.email, subject, body }) : undefined;
   const copy = async () => {
     await navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
     setCopied(true);
@@ -1079,14 +1079,14 @@ function CustomerTemplateComposer({ cust, onLog }) {
   if (!templates.length) return null;
   return (
     <div style={{ border: `1px solid ${c.line}`, background: "rgba(34,211,238,.045)", borderRadius: radius.md, padding: 14 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}><Mail size={15} color={c.teal} /><div style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".06em", flex: 1 }}>Send a customer message</div><span style={{ fontSize: 11.5, color: c.stone }}>Personalized automatically</span><span style={{ fontSize: 11.5, color: "#34D399", padding: "3px 8px", borderRadius: 999, background: "rgba(52,211,153,.1)", border: "1px solid rgba(52,211,153,.3)" }}>{TICO_GMAIL}</span></div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}><Mail size={15} color={c.teal} /><div style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".06em", flex: 1 }}>Send a customer message</div><span style={{ fontSize: 11.5, color: c.stone }}>Personalized automatically</span><span style={{ fontSize: 11.5, color: "#34D399", padding: "3px 8px", borderRadius: 999, background: "rgba(52,211,153,.1)", border: "1px solid rgba(52,211,153,.3)" }}>{TICO_EMAIL}</span></div>
       <select value={templateId} onChange={(e) => setTemplateId(e.target.value)} style={{ ...inputBase, marginBottom: 8 }}>
         {templates.map((t) => <option key={t.id} value={t.id}>{t.category} · {t.name}</option>)}
       </select>
       <input value={subject} onChange={(e) => setSubject(e.target.value)} style={{ ...inputBase, marginBottom: 8, fontWeight: 700 }} aria-label="Email subject" />
       <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={7} style={{ ...inputBase, resize: "vertical", lineHeight: 1.5 }} aria-label="Email body" />
       <div style={{ display: "flex", gap: 8, marginTop: 9, flexWrap: "wrap" }}>
-        <a href={href} target="_blank" rel="noreferrer" onClick={() => cust.email && onLog(cust.id, "email")} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, background: c.gold, color: c.ink, textDecoration: "none", fontSize: 13, fontWeight: 800, opacity: cust.email ? 1 : .45, pointerEvents: cust.email ? "auto" : "none" }}><Mail size={14} /> Open TicoWild Gmail</a>
+        <a href={href} target="_blank" rel="noreferrer" onClick={() => cust.email && onLog(cust.id, "email")} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, background: c.gold, color: c.ink, textDecoration: "none", fontSize: 13, fontWeight: 800, opacity: cust.email ? 1 : .45, pointerEvents: cust.email ? "auto" : "none" }}><Mail size={14} /> Open TicoWild Outlook</a>
         <button onClick={copy} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "transparent", color: c.charcoal, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}><Copy size={14} /> {copied ? "Copied" : "Copy message"}</button>
       </div>
     </div>
@@ -1180,7 +1180,7 @@ function Drawer({ cust, customers, update, addNote, setStage, logContact, onDele
               style={{ ...bigAction("rgba(37,211,102,.12)", "#25D366", "rgba(37,211,102,.4)"), opacity: phone ? 1 : 0.4, pointerEvents: phone ? "auto" : "none" }}>
               <MessageCircle size={15} /> WhatsApp
             </a>
-            <a href={cust.email ? gmailComposeHref({ to: cust.email }) : undefined} target="_blank" rel="noreferrer"
+            <a href={cust.email ? businessComposeHref({ to: cust.email }) : undefined} target="_blank" rel="noreferrer"
               onClick={() => cust.email && logContact(cust.id, "email")}
               style={{ ...bigAction("rgba(34,211,238,.1)", c.teal, "rgba(34,211,238,.35)"), opacity: cust.email ? 1 : 0.4, pointerEvents: cust.email ? "auto" : "none" }}>
               <Mail size={15} /> Email
