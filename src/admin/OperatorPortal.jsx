@@ -3,7 +3,7 @@
 // so the team can see exactly what a partner sees. On the real backend this is
 // the same UI behind a per-operator magic-link login; the data comes from
 // portal-store (shared with the CRM) instead of localStorage.
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Home, CalendarDays, Ticket, MessageCircle, Building2, ShieldCheck, X,
   Phone, MapPin, Users, Check, ChevronLeft, ChevronRight, Upload, Send, Globe, Mail,
@@ -52,7 +52,7 @@ const portalDefaults = (p = {}) => ({
 
 export default function OperatorPortal({
   op, onExit, mode = "preview", role = "owner", initialPortal,
-  assignedBookings, onPortalChange, demo = false,
+  assignedBookings, onPortalChange, onRefreshBookings, onBookingResponse, demo = false,
 }) {
   const [tab, setTab] = useState("home");
   const partnerMode = mode === "partner";
@@ -60,10 +60,26 @@ export default function OperatorPortal({
   const sync = () => setPortal(portalDefaults(loadPortal(op.id)));
 
   const tours = useMemo(() => TOUR_SEED.filter((t) => t.operatorId === op.id), [op.id]);
-  const bookings = useMemo(
-    () => assignedBookings ?? sampleBookings(op, tours),
-    [assignedBookings, op.id, tours],
-  );
+  const [liveBookings,setLiveBookings]=useState(assignedBookings||[]);
+  const [bookingError,setBookingError]=useState(''),[responding,setResponding]=useState(false);
+  const responseLock=useRef(false),responseEpoch=useRef(0);
+  useEffect(()=>{setLiveBookings(assignedBookings||[]);},[assignedBookings]);
+  useEffect(()=>{if(!onRefreshBookings)return;let live=true,running=false;
+    const refresh=async()=>{if(running||responseLock.current)return;running=true;const epoch=responseEpoch.current;
+      try{const rows=await onRefreshBookings();if(live&&!responseLock.current&&epoch===responseEpoch.current){setLiveBookings(rows);setBookingError('');}}
+      catch(e){if(live)setBookingError(e.message);}finally{running=false;}};
+    refresh();const timer=setInterval(refresh,30000);return()=>{live=false;clearInterval(timer);};
+  },[op.id,onRefreshBookings]);
+  const bookings=demo?sampleBookings(op,tours):liveBookings;
+  const responses=demo?portal.bookingResponses:Object.fromEntries(bookings.map(b=>[b.id,b.response]));
+  async function respond(id,response){
+    if(responseLock.current)return;
+    if(demo){patch({bookingResponses:{...portal.bookingResponses,[id]:response}});return;}
+    if(!onBookingResponse){setBookingError('Open the connected partner account to respond.');return;}
+    responseLock.current=true;responseEpoch.current++;setResponding(true);setBookingError('');
+    try{const saved=await onBookingResponse(id,response);setLiveBookings(rows=>rows.map(b=>b.id===id?saved:b));}
+    catch(e){setBookingError(e.message);}finally{responseLock.current=false;setResponding(false);}
+  }
 
   // The operator's editable tour list = seed tours with their overrides applied
   // (hidden ones dropped) + any tours they've added themselves.
@@ -104,7 +120,7 @@ export default function OperatorPortal({
   const availableDays = Object.values(portal.availability).filter((day) => day && typeof day === "object" && Object.values(day).includes("open")).length;
   const unread = portal.messages.filter((m) => m.from === "team").length;
   // Live bookings on the calendar = assigned & not declined.
-  const calBookings = bookings.filter((b) => portal.bookingResponses[b.id] !== "declined");
+  const calBookings = bookings.filter((b) => responses[b.id] !== "declined" && b.status !== "Cancelled");
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 80, background: c.sand, color: c.charcoal, fontFamily: FONT, display: "flex", flexDirection: "column" }}>
@@ -174,9 +190,10 @@ export default function OperatorPortal({
 
       <div className="opp-body">
         <div className="opp-wrap">
-          {tab === "home" && <HomeTab prof={prof} bookings={bookings} responses={portal.bookingResponses} availableDays={availableDays} tours={effTours} agreement={portal.agreement} go={setTab} />}
+          {bookingError&&<p role="alert" style={{color:"#FCA5A5"}}>{bookingError}</p>}{responding&&<p role="status">Saving booking response…</p>}
+          {tab === "home" && <HomeTab prof={prof} bookings={bookings} responses={responses} availableDays={availableDays} tours={effTours} agreement={portal.agreement} go={setTab} />}
           {tab === "calendar" && <CalendarTab availability={portal.availability} bookings={calBookings} onSetSlot={(date, hour, cur) => patch({ availability: applySlot(portal.availability, date, hour, cur) })} availableDays={availableDays} />}
-          {tab === "bookings" && <BookingsTab bookings={bookings} responses={portal.bookingResponses} onRespond={(id, r) => patch({ bookingResponses: { ...portal.bookingResponses, [id]: r } })} />}
+          {tab === "bookings" && <BookingsTab bookings={bookings} responses={responses} onRespond={responding?undefined:respond} />}
           {tab === "tours" && <ToursTab tours={effTours} takeRate={op.takeRate} onEdit={editTour} onAdd={addTour} onDelete={deleteTour} />}
           {tab === "messages" && <MessagesTab messages={portal.messages} onSend={sendMessage} name={prof.name} />}
           {tab === "business" && <BusinessTab prof={prof} agreement={portal.agreement} onSave={(profile) => patch({ profile: { ...portal.profile, ...profile } })} onSign={(name) => patch({ agreement: { status: "Signed", signedName: name, signedAt: new Date().toISOString() } })} />}
@@ -401,10 +418,8 @@ function BookingCard({ b, status, onRespond, compact }) {
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-        <a href={`tel:${b.maskedPhone.replace(/[^\d+]/g, "")}`} onClick={(e) => e.preventDefault()} title="Masked line — connects without sharing the guest's real number"
-          style={{ display: "inline-flex", alignItems: "center", gap: 6, color: c.blue, fontSize: 12.5, fontWeight: 700, textDecoration: "none" }}>
-          <Phone size={13} /> {b.maskedPhone} <span style={{ color: c.stone, fontWeight: 600 }}>(masked)</span>
-        </a>
+        <span style={{color:c.stone,fontSize:12.5}}><Phone size={13}/> {b.maskedPhone}</span>
+
         {b.operatorNet > 0 && <span style={{ color: c.gold, fontWeight: 800, fontSize: 13 }}>You earn {money(b.operatorNet)}</span>}
       </div>
       {!compact && b.pending && !status && onRespond && (
@@ -413,9 +428,10 @@ function BookingCard({ b, status, onRespond, compact }) {
           <button onClick={() => onRespond(b.id, "declined")} style={{ ...pillBtn, background: "transparent", color: "#FB7042", border: `1px solid rgba(251,112,66,.5)` }}>Decline</button>
         </div>
       )}
+      {b.status && !status && !b.pending && <div>{b.status}</div>}
       {status && (
         <div style={{ fontSize: 12.5, fontWeight: 800, color: status === "accepted" ? "#34D399" : "#FB7042" }}>
-          {status === "accepted" ? "✓ You accepted this booking" : "✕ You declined — TicoWild has been notified"}
+          {status === "accepted" ? "✓ Booking confirmed" : "✕ Booking declined — visible to TicoWild"}
         </div>
       )}
       {compact && b.pending && !status && <div style={{ fontSize: 12, fontWeight: 800, color: "#FB7042" }}>● Needs your response</div>}
@@ -428,6 +444,7 @@ function BookingsTab({ bookings, responses, onRespond }) {
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <SectionTitle>Your TicoWild bookings</SectionTitle>
+      {!bookings.length&&<p>No assigned bookings yet.</p>}
       {bookings.map((b) => <BookingCard key={b.id} b={b} status={responses[b.id]} onRespond={onRespond} />)}
       <div style={{ color: c.stone, fontSize: 12, textAlign: "center", padding: "6px 0" }}>Only bookings TicoWild assigns to you appear here.</div>
     </div>

@@ -1,3 +1,4 @@
+import {loadOperatorBookings,respondToBooking} from './booking-data.js';
 import { useEffect, useState } from "react";
 import { AlertTriangle, LoaderCircle, RefreshCw } from "lucide-react";
 import OperatorPortal from "../admin/OperatorPortal.jsx";
@@ -51,6 +52,8 @@ export default function Root() {
         initialPortal={context.portal}
         assignedBookings={context.demo ? undefined : context.bookings}
         demo={context.demo}
+        onRefreshBookings={context.demo?undefined:()=>loadOperatorBookings(context.operator.id)}
+        onBookingResponse={context.demo?undefined:respondToBooking}
         onPortalChange={(next) => savePortal(context.operator.id, next).catch((err) => setError(err.message))}
         onExit={leave}
       />

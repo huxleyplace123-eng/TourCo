@@ -1,3 +1,5 @@
+import {optionalCoordinate} from './booking-model.js';
+import {loadOperatorBookings} from './booking-data.js';
 import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "../portal/supabase.js";
 import { mergedOperators } from "../admin/operators-store.js";
 import { loadPortal } from "../admin/portal-store.js";
@@ -126,29 +128,17 @@ export async function loadPartnerContext(session) {
 
   if (membershipResult.data?.operator) {
     const operator = normalizeOperator(membershipResult.data.operator);
-    const [portalResult, bookingsResult] = await Promise.all([
+    const [portalResult, bookings] = await Promise.all([
       supabase.from("operator_portal_state").select("state").eq("operator_id", operator.id).maybeSingle(),
-      supabase.from("bookings").select("*").eq("operator_id", operator.id).order("date", { ascending: true }),
+      loadOperatorBookings(operator.id),
     ]);
     if (portalResult.error) throw setupError(portalResult.error);
-    if (bookingsResult.error && bookingsResult.error.code !== "42P01") throw bookingsResult.error;
     return {
       kind: "active",
       role: membershipResult.data.role,
       operator,
       portal: portalResult.data?.state || {},
-      bookings: (bookingsResult.data || []).map((b) => ({
-        id: b.id,
-        guest: b.guest_name || b.name || "TicoWild guest",
-        pax: b.guests || 1,
-        date: b.date,
-        time: b.time || "Time pending",
-        tour: b.name || "TicoWild experience",
-        pickup: b.meet || "Pickup details pending",
-        maskedPhone: b.guest_phone_masked || "Available after confirmation",
-        operatorNet: b.operator_net || 0,
-        pending: b.status === "Requested",
-      })),
+      bookings,
     };
   }
 
@@ -176,8 +166,8 @@ export async function saveApplication(user, values, submit = false, agreement = 
     years_in_business: values.yearsInBusiness ? Number(values.yearsInBusiness) : null,
     description: values.description.trim(),
     meeting_point_name: values.meetingPoint?.name?.trim() || "",
-    meeting_point_lat: Number.isFinite(Number(values.meetingPoint?.lat)) ? Number(values.meetingPoint.lat) : null,
-    meeting_point_lng: Number.isFinite(Number(values.meetingPoint?.lng)) ? Number(values.meetingPoint.lng) : null,
+    meeting_point_lat: optionalCoordinate(values.meetingPoint?.lat,90),
+    meeting_point_lng: optionalCoordinate(values.meetingPoint?.lng,180),
     meeting_instructions: values.meetingPoint?.instructions?.trim() || "",
     status: submit ? "pending" : "draft",
     submitted_at: submit ? new Date().toISOString() : null,

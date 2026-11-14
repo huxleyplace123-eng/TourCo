@@ -8,13 +8,15 @@ export async function requirePortalTeam() {
 async function result(query,label) { const {data,error}=await withTimeout(query,15000,label); if(error)throw new Error(error.message);return data; }
 export async function loadPortalWorkspace() {
   await requirePortalTeam();
-  const [profiles,customers,trips,messages]=await Promise.all([
+  const [profiles,customers,trips,messages,operators,memberships]=await Promise.all([
     result(supabase.from('profiles').select('id,name,email').order('name'),'Customer accounts'),
     result(supabase.from('crm_customers').select('id,record'),'CRM customers'),
     result(supabase.from('trips').select('*,bookings(*)').order('created_at',{ascending:false}),'Customer trips'),
     result(supabase.from('messages').select('*').order('at',{ascending:true}),'Customer messages'),
+    result(supabase.from('operators').select('id,name,status').eq('status','active').order('name'),'Operator accounts'),
+    result(supabase.from('operator_memberships').select('operator_id').eq('status','active'),'Operator access'),
   ]);
-  return {profiles,customers:customers.map(x=>({...x.record,id:x.id})),trips,messages};
+  return {profiles,operators:operators.filter(o=>memberships.some(m=>m.operator_id===o.id)),customers:customers.map(x=>({...x.record,id:x.id})),trips,messages};
 }
 export async function publishPortalTrip(customerId,trip) {
   await requirePortalTeam();
