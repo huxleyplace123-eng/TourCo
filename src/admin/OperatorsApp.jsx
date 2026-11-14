@@ -26,6 +26,8 @@ import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import { loadConnectedOperatorOverlay, loadConnectedOperatorPortal, saveConnectedOperatorOverlay, saveConnectedOperatorPortal } from "./operator-data.js";
 import { hasMeetingPoint, MeetingPointPicker, OperatorMapView } from "./OperatorMeetingMap.jsx?mapRelease=37";
 import { whatsappNumber } from "./operator-contacts.js";
+import WhatsAppSync, { WhatsAppLogo } from './WhatsAppSync.jsx';
+import { prepareWhatsAppNotes } from './whatsapp-import.js';
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
@@ -113,6 +115,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   const [sortKey, setSortKey] = useState("smart");
   const [sortDir, setSortDir] = useState("asc");
   const [selectedId, setSelectedId] = useState(null);
+  const [waSync, setWaSync] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [portalOpId, setPortalOpId] = useState(null);
   const [compose, setCompose] = useState(null); // "email" | "text" | null
@@ -338,6 +341,17 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
   }), [operators, due, hot]);
 
   const selected = operators.find((o) => o.id === selectedId) || null;
+  const importWhatsApp = async (id, source) => {
+    if (syncState !== 'connected') throw new Error('Connect the team database before saving shared messages.');
+    const operator = operators.find(item => item.id === id);
+    if (!operator) throw new Error('Choose an existing operator.');
+    const { notes } = await prepareWhatsAppNotes(source, operator.notes);
+    if (!notes.length) return 0;
+    const updated = patchOperator(overlay, id, { notes: [...(operator.notes || []), ...notes] });
+    await saveConnectedOperatorOverlay({ [id]: updated[id] });
+    setOverlay(current => ({ ...current, [id]: updated[id] }));
+    return notes.length;
+  };
   const headerBtn = {
     display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px",
     borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.05)",
@@ -385,6 +399,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
           </div>
           <div style={{ flex: 1 }} className="ops-hide-mobile" />
           <button onClick={() => downloadCsv(operatorsToCsv(operators), "ticowild-operators.csv")} style={headerBtn}>Export operators</button>
+          <button onClick={() => setWaSync({ id:selectedId || '' })} style={{...headerBtn,color:'#25D366'}} title="Manually import operator WhatsApp conversations"><WhatsAppLogo/> WhatsApp sync</button>
           <button onClick={() => fileRef.current?.click()} style={headerBtn} title="Import operators from CSV">
             <Upload size={15} /> <span className="ops-hide-mobile">Import</span>
           </button>
@@ -485,11 +500,13 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
 
       {selected && (
         <OperatorDrawer op={selected} patch={patch} addNote={addNote} setStage={setStage} logTouch={logTouch}
+          onWhatsAppSync={() => setWaSync({ id:selected.id })}
           onPreviewPortal={() => setPortalOpId(selected.id)} onClose={() => setSelectedId(null)} />
       )}
       {portalOpId && (
         <TeamOperatorPortal op={operators.find((o) => o.id === portalOpId)} onExit={() => setPortalOpId(null)} />
       )}
+      {waSync && <WhatsAppSync entity="operator" customers={operators} initialId={waSync.id} connected={syncState === 'connected'} onSave={importWhatsApp} onClose={() => setWaSync(null)} />}
       {showAdd && (
         <AddOperatorModal
           onClose={() => setShowAdd(false)}
@@ -932,7 +949,7 @@ function AgreementStatus({ op }) {
 }
 
 // ── Operator drawer ───────────────────────────────────────────────────────────
-function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPortal, onClose }) {
+function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPortal, onClose, onWhatsAppSync }) {
   const [noteDraft, setNoteDraft] = useState("");
   const [contactDraft, setContactDraft] = useState(null);
   const [contactError, setContactError] = useState("");
@@ -1013,6 +1030,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
             style={{ marginTop: 10, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "11px", borderRadius: radius.sm, border: `1px solid ${c.teal}`, background: "rgba(34,211,238,.1)", color: c.teal, fontFamily: FONT, fontSize: 13.5, fontWeight: 800, cursor: "pointer" }}>
             <Eye size={16} /> Preview partner portal
           </button>
+          <button onClick={onWhatsAppSync} style={{...bigAction('rgba(37,211,102,.12)','#25D366','rgba(37,211,102,.4)',true),width:'100%',marginTop:8}}><WhatsAppLogo/> WhatsApp sync</button>
           <button onClick={copyPartnerLink}
             style={{ marginTop: 8, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.035)", color: partnerLinkCopied ? "#34D399" : c.stone, fontFamily: FONT, fontSize: 12.5, fontWeight: 800, cursor: "pointer" }}>
             <Link2 size={15} /> {partnerLinkCopied ? "Partner signup link copied" : "Copy partner signup link"}

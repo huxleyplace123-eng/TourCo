@@ -6,7 +6,7 @@ export function WhatsAppLogo() {
   return <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11.9 11.9 0 0 0 12 0C5.4 0 0 5.4 0 12c0 2.1.5 4.2 1.6 6L0 24l6.2-1.6A12 12 0 0 0 12 24c6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.5ZM12 22a10 10 0 0 1-5.1-1.4l-.4-.2-3.7 1 1-3.6-.3-.4A10 10 0 1 1 12 22Zm5.5-7.5-1.8-.9c-.3-.1-.5-.2-.7.2l-.8 1c-.2.2-.4.2-.7.1-1.8-.9-3-2-3.9-3.8-.2-.3 0-.5.1-.6l.6-.7c.2-.2.2-.4.3-.6l-.1-.6-.9-2.1c-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.5.1-.7.3-.8.8-1.1 1.6-1.1 2.5 0 1.5 1.1 3 1.3 3.2.2.2 2.2 3.5 5.4 4.8 2.5 1 3.2.8 3.8.7.8-.1 1.8-.7 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4Z"/></svg>;
 }
 
-export default function WhatsAppSync({ customers, initialId, connected, onSave, onClose }) {
+export default function WhatsAppSync({ customers, initialId, connected, onSave, onClose, entity = 'customer' }) {
   const [customerId, setCustomerId] = useState(initialId || '');
   const [source, setSource] = useState('');
   const [preview, setPreview] = useState(null);
@@ -40,7 +40,7 @@ export default function WhatsAppSync({ customers, initialId, connected, onSave, 
     setBusy(true); setError('');
     try {
       const count = await onSave(customerId, source);
-      setSuccess(`${count} new message${count === 1 ? '' : 's'} saved to ${customer.name} in the shared CRM. Find them in the customer’s notes.`);
+      setSuccess(`${count} new message${count === 1 ? '' : 's'} saved to ${customer.name} in the shared CRM. Find them in the ${entity}’s notes.`);
       setPreview(null); setSource('');
     } catch (err) { setError(err.message || 'Save failed. Your pasted conversation is still here.'); }
     finally { setBusy(false); }
@@ -57,9 +57,9 @@ export default function WhatsAppSync({ customers, initialId, connected, onSave, 
     <section role="dialog" aria-modal="true" aria-labelledby="wa-sync-title" style={{background:c.white,color:c.charcoal,fontFamily:FONT,width:'100%',maxWidth:680,maxHeight:'90vh',overflowY:'auto',borderRadius:16,padding:22,boxSizing:'border-box'}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><h2 id="wa-sync-title" style={{display:'flex',gap:9,alignItems:'center',margin:0,color:'#25D366'}}><WhatsAppLogo/> WhatsApp sync</h2><button style={button} disabled={busy} onClick={onClose} aria-label="Close WhatsApp sync">Close</button></div>
       <p style={{lineHeight:1.5}}>Bring a conversation into your shared CRM. <strong>Manual import—not automatic or live sync.</strong> Replies still happen in WhatsApp.</p>
-      <p style={{color:c.stone,fontSize:13}}>Company WhatsApp: John · +1 918-506-2803. Copy the messages, or export a chat without media and choose its .txt file. Only import the conversation intended for this customer.</p>
+      <p style={{color:c.stone,fontSize:13}}>Company WhatsApp: John · +1 918-506-2803. Copy the messages, or export a chat without media and choose its .txt file. Only import the conversation intended for this {entity}.</p>
       {!connected && <p role="alert" style={{color:'#FCA5A5'}}>Connect the team database in Applications before saving shared messages.</p>}
-      <label>Customer<select ref={selectRef} aria-label="WhatsApp sync customer" value={customerId} disabled={busy} style={{...field,margin:'6px 0 14px'}} onChange={e => {setCustomerId(e.target.value); invalidate();}}><option value="">Choose a customer</option>{customers.map(item => <option key={item.id} value={item.id}>{item.name} · {item.phone || item.email || 'No contact details'}</option>)}</select></label>
+      <label>{entity === 'operator' ? 'Operator' : 'Customer'}<select ref={selectRef} aria-label={`WhatsApp sync ${entity}`} value={customerId} disabled={busy} style={{...field,margin:'6px 0 14px'}} onChange={e => {setCustomerId(e.target.value); invalidate();}}><option value="">Choose a {entity}</option>{customers.map(item => <option key={item.id} value={item.id}>{item.name} · {item.whatsapp || item.phone || item.email || 'No contact details'}</option>)}</select></label>
       <label style={{display:'block'}}>Upload chat export (.txt)<input aria-label="Upload WhatsApp chat export" type="file" accept=".txt,text/plain" disabled={busy} onChange={readFile} style={{display:'block',margin:'8px 0 14px',maxWidth:'100%'}}/></label>
       <label>Or paste messages<textarea aria-label="WhatsApp conversation" rows={7} value={source} disabled={busy} style={{...field,marginTop:6,resize:'vertical'}} onChange={e => {setSource(e.target.value); invalidate();}} placeholder="Paste the conversation here…"/></label>
       <p style={{fontSize:12,color:c.stone}}>Original dates and names are preserved as text. Identical imported entries are skipped. Edited text or different export formatting may be treated as new. Attachments are not imported.</p>
