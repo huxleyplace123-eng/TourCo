@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict';
 import { PublicClientApplication } from '@azure/msal-browser';
+// Native BroadcastChannel keeps Node alive; browsers manage this channel's lifetime.
+const NativeBroadcastChannel = globalThis.BroadcastChannel;
+globalThis.BroadcastChannel = class extends NativeBroadcastChannel {
+  constructor(name) { super(name); this.unref(); }
+};
 const account = { username: 'info@ticowild.com' };
 assert.equal(typeof PublicClientApplication.prototype.initialize,'function');
 let initialized = false;
