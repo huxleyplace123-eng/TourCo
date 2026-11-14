@@ -1,3 +1,4 @@
+import OperatorConversation from '../partners/OperatorConversation.jsx';
 // OPERATOR PORTAL (prototype) — the scoped, operator-facing view of one
 // operator's TicoWild relationship. Opened from the CRM via "Preview portal",
 // so the team can see exactly what a partner sees. On the real backend this is
@@ -118,7 +119,7 @@ export default function OperatorPortal({
   };
   // A day counts as "open" if it has at least one open hour slot.
   const availableDays = Object.values(portal.availability).filter((day) => day && typeof day === "object" && Object.values(day).includes("open")).length;
-  const unread = portal.messages.filter((m) => m.from === "team").length;
+  const unread = demo ? portal.messages.filter((m) => m.from === "team").length : 0;
   // Live bookings on the calendar = assigned & not declined.
   const calBookings = bookings.filter((b) => responses[b.id] !== "declined" && b.status !== "Cancelled");
 
@@ -195,7 +196,7 @@ export default function OperatorPortal({
           {tab === "calendar" && <CalendarTab availability={portal.availability} bookings={calBookings} onSetSlot={(date, hour, cur) => patch({ availability: applySlot(portal.availability, date, hour, cur) })} availableDays={availableDays} />}
           {tab === "bookings" && <BookingsTab bookings={bookings} responses={responses} onRespond={responding?undefined:respond} />}
           {tab === "tours" && <ToursTab tours={effTours} takeRate={op.takeRate} onEdit={editTour} onAdd={addTour} onDelete={deleteTour} />}
-          {tab === "messages" && <MessagesTab messages={portal.messages} onSend={sendMessage} name={prof.name} />}
+          {tab === "messages" && (demo?<MessagesTab messages={portal.messages} onSend={sendMessage} name={prof.name}/>:<OperatorConversation key={op.id} operatorId={op.id} operatorName={prof.name}/>)}
           {tab === "business" && <BusinessTab prof={prof} agreement={portal.agreement} onSave={(profile) => patch({ profile: { ...portal.profile, ...profile } })} onSign={(name) => patch({ agreement: { status: "Signed", signedName: name, signedAt: new Date().toISOString() } })} />}
         </div>
       </div>

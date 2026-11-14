@@ -1,3 +1,4 @@
+import OperatorConversation from '../partners/OperatorConversation.jsx';
 import {loadOperatorBookings,respondToBooking} from '../partners/booking-data.js';
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -890,44 +891,7 @@ function ToursView({ categories, regions, onOpenOperator }) {
 
 // ── Team ↔ operator messages (team side of the same thread the operator sees
 // in their portal). Shared via portal-store. ─────────────────────────────────
-function TeamMessages({ op }) {
-  const [messages, setMessages] = useState([]);
-  const [draft, setDraft] = useState("");
-  useEffect(() => { setMessages(loadPortal(op.id).messages); }, [op.id]);
-  const send = () => {
-    const t = draft.trim();
-    if (!t) return;
-    setMessages(addMessage(op.id, "team", t));
-    setDraft("");
-  };
-  const opLabel = { fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 5 };
-  return (
-    <div>
-      <div style={{ ...opLabel, display: "flex", alignItems: "center", gap: 6 }}>
-        <MessageCircle size={13} /> Messages with {op.name}
-      </div>
-      <div style={{ borderRadius: radius.md, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.03)", padding: 10, display: "grid", gap: 8, maxHeight: 220, overflowY: "auto" }}>
-        {messages.length ? messages.map((m) => {
-          const team = m.from === "team";
-          return (
-            <div key={m.id} style={{ display: "flex", justifyContent: team ? "flex-end" : "flex-start" }}>
-              <div style={{ maxWidth: "82%", padding: "8px 11px", borderRadius: 12, fontSize: 13, lineHeight: 1.4,
-                background: team ? c.teal : "rgba(255,255,255,.06)", color: team ? c.ink : c.charcoal, border: team ? "none" : `1px solid ${c.line}` }}>
-                <div style={{ fontSize: 10, fontWeight: 800, opacity: .7, marginBottom: 2 }}>{team ? "You (TicoWild)" : op.name}</div>
-                {m.text}
-              </div>
-            </div>
-          );
-        }) : <div style={{ color: c.stone, fontSize: 12.5, textAlign: "center", padding: "14px 0" }}>No messages yet. Send the first — it appears in their portal.</div>}
-      </div>
-      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-        <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") send(); }}
-          placeholder={`Message ${op.name}…`} style={inputBase} />
-        <button onClick={send} style={{ padding: "0 14px", borderRadius: radius.sm, border: "none", background: c.teal, color: c.ink, fontWeight: 800, cursor: "pointer", display: "inline-flex", alignItems: "center" }}><Send size={15} /></button>
-      </div>
-    </div>
-  );
-}
+function TeamMessages({op}) {return <OperatorConversation key={op.id} operatorId={op.id} operatorName={op.name}/>;}
 
 // Agreement status (read from the portal store the operator signs against), so
 // the team sees signed/completed exactly as the operator does.

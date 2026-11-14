@@ -1,0 +1,37 @@
+import React from 'react';
+import TestRenderer,{act} from 'react-test-renderer';
+import assert from 'node:assert/strict';
+import OperatorConversation from '../src/partners/OperatorConversation.jsx';
+import {operatorMeetingFields,validateMeetingFields} from '../src/admin/booking-meeting-point.js';
+export async function run(){
+ let ui,calls=[],fail=true,pending;
+ const message={id:'saved',text:'Hello operator',sender_role:'team',created_at:new Date().toISOString()};
+ const load=async()=>[];
+ const send=async(op,text,id)=>{calls.push({op,text,id});if(fail)throw new Error('Connection lost.');return message;};
+ await act(async()=>{ui=TestRenderer.create(<OperatorConversation operatorId="qa" load={load} send={send}/>);});
+ await act(async()=>ui.root.findByType('textarea').props.onChange({target:{value:'Hello operator'}}));
+ await act(async()=>ui.root.findByType('form').props.onSubmit({preventDefault(){}}));
+ assert.equal(ui.root.findByType('textarea').props.value,'Hello operator');
+ assert.match(ui.root.findByProps({role:'alert'}).children.join(''),/Retry/);
+ fail=false;
+ await act(async()=>ui.root.findByType('form').props.onSubmit({preventDefault(){}}));
+ assert.equal(calls[0].id,calls[1].id);assert.equal(ui.root.findByType('textarea').props.value,'');
+ assert.equal(ui.root.findAllByType('article').length,1);
+ await act(async()=>ui.unmount());
+ let reads=0;
+ const slowLoad=()=>++reads===1?Promise.resolve([]):new Promise(resolve=>pending=resolve);
+ await act(async()=>{ui=TestRenderer.create(<OperatorConversation operatorId="qa" load={slowLoad} send={send}/>);});
+ await act(async()=>{ui.root.findAllByType('button')[0].props.onClick();});
+ await act(async()=>ui.root.findByType('textarea').props.onChange({target:{value:'Hello operator'}}));
+ await act(async()=>ui.root.findByType('form').props.onSubmit({preventDefault(){}}));
+ await act(async()=>pending([]));
+ assert.equal(ui.root.findAllByType('article').length,1,'stale refresh must not erase acknowledged send');
+ await act(async()=>ui.unmount());
+ assert.deepEqual(operatorMeetingFields({meetingPoint:{name:'Equator',lat:0,lng:0,instructions:'Gate'}}),{meeting_point_name:'Equator',meeting_point_lat:0,meeting_point_lng:0,meeting_instructions:'Gate'});
+ assert.equal(operatorMeetingFields({meeting_point_lat:10,meeting_point_lng:-84}).meeting_point_lat,10);
+ assert.equal(operatorMeetingFields({meeting_point_lat:10,meeting_point_lng:-84,meetingPoint:{lat:11,lng:-85}}).meeting_point_lat,11);
+ validateMeetingFields({meeting_point_lat:'',meeting_point_lng:''});
+ validateMeetingFields({meeting_point_lat:0,meeting_point_lng:0});
+ for(const point of [{meeting_point_lat:1,meeting_point_lng:''},{meeting_point_lat:91,meeting_point_lng:1},{meeting_point_lat:1,meeting_point_lng:181}])assert.throws(()=>validateMeetingFields(point),/valid latitude/);
+ console.log('PASS: failed-send draft recovery, stable retry ID, acknowledged message, stale-refresh protection, overlay meeting points, zero coordinates and invalid-pin validation.');
+}

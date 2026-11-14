@@ -1,0 +1,50 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile} from 'node:fs/promises';
+const {PGlite}=await import(process.env.PGLITE_MODULE_PATH||'@electric-sql/pglite');
+const db=new PGlite();
+await db.exec(`create role authenticated;create role anon;create schema auth;create table auth.users(id uuid primary key,email text,email_confirmed_at timestamptz,raw_user_meta_data jsonb default '{}');create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;create function auth.jwt() returns jsonb language sql stable as $$select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb$$;grant usage on schema auth to authenticated;`);
+await db.exec(await readFile('supabase/schema.sql','utf8'));
+await db.exec(`create table public.team_members(user_id uuid primary key,role text);create function public.is_team_member() returns boolean language sql stable security definer set search_path=public as $$select exists(select 1 from team_members where user_id=auth.uid())$$;create table public.crm_customers(id text primary key,record jsonb);create policy "team manages trips" on trips for all using(is_team_member()) with check(is_team_member());create policy "team manages bookings" on bookings for all using(is_team_member()) with check(is_team_member());create policy "team manages messages" on messages for all using(is_team_member()) with check(is_team_member());grant select,insert,update,delete on profiles,trips,bookings,messages to authenticated;`);
+await db.exec(await readFile('supabase/customer_portal_permissions.sql','utf8'));
+await db.exec(await readFile('supabase/customer_portal_integration.sql','utf8'));
+
+await db.exec((await readFile('supabase/operator_portal.sql','utf8')).replace('create extension if not exists pgcrypto;',''));
+await db.exec(await readFile('supabase/operator_booking_handoff.sql','utf8'));
+await db.exec(await readFile('supabase/operator_booking_handoff.sql','utf8'));
+
+await db.exec('grant select,insert,update on operators,operator_memberships,operator_portal_state to authenticated;');
+const customer='40000000-0000-0000-0000-000000000001',team='40000000-0000-0000-0000-000000000002',operator='40000000-0000-0000-0000-000000000003',other='40000000-0000-0000-0000-000000000004';
+for(const [id,email] of [[customer,'customer@example.test'],[team,'staff@example.test'],[operator,'operator@example.test'],[other,'other@example.test']])await db.query('insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())',[id,email]);
+await db.query("insert into team_members values($1,'admin')",[team]);
+await db.query('insert into crm_customers values($1,$2)',['qa',{name:'QA Guest',email:'customer@example.test'}]);
+await db.exec("insert into operators(id,name,status) values('qa-operator','QA Operator','active');");
+await db.query("insert into operator_memberships(operator_id,user_id,role,status) values('qa-operator',$1,'owner','active')",[operator]);
+await db.query("insert into operator_portal_state(operator_id,state) values('qa-operator',$1)",[{messages:[{id:'old',from:'team',text:'Existing history',at:'2026-10-01T12:00:00Z'}]}]);
+await db.exec(await readFile('supabase/operator_conversations_meeting_points.sql','utf8'));
+await db.exec(await readFile('supabase/operator_conversations_meeting_points.sql','utf8'));
+assert.equal((await db.query('select count(*)::int n from operator_messages')).rows[0].n,1);
+async function as(id,fn){await db.exec('begin;set local role authenticated;');await db.query("select set_config('request.jwt.claim.sub',$1,true)",[id]);try{const r=await fn();await db.exec('commit');return r;}catch(e){await db.exec('rollback');throw e;}}
+const send=(text,id=crypto.randomUUID())=>db.query("select send_operator_message('qa-operator',$1,$2) as message",[text,id]);
+const requestId=crypto.randomUUID();await as(team,()=>send('Team hello',requestId));await as(team,()=>send('Team hello',requestId));
+await as(operator,async()=>{const rows=(await db.query('select * from operator_messages')).rows;assert.equal(rows.length,2);assert.equal(rows.find(m=>m.text==='Team hello').sender_role,'team');});
+await as(operator,()=>send('Operator reply'));
+await as(team,async()=>{const rows=(await db.query('select * from operator_messages')).rows;assert.equal(rows.length,3);assert.equal(rows.find(m=>m.text==='Operator reply').sender_role,'operator');});
+for(const id of [customer,other]){await as(id,async()=>assert.equal((await db.query('select * from operator_messages')).rows.length,0));await assert.rejects(as(id,()=>send('forged')),/access denied/);}
+await assert.rejects(as(operator,()=>db.query("insert into operator_messages(operator_id,sender_role,text) values('qa-operator','team','spoof')")),/permission denied/);
+await assert.rejects(as(operator,()=>db.query("update operator_messages set text='edited'")),/permission denied/);
+await assert.rejects(as(operator,()=>send('Changed',requestId)),/does not match/);
+await assert.rejects(as(team,()=>send(' ')),/1 to 5000/);
+await db.exec("update operators set status='suspended' where id='qa-operator'");
+await as(operator,async()=>assert.equal((await db.query('select * from operator_messages')).rows.length,0));await assert.rejects(as(operator,()=>send('suspended')),/access denied/);
+await db.exec("update operators set status='active' where id='qa-operator'");
+const trip={request_id:crypto.randomUUID(),title:'QA',start_date:'2026-12-01',end_date:'2026-12-02',travelers:2,status:'Planning',bookings:[{id:crypto.randomUUID(),name:'QA activity',date:'2026-12-01',status:'Requested',operator_id:'qa-operator',meeting_point_name:'Guest entrance',meeting_point_lat:10.42,meeting_point_lng:-84.73,meeting_instructions:'Arrive 20 minutes early'}]};
+const publish=(t,rev=0)=>db.query("select publish_customer_trip('qa',$1,$2)",[t,rev]);
+await as(team,()=>publish(trip));
+await as(customer,async()=>{const b=(await db.query('select * from bookings')).rows[0];assert.equal(b.meeting_point_lat,10.42);assert.equal(b.meeting_point_lng,-84.73);assert.equal(b.meeting_instructions,'Arrive 20 minutes early');});
+await assert.rejects(as(team,()=>publish({...trip,id:trip.request_id,bookings:[{...trip.bookings[0],meeting_point_lng:null}]},1)),/both valid meeting coordinates/);
+await assert.rejects(as(team,()=>publish({...trip,id:trip.request_id,bookings:[{...trip.bookings[0],meeting_point_lat:91}]},1)),/both valid meeting coordinates/);
+const {meeting_point_lat,meeting_point_lng,meeting_point_name,meeting_instructions,...legacyBooking}=trip.bookings[0];
+await as(team,()=>publish({...trip,id:trip.request_id,bookings:[legacyBooking]},1));assert.equal((await db.query('select meeting_point_lat from bookings')).rows[0].meeting_point_lat,10.42);
+await as(team,()=>publish({...trip,id:trip.request_id,bookings:[{...trip.bookings[0],meeting_point_lat:'',meeting_point_lng:''}]},2));assert.equal((await db.query('select meeting_point_lat from bookings')).rows[0].meeting_point_lat,null);
+await as(customer,async()=>assert.equal((await db.query("update bookings set meeting_point_lat=0 returning id")).rows.length,0));
+console.log('PASS: shared team/operator conversation, sender identity, retry idempotency, preserved history, customer/outsider/suspended isolation; booking pin delivery, validation, older-client preservation and explicit clearing.');await db.close();
