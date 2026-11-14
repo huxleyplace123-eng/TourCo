@@ -30,7 +30,8 @@ Pura vida,
 John Robinson
 Co-Founder and Chief Operator, TicoWild
 ticowildtours@gmail.com
-WhatsApp: 8672-3132`,
+WhatsApp: +1 918-506-2803 (US)
+https://wa.me/19185062803`,
   },
   {
     id: "operator-partnership-follow-up", audience: "operator", category: "Follow-up",
@@ -45,7 +46,7 @@ We are building a focused network of trusted Costa Rica operators and believe yo
 
 There is no obligation to join. I would simply like to learn how you operate, what experiences you want to grow, and whether our traveler requests are a good match for your team.
 
-You can reply to this email, message me on WhatsApp at 8672-3132, or apply here when convenient:
+You can reply to this email, message me on WhatsApp at +1 918-506-2803 (US), or apply here when convenient:
 https://ticowild.com/become-a-partner
 
 Pura vida,
@@ -313,7 +314,9 @@ Thank you for trusting TicoWild with part of your Costa Rica trip.
 Pura vida,
 The TicoWild team`,
   },
-];
+].map((template) => template.audience === "operator" && !template.body.includes("https://wa.me/19185062803")
+  ? { ...template, body: `${template.body}\n\nJohn Robinson · TicoWild\nWhatsApp: +1 918-506-2803 (US)\nhttps://wa.me/19185062803` }
+  : template);
 
 export function loadCustomTemplates() {
   try {

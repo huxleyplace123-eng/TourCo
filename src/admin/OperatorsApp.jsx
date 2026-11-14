@@ -25,6 +25,7 @@ import OperatorPortal from "./OperatorPortal.jsx";
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import { loadConnectedOperatorOverlay, loadConnectedOperatorPortal, saveConnectedOperatorOverlay, saveConnectedOperatorPortal } from "./operator-data.js";
 import { hasMeetingPoint, MeetingPointPicker, OperatorMapView } from "./OperatorMeetingMap.jsx?mapRelease=37";
+import { whatsappNumber } from "./operator-contacts.js";
 
 const noteId = () => `n_${Math.random().toString(36).slice(2, 9)}`;
 
@@ -383,6 +384,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
             ))}
           </div>
           <div style={{ flex: 1 }} className="ops-hide-mobile" />
+          <button onClick={() => downloadCsv(operatorsToCsv(operators), "ticowild-operators.csv")} style={headerBtn}>Export operators</button>
           <button onClick={() => fileRef.current?.click()} style={headerBtn} title="Import operators from CSV">
             <Upload size={15} /> <span className="ops-hide-mobile">Import</span>
           </button>
@@ -398,12 +400,12 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
         {/* ── Stats ── */}
         <div className="ops-stats">
           {[
-            { label: "Operators", value: stats.total, col: c.teal, onClick: clearFilters },
+            { label: "Operator businesses", value: stats.total, col: c.teal, onClick: clearFilters },
             { label: "🔥 Hot leads", value: stats.hot, col: stats.hot ? "#FB7042" : c.stone, onClick: () => { clearFilters(); setView("directory"); setTempFilter("Hot"); } },
             { label: "In motion", value: stats.inMotion, col: c.blue },
             { label: "Active partners", value: stats.active, col: "#34D399", onClick: () => { clearFilters(); setStageFilter("Active partner"); } },
             { label: "Outreach due", value: stats.due, col: stats.due ? "#F87171" : c.stone },
-            { label: "Tours priced", value: stats.tours, col: c.gold, onClick: () => setView("tours") },
+            { label: "Tour listings (not operators)", value: stats.tours, col: c.gold, onClick: () => setView("tours") },
           ].map((s) => (
             <div key={s.label} onClick={s.onClick}
               style={{ padding: "12px 16px", borderRadius: radius.md, border: `1px solid ${c.line}`, background: c.white, boxShadow: shadow.sm, cursor: s.onClick ? "pointer" : "default" }}>
@@ -932,6 +934,20 @@ function AgreementStatus({ op }) {
 // ── Operator drawer ───────────────────────────────────────────────────────────
 function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPortal, onClose }) {
   const [noteDraft, setNoteDraft] = useState("");
+  const [contactDraft, setContactDraft] = useState(null);
+  const [contactError, setContactError] = useState("");
+  const saveContacts = (e) => {
+    e.preventDefault();
+    const draft = Object.fromEntries(Object.entries(contactDraft).map(([key, value]) => [key, value.trim()]));
+    if (draft.whatsapp && !whatsappNumber(draft.whatsapp)) { setContactError("Enter one WhatsApp number with its country code."); return; }
+    draft.whatsapp = whatsappNumber(draft.whatsapp);
+    if (draft.website) {
+      try { const url = new URL(/^https?:\/\//i.test(draft.website) ? draft.website : `https://${draft.website}`); if (!/^https?:$/.test(url.protocol)) throw new Error(); draft.website = url.href; }
+      catch { setContactError("Enter a valid website address."); return; }
+    }
+    patch(op.id, { contactOverrides: { ...op.contactOverrides, ...draft } });
+    setContactDraft(null); setContactError("");
+  };
   const [partnerLinkCopied, setPartnerLinkCopied] = useState(false);
   const tours = useMemo(() => TOUR_SEED.filter((t) => t.operatorId === op.id), [op.id]);
   const prog = checklistProgress(op.checklist);
@@ -1043,10 +1059,17 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
           <div className="ops-grid2">
             <div>
               <div style={label}>Contacts</div>
+              <button type="button" onClick={() => { setContactDraft(Object.fromEntries(["phone", "whatsapp", "email", "website"].map((key) => [key, op[key] || ""]))); setContactError(""); }} style={{ ...inputBase, cursor:"pointer", marginBottom:8 }}>Edit contact details</button>
+              {contactDraft && <form onSubmit={saveContacts} style={{ display:"grid", gap:9, marginBottom:12 }}>
+                {[["whatsapp", "WhatsApp (primary)"], ["phone", "Phone"], ["email", "Email"], ["website", "Website"]].map(([key, title]) => <label key={key} style={{ display:"grid", gap:4, fontSize:12 }}>{title}<input type={key === "email" ? "email" : "text"} value={contactDraft[key]} onChange={(e) => setContactDraft((draft) => ({ ...draft, [key]:e.target.value }))} style={inputBase}/></label>)}
+                {contactError && <div role="alert">{contactError}</div>}
+                <button type="submit" style={{ ...inputBase, cursor:"pointer", color:c.gold }}>Save contact details</button>
+                <button type="button" onClick={() => setContactDraft(null)} style={{ ...inputBase, cursor:"pointer" }}>Cancel</button>
+              </form>}
               <div style={{ fontSize: 13, display: "grid", gap: 4, color: c.charcoal }}>
+                {op.whatsapp && <div style={{ color:"#25D366" }}>WhatsApp (primary): {op.whatsapp}</div>}
                 {op.phone && <div>📞 {op.phone}</div>}
                 {op.phone2 && <div>📞 {op.phone2}</div>}
-                {op.whatsapp && <div>💬 {op.whatsapp}</div>}
                 {op.email && <div>✉️ {op.email}</div>}
                 {op.b2bEmail && <div>🏢 {op.b2bEmail}</div>}
                 {op.contactNotes && <div style={{ color: c.gold, fontSize: 12 }}><AlertTriangle size={11} style={{ verticalAlign: -1 }} /> {op.contactNotes}</div>}
@@ -1140,6 +1163,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
           {/* notes */}
           <div>
             <div style={label}>Notes & history</div>
+            {op.outreachNotes && <div style={{ padding:10, border:`1px solid ${c.line}`, borderRadius:radius.sm, whiteSpace:"pre-wrap", fontSize:13 }}><strong>Original imported notes</strong><div>{op.outreachNotes}</div></div>}
             <div style={{ display: "flex", gap: 8 }}>
               <input value={noteDraft} onChange={(e) => setNoteDraft(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && noteDraft.trim()) { addNote(op.id, noteDraft.trim()); setNoteDraft(""); } }}
@@ -1157,7 +1181,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
                   </div>
                   <div style={{ fontSize: 13.5, lineHeight: 1.45, whiteSpace: "pre-wrap" }}>{n.text}</div>
                 </div>
-              )) : <div style={{ color: c.stone, fontSize: 13 }}>{op.outreachNotes || "No notes yet."}</div>}
+              )) : <div style={{ color: c.stone, fontSize: 13 }}>No activity notes yet.</div>}
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ import { CONTACTS_SEED } from "./operators-contacts.js";
 import { CURATED_OPERATOR_MEETING_POINTS } from "./operator-meeting-points.js";
 import { inferOperatorType, OPERATOR_TYPES, TEMPERATURES } from "./crm-shared.js";
 import { parseCsvText } from "./store.js";
+import { resolveOperatorContacts } from "./operator-contacts.js";
 
 const OVERLAY_KEY = "ticowild_crm_operators_v1";
 
@@ -82,7 +83,7 @@ export function mergedOperators(overlay) {
     return {
       ...seed,
       stage: ov.stage ?? normalizeSeedStage(seed.seedStage),
-      temperature: ov.temperature ?? "",
+      temperature: opHeatFromText(ov.temperature ?? seed.temperature ?? ""),
       type: ov.type ?? inferOperatorType(seed.categories),
       owner: ov.owner ?? "",
       preferred: ov.preferred ?? false,
@@ -124,7 +125,7 @@ export function mergedOperators(overlay) {
       seedStage: "Not contacted",
       outreachNotes: "",
       stage: ov.stage ?? "Not contacted",
-      temperature: ov.temperature ?? "",
+      temperature: opHeatFromText(ov.temperature ?? ""),
       owner: ov.owner ?? "",
       preferred: ov.preferred ?? false,
       nextFollowUp: ov.nextFollowUp ?? "",
@@ -133,10 +134,10 @@ export function mergedOperators(overlay) {
       checklist: ov.checklist ?? {},
       takeRate: ov.takeRate ?? null,
       meetingPoint: ov.meetingPoint ?? null,
-      contactOverrides: {},
+      contactOverrides: ov.contactOverrides ?? {},
       custom: true,
     }));
-  return [...fromSeed, ...customs];
+  return [...fromSeed, ...customs].map(resolveOperatorContacts);
 }
 
 /** Patch one operator's overlay entry. */
@@ -181,9 +182,10 @@ export function operatorsToCsv(list) {
     ["email", "Email"], ["website", "Website"], ["owner", "Owner"],
     ["meetingPointName", "Meeting point"], ["meetingPointLat", "Meeting latitude"], ["meetingPointLng", "Meeting longitude"],
     ["meetingInstructions", "Meeting instructions"],
-    ["nextFollowUp", "Next follow-up"], ["lastContacted", "Last contacted"],
+    ["nextFollowUp", "Next follow-up"], ["lastContacted", "Last contacted"], ["notes", "Notes"],
   ];
   const cell = (o, k) => {
+    if (k === "notes") return [o.outreachNotes, ...(o.notes || []).map((n) => n.text)].filter(Boolean).join("\n");
     if (k === "categories") return Array.isArray(o[k]) ? o[k].join("; ") : (o[k] || "");
     if (k === "takeRate") return o[k] === null || o[k] === undefined ? "" : `${Math.round(o[k] * 100)}%`;
     if (k === "meetingPointName") return o.meetingPoint?.name || "";
@@ -218,6 +220,7 @@ const OP_ALIASES = {
   website: ["website", "site", "url", "web", "homepage"],
   takeRate: ["referralfee", "takerate", "fee", "commission", "targettakerate", "feepercent", "feepct", "targetrate"],
   temperature: ["heat", "temperature", "temp", "priority", "leadheat"],
+  stage: ["stage", "pipelinestage"],
   owner: ["owner", "assignedto", "assignee", "rep", "accountowner"],
   meetingPointName: ["meetingpoint", "meetingpointname", "pickupname", "meetinglocation"],
   meetingPointLat: ["meetinglatitude", "meetinglat", "latitude", "lat"],
@@ -237,6 +240,7 @@ const opTypeFromText = (v) => {
 
 const opHeatFromText = (v) => {
   const s = squash(v);
+  if (s === "warm") return "Medium";
   const hit = TEMPERATURES.find((t) => squash(t) === s);
   return hit || "";
 };
@@ -292,7 +296,7 @@ export function importOperatorsCsv(text, existing) {
         lng: get("meetingPointLng") === "" ? "" : Number(get("meetingPointLng")),
         instructions: get("meetingInstructions"),
       },
-      stage: "Not contacted",
+      stage: PARTNER_STAGES.includes(get("stage")) ? get("stage") : "Not contacted",
       notes: notesText ? [{ id: `n_${Math.random().toString(36).slice(2, 9)}`, at: new Date().toISOString(), text: notesText }] : [],
       checklist: {},
     };
