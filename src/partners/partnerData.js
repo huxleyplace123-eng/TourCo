@@ -130,6 +130,11 @@ export async function loadPartnerContext(session) {
 
   if (membershipResult.data?.operator) {
     if(!["active","onboarding"].includes(membershipResult.data.operator.status))throw new Error("This operator account is not active. Contact TicoWild for assistance.");
+    if(membershipResult.data.operator.status==='onboarding'){
+      const {data:application,error}=await withTimeout(supabase.from('operator_applications').select('*').eq('user_id',user.id).maybeSingle(),12000,'Operator onboarding');
+      if(error)throw error;
+      return {kind:'application',application:application||{company_name:membershipResult.data.operator.name,status:'draft'},email:user.email};
+    }
     const operator = normalizeOperator(membershipResult.data.operator);
     const [portalResult, bookings] = await Promise.all([
       withTimeout(supabase.from("operator_portal_state").select("state,updated_at").eq("operator_id", operator.id).maybeSingle(),12000,"Operator profile"),

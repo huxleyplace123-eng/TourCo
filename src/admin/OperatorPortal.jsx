@@ -1,4 +1,5 @@
 import {validPoint} from '../portal/meeting-point.js';
+import NotificationCenter from '../notifications/NotificationCenter.jsx';
 import OperatorConversation from '../partners/OperatorConversation.jsx';
 // OPERATOR PORTAL (prototype) — the scoped, operator-facing view of one
 // operator's TicoWild relationship. Opened from the CRM via "Preview portal",
@@ -171,6 +172,7 @@ export default function OperatorPortal({
             <span style={{ color: c.gold }}>Tico</span>Wild Partner · {typeMeta.emoji} {typeMeta.label}{partnerMode ? ` · ${role}` : ""}
           </div>
         </div>
+        {partnerMode&&!demo&&<NotificationCenter scope="operator" operatorId={op.id} onNavigate={setTab}/>}
         <button onClick={onExit} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 13px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.05)", color: c.charcoal, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
           {partnerMode ? <LogOut size={15} /> : <X size={15} />} {partnerMode ? "Sign out" : "Exit preview"}
         </button>

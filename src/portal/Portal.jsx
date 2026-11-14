@@ -1,3 +1,4 @@
+import NotificationCenter from '../notifications/NotificationCenter.jsx';
 import {useSavedList} from './useSavedList.js';
 import TravelerNames from './TravelerNames.jsx';
 import {tripCalendar} from './calendar.js';
@@ -352,6 +353,7 @@ export default function Portal({ email, onSignOut }) {
             );
           })}
         </div>
+        {!sampleMode&&<NotificationCenter scope="customer" onNavigate={target=>{setTab(target);loadTrip();}}/>}
         <button className="customer-signout" onClick={onSignOut} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 12px", borderRadius: radius.sm, fontFamily: FONT, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
           <LogOut size={15} /> Sign out
         </button>
