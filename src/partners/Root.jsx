@@ -1,5 +1,6 @@
+import {createVersionedPortalSaver} from './portal-save.js';
 import {loadOperatorBookings,respondToBooking} from './booking-data.js';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { AlertTriangle, LoaderCircle, RefreshCw } from "lucide-react";
 import OperatorPortal from "../admin/OperatorPortal.jsx";
 import { c, FONT, grad, radius } from "../theme.js";
@@ -14,6 +15,7 @@ export default function Root() {
   const [context, setContext] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [reload,setReload]=useState(0);const saver=useRef(null);
 
   useEffect(() => {
     let live = true, receivedAuthEvent=false;
@@ -28,13 +30,13 @@ export default function Root() {
     let live = true;
     setLoading(true); setError("");
     loadPartnerContext(session)
-      .then((next) => { if (live) setContext({...next,sessionKey}); })
+      .then((next) => { if (live) {saver.current=next.kind==="active"&&!next.demo?createVersionedPortalSaver(next.portalUpdatedAt,(portal,version)=>savePortal(next.operator.id,portal,version)):null;setContext({...next,sessionKey});} })
       .catch((err) => { if (live) setError(err.message || "We couldn't load your partner account."); })
       .finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
-  }, [session]);
+  }, [sessionKey,reload]);
 
-  useEffect(()=>{if(context?.kind!=="application"||!["pending","approved"].includes(context.application?.status))return;const timer=setInterval(()=>setSession(s=>s?{...s}:s),30000);return()=>clearInterval(timer);},[context?.kind,context?.application?.status]);
+  useEffect(()=>{if(context?.kind!=="application"||!["pending","approved"].includes(context.application?.status))return;const timer=setInterval(()=>setReload(n=>n+1),30000);return()=>clearInterval(timer);},[context?.kind,context?.application?.status]);
 
   const leave = async () => {
     try{await signOut();setContext(null);setSession(null);}catch(err){setError(err.message||"Sign out failed. Please try again.");}
@@ -42,7 +44,7 @@ export default function Root() {
 
   if (session === undefined) return <Loading />;
   if (!session) return <PartnerAuth onSession={setSession} onDemo={(intent, profile) => setSession(demoSession(intent, profile))} />;
-  if (error) return <ErrorScreen message={error} onRetry={() => setSession({ ...session })} onSignOut={leave} />;
+  if (error) return <ErrorScreen message={error} onRetry={() => setReload(n=>n+1)} onSignOut={leave} />;
   if (loading || !context || context.sessionKey!==sessionKey) return <Loading />;
 
   if (context.kind === "active") {
@@ -56,7 +58,7 @@ export default function Root() {
         demo={context.demo}
         onRefreshBookings={context.demo?undefined:()=>loadOperatorBookings(context.operator.id)}
         onBookingResponse={context.demo?undefined:respondToBooking}
-        onPortalChange={(next) => savePortal(context.operator.id, next).catch((err) => setError(err.message))}
+        onPortalChange={context.demo?undefined:(next)=>saver.current(next)}
         onExit={leave}
       />
     );
@@ -64,7 +66,7 @@ export default function Root() {
 
   const application = context.application;
   if (application?.status === "pending" || application?.status === "approved") {
-    return <PendingReview application={application} onRefresh={()=>setSession({...session})} onSignOut={leave} />;
+    return <PendingReview application={application} onRefresh={()=>setReload(n=>n+1)} onSignOut={leave} />;
   }
   return <Onboarding user={session.user} application={application} onSubmitted={(next) => setContext({ ...context, application: next })} onSignOut={leave} />;
 }

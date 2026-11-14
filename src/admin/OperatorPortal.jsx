@@ -58,6 +58,10 @@ export default function OperatorPortal({
   const [tab, setTab] = useState("home");
   const partnerMode = mode === "partner";
   const [portal, setPortal] = useState(() => portalDefaults(initialPortal || loadPortal(op.id)));
+  const portalRef=useRef(portal);portalRef.current=portal;
+  const saveEpoch=useRef(0);const [saveStatus,setSaveStatus]=useState(''),[saveError,setSaveError]=useState(null);
+  async function persist(next){const n=++saveEpoch.current;setSaveStatus('Saving…');setSaveError(null);try{await onPortalChange(next);if(n===saveEpoch.current)setSaveStatus('Saved to your operator account.');return true;}catch(error){if(n===saveEpoch.current){setSaveStatus('');setSaveError(error);}return false;}}
+  function downloadUnsaved(){const url=URL.createObjectURL(new Blob([JSON.stringify(portalRef.current,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='ticowild-unsaved-operator-edits.json';a.click();URL.revokeObjectURL(url);}
   const sync = () => setPortal(portalDefaults(loadPortal(op.id)));
 
   const tours = useMemo(() => TOUR_SEED.filter((t) => t.operatorId === op.id), [op.id]);
@@ -104,10 +108,11 @@ export default function OperatorPortal({
   const typeMeta = operatorType(op.type);
 
   const patch = (p) => {
-    const next = portalDefaults({ ...portal, ...p });
+    const next = portalDefaults({ ...portalRef.current, ...p });
+    portalRef.current=next;
     setPortal(next);
-    if (onPortalChange) onPortalChange(next);
-    else { patchPortal(op.id, p); sync(); }
+    if (onPortalChange) return persist(next);
+    else { patchPortal(op.id, p); sync(); return Promise.resolve(true); }
   };
   const sendMessage = (text) => {
     if (onPortalChange) {
@@ -170,6 +175,7 @@ export default function OperatorPortal({
         </button>
       </div>
 
+      {onPortalChange&&(saveStatus||saveError)&&<div style={{padding:'10px 20px'}}>{saveStatus&&<p role="status">{saveStatus}</p>}{saveError&&<div role="alert"><p>{saveError.message} Your edits are still displayed and have not been confirmed saved.</p>{saveError.code!=='PORTAL_CONFLICT'&&<button onClick={()=>persist(portalRef.current)}>Retry save</button>}<button onClick={downloadUnsaved}>Download unsaved edits</button></div>}</div>}
       {/* tabs */}
       <div className="opp-tabs">
         {TABS.map(({ key, label: lab, Icon }) => {
@@ -197,7 +203,7 @@ export default function OperatorPortal({
           {tab === "bookings" && <BookingsTab bookings={bookings} responses={responses} onRespond={responding?undefined:respond} />}
           {tab === "tours" && <ToursTab tours={effTours} takeRate={op.takeRate} onEdit={editTour} onAdd={addTour} onDelete={deleteTour} />}
           {tab === "messages" && (demo?<MessagesTab messages={portal.messages} onSend={sendMessage} name={prof.name}/>:<OperatorConversation key={op.id} operatorId={op.id} operatorName={prof.name}/>)}
-          {tab === "business" && <BusinessTab prof={prof} agreement={portal.agreement} onSave={(profile) => patch({ profile: { ...portal.profile, ...profile } })} onSign={(name) => patch({ agreement: { status: "Signed", signedName: name, signedAt: new Date().toISOString() } })} />}
+          {tab === "business" && <BusinessTab shared={!!onPortalChange} prof={prof} agreement={portal.agreement} onSave={(profile) => patch({ profile: { ...portal.profile, ...profile } })} onSign={(name) => patch({ agreement: { status: "Signed", signedName: name, signedAt: new Date().toISOString() } })} />}
         </div>
       </div>
     </div>
@@ -655,9 +661,10 @@ function MessagesTab({ messages, onSend, name }) {
 }
 
 // ── My Business ───────────────────────────────────────────────────────────────
-function BusinessTab({ prof, agreement, onSave, onSign }) {
+function BusinessField({k,lab,ph,values,onChange}){return <label style={{display:'block'}}><div style={label}>{lab}</div><input value={values[k]||''} onChange={onChange(k)} placeholder={ph} style={inputBase}/></label>;}
+function BusinessTab({ prof, agreement, onSave, onSign, shared }) {
   const [f, setF] = useState({ name: prof.name, phone: prof.phone, whatsapp: prof.whatsapp, email: prof.email, website: prof.website, blurb: prof.blurb, logo: prof.logo });
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(false);const [saving,setSaving]=useState(false);
   const [showAgreement, setShowAgreement] = useState(false);
   const signed = agreement.status === "Signed";
   const set = (k) => (e) => { setF((x) => ({ ...x, [k]: e.target.value })); setSaved(false); };
@@ -668,11 +675,9 @@ function BusinessTab({ prof, agreement, onSave, onSign }) {
     r.onload = () => { setF((x) => ({ ...x, logo: String(r.result) })); setSaved(false); };
     r.readAsDataURL(file);
   };
-  const save = () => { onSave(f); setSaved(true); };
+  const save = async () => { if(saving)return;setSaving(true);setSaved(false);try{const ok=await onSave(f);setSaved(ok===true);}finally{setSaving(false);} };
 
-  const Row = ({ k, lab, ph }) => (
-    <label style={{ display: "block" }}><div style={label}>{lab}</div><input value={f[k]} onChange={set(k)} placeholder={ph} style={inputBase} /></label>
-  );
+
 
   return (
     <div style={{ display: "grid", gap: 16 }}>
@@ -695,16 +700,16 @@ function BusinessTab({ prof, agreement, onSave, onSign }) {
 
       <div className="opp-card" style={{ padding: "16px" }}>
         <div className="opp-grid2">
-          <Row k="name" lab="Company name" ph="Your business name" />
-          <Row k="phone" lab="Phone" ph="+506 …" />
-          <Row k="whatsapp" lab="WhatsApp" ph="+506 …" />
-          <Row k="email" lab="Email" ph="you@company.com" />
-          <Row k="website" lab="Website" ph="https://…" />
+          <BusinessField values={f} onChange={set} k="name" lab="Company name" ph="Your business name" />
+          <BusinessField values={f} onChange={set} k="phone" lab="Phone" ph="+506 …" />
+          <BusinessField values={f} onChange={set} k="whatsapp" lab="WhatsApp" ph="+506 …" />
+          <BusinessField values={f} onChange={set} k="email" lab="Email" ph="you@company.com" />
+          <BusinessField values={f} onChange={set} k="website" lab="Website" ph="https://…" />
           <label style={{ display: "block" }}><div style={label}>Short description</div><textarea value={f.blurb} onChange={set("blurb")} placeholder="One line about your tours…" rows={2} style={{ ...inputBase, resize: "vertical" }} /></label>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 14 }}>
-          <button onClick={save} style={{ padding: "11px 20px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontFamily: FONT, fontWeight: 800, fontSize: 14, cursor: "pointer" }}>Save changes</button>
-          {saved && <span style={{ color: "#34D399", fontSize: 13, fontWeight: 700 }}><Check size={14} style={{ verticalAlign: -2 }} /> Saved — synced to TicoWild</span>}
+          <button disabled={saving} onClick={save} style={{ padding: "11px 20px", borderRadius: radius.sm, border: "none", background: c.gold, color: c.ink, fontFamily: FONT, fontWeight: 800, fontSize: 14, cursor: "pointer" }}>{saving?"Saving…":"Save changes"}</button>
+          {saved && <span style={{ color: "#34D399", fontSize: 13, fontWeight: 700 }}><Check size={14} style={{ verticalAlign: -2 }} /> {shared?"Saved to TicoWild":"Saved in this preview"}</span>}
         </div>
       </div>
 

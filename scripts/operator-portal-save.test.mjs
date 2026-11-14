@@ -1,0 +1,5 @@
+import assert from 'node:assert/strict';import {createVersionedPortalSaver} from '../src/partners/portal-save.js';
+let firstResolve,calls=[];const save=createVersionedPortalSaver('v1',async(state,version)=>{calls.push({state,version});if(calls.length===1)return new Promise(r=>firstResolve=r);return 'v3';});
+const draft={profile:{name:'First'}};const a=save(draft);draft.profile.name='Mutated';const b=save({profile:{name:'Second'}});await Promise.resolve();assert.equal(calls.length,1);assert.equal(calls[0].state.profile.name,'First');firstResolve('v2');await Promise.all([a,b]);assert.equal(calls[1].version,'v2');
+let fail=true,versions=[];const retry=createVersionedPortalSaver('v1',async(_,version)=>{versions.push(version);if(fail){fail=false;throw new Error('offline');}return 'v2';});await assert.rejects(retry({}),/offline/);await retry({});assert.deepEqual(versions,['v1','v1']);
+console.log('PASS: operator saves are serialized, use last acknowledged version, retain snapshots and preserve expected version after failure.');

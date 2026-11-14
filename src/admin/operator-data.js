@@ -1,3 +1,4 @@
+import {savePortal} from '../partners/portal-save-data.js';
 import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "../portal/supabase.js";
 import { createRecordSync } from "./sync-patches.js";
 const operatorSync = createRecordSync(async (id, changes, expected) => {
@@ -60,15 +61,12 @@ export async function saveConnectedOperatorOverlay(overlay) {
 export async function loadConnectedOperatorPortal(operatorId, fallback) {
   try {
     if (!(await isTeamMember())) return { connected: false, portal: fallback };
-    const { data, error } = await withTimeout(supabase.from("operator_portal_state").select("state").eq("operator_id", operatorId).maybeSingle(), 12000, "Partner workspace");
+    const { data, error } = await withTimeout(supabase.from("operator_portal_state").select("state,updated_at").eq("operator_id", operatorId).maybeSingle(), 12000, "Partner workspace");
     if (error) throw error;
-    return { connected: true, portal: data?.state || fallback };
+    return { connected: true, portal: data?.state || fallback, updatedAt:data?.updated_at||null };
   } catch (error) {
     throw friendlyBackendError(error, "The partner workspace could not load.");
   }
 }
 
-export async function saveConnectedOperatorPortal(operatorId, portal) {
-  const { error } = await withTimeout(supabase.from("operator_portal_state").upsert({ operator_id: operatorId, state: portal, updated_at: new Date().toISOString() }, { onConflict: "operator_id" }), 12000, "Partner workspace");
-  if (error) throw friendlyBackendError(error, "The partner workspace could not save.");
-}
+export async function saveConnectedOperatorPortal(operatorId,portal,version){return savePortal(operatorId,portal,version);}

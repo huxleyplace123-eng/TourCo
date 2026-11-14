@@ -132,7 +132,7 @@ export async function loadPartnerContext(session) {
     if(!["active","onboarding"].includes(membershipResult.data.operator.status))throw new Error("This operator account is not active. Contact TicoWild for assistance.");
     const operator = normalizeOperator(membershipResult.data.operator);
     const [portalResult, bookings] = await Promise.all([
-      withTimeout(supabase.from("operator_portal_state").select("state").eq("operator_id", operator.id).maybeSingle(),12000,"Operator profile"),
+      withTimeout(supabase.from("operator_portal_state").select("state,updated_at").eq("operator_id", operator.id).maybeSingle(),12000,"Operator profile"),
       loadOperatorBookings(operator.id),
     ]);
     if (portalResult.error) throw setupError(portalResult.error);
@@ -141,6 +141,7 @@ export async function loadPartnerContext(session) {
       role: membershipResult.data.role,
       operator,
       portal: portalResult.data?.state || {},
+      portalUpdatedAt: portalResult.data?.updated_at||null,
       bookings,
     };
   }
@@ -192,11 +193,4 @@ export async function saveApplication(user, values, submit = false, agreement = 
   return data;
 }
 
-export async function savePortal(operatorId, portal) {
-  if (!hasSupabase) return portal;
-  const { error } = await supabase
-    .from("operator_portal_state")
-    .upsert({ operator_id: operatorId, state: portal, updated_at: new Date().toISOString() }, { onConflict: "operator_id" });
-  if (error) throw setupError(error);
-  return portal;
-}
+export {savePortal} from './portal-save-data.js';

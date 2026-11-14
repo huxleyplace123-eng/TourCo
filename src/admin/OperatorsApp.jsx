@@ -1,3 +1,4 @@
+import {createVersionedPortalSaver} from '../partners/portal-save.js';
 import OperatorConversation from '../partners/OperatorConversation.jsx';
 import {loadOperatorBookings,respondToBooking} from '../partners/booking-data.js';
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -89,19 +90,20 @@ function FollowUpCell({ iso }) {
 }
 
 function TeamOperatorPortal({ op, onExit }) {
+  const saver=useRef(null);
   const [portal, setPortal] = useState(null);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
     let live = true;
     loadConnectedOperatorPortal(op.id, loadPortal(op.id))
-      .then((result) => { if (live) { setPortal(result.portal); setConnected(result.connected); } })
+      .then((result) => { if (live) { saver.current=createVersionedPortalSaver(result.updatedAt,(next,version)=>saveConnectedOperatorPortal(op.id,next,version));setPortal(result.portal); setConnected(result.connected); } })
       .catch((err) => { if (live) setError(err.message); });
     return () => { live = false; };
   }, [op.id]);
   if (error) return <div style={{ position:"fixed",inset:0,zIndex:80,display:"grid",placeItems:"center",padding:18,background:c.sand,color:c.charcoal,fontFamily:FONT }}><div style={{ width:"min(500px,100%)",padding:26,borderRadius:radius.lg,border:"1px solid rgba(248,113,113,.28)",background:c.white,textAlign:"center" }}><AlertTriangle color="#FCA5A5"/><h2>Partner workspace needs attention</h2><p style={{ color:c.stone,lineHeight:1.6,fontSize:13.5 }}>{error}</p><button onClick={onExit} style={{ padding:"10px 15px",border:0,borderRadius:radius.sm,background:c.gold,color:c.ink,fontWeight:850,cursor:"pointer" }}>Back to operators</button></div></div>;
   if (!portal) return <div style={{ position:"fixed",inset:0,zIndex:80,display:"grid",placeItems:"center",background:c.sand,color:c.stone,fontFamily:FONT }}>Opening the shared partner workspace…</div>;
-  return <OperatorPortal op={op} initialPortal={portal} assignedBookings={[]} onRefreshBookings={connected?()=>loadOperatorBookings(op.id):undefined} onBookingResponse={connected?respondToBooking:undefined} onPortalChange={connected?(next)=>saveConnectedOperatorPortal(op.id,next).catch((err)=>setError(err.message)):undefined} onExit={onExit}/>;
+  return <OperatorPortal op={op} initialPortal={portal} assignedBookings={[]} onRefreshBookings={connected?()=>loadOperatorBookings(op.id):undefined} onBookingResponse={connected?respondToBooking:undefined} onPortalChange={connected?(next)=>saver.current(next):undefined} onExit={onExit}/>;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
