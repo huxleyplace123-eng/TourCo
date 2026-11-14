@@ -94,7 +94,7 @@ export default function Login({ onSuccess }) {
             autoFocus
             value={user}
             onChange={(e) => { setUser(e.target.value); setError(false); }}
-            placeholder="Username"
+            aria-label="Username" placeholder="Username"
             autoComplete="username"
             style={input}
           />
@@ -102,7 +102,7 @@ export default function Login({ onSuccess }) {
             type="password"
             value={pass}
             onChange={(e) => { setPass(e.target.value); setError(false); }}
-            placeholder="Password"
+            aria-label="Password" placeholder="Password"
             autoComplete="current-password"
             style={input}
           />

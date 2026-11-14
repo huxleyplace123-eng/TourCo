@@ -16,36 +16,38 @@ export default function Root() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    let live = true;
-    getSession().then((next) => { if (live) setSession(next); }).catch((err) => { if (live) { setError(err.message); setSession(null); } });
-    const stop = watchSession((next) => setSession(next));
+    let live = true, receivedAuthEvent=false;
+    getSession().then((next) => { if (live&&!receivedAuthEvent) setSession(next); }).catch((err) => { if (live&&!receivedAuthEvent) { setError(err.message); setSession(null); } });
+    const stop = watchSession((next) => {receivedAuthEvent=true;if(live)setSession(next);});
     return () => { live = false; stop(); };
   }, []);
 
+  const sessionKey=session?.user?.id+":"+!!session?.demo;
   useEffect(() => {
     if (!session) { setContext(null); return; }
     let live = true;
     setLoading(true); setError("");
     loadPartnerContext(session)
-      .then((next) => { if (live) setContext(next); })
+      .then((next) => { if (live) setContext({...next,sessionKey}); })
       .catch((err) => { if (live) setError(err.message || "We couldn't load your partner account."); })
       .finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
   }, [session]);
 
+  useEffect(()=>{if(context?.kind!=="application"||!["pending","approved"].includes(context.application?.status))return;const timer=setInterval(()=>setSession(s=>s?{...s}:s),30000);return()=>clearInterval(timer);},[context?.kind,context?.application?.status]);
+
   const leave = async () => {
-    await signOut();
-    setContext(null); setSession(null);
+    try{await signOut();setContext(null);setSession(null);}catch(err){setError(err.message||"Sign out failed. Please try again.");}
   };
 
   if (session === undefined) return <Loading />;
   if (!session) return <PartnerAuth onSession={setSession} onDemo={(intent, profile) => setSession(demoSession(intent, profile))} />;
   if (error) return <ErrorScreen message={error} onRetry={() => setSession({ ...session })} onSignOut={leave} />;
-  if (loading || !context) return <Loading />;
+  if (loading || !context || context.sessionKey!==sessionKey) return <Loading />;
 
   if (context.kind === "active") {
     return (
-      <OperatorPortal
+      <OperatorPortal key={sessionKey+":"+context.operator.id}
         op={context.operator}
         mode="partner"
         role={context.role}
@@ -62,7 +64,7 @@ export default function Root() {
 
   const application = context.application;
   if (application?.status === "pending" || application?.status === "approved") {
-    return <PendingReview application={application} onSignOut={leave} />;
+    return <PendingReview application={application} onRefresh={()=>setSession({...session})} onSignOut={leave} />;
   }
   return <Onboarding user={session.user} application={application} onSubmitted={(next) => setContext({ ...context, application: next })} onSignOut={leave} />;
 }

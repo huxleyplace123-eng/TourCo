@@ -1,0 +1,1 @@
+import React from 'react';export default function Onboarding(){return <h1>Application form</h1>;}export function PendingReview({onRefresh}){return <div>Pending application<button onClick={onRefresh}>Check application status</button></div>;}

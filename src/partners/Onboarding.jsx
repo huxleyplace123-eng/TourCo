@@ -167,12 +167,13 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
   );
 }
 
-export function PendingReview({ application, onSignOut }) {
+export function PendingReview({ application, onSignOut, onRefresh }) {
   return <Shell onSignOut={onSignOut}><div style={{ maxWidth:680,margin:"0 auto",padding:"70px 18px",textAlign:"center" }}>
     <div style={{ width:74,height:74,borderRadius:24,display:"grid",placeItems:"center",margin:"0 auto 20px",background:"rgba(255,208,0,.12)",color:c.gold,border:"1px solid rgba(255,208,0,.25)",boxShadow:shadow.glowGold }}><Clock3 size={34}/></div>
     <div style={{ color:c.teal,fontSize:11,fontWeight:800,textTransform:"uppercase",letterSpacing:".12em" }}>Application received</div>
-    <h1 style={{ margin:"10px 0",fontSize:"clamp(30px,5vw,48px)",letterSpacing:"-.045em" }}>{application?.company_name || "Your company"} is in review.</h1>
-    <p style={{ maxWidth:560,margin:"0 auto",color:c.stone,fontSize:15,lineHeight:1.7 }}>TicoWild will verify the details and activate the complete partner center. You’ll receive an email when access is ready.</p>
+    <h1 style={{ margin:"10px 0",fontSize:"clamp(30px,5vw,48px)",letterSpacing:"-.045em" }}>{application?.company_name || "Your company"}{application?.status==="approved"?" is approved.":" is in review."}</h1>
+    <p style={{ maxWidth:560,margin:"0 auto",color:c.stone,fontSize:15,lineHeight:1.7 }}>{application?.status==="approved"?"Your application is approved. Refresh to open your partner account. If it still does not open, contact TicoWild.":"TicoWild will verify your details and activate the partner center. This page checks for a decision every 30 seconds while it is open."}</p>
+    {onRefresh&&<button type="button" onClick={onRefresh} style={{...button(true),marginTop:20}}>Check application status</button>}
     <div style={{ margin:"28px auto 0",padding:18,maxWidth:520,borderRadius:18,border:`1px solid ${c.line}`,background:c.white,textAlign:"left" }}>
       <div style={{ fontWeight:800,marginBottom:11 }}>What happens next</div>
       {["TicoWild reviews your company and service areas","We confirm pricing, safety, and operating details","Your portal opens for tours, availability, bookings, and messages"].map((x,i)=><div key={x} style={{ display:"flex",gap:10,padding:"8px 0",color:c.stone,fontSize:12.5 }}><span style={{ color:c.gold,fontWeight:800 }}>{i+1}</span>{x}</div>)}
