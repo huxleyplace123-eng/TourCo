@@ -7,11 +7,15 @@ let clientPromise;
 export const mailConfigured = Boolean(mailConfig.clientId);
 async function client() {
   if (!mailConfigured) throw new Error("Microsoft mailbox connection is awaiting administrator setup.");
-  if (!clientPromise) clientPromise = PublicClientApplication.createPublicClientApplication({
+  if (!clientPromise) clientPromise = (async () => {
+    const app = new PublicClientApplication({
     auth: { clientId: mailConfig.clientId, authority: `https://login.microsoftonline.com/${mailConfig.tenantId}`,
       redirectUri: `${window.location.origin}/admin/mail-auth.html` },
     cache: { cacheLocation: "sessionStorage" },
-  }).catch(error => { clientPromise = null; throw error; });
+    });
+    await app.initialize();
+    return app;
+  })().catch(error => { clientPromise = null; throw error; });
   return clientPromise;
 }
 function accountFor(app) {
