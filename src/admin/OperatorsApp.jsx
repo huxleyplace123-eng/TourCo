@@ -1,3 +1,4 @@
+import {whatsappDigits} from './whatsapp-link.js';
 import {AgreementCenter} from "../agreements/AgreementCenter.jsx";
 import {createVersionedPortalSaver} from '../partners/portal-save.js';
 import OperatorConversation from '../partners/OperatorConversation.jsx';
@@ -921,7 +922,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
   const tours = useMemo(() => TOUR_SEED.filter((t) => t.operatorId === op.id), [op.id]);
   const prog = checklistProgress(op.checklist);
   const notes = [...(op.notes || [])].reverse();
-  const wa = normPhone(op.whatsapp || "");
+  const wa = whatsappDigits(op.whatsapp || "");
   const label = { fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 5 };
   const bigAction = (bg, color, border, enabled) => ({
     flex: 1, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7,

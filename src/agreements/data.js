@@ -8,5 +8,5 @@ export const recordEvent=(id,kind)=>result(supabase.rpc('record_agreement_event'
 export const openAgreement=id=>result(supabase.rpc('open_operator_agreement',{request_id:id}));
 export const signAgreement=(id,details)=>result(supabase.rpc('sign_operator_agreement',{request_id:id,details}));
 export const agreementLink=id=>new URL('/partners/?agreement='+encodeURIComponent(id),window.location.origin).href;
-export const agreementMessage=(r)=>`Hello ${r.company_name},\n\nPlease review and sign your TicoWild operator agreement securely online:\n${agreementLink(r.id)}\n\nSign in or create an account using ${r.recipient_email}. Your signed copy will be saved in the portal—no attachment to email back.\n\nQuestions? John: +1 918-506-2803\nTicoWild · info@ticowild.com`;
+export const agreementMessage=(r)=>`Hello ${r.company_name},\n\nPlease review and sign your TicoWild operator agreement securely online:\n${agreementLink(r.id)}\n\nSign in or create an account using ${r.recipient_email}. Your signed copy will be saved in the portal—no attachment to email back.\n\nQuestions? John: +1 918-506-2803 (US)\nhttps://wa.me/19185062803\nTicoWild · info@ticowild.com`;
 export {signedDocument,downloadAgreement} from './document.js';

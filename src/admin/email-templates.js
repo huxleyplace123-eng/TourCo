@@ -314,9 +314,24 @@ Thank you for trusting TicoWild with part of your Costa Rica trip.
 Pura vida,
 The TicoWild team`,
   },
+  {
+    id: "customer-review-request", audience: "customer", category: "Trip care",
+    name: "Public review request",
+    useWhen: "After a completed experience, invite honest feedback from every customer. Replace the review link with the verified business review page.",
+    subject: "Share your TicoWild experience",
+    body: `Hello {{first_name}},
+
+Thank you for joining {{experience_name}}. We would appreciate an honest review of your experience, whether positive or negative:
+{{review_url}}
+
+Please share only what you experienced. You can also reply to this email with anything you would like our team to address.
+
+Thank you,
+The TicoWild team`,
+  },
 ].map((template) => template.audience === "operator" && !template.body.includes("https://wa.me/19185062803")
   ? { ...template, body: `${template.body}\n\nJohn Robinson · TicoWild\nWhatsApp: +1 918-506-2803 (US)\nhttps://wa.me/19185062803` }
-  : template);
+  : template).map(template => template.body.includes("info@ticowild.com") ? template : {...template, body: `${template.body}\n\ninfo@ticowild.com`});
 
 export function loadCustomTemplates() {
   try {

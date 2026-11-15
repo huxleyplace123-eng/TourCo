@@ -1,3 +1,4 @@
+import {whatsappLink} from './whatsapp-link.js';
 // Shared bulk multi-select layer for BOTH CRM workspaces (customers +
 // operators). Owns the selection hook, the row/header checkbox, the floating
 // action bar, and the email/text compose modal — so "select some rows and act
@@ -438,7 +439,5 @@ export function openBulkEmail(emails, subject, body) {
 // Click-to-chat link for one recipient with the message pre-filled. Null if the
 // number has no digits.
 export function waHref(number, text) {
-  const digits = String(number || "").replace(/\D/g, "");
-  if (!digits) return null;
-  return `https://wa.me/${digits}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+  return whatsappLink(number, text);
 }

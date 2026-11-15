@@ -1,3 +1,4 @@
+import {whatsappDigits} from './whatsapp-link.js';
 // Shared CRM UI atoms + the responsive stylesheet, so the customer and
 // operator workspaces render temperature, type and mobile cards identically.
 import { MessageCircle, Mail, Phone, Globe } from "lucide-react";
@@ -23,9 +24,10 @@ function Slot({ href, title, color, on, onClick, children }) {
 
 export function CustomerContacts({ cust, onLog, size = 15 }) {
   const phone = normPhone(cust.phone);
+  const customerWa = whatsappDigits(cust.whatsapp || cust.phone);
   return (
     <span className="crm-contacts" onClick={(e) => e.stopPropagation()}>
-      <Slot on={!!phone} href={`https://wa.me/${phone}`} title="WhatsApp" color="#25D366" onClick={() => onLog(cust.id, "whatsapp")}><MessageCircle size={size} /></Slot>
+      <Slot on={!!customerWa} href={`https://wa.me/${customerWa}`} title="WhatsApp" color="#25D366" onClick={() => onLog(cust.id, "whatsapp")}><MessageCircle size={size} /></Slot>
       <Slot on={!!cust.email} href={businessComposeHref({ to: cust.email })} title={`Open CRM email; use ${TICO_EMAIL}`} color={c.stone} onClick={() => onLog(cust.id, "email")}><Mail size={size} /></Slot>
       <Slot on={!!phone} href={`tel:${cust.phone}`} title="Call" color={c.stone} onClick={() => onLog(cust.id, "call")}><Phone size={size} /></Slot>
     </span>
@@ -33,7 +35,7 @@ export function CustomerContacts({ cust, onLog, size = 15 }) {
 }
 
 export function OperatorContacts({ op, onLog, size = 15 }) {
-  const wa = normPhone(op.whatsapp || "");
+  const wa = whatsappDigits(op.whatsapp || "");
   return (
     <span className="crm-contacts" onClick={(e) => e.stopPropagation()}>
       <Slot on={!!wa} href={`https://wa.me/${wa}`} title="WhatsApp" color="#25D366" onClick={() => onLog(op.id, "WhatsApp opened")}><MessageCircle size={size} /></Slot>
