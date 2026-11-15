@@ -578,7 +578,7 @@ export default function App({ workspace, onWorkspace, onSignOut }) {
               <div style={{ fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".06em", display: "flex", alignItems: "center", gap: 6 }}>
                 {s.icon}{s.label}
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: s.col, marginTop: 3 }}>{s.value}</div>
+              <div className="crm-stat-value" style={{ fontSize: 22, fontWeight: 800, color: s.col, marginTop: 3 }}>{s.value}</div>
             </div>
           ))}
         </div>

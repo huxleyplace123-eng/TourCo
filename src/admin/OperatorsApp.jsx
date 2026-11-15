@@ -431,7 +431,7 @@ export default function OperatorsApp({ workspace, onWorkspace, onSignOut }) {
             <div key={s.label} onClick={s.onClick}
               style={{ padding: "12px 16px", borderRadius: radius.md, border: `1px solid ${c.line}`, background: c.white, boxShadow: shadow.sm, cursor: s.onClick ? "pointer" : "default" }}>
               <div style={{ fontSize: 11.5, fontWeight: 700, color: c.stone, textTransform: "uppercase", letterSpacing: ".06em" }}>{s.label}</div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: s.col, marginTop: 3 }}>{s.value}</div>
+              <div className="crm-stat-value" style={{ fontSize: 22, fontWeight: 800, color: s.col, marginTop: 3 }}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -943,9 +943,9 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
     <>
       <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 49, background: "rgba(4,10,20,.45)" }} />
       <div className="ops-drawer">
-        <div style={{ padding: "16px 20px 12px", borderBottom: `1px solid ${c.line}` }}>
+        <div className="ops-drawer-header" style={{ padding: "16px 20px 12px", borderBottom: `1px solid ${c.line}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ fontSize: 19, fontWeight: 800, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{op.name}</div>
+            <div className="ops-drawer-title" style={{ fontSize: 19, fontWeight: 800, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{op.name}</div>
             <StageSelect compact value={op.stage} onChange={(s) => setStage(op.id, s)} />
             <button onClick={onClose} aria-label="Close" style={{ all: "unset", cursor: "pointer", color: c.stone, display: "flex", padding: 6 }}><X size={20} /></button>
           </div>
@@ -958,7 +958,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
               </span>
             )}
           </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+          <div className="ops-primary-actions" style={{ display: "flex", gap: 8, marginTop: 12 }}>
             <a href={wa ? `https://wa.me/${wa}` : undefined} target="_blank" rel="noreferrer"
               onClick={() => wa && logTouch(op.id, "WhatsApp opened")}
               style={bigAction("rgba(37,211,102,.12)", "#25D366", "rgba(37,211,102,.4)", !!wa)}>
@@ -979,6 +979,7 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
               <Globe size={15} /> Site
             </a>
           </div>
+          <div className="ops-utility-actions">
           <button onClick={onPreviewPortal}
             style={{ marginTop: 10, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "11px", borderRadius: radius.sm, border: `1px solid ${c.teal}`, background: "rgba(34,211,238,.1)", color: c.teal, fontFamily: FONT, fontSize: 13.5, fontWeight: 800, cursor: "pointer" }}>
             <Eye size={16} /> Preview partner portal
@@ -986,11 +987,12 @@ function OperatorDrawer({ op, patch, addNote, setStage, logTouch, onPreviewPorta
           <button onClick={onWhatsAppSync} style={{...bigAction('rgba(37,211,102,.12)','#25D366','rgba(37,211,102,.4)',true),width:'100%',marginTop:8}}><WhatsAppLogo/> WhatsApp sync</button>
           <button onClick={copyPartnerLink}
             style={{ marginTop: 8, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px", borderRadius: radius.sm, border: `1px solid ${c.line}`, background: "rgba(255,255,255,.035)", color: partnerLinkCopied ? "#34D399" : c.stone, fontFamily: FONT, fontSize: 12.5, fontWeight: 800, cursor: "pointer" }}>
-            <Link2 size={15} /> {partnerLinkCopied ? "Partner signup link copied" : "Copy partner signup link"}
+            <Link2 size={15} /> {partnerLinkCopied ? "Partner signup link copied" : "Copy signup link"}
           </button>
         </div>
 
-        <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px", display: "grid", gap: 16 }}>
+        </div>
+        <div className="ops-drawer-body" style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px", display: "grid", gap: 16 }}>
           {/* agreement status (signed in their portal) */}
           <AgreementStatus op={op} />
 

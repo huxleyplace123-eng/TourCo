@@ -1,0 +1,36 @@
+/* Desktop CRM density. Customer/operator-facing portals keep their own sizing. */
+@media (min-width: 900px) {
+  .crm-desktop { font-size: 13px; }
+  .crm-desktop h1 { font-size: 24px !important; line-height: 1.2; }
+  .crm-desktop h2 { font-size: 20px !important; line-height: 1.3; }
+  .crm-desktop h3 { font-size: 15px !important; line-height: 1.35; }
+  .crm-desktop h4 { font-size: 13px !important; }
+  .crm-desktop button, .crm-desktop input, .crm-desktop select, .crm-desktop textarea { font-size: 13px !important; }
+  .crm-desktop .crm-workspace-switch > button { font-size: 12px !important; padding: 6px 9px !important; }
+  .crm-desktop .crm-topbar { gap: 9px; }
+  .crm-desktop .crm-stat-value { font-size: 19px !important; }
+  .crm-desktop table td { font-size: 12.5px !important; padding-top: 8px !important; padding-bottom: 8px !important; }
+  .crm-desktop .ops-drawer { width: min(600px, 55vw); }
+  .crm-desktop .ops-drawer-header { padding: 12px 16px 10px !important; }
+  .crm-desktop .ops-drawer-title { font-size: 17px !important; line-height: 1.3; }
+  .crm-desktop .ops-primary-actions { margin-top: 8px !important; gap: 6px !important; }
+  .crm-desktop .ops-primary-actions a { padding: 7px 8px !important; font-size: 12px !important; }
+  .crm-desktop .ops-utility-actions { display: grid; grid-template-columns: 1.15fr .9fr 1fr; gap: 6px; margin-top: 8px; }
+  .crm-desktop .ops-utility-actions > button { margin: 0 !important; padding: 7px 6px !important; font-size: 12px !important; min-width: 0; line-height: 1.35; }
+  .crm-desktop .ops-utility-actions svg { flex-shrink: 0; width: 14px; height: 14px; }
+  .crm-desktop .ops-drawer-body { padding: 12px 16px 18px !important; gap: 12px !important; align-content: start; }
+  .crm-desktop .ag-card { padding: 14px; border-radius: 12px; font-size: 13px; line-height: 1.45; }
+  .crm-desktop .ag-card header { gap: 8px; }
+  .crm-desktop .ag-card header p { margin: 3px 0 0; }
+  .crm-desktop .ag-card p { margin: 9px 0; }
+  .crm-desktop .ag-card button, .crm-desktop .ag-card a { font-size: 12px !important; padding: 7px 10px; border-radius: 7px; }
+  .crm-desktop .ag-card label { margin: 8px 0; }
+  .crm-desktop .ag-card input, .crm-desktop .ag-card textarea { padding: 8px 10px; font-size: 13px !important; line-height: 1.45; }
+  .crm-desktop .ag-card textarea { min-height: 150px; }
+  .crm-desktop .ag-note, .crm-desktop .ag-history { font-size: 12px; }
+  .crm-desktop .ag-status { margin-top: 9px; padding: 4px 9px; font-size: 12px; }
+  .crm-desktop .ag-email { margin-top: 12px; padding-top: 12px; }
+  .crm-desktop .mail-detail { padding: 14px 18px; }
+  .crm-desktop .mail-detail h2 { font-size: 18px !important; }
+  .crm-desktop .mail-body { font-size: 13px; line-height: 1.55; }
+}

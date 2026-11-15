@@ -1,3 +1,4 @@
+import './desktop-density.css';
 import CustomerPortalApp from './CustomerPortalApp.jsx';
 import { useState } from "react";
 import { AUTH_KEY } from "./Login.jsx";
@@ -42,5 +43,5 @@ function TeamWorkspace() {
   ) : (
     <App workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
   );
-  return <>{logoutError&&<div role="alert" style={{padding:12,background:"#532c34",color:"white"}}>{logoutError}</div>}{content}</>;
+  return <div className="crm-desktop">{logoutError&&<div role="alert" style={{padding:12,background:"#532c34",color:"white"}}>{logoutError}</div>}{content}</div>;
 }
