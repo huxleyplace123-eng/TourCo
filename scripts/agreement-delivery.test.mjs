@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {checkAgreementSent,agreementExpired,agreementSubject} from '../src/agreements/delivery.js';
+const r={id:'12345678-1234-1234-1234-123456789abc',recipient_email:'operator@example.test',created_at:'2026-11-14T10:00:00Z',expires_at:'2026-11-15'};
+const mail={id:'mail1',sentDateTime:'2026-11-14T11:00:00Z',toRecipients:[{emailAddress:{address:r.recipient_email}}]};
+const body={from:{emailAddress:{address:'info@ticowild.com'}},body:{content:'https://ticowild.com/partners/?agreement='+r.id},sentDateTime:mail.sentDateTime};
+const check=(messages=[mail],message=body,next)=>checkAgreementSent(r,{list:async()=>({value:messages,'@odata.nextLink':next}),read:async()=>message},'https://ticowild.com');
+assert.equal((await check()).found,true);
+assert.equal((await check([mail],{...body,from:{emailAddress:{address:'wrong@example.test'}}})).found,false);
+assert.equal((await check([mail],{...body,body:{content:'Wrong link'}})).found,false);
+assert.equal((await check([{...mail,toRecipients:[]}])).found,false);
+assert.equal((await check([{...mail,sentDateTime:'2026-11-13'}])).found,false);
+assert.deepEqual(await check([],body,'more'),{found:false,limited:true});
+assert.equal(agreementExpired(r,new Date('2026-11-16').getTime()),true);
+assert.equal(agreementExpired({...r,signed_at:'2026-11-14'},new Date('2026-11-16').getTime()),false);
+assert(agreementSubject(r).includes(r.id));
+await assert.rejects(checkAgreementSent(r,{list:async()=>{throw Error('Reconnect mailbox')},read:async()=>body},'https://ticowild.com'),/Reconnect/);
+console.log('PASS: sent-copy matching requires correct sender, recipient, time and exact agreement link; partial coverage disclosed, errors preserved, expiry and unique subject.');
