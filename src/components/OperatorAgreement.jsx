@@ -115,7 +115,7 @@ ${secs}
           <span style={{ width: 38, height: 38, borderRadius: 11, background: "rgba(34,211,238,.14)", border: "1px solid rgba(34,211,238,.3)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><FileText size={19} color={c.teal} /></span>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: "#fff", fontWeight: 800, fontSize: 16 }}>Become a TicoWild operator</div>
-            <div style={{ color: c.stone, fontSize: 12 }}>Review, fill in, sign & send — all online.</div>
+            <div style={{ color: c.stone, fontSize: 12 }}>{delivery === "email" ? "Review the summary, then continue to the secure operator portal." : "Review, sign and save your agreement online."}</div>
           </div>
           <button onClick={saving?undefined:onClose} aria-label="Close" style={{ background: "none", border: "none", color: c.stone, cursor: "pointer" }}><X size={19} /></button>
         </div>
@@ -135,6 +135,7 @@ ${secs}
         ) : (
           <div style={{ maxHeight: "calc(100vh - 180px)", overflowY: "auto", padding: "18px" }}>
             {/* agreement text */}
+            {delivery === "email" && <p style={{color:c.stone,fontSize:13,lineHeight:1.6}}>This page contains the current agreement summary. It references a separate full agreement, which is not attached here. Contact <a href="mailto:info@ticowild.com" style={{color:c.teal}}>info@ticowild.com</a> for the complete document before signing.</p>}
             <div style={{ background: "rgba(255,255,255,.04)", border: `1px solid ${c.line}`, borderRadius: 14, padding: "16px 18px", maxHeight: 240, overflowY: "auto", marginBottom: 20 }}>
               {sections.map((s) => (
                 <div key={s.h} style={{ marginBottom: 12 }}>

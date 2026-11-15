@@ -1,3 +1,5 @@
+import {validPoint} from '../portal/meeting-point.js';
+import {whatsappLink} from './whatsapp-link.js';
 import {loadConnectedOperatorOverlay} from './operator-data.js';
 import {loadOperatorOverlay,mergedOperators} from './operators-store.js';
 import { useEffect, useMemo, useState } from "react";
@@ -96,10 +98,10 @@ function DetailRow({ icon: Icon, label, value, href }) {
   return <div className="approval-detail-row"><div className="approval-detail-icon"><Icon size={16}/></div><div style={{ minWidth:0 }}><div className="approval-label">{label}</div>{href?<a href={href} target="_blank" rel="noreferrer">{value}<ExternalLink size={12}/></a>:<div>{value || "Not provided"}</div>}</div></div>;
 }
 
-function ApplicationDetail({ application, busy, onAction }) {
+export function ApplicationDetail({ application, busy, onAction }) {
   const [notes, setNotes] = useState(application.review_notes || "");
   const agreementSigned = Boolean(application.agreement_accepted_at && application.agreement_signature);
-  const meetingPinned = Number.isFinite(Number(application.meeting_point_lat)) && Number.isFinite(Number(application.meeting_point_lng));
+  const meetingPinned = validPoint({lat:application.meeting_point_lat,lng:application.meeting_point_lng});
   useEffect(()=>setNotes(application.review_notes || ""),[application.id,application.review_notes]);
   const submitted = application.status !== "draft";
   const action = (status) => onAction(application, status, notes);
@@ -113,7 +115,7 @@ function ApplicationDetail({ application, busy, onAction }) {
       <DetailRow icon={UsersRound} label="Primary contact" value={application.contact_name}/>
       <DetailRow icon={Mail} label="Account email" value={application.email} href={application.email?businessComposeHref({ to: application.email }):null}/>
       <DetailRow icon={Building2} label="Phone" value={application.phone} href={application.phone?`tel:${application.phone}`:null}/>
-      <DetailRow icon={MessageSquareText} label="WhatsApp" value={application.whatsapp} href={application.whatsapp?`https://wa.me/${application.whatsapp.replace(/\D/g,"")}`:null}/>
+      <DetailRow icon={MessageSquareText} label="WhatsApp" value={application.whatsapp} href={whatsappLink(application.whatsapp)}/>
       <DetailRow icon={ExternalLink} label="Website" value={application.website} href={application.website}/>
       <DetailRow icon={Clock3} label="Years operating" value={application.years_in_business===null?"Not provided":String(application.years_in_business)}/>
     </div>
