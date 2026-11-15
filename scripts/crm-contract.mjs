@@ -29,7 +29,9 @@ assert.match(store, /quoteItems: \[\]/);
 assert.match(store, /nextAction: ""/);
 assert.match(conversion, /queueInquiry\(payload\)/);
 assert.match(queue, /ticowild_inquiry_outbox_v1/);
-assert.match(login, /12 \* 60 \* 60 \* 1000/);
+// Team authorization is now server-backed; the legacy browser-only TTL is obsolete.
+assert.doesNotMatch(login, /USER_HASH|PASS_HASH|writeAdminSession/);
+await import('./team-access-gate.test.mjs');
 assert.match(operators, /\["map", "Map"\]/);
 assert.match(operators, /Add the exact guest meeting point before activating this partner/);
 assert.match(operators, /Kid suitability work queue/);
