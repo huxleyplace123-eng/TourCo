@@ -1,6 +1,7 @@
 import CustomerPortalApp from './CustomerPortalApp.jsx';
 import { useState } from "react";
-import Login, { AUTH_KEY, isAdminSessionValid } from "./Login.jsx";
+import { AUTH_KEY } from "./Login.jsx";
+import TeamAccessGate from './TeamAccessGate.jsx';
 import App from "./App.jsx";
 import OperatorsApp from "./OperatorsApp.jsx";
 import ApplicationsApp from "./ApplicationsApp.jsx";
@@ -11,11 +12,12 @@ import { signOutTeam } from "./applications-data.js";
 
 const WS_KEY = "ticowild_crm_workspace";
 
-// Auth gate + workspace routing. Customer sales, operator outreach, and live
-// partner applications share the CRM while approvals require staff auth.
+// Every CRM workspace requires a verified team account.
 export default function Root() {
+  return <TeamAccessGate><TeamWorkspace/></TeamAccessGate>;
+}
+function TeamWorkspace() {
   const [logoutError,setLogoutError]=useState("");
-  const [signedIn, setSignedIn] = useState(() => isAdminSessionValid());
   const [workspace, setWorkspaceState] = useState(() => new URLSearchParams(window.location.search).get("workspace") || localStorage.getItem(WS_KEY) || "customers");
 
   const setWorkspace = (ws) => {
@@ -25,11 +27,10 @@ export default function Root() {
   };
   const signOut = async () => {
     setLogoutError("");
-    try{await signOutTeam();await disconnectMail();localStorage.removeItem(AUTH_KEY);setSignedIn(false);}
+    try{await signOutTeam();await disconnectMail();localStorage.removeItem(AUTH_KEY);}
     catch(error){setLogoutError(error.message||"Sign out failed. Please try again.");}
   };
 
-  if (!signedIn) return <Login onSuccess={() => setSignedIn(true)} />;
   const content=workspace === "portal" ? (<CustomerPortalApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut}/>) : workspace === "email" ? (
     <EmailApp workspace={workspace} onWorkspace={setWorkspace} onSignOut={signOut} />
   ) : workspace === "templates" ? (

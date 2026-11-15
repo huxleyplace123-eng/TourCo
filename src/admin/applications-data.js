@@ -20,7 +20,7 @@ export async function sendTeamMagicLink(email) {
   if (!hasSupabase) throw new Error("Supabase is not configured.");
   const { error } = await withTimeout(supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: redirectUrl(), shouldCreateUser: true },
+    options: { emailRedirectTo: redirectUrl(), shouldCreateUser: false },
   }), 12000, "Team sign-in email");
   if (error) throw error;
 }
