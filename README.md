@@ -4,22 +4,21 @@ Costa Rica experience discovery and planning. TicoWild helps travelers narrow th
 
 ## What's here
 
-- **`index.html`** — the complete, self-contained app. It bundles a React 18 single-page app inline (no build step, no dependencies to install). Open it in a browser or serve the folder and it runs.
+- **`index.html` / `src/`** — the React/Vite public website. Build it before deployment; opening the source HTML directly is not supported.
 - **`/admin/`** — the internal TicoWild CRM.
 - **`/my/`** — the customer trip portal.
 - **`/partners/`** — operator applications, onboarding, and the Partner Center. See `docs/PARTNER_CENTER.md`.
 
 ## Run it locally
 
-Just open the file:
+Install dependencies and start the development server:
 
 ```
-# any static server works, e.g.
-npx serve .
-# then visit the printed URL
+npm ci
+npm run dev
 ```
 
-Or double-click `index.html`.
+Production: `npm run build`, then deploy `dist/`. Cloudflare Pages builds the main branch. See `docs/OPERATIONS.md` for release checks and recovery requirements.
 
 ## Pages / flow
 

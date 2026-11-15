@@ -1,0 +1,36 @@
+# TicoWild operations and recovery
+
+## Verified architecture
+
+Cloudflare Pages serves the Vite build from main. Supabase owns authentication, CRM/portal records and row-level access rules. The portal-email Edge Function dispatches queued transactional email through Resend. Browser mailbox access and direct Microsoft Graph sending are separate paths; Graph restrictions must not be confused with transactional-provider delivery.
+
+## Release checks
+
+Run `npm run build`, the affected scripts under `scripts/`, and the connected lifecycle test. Database suites require `@electric-sql/pglite` or `PGLITE_MODULE_PATH` pointing to its module. `scripts/connected-lifecycle.test.mjs` runs an isolated complete workflow without real accounts, emails or reservations. `scripts/connected-workflow-live-qa.sql` uses explicit rollback transactions; inspect its fixture IDs before running on production. These are not load tests.
+
+After deployment, verify the actual live assets and affected UI. A successful build alone does not prove deployment. Never use a real operator's agreement, customer reservation or payment for QA.
+
+## Mail operations
+
+Use CRM Email delivery history to distinguish queued, accepted by provider, delivered and failed messages. Provider acceptance alone is not proof of inbox arrival. Inspect queue age, failed states, retry counts and remaining capacity before campaigns or launch traffic. The configured queue budget is separate from the provider's total allowance, which is also consumed by authentication mail. Do not raise the queue cap without confirming actual provider capacity.
+
+The worker verifies permissions again at delivery time, uses stable idempotency keys and reconciles signed provider callbacks. Do not manually replay messages by creating new request IDs after an ambiguous timeout. Inspect the existing request's delivery record first.
+
+## Frontend recovery
+
+Identify the last verified Cloudflare Pages deployment and its matching Git commit. Roll back the frontend through the Pages deployment dashboard only after checking compatibility with current database migrations. A frontend rollback does not reverse database migrations or sent emails. Preserve failed-release evidence; do not reset the database as a frontend recovery step.
+
+## Database backup and restore gate — not yet verified
+
+Before a broad launch, inventory the actual project's backup/PITR availability and retention. Export a protected database backup using the database owner's supported mechanism. Separately inventory Storage files, authentication configuration, functions, cron jobs and secrets: source-code history is not a backup of customer data. Keep credentials and private data out of Git and public output folders.
+
+Restore into a separate non-production project, disable outbound email/cron before loading data, and verify record counts, relationships, role isolation, authentication configuration, signed agreement copies and the connected workflow. Document the measured recovery time and data-loss window. Do not overwrite production to test recovery. No production backup or restore drill is claimed by this document.
+
+## Launch gates requiring business or device evidence
+
+- Confirm real operator identity, pricing, availability, cancellation terms, permits and insurance. Public seed listings are planning examples, not approved real inventory.
+- Verify John can independently authenticate on his own device without disabling MFA.
+- Complete a consenting real operator/customer trial after synthetic QA.
+- Confirm external arrival of every notification type, including the real scheduled reminder.
+- Assign incident/alert ownership and confirm capacity for expected traffic; conduct an agreed isolated load test before claiming scale readiness.
+- Payments and automatic WhatsApp synchronization remain outside the current enabled scope.
