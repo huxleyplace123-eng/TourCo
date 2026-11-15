@@ -18,5 +18,14 @@ export async function run(){
  await act(async()=>{ui=TestRenderer.create(<NotificationCenter scope="customer" load={delayed} markRead={markRead} onNavigate={()=>{}}/>);});
  await act(async()=>ui.update(<NotificationCenter scope="team" load={async()=>({userId:'user-b',items:[]})} markRead={markRead} onNavigate={()=>{}}/>));
  await act(async()=>resolve({userId:'user-a',items:[item]}));assert.equal(ui.root.findByProps({className:'tw-alert-toggle'}).props['aria-label'],'Alerts: 0 unread');await act(async()=>ui.unmount());
+ const warning={key:'team:email-health:worker',title:'Email worker needs attention',detail:'No check in five minutes',target:'email',actionOnly:true,read:false};
+ const healthLoad=async()=>({userId:'staff',items:[warning,item]});let healthMarks=[],healthNavigation=[];
+ await act(async()=>{ui=TestRenderer.create(<NotificationCenter scope="team" load={healthLoad} markRead={async(user,keys)=>healthMarks.push(keys)} onNavigate={target=>healthNavigation.push(target)}/>);});
+ await act(async()=>ui.root.findByProps({className:'tw-alert-toggle'}).props.onClick());
+ await act(async()=>ui.root.findAllByType('button').find(b=>b.children.includes('Mark shown alerts read')).props.onClick());
+ assert.deepEqual(healthMarks,[[item.key]],'persistent operational alert must not be acknowledged away');
+ assert.equal(ui.root.findByProps({className:'tw-alert-toggle'}).props['aria-label'],'Alerts: 1 unread');
+ await act(async()=>ui.root.findAllByType('article')[0].findByType('button').props.onClick());
+ assert.deepEqual(healthNavigation,['email']);assert.equal(healthMarks.length,1);await act(async()=>ui.unmount());
  console.log('PASS: unread badges, failed acknowledgment recovery, server-confirmed marking, target navigation, and stale-account response isolation.');
 }
