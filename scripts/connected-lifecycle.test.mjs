@@ -27,6 +27,7 @@ await db.exec('create role service_role;');
 await db.exec(await readFile('supabase/transactional_notifications.sql','utf8'));
 await db.exec(await readFile('supabase/transactional_notifications.sql','utf8'));
 await db.exec(await readFile('supabase/operator_approval_profile_sync.sql','utf8'));
+await db.exec(await readFile('supabase/operator_approval_profile_sync.sql','utf8'));
 const staff=crypto.randomUUID(),op=crypto.randomUUID(),customer=crypto.randomUUID();
 await db.query("insert into auth.users(id,email,email_confirmed_at) values($1,'staff@example.test',now()),($2,'operator@example.test',now()),($3,'customer@example.test',now())",[staff,op,customer]);
 await db.query("insert into team_members values($1,'admin')",[staff]);
@@ -48,6 +49,9 @@ const approvedState=(await as(op,()=>db.query("select state from operator_portal
 assert.equal(approvedState.profile.phone,'+12025550100');
 assert.equal(approvedState.profile.customField,'keep');
 assert.equal(approvedState.tours[0].id,'keep-tour');
+await as(op,()=>db.query("update operator_portal_state set state=jsonb_set(state,'{profile,phone}','\"+12025550199\"') where operator_id='lifecycle-operator'"));
+await as(staff,()=>db.query('select approve_operator_application($1)',[app.id]));
+assert.equal((await as(op,()=>db.query("select state->'profile'->>'phone' phone from operator_portal_state where operator_id='lifecycle-operator'"))).rows[0].phone,'+12025550199','repeated approval must not overwrite newer operator edits');
 const bookingId=crypto.randomUUID();
 await as(staff,()=>db.query('select publish_customer_trip($1,$2,0)',['lifecycle-customer',{request_id:crypto.randomUUID(),title:'QA connected trip',travelers:2,start_date:'2026-12-01',end_date:'2026-12-02',status:'Planning',bookings:[{id:bookingId,name:'QA activity',date:'2026-12-01',status:'Requested',operator_id:'lifecycle-operator',meeting_point_name:'QA gate',meeting_point_lat:10.42,meeting_point_lng:-84.73,meeting_instructions:'QA arrival'}]}]));
 await as(op,()=>db.query('select respond_operator_booking($1,$2)',[bookingId,'accepted']));
