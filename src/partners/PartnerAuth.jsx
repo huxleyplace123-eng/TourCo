@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { initialAuthError, authErrorMessage } from "../portal/auth-feedback.js";
 import { ArrowRight, BadgeCheck, Building2, CalendarCheck, KeyRound, Mail, ShieldCheck, Sparkles } from "lucide-react";
 import { Logo } from "../components/Logo.jsx";
 import { c, FONT, grad, radius, shadow } from "../theme.js";
@@ -26,7 +27,7 @@ export default function PartnerAuth({ onSession, onDemo }) {
   const [email, setEmail] = useState(invitedEmail);
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialAuthError);
   const [notice, setNotice] = useState("");
 
   const submit = async (event) => {
@@ -45,7 +46,7 @@ export default function PartnerAuth({ onSession, onDemo }) {
         else setNotice("Check your email to confirm your account. Your partner application will be waiting when you return.");
       }
     } catch (err) {
-      setError(err.message || "We couldn't complete that request.");
+      setError(authErrorMessage(err, "We couldn't complete that request."));
     } finally {
       setBusy(false);
     }
@@ -59,7 +60,7 @@ export default function PartnerAuth({ onSession, onDemo }) {
       await sendMagicLink(email.trim());
       setNotice("Your secure sign-in link is on the way. Check your email and tap the link to continue.");
     } catch (err) {
-      setError(err.message || "We couldn't send the sign-in link.");
+      setError(authErrorMessage(err, "We couldn't send the sign-in link."));
     } finally {
       setBusy(false);
     }

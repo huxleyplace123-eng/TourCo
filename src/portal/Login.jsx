@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { initialAuthError, authErrorMessage } from "./auth-feedback.js";
 import { Mail, ArrowRight, Check, MapPinned, MessageCircle, ShieldCheck, Sparkles, LockKeyhole } from "lucide-react";
 import { c, FONT, radius } from "../theme.js";
 import { cdnImage } from "../images.js";
@@ -11,7 +12,7 @@ export default function Login({ onSignIn, onPasswordSignIn }) {
   const [mode, setMode] = useState("link");
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialAuthError);
   const valid = /\S+@\S+\.\S+/.test(email);
 
   const submit = async (e) => {
@@ -23,7 +24,7 @@ export default function Login({ onSignIn, onPasswordSignIn }) {
       if (mode === "password") await onPasswordSignIn(email.trim(), password);
       else { await onSignIn(email.trim()); setSent(true); }
     }
-    catch (err) { setError(err.message || (mode === "password" ? "We could not sign you in. Please check your details." : "We could not send the sign-in link. Please try again.")); }
+    catch (err) { setError(authErrorMessage(err, mode === "password" ? "We could not sign you in. Please check your details." : "We could not send the sign-in link. Please try again.")); }
     finally { setBusy(false); }
   };
 

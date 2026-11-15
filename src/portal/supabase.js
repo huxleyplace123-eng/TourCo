@@ -5,6 +5,7 @@
 // backend. Drop in the two keys and it becomes real passwordless auth + a live
 // database — no code changes.
 import { createClient } from "@supabase/supabase-js";
+import "./auth-feedback.js";
 
 const url = import.meta.env.VITE_SUPABASE_URL;
 const anon = import.meta.env.VITE_SUPABASE_ANON_KEY;

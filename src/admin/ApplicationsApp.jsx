@@ -1,4 +1,5 @@
 import {validPoint} from '../portal/meeting-point.js';
+import {initialAuthError,authErrorMessage} from '../portal/auth-feedback.js';
 import {whatsappLink} from './whatsapp-link.js';
 import {loadConnectedOperatorOverlay} from './operator-data.js';
 import {loadOperatorOverlay,mergedOperators} from './operators-store.js';
@@ -45,7 +46,7 @@ function TeamGate({ access, onReady }) {
   const [email, setEmail] = useState("info@ticowild.com");
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialAuthError);
 
   const send = async (event) => {
     event.preventDefault();
@@ -53,7 +54,7 @@ function TeamGate({ access, onReady }) {
     try {
       await sendTeamMagicLink(email.trim());
       setNotice("Check your email and open the secure link. It will bring you straight back to this approval workspace.");
-    } catch (err) { setError(err.message || "We couldn't send the staff sign-in link."); }
+    } catch (err) { setError(authErrorMessage(err, "We couldn't send the staff sign-in link.")); }
     finally { setBusy(false); }
   };
 
