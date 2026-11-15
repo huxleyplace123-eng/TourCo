@@ -1,0 +1,36 @@
+begin;
+set local statement_timeout='20s';
+select set_config('request.jwt.claim.sub',(select user_id::text from public.team_members limit 1),true);
+do $$
+declare c uuid=gen_random_uuid();o uuid=gen_random_uuid();t uuid=gen_random_uuid();b uuid=gen_random_uuid();aid uuid; oid text='qa-notify-'||gen_random_uuid(); before_count integer;begin
+ insert into auth.users(id,email,email_confirmed_at) values(c,'qa-c-'||c||'@example.invalid',now()),(o,'qa-o-'||o||'@example.invalid',now());
+ insert into operators(id,name,status) values(oid,'QA rollback only','active');
+ insert into operator_memberships(operator_id,user_id,status,role) values(oid,o,'active','owner');
+ insert into messages(user_id,"from",text) values(c,'customer','QA rollback customer message'),(c,'team','QA rollback staff reply');
+ if not exists(select 1 from email_notifications where recipient_id=c and source_table='messages') then raise exception 'FAIL customer message notification';end if;
+ insert into operator_messages(operator_id,sender_role,text) values(oid,'team','QA rollback operator message');
+ if not exists(select 1 from email_notifications where recipient_id=o and source_table='operator_messages') then raise exception 'FAIL operator message notification';end if;
+ insert into trips(id,user_id,title) values(t,c,'QA rollback trip');
+ if not exists(select 1 from email_notifications where recipient_id=c and source_id=t::text) then raise exception 'FAIL trip notification';end if;
+ insert into bookings(id,trip_id,user_id,operator_id,name,status) values(b,t,c,oid,'QA rollback activity','Requested');
+ if (select count(*) from email_notifications where source_table='bookings' and source_id=b::text and recipient_id in(c,o))<>2 then raise exception 'FAIL booking recipients';end if;
+ select count(*) into before_count from email_notifications where source_table='bookings' and source_id=b::text;
+ update bookings set status='Requested' where id=b;
+ if (select count(*) from email_notifications where source_table='bookings' and source_id=b::text)<>before_count then raise exception 'FAIL no-op duplicate';end if;
+ alter table bookings disable trigger booking_response_deadline;
+ update bookings set response_requested_at=now()-interval '13 hours' where id=b;
+ alter table bookings enable trigger booking_response_deadline;
+ perform queue_overdue_booking_emails(); perform queue_overdue_booking_emails();
+ if (select count(*) from email_notifications where recipient_id=o and source_id=b::text and event_key like 'booking-overdue:%')<>1 then raise exception 'FAIL reminder deduplication';end if;
+ update bookings set status='Confirmed' where id=b;
+ if exists(select 1 from email_notifications n where n.source_id=b::text and n.event_key like 'booking-overdue:%' and portal_email_recipient_allowed(n)) then raise exception 'FAIL stale reminder allowed';end if;
+ insert into operator_applications(user_id,email,company_name,status,agreement_signature,agreement_version,agreement_signer_name,agreement_legal_name) values(o,'qa-o-'||o||'@example.invalid','QA rollback','pending','data:image/png;base64,TEST','qa-noncontract','QA ONLY','QA ONLY');
+ if not exists(select 1 from email_notifications where recipient_id=o and source_table='operator_applications') then raise exception 'FAIL application notification';end if;
+ insert into operator_agreement_requests(operator_id,company_name,recipient_email,version,sections) values(oid,'QA ONLY - no contract','qa-o-'||o||'@example.invalid','qa-noncontract','[{"h":"QA only","p":"Synthetic test. No legal agreement."}]') returning id into aid;
+ update operator_agreement_requests set signed_at=now(),signed_by=o where id=aid;
+ if not exists(select 1 from email_notifications where recipient_id=o and source_id=aid::text) then raise exception 'FAIL signed receipt';end if;
+ insert into public_inquiries(name,email,notes) values('QA rollback inquiry','qa-c-'||c||'@example.invalid','QA rollback') returning id into aid;
+ if not exists(select 1 from email_notifications where source_table='public_inquiries' and source_id=aid::text) then raise exception 'FAIL staff inquiry alert';end if;
+end $$;
+rollback;
+select 'PASS: live database generated customer/operator message, trip, booking, application, signed receipt and inquiry notifications; no-op suppression and 12-hour reminder deduplication passed. All synthetic data rolled back; no test event emails sent.' as verification;
