@@ -84,6 +84,13 @@ await db.exec('select queue_overdue_booking_emails();select queue_overdue_bookin
 assert.equal((await db.query("select * from email_notifications where event_key like 'booking-overdue:%'")).rows.length,2);
 await db.query("update bookings set status='Confirmed' where id=$1",[booking]);
 assert.equal((await db.query("select count(*)::int n from email_notifications n where event_key like 'booking-overdue:%' and portal_email_recipient_allowed(n)")).rows[0].n,0);
+// Reopening must not revive an old deadline's queued reminder.
+await db.query("update bookings set status='Requested' where id=$1",[booking]);
+assert.equal((await db.query("select count(*)::int n from email_notifications n where event_key like 'booking-overdue:%' and portal_email_recipient_allowed(n)")).rows[0].n,0,'reopened booking must suppress old reminders');
+await db.exec('alter table bookings disable trigger booking_response_deadline');
+await db.query("update bookings set response_requested_at=now()-interval '14 hours' where id=$1",[booking]);
+await db.exec('alter table bookings enable trigger booking_response_deadline;select queue_overdue_booking_emails();');
+assert.equal((await db.query("select count(*)::int n from email_notifications n where event_key like 'booking-overdue:%' and portal_email_recipient_allowed(n)")).rows[0].n,2,'only reminders for the new overdue request are eligible');
 await db.query("insert into operator_applications(user_id,email,company_name,status,agreement_signature,agreement_version,agreement_signer_name,agreement_legal_name) values($1,'operator@example.test','QA','pending','data:image/png;base64,TEST','qa','QA ONLY','QA ONLY')",[operator]);
 assert.equal((await db.query("select * from email_notifications where source_table='operator_applications'")).rows.length,2);
 await db.query("insert into operator_agreement_requests(operator_id,company_name,recipient_email,version,sections) values('email-test','QA','operator@example.test','qa','[]')");
