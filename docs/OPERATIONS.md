@@ -26,7 +26,25 @@ Observed in the production dashboard on November 14, 2026: the project is on Fre
 
 Before a broad launch, inventory the actual project's backup/PITR availability and retention. Export a protected database backup using the database owner's supported mechanism. Separately inventory Storage files, authentication configuration, functions, cron jobs and secrets: source-code history is not a backup of customer data. Keep credentials and private data out of Git and public output folders.
 
-Restore into a separate non-production project, disable outbound email/cron before loading data, and verify record counts, relationships, role isolation, authentication configuration, signed agreement copies and the connected workflow. Document the measured recovery time and data-loss window. Do not overwrite production to test recovery. No production backup or restore drill is claimed by this document.
+Restore into a separate non-production project, disable outbound email/cron before loading data, and verify record counts, relationships, role isolation, authentication configuration, signed agreement copies and the connected workflow. Document the measured recovery time and data-loss window. Do not overwrite production to test recovery. The local data-recovery drill below does not establish full hosted-service disaster recovery.
+
+### November 14 protected export and local recovery
+
+A full PostgreSQL custom-format archive was exported over certificate-verified TLS using an expiring, read-only database role. The role was revoked and dropped after export; production confirmed zero matching roles. The original database password was unchanged. The archive is held outside this repository in a restricted local folder, encrypted with Windows CurrentUser DPAPI; decryption produced the original SHA-256. Recovery on a different Windows profile has not been established, so this is not an off-site recovery plan.
+
+An isolated PostgreSQL 17.12 server, bound only to loopback, restored the public, auth and storage schemas without errors after installing their standard extension dependencies and creating inert prerequisite roles. All 58 tables and 322 rows matched the archive by sorted COPY-row hashes with UTC timestamps. The storage object table contained zero rows. Managed Supabase extensions, vault secret recovery, hosted authentication configuration and the complete hosted service were not recreated. No production restore was performed and no outbound workers were enabled.
+
+The local server was stopped after verification. Automated approval review blocked cleanup of the plaintext test exports and local cluster; they remain in the restricted backup folder. This cleanup and an automatic off-site backup/restore plan remain open.
+
+## Automatic email monitoring
+
+Apply `supabase/email_worker_monitoring.sql` after the outbound-mail migration. The dispatcher records a heartbeat even when idle. CRM staff receive persistent health alerts, refreshed every 30 seconds while the CRM is open, for stale/missing heartbeat, delayed or failed mail, expired leases, disabled/test mode and capacity limits. These alerts clear when the condition resolves; marking ordinary notifications read cannot hide them. Customers/operators cannot query staff email health. This is in-app monitoring, not unattended external paging. Assign an incident owner before broad launch.
+
+The migration and frontend were deployed November 14. Unit, authorization, notification UI and 390/768/1440-pixel browser checks passed. Actual live assets included heartbeat and persistent-alert logic.
+
+## Bounded public HTTP check
+
+`node scripts/public-http-burst.mjs` checks six public entry routes with 60 GETs, concurrency five and a per-worker delay. On November 14 all 60 returned HTTP 200 HTML; p95 was 242 ms. This does not test authenticated database throughput, email/login limits, page interactions or large-scale production capacity.
 
 ## Launch gates requiring business or device evidence
 
