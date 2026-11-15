@@ -26,6 +26,7 @@ export default defineConfig({
         blogBookingGuide: r("blog/what-to-confirm-before-booking-costa-rica-tour/index.html"),
         admin: r("admin/index.html"),
         mailAuth: r("admin/mail-auth.html"),
+        confirmAuth: r("auth/confirm.html"),
         my: r("my/index.html"),
         partners: r("partners/index.html"),
       },
