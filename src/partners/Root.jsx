@@ -46,7 +46,7 @@ export default function Root() {
   if (session === undefined) return <Loading />;
   if (!session) return <PartnerAuth onSession={setSession} onDemo={(intent, profile) => setSession(demoSession(intent, profile))} />;
   const agreementId=new URLSearchParams(window.location.search).get("agreement");
-  if(agreementId&&!session.demo)return <AgreementLanding key={sessionKey+agreementId} id={agreementId} onExit={leave}/>;
+  if(agreementId&&!session.demo)return <AgreementLanding key={sessionKey+agreementId} id={agreementId} signedInEmail={session.user?.email} onExit={leave}/>;
   if (error) return <ErrorScreen message={error} onRetry={() => setReload(n=>n+1)} onSignOut={leave} />;
   if (loading || !context || context.sessionKey!==sessionKey) return <Loading />;
 

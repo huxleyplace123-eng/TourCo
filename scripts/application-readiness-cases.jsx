@@ -1,3 +1,4 @@
+import {AgreementAccessHelp} from '../src/agreements/AgreementCenter.jsx';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import assert from 'node:assert/strict';
@@ -12,5 +13,6 @@ export function run(){
  assert.equal(html.includes('Exact meeting pin required'),!allowed);
  }
  const html=renderToStaticMarkup(<OperatorAgreement onClose={()=>{}}/>);assert(html.includes('Download agreement terms'));assert(html.includes('29. Notices, Assignment and General Terms'));assert(!html.includes('not attached here'));assert(html.includes('Continue to secure operator portal'));assert(!html.includes('Review, fill in, sign &amp; send'));
+ const help=renderToStaticMarkup(<AgreementAccessHelp error="Use the invited email" signedInEmail="info@ticowild.com"/>);assert(help.includes('info@ticowild.com'));assert(help.includes('private/incognito window'));assert(help.includes('Switching accounts here can also sign you out of the CRM'));
  console.log('PASS: rendered approval rejects missing/out-of-range pins, accepts valid coordinates, footer explains agreement summary.');
 }
