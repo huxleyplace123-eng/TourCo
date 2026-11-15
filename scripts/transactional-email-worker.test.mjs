@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import {createEmailHandler,notificationMessage} from '../supabase/functions/portal-email/handler.js';
+const secrets={SUPABASE_URL:'https://db.example.test',SUPABASE_SERVICE_ROLE_KEY:'backend-only',PORTAL_EMAIL_DISPATCH_SECRET:'dispatch-test',RESEND_API_KEY:'sender-test',RESEND_WEBHOOK_SECRET:'webhook-test'};
+const row={id:'queue-1',lease_id:'lease-1',recipient_email:'customer@example.test',subject:'Your trip has an update',portal_path:'/my/'};
+const calls=[];let providerStatus=200,dbFailure=false;
+const fetchImpl=async(url,options)=>{
+ calls.push({url,body:JSON.parse(options.body),headers:options.headers});
+ if(url.endsWith('/claim_portal_emails'))return Response.json([row]);
+ if(url.endsWith('/finish_portal_email'))return dbFailure?new Response('',{status:503}):Response.json(true);
+ if(url.includes('api.resend.com'))return Response.json(providerStatus===200?{id:'provider-1'}:{error:'Provider details should not leak'}, {status:providerStatus});
+ return Response.json(null);
+};
+const handler=createEmailHandler({env:key=>secrets[key],fetchImpl,sleep:async()=>{},verifyWebhook:async(body,headers)=>{if(headers.get('svix-signature')!=='valid')throw Error();return JSON.parse(body);}});
+const request=(path,headers={},body='{}')=>new Request('https://functions.example.test/portal-email/'+path,{method:'POST',headers,body});
+assert.equal((await handler(request('dispatch'))).status,401);assert.equal(calls.length,0);
+const auth={'x-dispatch-secret':'dispatch-test'};
+assert.equal((await handler(request('dispatch',auth))).status,200);
+assert.equal(calls[1].headers['idempotency-key'],'portal-email/queue-1');assert.equal(calls[1].body.from,'TicoWild <info@ticowild.com>');assert.equal(calls[2].body.provider,'provider-1');
+assert(!calls[1].body.text.includes('backend-only'));
+providerStatus=429;calls.length=0;await handler(request('dispatch',auth));assert.equal(calls[2].body.retryable,true);
+providerStatus=422;calls.length=0;await handler(request('dispatch',auth));assert.equal(calls[2].body.retryable,false);
+providerStatus=200;dbFailure=true;assert.equal((await handler(request('dispatch',auth))).status,503);dbFailure=false;
+calls.length=0;assert.equal((await handler(request('webhook'))).status,401);assert.equal(calls.length,0);
+const event=JSON.stringify({type:'email.delivered',created_at:'2026-11-14T12:00:00Z',data:{email_id:'provider-1'}});
+assert.equal((await handler(request('webhook',{'svix-id':'event-1','svix-signature':'valid'},event))).status,200);assert.equal(calls[0].body.provider_id,'provider-1');
+assert.throws(()=>notificationMessage({...row,portal_path:'//evil.example'}),/Invalid/);
+assert.throws(()=>notificationMessage({...row,portal_path:'/my/?next=https://evil.example'}),/Invalid/);
+console.log('PASS: dispatch authorization, server-only credentials, stable provider idempotency, permanent/transient errors, database failure retry, webhook verification gate and safe portal links.');

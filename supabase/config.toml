@@ -1,0 +1,3 @@
+[functions.portal-email]
+verify_jwt = false
+# Dispatch requires its own server-only secret. Webhook requires a verified Svix signature.

@@ -1,0 +1,94 @@
+import {AGREEMENT_SECTIONS,AGREEMENT_VERSION} from '../src/agreements/terms.js';
+import assert from 'node:assert/strict';
+import {readFile,writeFile} from 'node:fs/promises';
+const {PGlite}=await import(process.env.PGLITE_MODULE_PATH||'@electric-sql/pglite');
+const db=new PGlite();
+await db.exec(`create role authenticated;create role anon;create schema auth;create table auth.users(id uuid primary key,email text,email_confirmed_at timestamptz,raw_user_meta_data jsonb default '{}');create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;create function auth.jwt() returns jsonb language sql stable as $$select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb$$;grant usage on schema auth to authenticated;`);
+await db.exec(await readFile('supabase/schema.sql','utf8'));
+await db.exec(`create table public.team_members(user_id uuid primary key,role text);create function public.is_team_member() returns boolean language sql stable security definer set search_path=public as $$select exists(select 1 from team_members where user_id=auth.uid())$$;create table public.crm_customers(id text primary key,record jsonb);create policy "team manages trips" on trips for all using(is_team_member()) with check(is_team_member());create policy "team manages bookings" on bookings for all using(is_team_member()) with check(is_team_member());create policy "team manages messages" on messages for all using(is_team_member()) with check(is_team_member());grant select,insert,update,delete on profiles,trips,bookings,messages to authenticated;`);
+await db.exec(await readFile('supabase/customer_portal_permissions.sql','utf8'));
+await db.exec(await readFile('supabase/customer_portal_integration.sql','utf8'));
+
+await db.exec((await readFile('supabase/operator_portal.sql','utf8')).replace('create extension if not exists pgcrypto;',''));
+await db.exec(await readFile('supabase/operator_booking_handoff.sql','utf8'));
+await db.exec(await readFile('supabase/operator_booking_handoff.sql','utf8'));
+
+await db.exec('grant select,insert,update on operators,operator_memberships,operator_portal_state to authenticated;');
+
+
+await db.exec(await readFile('supabase/operator_invitation_acceptance.sql','utf8'));await db.exec(await readFile('supabase/operator_onboarding_completion.sql','utf8'));await db.exec(await readFile('supabase/operator_onboarding_completion.sql','utf8'));
+await db.exec('grant select,insert,update on operator_applications to authenticated');
+
+await db.exec(await readFile('supabase/operator_agreements.sql','utf8'));
+await db.exec(await readFile('supabase/operator_agreements.sql','utf8'));
+await db.exec(await readFile('supabase/operator_conversations_meeting_points.sql','utf8'));
+await db.exec(await readFile('supabase/portal_notifications.sql','utf8'));
+await db.exec('create role service_role;');
+await db.exec(await readFile('supabase/transactional_notifications.sql','utf8'));
+await db.exec(await readFile('supabase/transactional_notifications.sql','utf8'));
+const staff='66000000-0000-0000-0000-000000000001',customer='66000000-0000-0000-0000-000000000002',operator='66000000-0000-0000-0000-000000000003';
+await db.query("insert into auth.users(id,email,email_confirmed_at) values($1,'staff@example.test',now()),($2,'customer@example.test',now()),($3,'operator@example.test',now())",[staff,customer,operator]);
+await db.query("insert into team_members values($1,'manager')",[staff]);
+await db.query("insert into messages(user_id,\"from\",text) values($1,'customer','Off mode')",[customer]);
+assert.equal((await db.query('select * from email_notifications')).rows.length,0);
+await db.exec("update email_notification_settings set mode='live'");
+await db.query("insert into messages(user_id,\"from\",text) values($1,'customer','Private message content')",[customer]);
+let queue=(await db.query('select * from email_notifications')).rows;
+assert.equal(queue.length,1);assert.equal(queue[0].recipient_id,staff);assert(!JSON.stringify(queue).includes('Private message content'));
+await db.exec('begin');await db.query("insert into messages(user_id,\"from\",text) values($1,'team','Rollback')",[customer]);await db.exec('rollback');
+assert.equal((await db.query('select * from email_notifications')).rows.length,1);
+await db.exec('set role anon');await assert.rejects(db.query('select * from email_notifications'),/permission denied/);await assert.rejects(db.query('select * from claim_portal_emails(5)'),/permission denied/);await db.exec('reset role');
+await db.exec('set role authenticated');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[customer]);assert.equal((await db.query('select * from email_notifications')).rows.length,0);await assert.rejects(db.query('select * from claim_portal_emails(5)'),/permission denied/);await db.exec('reset role');
+const claim=async()=>(await db.query('select * from claim_portal_emails(5)')).rows;
+let claimed=await claim();assert.equal(claimed.length,1);assert.equal((await claim()).length,0);
+const first=claimed[0];
+// Callback can beat the API acceptance write; reconciliation must retain it.
+await db.query("select record_portal_email_delivery('event-1','provider-1','email.delivered',now())");
+await db.query('select finish_portal_email($1,$2,$3)',[first.id,first.lease_id,'provider-1']);
+assert.equal((await db.query('select state from email_notifications where id=$1',[first.id])).rows[0].state,'delivered');
+await db.query("select record_portal_email_delivery('event-1','provider-1','email.delivered',now())");
+assert.equal((await db.query('select * from email_delivery_events')).rows.length,1);
+await db.query("select record_portal_email_delivery('event-2','provider-1','email.bounced',now())");
+await db.query("select record_portal_email_delivery('event-3','provider-1','email.delivered',now())");
+assert.equal((await db.query('select state from email_notifications where id=$1',[first.id])).rows[0].state,'bounced');
+await db.query("insert into messages(user_id,\"from\",text) values($1,'team','Customer notice')",[customer]);
+claimed=await claim();assert.equal(claimed.length,1);assert.equal(claimed[0].recipient_id,customer);
+assert.equal((await db.query('select finish_portal_email($1,$2,null,$3,true) saved',[claimed[0].id,first.lease_id,'wrong lease'])).rows[0].saved,false);
+await db.query('select finish_portal_email($1,$2,null,$3,true)',[claimed[0].id,claimed[0].lease_id,'Temporary outage']);assert.equal((await claim()).length,0);
+await db.query("update email_notifications set available_at=now()-interval '1 minute' where id=$1",[claimed[0].id]);
+const retried=(await claim())[0];assert.equal(retried.id,claimed[0].id);assert.notEqual(retried.lease_id,claimed[0].lease_id);assert.equal(retried.attempts,2);
+await db.query("update email_notifications set lease_until=now()-interval '1 minute',first_attempt_at=now()-interval '24 hours' where id=$1",[retried.id]);assert.equal((await claim()).length,0);
+assert.equal((await db.query('select state from email_notifications where id=$1',[retried.id])).rows[0].state,'failed');
+await db.query("insert into operators(id,name,status) values('email-test','Email QA','active')");
+await db.query("insert into operator_memberships(operator_id,user_id,status,role) values('email-test',$1,'active','owner')",[operator]);
+await db.query("insert into operator_messages(operator_id,sender_role,text) values('email-test','team','Operator notice')");
+await db.query("update operator_memberships set status='suspended' where user_id=$1",[operator]);
+assert.equal((await claim()).length,0);assert.equal((await db.query("select state from email_notifications where recipient_id=$1",[operator])).rows[0].state,'suppressed');
+await db.exec("update email_notification_settings set mode='test',test_recipients=array['customer@example.test']");
+await db.query("insert into messages(user_id,\"from\",text) values($1,'customer','Test mode staff excluded')",[customer]);assert.equal((await claim()).length,0);
+await db.exec("update email_notification_settings set mode='live',daily_budget=1");
+await db.query("insert into messages(user_id,\"from\",text) values($1,'team','Budget reservation')",[customer]);assert.equal((await claim()).length,0);
+await db.exec("update email_notification_settings set daily_budget=1000;update email_notifications set state='failed' where state='pending';");
+await db.query("update operator_memberships set status='active' where user_id=$1",[operator]);
+const trip='66000000-0000-0000-0000-000000000004',booking='66000000-0000-0000-0000-000000000005';
+await db.query("insert into trips(id,user_id,title) values($1,$2,'QA trip')",[trip,customer]);
+await db.query("insert into bookings(id,trip_id,user_id,operator_id,name,status) values($1,$2,$3,'email-test','QA activity','Requested')",[booking,trip,customer]);
+assert.equal((await db.query("select * from email_notifications where source_table='bookings'")).rows.length,3);
+await db.query("update bookings set status='Requested' where id=$1",[booking]);
+assert.equal((await db.query("select * from email_notifications where source_table='bookings'")).rows.length,3);
+// Advance the deadline without the normal application mutation trigger.
+await db.exec('alter table bookings disable trigger booking_response_deadline');
+await db.query("update bookings set response_requested_at=now()-interval '13 hours' where id=$1",[booking]);
+await db.exec('alter table bookings enable trigger booking_response_deadline');
+await db.exec('select queue_overdue_booking_emails();select queue_overdue_booking_emails();');
+assert.equal((await db.query("select * from email_notifications where event_key like 'booking-overdue:%'")).rows.length,2);
+await db.query("update bookings set status='Confirmed' where id=$1",[booking]);
+assert.equal((await db.query("select count(*)::int n from email_notifications n where event_key like 'booking-overdue:%' and portal_email_recipient_allowed(n)")).rows[0].n,0);
+await db.query("insert into operator_applications(user_id,email,company_name,status,agreement_signature,agreement_version,agreement_signer_name,agreement_legal_name) values($1,'operator@example.test','QA','pending','data:image/png;base64,TEST','qa','QA ONLY','QA ONLY')",[operator]);
+assert.equal((await db.query("select * from email_notifications where source_table='operator_applications'")).rows.length,2);
+await db.query("insert into operator_agreement_requests(operator_id,company_name,recipient_email,version,sections) values('email-test','QA','operator@example.test','qa','[]')");
+await db.query("update operator_agreement_requests set signed_at=now(),signed_by=$1 where operator_id='email-test'",[operator]);
+assert.equal((await db.query("select * from email_notifications where source_table='operator_agreement_requests'")).rows.length,2);
+console.log('PASS: committed-event queue, no historical mail, role isolation, current-recipient authorization, leases, webhook reconciliation, retries, test allowlist, daily budget, booking fan-out, no-op suppression, 12-hour reminders, applications and agreement receipts.');
+await db.close();
+
