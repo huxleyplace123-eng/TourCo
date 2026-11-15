@@ -56,6 +56,8 @@ All 47 automated suites passed. The connected lifecycle also passed after adding
 
 A fresh signed-in production rollback test and shared-sheet update could not run in this pass: desktop automation repeatedly returned `coordinate input geometry is unavailable` after window recovery, and the alternate browser had no signed-in project tab. Existing prior production evidence remains distinct from this pass. Local reports record the new results; do not mark the shared checklist updated until the edit is actually verified.
 
+Follow-up at 00:20 Arizona on November 15: desktop control recovered. The complete `scripts/connected-workflow-live-qa.sql` ran successfully in the signed-in production SQL editor, with every fixture transaction rolled back. This rechecked customer/booking isolation, sender spoof prevention, saved preferences, staff replies, operator acceptance/decline, revision/idempotency handling, meeting points, private operator conversations and transactional event/reminder generation. Final checks showed zero named test customers/operators remaining, live email mode, a current worker heartbeat and zero pending messages. This is database-role testing, not a complete browser login-to-booking journey. The shared checklist was updated in rows 95–100 with the latest evidence and remaining limits.
+
 ## Launch gates requiring business or device evidence
 
 - Confirm real operator identity, pricing, availability, cancellation terms, permits and insurance. Public seed listings are planning examples, not approved real inventory.
