@@ -3,7 +3,7 @@ export function notificationMessage(row) {
   return {
     from:'TicoWild <info@ticowild.com>',to:[row.recipient_email],reply_to:'info@ticowild.com',
     subject:row.subject,
-    text:`${row.subject}\n\nOpen your secure TicoWild portal to view the details:\nhttps://ticowild.com${row.portal_path}\n\nSign in with the email address that received this notification. Private messages and booking details stay in your portal.\n\nQuestions? Reply to info@ticowild.com.\nTicoWild`,
+    text:row.source_table==='crm_outbound' ? row.body_text : `${row.subject}\n\nOpen your secure TicoWild portal to view the details:\nhttps://ticowild.com${row.portal_path}\n\nSign in with the email address that received this notification. Private messages and booking details stay in your portal.\n\nQuestions? Reply to info@ticowild.com.\nTicoWild`,
   };
 }
 
@@ -14,7 +14,7 @@ export function createEmailHandler({env,fetchImpl=fetch,verifyWebhook,sleep=ms=>
       method:'POST',headers:{apikey:env('SUPABASE_SERVICE_ROLE_KEY'),authorization:`Bearer ${env('SUPABASE_SERVICE_ROLE_KEY')}`,'content-type':'application/json'},body:JSON.stringify(args),signal:AbortSignal.timeout(15000)
     });
     if(!response.ok)throw new Error(`Database operation failed (${response.status})`);
-    return response.json();
+    const body=await response.text();return body ? JSON.parse(body) : null;
   }
   return async request=>{
     if(request.method!=='POST')return json({error:'POST required'},405);

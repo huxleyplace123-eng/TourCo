@@ -66,4 +66,4 @@ assert.match(onboarding, /MeetingPointPicker/);
 assert.match(operatorSchema, /meeting_point_lat/);
 assert.match(operatorSchema, /Exact guest meeting point required/);
 
-console.log("CRM contract passed: action center, quotes, templates, lead recovery, operator meeting maps, explicit kid suitability, and expiring sessions are present.");
+console.log("CRM contract passed: action center, quotes, templates, lead recovery, operator meeting maps, explicit kid suitability, and verified team access are present.");

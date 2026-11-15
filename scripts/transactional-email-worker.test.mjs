@@ -8,7 +8,7 @@ const fetchImpl=async(url,options)=>{
  if(url.endsWith('/claim_portal_emails'))return Response.json([row]);
  if(url.endsWith('/finish_portal_email'))return dbFailure?new Response('',{status:503}):Response.json(true);
  if(url.includes('api.resend.com'))return Response.json(providerStatus===200?{id:'provider-1'}:{error:'Provider details should not leak'}, {status:providerStatus});
- return Response.json(null);
+ return new Response(null,{status:204});
 };
 const handler=createEmailHandler({env:key=>secrets[key],fetchImpl,sleep:async()=>{},verifyWebhook:async(body,headers)=>{if(headers.get('svix-signature')!=='valid')throw Error();return JSON.parse(body);}});
 const request=(path,headers={},body='{}')=>new Request('https://functions.example.test/portal-email/'+path,{method:'POST',headers,body});
@@ -25,4 +25,4 @@ const event=JSON.stringify({type:'email.delivered',created_at:'2026-11-14T12:00:
 assert.equal((await handler(request('webhook',{'svix-id':'event-1','svix-signature':'valid'},event))).status,200);assert.equal(calls[0].body.provider_id,'provider-1');
 assert.throws(()=>notificationMessage({...row,portal_path:'//evil.example'}),/Invalid/);
 assert.throws(()=>notificationMessage({...row,portal_path:'/my/?next=https://evil.example'}),/Invalid/);
-console.log('PASS: dispatch authorization, server-only credentials, stable provider idempotency, permanent/transient errors, database failure retry, webhook verification gate and safe portal links.');
+console.log('PASS: dispatch authorization, server-only credentials, stable provider idempotency, permanent/transient errors, database failure retry, webhook verification, empty successful RPC responses and safe portal links.');
