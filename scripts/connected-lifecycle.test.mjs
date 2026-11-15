@@ -28,6 +28,10 @@ await db.exec(await readFile('supabase/transactional_notifications.sql','utf8'))
 await db.exec(await readFile('supabase/transactional_notifications.sql','utf8'));
 await db.exec(await readFile('supabase/operator_approval_profile_sync.sql','utf8'));
 await db.exec(await readFile('supabase/operator_approval_profile_sync.sql','utf8'));
+// Exercise the deployed migration combination, not just the original workflow.
+for (const migration of ['crm_outbound_email.sql','booking_reminder_current_request.sql','email_worker_monitoring.sql']) {
+ await db.exec(await readFile('supabase/'+migration,'utf8'));
+}
 const staff=crypto.randomUUID(),op=crypto.randomUUID(),customer=crypto.randomUUID();
 await db.query("insert into auth.users(id,email,email_confirmed_at) values($1,'staff@example.test',now()),($2,'operator@example.test',now()),($3,'customer@example.test',now())",[staff,op,customer]);
 await db.query("insert into team_members values($1,'admin')",[staff]);

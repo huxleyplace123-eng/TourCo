@@ -46,6 +46,16 @@ The migration and frontend were deployed November 14. Unit, authorization, notif
 
 `node scripts/public-http-burst.mjs` checks six public entry routes with 60 GETs, concurrency five and a per-worker delay. On November 14 all 60 returned HTTP 200 HTML; p95 was 242 ms. This does not test authenticated database throughput, email/login limits, page interactions or large-scale production capacity.
 
+## November 15 additional acceptance pass
+
+All 47 automated suites passed. The connected lifecycle also passed after adding the latest composed-mail, current-reminder and worker-monitoring migrations together. This remains an isolated synthetic workflow, not a real operator trial.
+
+`scripts/live-interactions.audit.mjs` passed 16 checks against the deployed site at 390 and 1440 pixels: website-to-customer sign-in navigation, password mode, filter empty-state/reset, three-step plan generation, blocked-network form recovery with preserved input and company-email fallback, partner validation, agreement deep-link sign-in guidance and the CRM authentication gate. The test blocks non-read browser requests, so it cannot prove successful submission or authenticated behavior. Set `PLAYWRIGHT_MODULE_PATH` when Playwright is installed outside the repository. Run from the repository root.
+
+`scripts/live-access.audit.mjs` passed 19 production access checks: anonymous reads returned no data or access denial for 16 private tables, two privileged RPCs rejected anonymous access, and the email worker rejected unauthenticated dispatch. A successful public auth-settings request is the positive control for credential validity. The script uses only the public publishable/anonymous key from deployed assets and never prints it. These tests do not replace authenticated cross-account checks.
+
+A fresh signed-in production rollback test and shared-sheet update could not run in this pass: desktop automation repeatedly returned `coordinate input geometry is unavailable` after window recovery, and the alternate browser had no signed-in project tab. Existing prior production evidence remains distinct from this pass. Local reports record the new results; do not mark the shared checklist updated until the edit is actually verified.
+
 ## Launch gates requiring business or device evidence
 
 - Confirm real operator identity, pricing, availability, cancellation terms, permits and insurance. Public seed listings are planning examples, not approved real inventory.
