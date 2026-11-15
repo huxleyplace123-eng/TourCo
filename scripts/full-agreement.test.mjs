@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {AGREEMENT_SECTIONS as sections,AGREEMENT_VERSION as version} from '../src/agreements/terms.js';
+import {termsDocument,signedDocument} from '../src/agreements/document.js';
+assert.equal(sections.length,32);
+for(let i=1;i<=29;i++)assert.equal(sections.filter(s=>s.h.startsWith(i+'. ')).length,1);
+const all=sections.map(s=>s.p).join('\n');
+assert(!/\[[^\]]+\]/.test(all));assert(!all.includes('Liquidated Damages'));assert(!all.includes('on-screen summary'));
+assert(sections.find(s=>s.h.startsWith('8.')).p.includes('within 12 hours'));
+assert(sections.find(s=>s.h.startsWith('26.')).p.includes('30 days written notice'));
+assert(sections.find(s=>s.h.startsWith('28.')).p.includes('laws of Wyoming'));
+assert(sections.find(s=>s.h.startsWith('9.')).p.includes('or all actual damages'));
+assert(termsDocument(sections,version).includes('Unsigned terms for review'));
+const signed=signedDocument({id:'qa',version,sections,company_name:'QA',signed_at:'2026-11-14',recipient_email:'qa@example.test',signed_data:{signerName:'QA Owner',signature:'data:image/png;base64,QUFB'}});
+for(const s of sections)assert(signed.includes(s.h.replaceAll('&','&amp;')));
+const hostile=termsDocument([{h:'<script>',p:'<img onerror="bad">'}],'<bad>');assert(!hostile.includes('<script>'));assert(!hostile.includes('<img onerror'));
+console.log('PASS: 29 full clauses, both exhibits, approved choices, no unresolved tokens, complete frozen signed copy, escaped review download.');

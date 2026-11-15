@@ -1,3 +1,4 @@
+import {AGREEMENT_SECTIONS,AGREEMENT_VERSION} from '../src/agreements/terms.js';
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
 const {PGlite}=await import(process.env.PGLITE_MODULE_PATH||'@electric-sql/pglite');
@@ -36,5 +37,10 @@ const details={legalName:'QA Company',signerName:'QA Owner',title:'Owner',signat
 const signed=(await as(op,()=>db.query('select (sign_operator_agreement($1,$2)).*',[id,details]))).rows[0];assert.equal(signed.signed_data.email,'operator@example.test');assert.notEqual(signed.signed_data.acceptedAt,'2000-01-01');
 const again=(await as(op,()=>db.query('select (sign_operator_agreement($1,$2)).*',[id,{...details,signerName:'Changed'}]))).rows[0];assert.equal(again.signed_data.signerName,'QA Owner');
 await assert.rejects(as(other,()=>db.query('select sign_operator_agreement($1,$2)',[id,details])),/verified recipient/);
+const fullId=(await as(staff,()=>db.query("select prepare_operator_agreement('agreement-qa','QA Company','operator@example.test',$1,$2) id",[AGREEMENT_VERSION,JSON.stringify(AGREEMENT_SECTIONS)]))).rows[0].id;
+assert.notEqual(fullId,id);
+const fullSigned=(await as(op,()=>db.query('select (sign_operator_agreement($1,$2)).*',[fullId,details]))).rows[0];
+assert.deepEqual(fullSigned.sections,AGREEMENT_SECTIONS);assert.equal(fullSigned.version,AGREEMENT_VERSION);
+assert.equal((await as(op,()=>db.query('select version from operator_agreement_requests where id=$1',[id]))).rows[0].version,'v1');
 await db.exec("update operator_agreement_requests set signed_at=null,signed_data=null,expires_at=now()-interval '1 day'");await assert.rejects(as(op,()=>db.query('select sign_operator_agreement($1,$2)',[id,details])),/expired/);
 console.log('PASS: recipient-only access, forged updates denied, server timestamp and email, immutable repeat signature, expiry, idempotent preparation and truthful channel events.');await db.close();

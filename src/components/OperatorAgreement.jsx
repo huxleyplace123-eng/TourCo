@@ -5,9 +5,10 @@ import { c, glass } from "../theme.js";
 // TicoWild's email — where signed agreements are sent.
 const TICOWILD_EMAIL = "info@ticowild.com";
 export {AGREEMENT_VERSION} from "../agreements/terms.js";
+import {downloadTerms} from "../agreements/document.js";
 import {AGREEMENT_VERSION,AGREEMENT_SECTIONS} from "../agreements/terms.js";
 
-// The agreement, section by section (condensed from the PDF for on-screen review).
+// Full agreement clauses; existing records supply their frozen sections and version.
 
 
 // A field the operator fills in.
@@ -76,11 +77,11 @@ export function OperatorAgreement({ onClose, onSigned, initialValues = {}, deliv
   // clean signed document — no backend needed).
   const buildDoc = () => {
     const rows = FIELDS.map((f) => `<tr><td style="padding:6px 12px;color:#5b6b82">${f.label}</td><td style="padding:6px 12px;font-weight:700">${escapeHtml(form[f.key])}</td></tr>`).join("");
-    const secs = sections.map((s) => `<h3 style="margin:18px 0 4px;color:#0B1A2E">${s.h}</h3><p style="margin:0;color:#333;line-height:1.55;font-size:13px">${s.p}</p>`).join("");
+    const secs = sections.map((s) => `<h3 style="margin:18px 0 4px;color:#0B1A2E">${escapeHtml(s.h)}</h3><p style="margin:0;color:#333;line-height:1.55;font-size:13px">${escapeHtml(s.p)}</p>`).join("");
     return `<!doctype html><html><head><meta charset="utf-8"><title>TicoWild Operator Agreement — ${escapeHtml(form.legalName)}</title></head>
 <body style="font-family:Arial,Helvetica,sans-serif;max-width:760px;margin:24px auto;padding:0 20px;color:#0B1A2E">
 <h1 style="color:#0B1A2E">TicoWild LLC — Operator Partner Agreement</h1>
-<p style="color:#5b6b82">Signed electronically on ${today}.</p>
+<p style="color:#5b6b82">Version ${escapeHtml(version)}. Operator acceptance signed electronically on ${today}. This record does not represent a TicoWild countersignature.</p>
 <table style="border-collapse:collapse;background:#f6f8fb;border-radius:8px;margin:12px 0">${rows}</table>
 ${secs}
 <h3 style="margin:22px 0 6px">Signature</h3>
@@ -115,7 +116,7 @@ ${secs}
           <span style={{ width: 38, height: 38, borderRadius: 11, background: "rgba(34,211,238,.14)", border: "1px solid rgba(34,211,238,.3)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><FileText size={19} color={c.teal} /></span>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: "#fff", fontWeight: 800, fontSize: 16 }}>Become a TicoWild operator</div>
-            <div style={{ color: c.stone, fontSize: 12 }}>{delivery === "email" ? "Review the summary, then continue to the secure operator portal." : "Review, sign and save your agreement online."}</div>
+            <div style={{ color: c.stone, fontSize: 12 }}>{delivery === "email" ? "Review the full agreement, then continue to the secure operator portal." : "Review, sign and save your agreement online."}</div>
           </div>
           <button onClick={saving?undefined:onClose} aria-label="Close" style={{ background: "none", border: "none", color: c.stone, cursor: "pointer" }}><X size={19} /></button>
         </div>
@@ -125,7 +126,7 @@ ${secs}
             <span style={{ width: 64, height: 64, borderRadius: 999, background: "rgba(55,227,107,.14)", border: "1px solid rgba(55,227,107,.4)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}><Check size={32} color="#37E36B" /></span>
             <h3 style={{ color: "#fff", fontSize: 21, fontWeight: 800, margin: "0 0 8px" }}>Signed — ¡pura vida!</h3>
             <p style={{ color: c.stone, fontSize: 14.5, lineHeight: 1.55, maxWidth: 420, margin: "0 auto 18px" }}>
-              {delivery === "email" ? <>Your signed agreement downloaded, and an email to <b style={{ color: "#fff" }}>{TICOWILD_EMAIL}</b> opened — just attach the file and hit send.</> : <>Your signed agreement has been saved. You can download a copy below.</>}
+              {delivery === "email" ? <>Your signed agreement downloaded, and an email to <b style={{ color: "#fff" }}>{TICOWILD_EMAIL}</b> opened — just attach the file and hit send.</> : <>Your operator acceptance has been saved. You can download a copy below.</>}
             </p>
             <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
               <button onClick={download} style={btnGhost}><Download size={15} />Download signed copy</button>
@@ -135,12 +136,12 @@ ${secs}
         ) : (
           <div style={{ maxHeight: "calc(100vh - 180px)", overflowY: "auto", padding: "18px" }}>
             {/* agreement text */}
-            {delivery === "email" && <p style={{color:c.stone,fontSize:13,lineHeight:1.6}}>This page contains the current agreement summary. It references a separate full agreement, which is not attached here. Contact <a href="mailto:info@ticowild.com" style={{color:c.teal}}>info@ticowild.com</a> for the complete document before signing.</p>}
+            <p style={{color:c.stone,fontSize:13,lineHeight:1.6}}>Version: {version}. Your saved copy preserves the terms shown here. Operator service details and required documents must be reviewed before listing.</p><button type="button" onClick={()=>downloadTerms(sections,version)} style={{...btnGhost,marginBottom:12}}><Download size={15}/>Download agreement terms</button>
             <div style={{ background: "rgba(255,255,255,.04)", border: `1px solid ${c.line}`, borderRadius: 14, padding: "16px 18px", maxHeight: 240, overflowY: "auto", marginBottom: 20 }}>
               {sections.map((s) => (
                 <div key={s.h} style={{ marginBottom: 12 }}>
                   <h4 style={{ color: c.teal, fontSize: 13.5, fontWeight: 800, margin: "0 0 4px" }}>{s.h}</h4>
-                  <p style={{ color: "rgba(243,247,255,.82)", fontSize: 12.5, lineHeight: 1.55, margin: 0 }}>{s.p}</p>
+                  <p style={{ color: "rgba(243,247,255,.82)", fontSize: 12.5, lineHeight: 1.55, whiteSpace: "pre-wrap", margin: 0 }}>{s.p}</p>
                 </div>
               ))}
             </div>

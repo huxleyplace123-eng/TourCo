@@ -11,6 +11,6 @@ export function run(){
  assert(approve); const tag=approve.slice(approve.lastIndexOf('<button'));assert.equal(!/^<button[^>]*disabled/.test(tag),allowed,JSON.stringify([lat,lng]));
  assert.equal(html.includes('Exact meeting pin required'),!allowed);
  }
- const html=renderToStaticMarkup(<OperatorAgreement onClose={()=>{}}/>);assert(html.includes('separate full agreement, which is not attached here'));assert(html.includes('Continue to secure operator portal'));assert(!html.includes('Review, fill in, sign &amp; send'));
+ const html=renderToStaticMarkup(<OperatorAgreement onClose={()=>{}}/>);assert(html.includes('Download agreement terms'));assert(html.includes('29. Notices, Assignment and General Terms'));assert(!html.includes('not attached here'));assert(html.includes('Continue to secure operator portal'));assert(!html.includes('Review, fill in, sign &amp; send'));
  console.log('PASS: rendered approval rejects missing/out-of-range pins, accepts valid coordinates, footer explains agreement summary.');
 }
