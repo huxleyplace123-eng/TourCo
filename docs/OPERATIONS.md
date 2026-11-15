@@ -20,7 +20,9 @@ The worker verifies permissions again at delivery time, uses stable idempotency 
 
 Identify the last verified Cloudflare Pages deployment and its matching Git commit. Roll back the frontend through the Pages deployment dashboard only after checking compatibility with current database migrations. A frontend rollback does not reverse database migrations or sent emails. Preserve failed-release evidence; do not reset the database as a frontend recovery step.
 
-## Database backup and restore gate — not yet verified
+## Database backup and restore gate
+
+Observed in the production dashboard on November 14, 2026: the project is on Free and the Backups page states that Free does not include project backups. No upgrade was purchased. Scheduled backup coverage is therefore absent, not merely unchecked. A separate manual protected backup or approved plan change is required before a production restore drill can be claimed.
 
 Before a broad launch, inventory the actual project's backup/PITR availability and retention. Export a protected database backup using the database owner's supported mechanism. Separately inventory Storage files, authentication configuration, functions, cron jobs and secrets: source-code history is not a backup of customer data. Keep credentials and private data out of Git and public output folders.
 
