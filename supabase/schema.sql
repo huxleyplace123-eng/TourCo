@@ -94,7 +94,7 @@ create policy "customer sends own messages" on public.messages for insert to aut
   with check (auth.uid() = user_id and "from" = 'customer' and length(trim(text)) between 1 and 5000);
 drop policy if exists "public can create inquiries" on public.public_inquiries;
 create policy "public can create inquiries" on public.public_inquiries for insert with check (
-  true
+  status = 'new'
 );
 
 alter table public.public_inquiries drop constraint if exists public_inquiries_safe_input;

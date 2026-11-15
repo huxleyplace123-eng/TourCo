@@ -7,15 +7,26 @@ await db.exec(`create role authenticated;create role anon;create schema auth;cre
 await db.exec(await readFile('supabase/schema.sql','utf8'));
 await db.exec((await readFile('supabase/operator_portal.sql','utf8')).replace('create extension if not exists pgcrypto;',''));
 await db.exec(await readFile('supabase/unified_crm.sql','utf8'));
+await db.exec(await readFile('supabase/verified_access_hardening.sql','utf8'));
+await db.exec(await readFile('supabase/verified_access_hardening.sql','utf8'));
+const owner='30000000-0000-0000-0000-000000000099';
+await db.query("insert into auth.users(id,email) values($1,'ticowildtours@gmail.com')",[owner]);
+assert.equal((await db.query('select * from team_members where user_id=$1',[owner])).rows.length,0);
+await db.query('update auth.users set email_confirmed_at=now() where id=$1',[owner]);
+assert.equal((await db.query('select role from team_members where user_id=$1',[owner])).rows[0].role,'admin');
 await db.exec('grant select,insert,update on public_inquiries,crm_customers to authenticated,anon;');
 const team='30000000-0000-0000-0000-000000000001',visitor='30000000-0000-0000-0000-000000000002',id='30000000-0000-0000-0000-000000000003';
 await db.query("insert into auth.users(id,email) values($1,'qa-team@example.test'),($2,'qa-visitor@example.test')",[team,visitor]);
 await db.query("insert into team_members(user_id,role) values($1,'admin')",[team]);
 await db.exec('set role anon;');
+for(const status of ['imported','archived','qa',null]) {
+  await assert.rejects(db.query("insert into public_inquiries(name,email,status) values('QA','qa@example.test',$1)",[status]),/row-level security|not-null/);
+}
 await db.query("insert into public_inquiries(id,name,email,notes,arrival) values($1,'QA Visitor','qa-visitor@example.test','QA route details','2026-12-01')",[id]);
 assert.equal((await db.query('select * from public_inquiries')).rows.length,0);
 await db.exec('reset role;set role authenticated;');
 await db.query("select set_config('request.jwt.claim.sub',$1,false)",[visitor]);
+await assert.rejects(db.query("insert into public_inquiries(name,email,status) values('QA','qa@example.test','archived')"),/row-level security/);
 assert.equal((await db.query('select * from public_inquiries')).rows.length,0);
 await db.query("select set_config('request.jwt.claim.sub',$1,false)",[team]);
 const request=(await db.query('select * from public_inquiries')).rows[0];assert.equal(request.notes,'QA route details');

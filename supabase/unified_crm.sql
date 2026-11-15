@@ -19,7 +19,7 @@ alter table public.crm_operator_overlays enable row level security;
 
 drop policy if exists "public can create inquiries" on public.public_inquiries;
 create policy "public can create inquiries" on public.public_inquiries for insert with check (
-  true
+  status = 'new' or public.is_team_member()
 );
 
 alter table public.public_inquiries drop constraint if exists public_inquiries_safe_input;
@@ -70,12 +70,13 @@ create index if not exists public_inquiries_status_created_idx on public.public_
 create index if not exists trips_user_created_idx on public.trips(user_id, created_at desc);
 create index if not exists messages_user_at_idx on public.messages(user_id, at);
 
--- The verified TicoWild Gmail account is the CRM owner. Supabase only fires
--- this after the mailbox owner completes its email sign-in link.
+-- Grant bootstrap owner access only after Supabase verifies the mailbox.
+-- auth.users INSERT can happen before verification; confirmation is an UPDATE.
 create or replace function public.handle_ticowild_team_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  if lower(coalesce(new.email, '')) = 'ticowildtours@gmail.com' then
+  if lower(coalesce(new.email, '')) = 'ticowildtours@gmail.com'
+     and new.email_confirmed_at is not null then
     insert into public.team_members (user_id, role) values (new.id, 'admin')
     on conflict (user_id) do update set role = 'admin';
   end if;
@@ -83,5 +84,5 @@ begin
 end; $$;
 
 drop trigger if exists on_ticowild_team_user_created on auth.users;
-create trigger on_ticowild_team_user_created after insert or update of email on auth.users
+create trigger on_ticowild_team_user_created after insert or update of email, email_confirmed_at on auth.users
   for each row execute function public.handle_ticowild_team_user();
