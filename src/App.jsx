@@ -218,6 +218,9 @@ export default function App() {
       <div style={{ position: "relative", zIndex: 1 }}>
       {page === "portal" && <SavedIdeasSync trip={trip} setTrip={setTrip}/>}
       <Nav page={page} go={go} tripCount={trip.length} openTrip={() => go("portal")} />
+      <aside aria-label="Catalog information" style={{padding:"12px 20px",background:"#13294a",color:"#d6e5ff",fontSize:13,lineHeight:1.6,textAlign:"center"}}>
+        Planning examples: prices, durations and inclusions are illustrative. We confirm the provider, availability and final terms before any reservation.
+      </aside>
 
       {/* keyed wrapper → every page fade-rises in on navigation */}
       <main className={`public-page public-page-${page}`} key={page + (["detail", "article"].includes(page) ? activeId : "")} style={{ animation: "tnPageIn .45s cubic-bezier(.2,.7,.2,1) both" }}>

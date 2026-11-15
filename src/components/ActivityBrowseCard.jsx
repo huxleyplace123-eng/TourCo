@@ -512,15 +512,15 @@ export function ActivityBrowseCard({
             </span>
             <span
               className="tn-activity-browse-card__approved"
-              title="An independently operated Costa Rica experience"
+              title="Planning idea; provider and details require confirmation"
             >
               <ShieldCheck size={13} aria-hidden="true" />
-              <span>Independent</span>
+              <span>Planning idea</span>
             </span>
           </div>
 
-          <div className="tn-activity-browse-card__price" aria-label={`From ${money(a.price)} per person`}>
-            <small>from</small> {money(a.price)} <small>/ person</small>
+          <div className="tn-activity-browse-card__price" aria-label={`Planning estimate ${money(a.price)} per person`}>
+            <small>estimate</small> {money(a.price)} <small>/ person</small>
           </div>
         </div>
 

@@ -30,7 +30,7 @@ function PickCard({ label, a, tone, onView, onAdd, inTrip }) {
         <div style={{ display: "flex", gap: 14, color: c.stone, fontSize: 13, fontWeight: 600, flexWrap: "wrap", marginBottom: 12 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><MapPin size={13} />{a.region}</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Clock size={13} />{a.duration}</span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Star size={13} fill={c.gold} color={c.gold} />{a.rating}</span>
+          {Number.isFinite(a.rating) && <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Star size={13} fill={c.gold} color={c.gold} />{a.rating}</span>}
           <span style={{ marginLeft: "auto", color: c.charcoal, fontWeight: 800 }}>{money(a.price)}</span>
         </div>
         <div style={{ display: "flex", gap: 8 }}>

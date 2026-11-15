@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {AGREEMENT_VERSION} from '../src/agreements/terms.js';
+import {matchingSavedAgreement,agreementMatchesCompany} from '../src/partners/onboarding-agreement.js';
+const signed_data={legalName:'QA Company',agreementVersion:AGREEMENT_VERSION};
+const row={signed_at:'2026-11-14',version:AGREEMENT_VERSION,recipient_email:'operator@example.test',company_name:'QA Company',signed_data};
+assert.equal(matchingSavedAgreement([row],'OPERATOR@example.test',' QA Company '),signed_data);
+assert.equal(matchingSavedAgreement([row],'other@example.test','QA Company'),null);
+assert.equal(matchingSavedAgreement([row],'operator@example.test',''),null);
+assert.equal(matchingSavedAgreement([row],'operator@example.test','Other Company'),null);
+assert.equal(matchingSavedAgreement([{...row,version:'qa-noncontract'}],'operator@example.test','QA Company'),null);
+assert.equal(matchingSavedAgreement([{...row,signed_at:null}],'operator@example.test','QA Company'),null);
+assert.equal(agreementMatchesCompany(signed_data,'Other Company'),false);
+assert.equal(agreementMatchesCompany(signed_data,'QA Company'),true);
+console.log('PASS: matching verified recipient/company/current-version acceptance is reused; other-company, unsigned and non-contract QA records are excluded.');

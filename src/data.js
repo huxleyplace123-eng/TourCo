@@ -55,8 +55,17 @@ const activityRecords = [
 }));
 
 const published = publishedCatalog(operatorRecords, activityRecords);
-export const operators = published.operators;
-export const activities = published.activities;
+// Legacy seed records are planning examples, not evidence of real partner vetting.
+// Keep them useful for itinerary planning without exposing invented credentials,
+// ratings, response promises or direct contact details.
+export const operators = published.operators.map(operator => ({
+  ...operator, name: `Provider to be confirmed · ${operator.region}`,
+  catalogStatus: "planning-example", vetted: false, insurance: null,
+  rating: null, whatsapp: "", responseTime: "",
+}));
+export const activities = published.activities.map(activity => ({
+  ...activity, catalogStatus: "planning-example", rating: null, reviews: null,
+}));
 
 const packagePublicationStatus = Object.freeze({
   p1: "approved",
@@ -77,7 +86,9 @@ const packageRecords = [
   publicationStatus: packagePublicationStatus[tripPackage.id],
 }));
 
-export const packages = approvedRecords(packageRecords);
+export const packages = approvedRecords(packageRecords).map(tripPackage => ({
+  ...tripPackage, catalogStatus: "planning-example",
+}));
 
 export const regions = [
   { name: "Manuel Antonio", tag: "Wildlife & beaches", gradKey: "jungle" },

@@ -21,7 +21,7 @@ export function depositTerms(price, pax = 1) {
  * No inferred permits, safety checks, review sources, or reconfirmation dates.
  */
 export function trustReceipt(op) {
-  if (!isExplicitlyApproved(op)) return null;
+  if (!isExplicitlyApproved(op) || op.catalogStatus === "planning-example") return null;
 
   const checks = [{
     key: "publication",

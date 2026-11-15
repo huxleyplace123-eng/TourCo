@@ -1,5 +1,6 @@
 import {AgreementDocuments} from '../agreements/AgreementCenter.jsx';
 import {listAgreements} from "../agreements/data.js";
+import {matchingSavedAgreement,agreementMatchesCompany} from './onboarding-agreement.js';
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, BadgeCheck, Building2, Check, Clock3, FileSignature, Globe2, LogOut, MapPin, ShieldCheck } from "lucide-react";
 import { Logo } from "../components/Logo.jsx";
@@ -70,7 +71,14 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
   const [showAgreement, setShowAgreement] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  useEffect(()=>{if(agreement)return;let live=true;listAgreements().then(rows=>{const signed=rows.find(r=>r.signed_at&&r.recipient_email===user.email.toLowerCase()&&r.company_name.toLowerCase()===values.companyName.toLowerCase());if(live&&signed)setAgreement(signed.signed_data);}).catch(()=>{});return()=>{live=false;};},[user.email]);
+  useEffect(()=>{
+    if(agreementMatchesCompany(agreement,values.companyName))return;
+    setAgreement(null);
+    if(!values.companyName.trim())return;
+    let live=true;
+    const timer=setTimeout(()=>listAgreements().then(rows=>{if(live)setAgreement(matchingSavedAgreement(rows,user.email,values.companyName));}).catch(()=>{}),300);
+    return()=>{live=false;clearTimeout(timer);};
+  },[user.email,values.companyName,agreement]);
   const set = (key) => (event) => setValues((v) => ({ ...v, [key]: event.target.value }));
   const toggle = (key, value) => setValues((v) => ({ ...v, [key]: v[key].includes(value) ? v[key].filter((x) => x !== value) : [...v[key], value] }));
   const complete = useMemo(() => [values.companyName, values.contactName, values.phone, values.regions.length, values.categories.length, hasMeetingPoint({ meetingPoint: values.meetingPoint }), values.description].filter(Boolean).length, [values]);
@@ -84,7 +92,7 @@ export default function Onboarding({ user, application, onSubmitted, onSignOut }
   };
 
   const submit = async () => {
-    if (!agreement?.acceptedAt || !agreement?.signature) return setError("Review and sign the partner agreement before submitting.");
+    if (!agreement?.acceptedAt || !agreement?.signature || !agreementMatchesCompany(agreement,values.companyName)) return setError("Review and sign the current partner agreement for this company before submitting.");
     setBusy(true); setError("");
     try { onSubmitted(await saveApplication(user, values, true, agreement)); }
     catch (err) { setError(err.message || "We couldn't submit your application."); }
