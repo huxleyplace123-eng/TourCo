@@ -33,6 +33,12 @@ Restore into a separate non-production project, disable outbound email/cron befo
 - Confirm real operator identity, pricing, availability, cancellation terms, permits and insurance. Public seed listings are planning examples, not approved real inventory.
 - Verify John can independently authenticate on his own device without disabling MFA.
 - Complete a consenting real operator/customer trial after synthetic QA.
-- Confirm external arrival of every notification type, including the real scheduled reminder.
+- Booking customer/operator notices, application needs-changes, operator overdue and team follow-up emails were observed in the recipient inboxes on November 14, 2026. The reminder fixture used an aged timestamp and prequeued scoped recipients; the real cron worker dispatched it. Real elapsed 12-hour operation and a consenting operator trial remain distinct from synthetic delivery QA.
 - Assign incident/alert ownership and confirm capacity for expected traffic; conduct an agreed isolated load test before claiming scale readiness.
 - Payments and automatic WhatsApp synchronization remain outside the current enabled scope.
+
+## November 14 reminder correction and isolated burst
+
+Apply supabase/booking_reminder_current_request.sql after crm_outbound_email.sql. It preserves composed-mail authorization and rejects a queued overdue reminder unless its event key matches the current booking response timestamp, the booking still requests a response, and the 12-hour deadline has passed. This migration was applied to production and its function definition verified. Reopening a request must never revive the prior reminder.
+
+Run scripts/isolated-burst.test.mjs for bounded isolated reliability coverage: 100 synthetic customers, 1,000 trips, 100 submitted read requests and 20 worker claim requests. The test verifies each customer's ten trips, no duplicate claims, and a 40-message budget with 60 remaining pending. PGlite serializes database work; these numbers do not establish production throughput, concurrent network capacity or a recovery-time objective.
