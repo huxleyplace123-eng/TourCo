@@ -100,7 +100,7 @@ export default function PartnerAuth({ onSession, onDemo }) {
         </section>
 
         <section className="partner-auth-card-wrap">
-          <form className="partner-auth-card" onSubmit={submit}>
+          <form className="partner-auth-card" onSubmit={submit}>{params.get("agreement")&&<p style={{color:c.teal,lineHeight:1.5}}>You’re opening an operator agreement. Sign in with the email address that received the invitation. The agreement will open after sign-in.</p>}
             <div style={{ display:"flex",alignItems:"center",gap:11,marginBottom:24 }}>
               <div style={{ width:42,height:42,borderRadius:14,display:"grid",placeItems:"center",background:c.gold,color:c.ink,boxShadow:shadow.glowGold }}><KeyRound size={20}/></div>
               <div><div style={{ fontSize:20,fontWeight:800 }}>{mode === "signin" ? "Partner sign in" : "Apply to partner"}</div><div style={{ color:c.stone,fontSize:12.5 }}>{mode === "signin" ? "Welcome back to TicoWild" : "Create your secure partner account"}</div></div>
