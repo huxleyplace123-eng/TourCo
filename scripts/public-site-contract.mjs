@@ -154,6 +154,7 @@ for (const post of BLOG_POSTS) {
 }
 assert.equal(structuredDataFor("blog")?.["@type"], "Blog", "the blog index needs Blog structured data");
 const familyStructuredData = structuredDataFor("kids");
+assert.equal(familyStructuredData.mainEntity.itemListElement.some(({item}) => item.offers), false, "planning catalog must not advertise purchasable offers without verified pricing and availability");
 assert.equal(familyStructuredData?.["@type"], "CollectionPage", "the family catalog needs CollectionPage structured data");
 assert.ok(familyStructuredData.mainEntity.numberOfItems > 0, "the family structured data needs real activity items");
 assert.equal(familyStructuredData.mainEntity.itemListElement.some(({ item }) => /ATV|White Water Rafting/.test(item.name)), false, "high-difficulty activities must not be promoted as kid-friendly");

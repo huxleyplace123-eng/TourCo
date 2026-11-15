@@ -152,13 +152,6 @@ export function structuredDataFor(page, activeId = null) {
           touristType: "Families with children",
           areaServed: { "@type": "Country", name: "Costa Rica" },
           provider: { "@type": "Organization", name: "TicoWild", url: baseUrl },
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "USD",
-            price: activity.price,
-            availability: "https://schema.org/InStock",
-            url: `${baseUrl}${activityPath(activity)}`,
-          },
         },
       })),
     },
