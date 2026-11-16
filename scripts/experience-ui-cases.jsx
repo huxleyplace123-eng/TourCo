@@ -9,7 +9,7 @@ export async function run(){
  await act(async()=>{view=TestRenderer.create(<GuestCareSchedule trips={[{id:'t',title:'QA',bookings:[b]}]} service={service}/>);});
  await act(async()=>view.root.findAllByType('select')[0].props.onChange({target:{value:'b'}}));
  assert.match(view.root.findByType('textarea').props.value,/Reception/);
- await act(async()=>view.root.findByType('input').props.onChange({target:{value:'2099-12-19T09:00'}}));
+ await act(async()=>view.root.findByType('input').props.onInput({target:{value:'2099-12-19T09:00'}}));
  await act(async()=>view.root.findByType('form').props.onSubmit({preventDefault(){}}));
  assert.match(JSON.stringify(view.toJSON()),/Connection lost/);assert.match(view.root.findByType('textarea').props.value,/Reception/);
  assert.equal(sent[0].send_time,'2099-12-19T15:00:00.000Z');
