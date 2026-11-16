@@ -136,7 +136,7 @@ export default function OperatorPortal({
   const calBookings = bookings.filter((b) => responses[b.id] !== "declined" && b.status !== "Cancelled");
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 80, background: c.sand, color: c.charcoal, fontFamily: FONT, display: "flex", flexDirection: "column" }}>
+    <div className="opp-shell" style={{ position: "fixed", inset: 0, zIndex: 80, background: c.sand, color: c.charcoal, fontFamily: FONT, display: "flex", flexDirection: "column" }}>
       <style>{`
         .opp-body { flex: 1; overflow-y: auto; }
         .opp-wrap { max-width: 920px; margin: 0 auto; padding: 18px clamp(14px, 4vw, 26px) 40px; }

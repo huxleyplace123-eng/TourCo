@@ -1,7 +1,7 @@
 import {supabase,withTimeout} from '../portal/supabase.js';
 import {AGREEMENT_SECTIONS,AGREEMENT_VERSION} from './terms.js';
 async function result(p){const {data,error}=await withTimeout(p,15000,'Operator agreements');if(error)throw error;return data;}
-export const listAgreements=op=>result(op?supabase.from('operator_agreement_requests').select('*').eq('operator_id',op).order('created_at',{ascending:false}):supabase.from('operator_agreement_requests').select('*').order('created_at',{ascending:false}));
+export const listAgreements=async op=>{if(!supabase)throw new Error('Connect the partner service to load agreement documents.');return result(op?supabase.from('operator_agreement_requests').select('*').eq('operator_id',op).order('created_at',{ascending:false}):supabase.from('operator_agreement_requests').select('*').order('created_at',{ascending:false}));};
 export const getAgreement=id=>result(supabase.from('operator_agreement_requests').select('*').eq('id',id).single());
 export const prepareAgreement=(op,email)=>result(supabase.rpc('prepare_operator_agreement',{op_id:op.id,company:op.name,recipient:email,doc_version:AGREEMENT_VERSION,doc_sections:AGREEMENT_SECTIONS}));
 export const recordEvent=(id,kind)=>result(supabase.rpc('record_agreement_event',{request_id:id,event_kind:kind}));
