@@ -128,18 +128,15 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
               </div>
             </div>
 
-            <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 18 }}>
-              <InfoList title="What's included" icon={Package} items={a.included} />
-              <InfoList title="What to bring" icon={Backpack} items={a.bring} />
-            </div>
+
           </div>
 
           {/* Book panel */}
           <aside className="detail-book-panel" style={{ position: "sticky", top: 92, display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ background: c.white, borderRadius: 20, padding: 24, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 20px 50px -30px rgba(0,0,0,.35)" }}>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
-                <span style={{ color: c.stone, fontWeight: 700, marginBottom: 7, marginRight: 2 }}>Planning estimate from</span>
-                <span style={{ fontSize: 32, fontWeight: 800, color: c.charcoal }}>{money(a.price)}</span>
+              <div style={{ display: "flex", alignItems: "baseline", flexWrap:"wrap", gap: 6 }}>
+                <span style={{ color: c.stone, fontWeight: 700, flexBasis:"100%" }}>Planning estimate from</span>
+                <span style={{ fontSize: 32, fontWeight: 800, color: c.charcoal, whiteSpace:"nowrap", flexShrink:0 }}>{money(a.price)}</span>
                 <span style={{ color: c.stone, fontWeight: 600, marginBottom: 6 }}>/ person</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, color: c.teal, fontWeight: 700, fontSize: 13.5, marginTop: 4 }}>
