@@ -16,7 +16,10 @@ export async function run(){
  fail=false;await act(async()=>view.root.findByType('form').props.onSubmit({preventDefault(){}}));
  assert.match(JSON.stringify(view.toJSON()),/Message scheduled/);
  await act(async()=>view.root.findAllByType('button').find(b=>b.children.includes('Cancel scheduled message')).props.onClick());
- assert.equal(rows.length,0);await act(async()=>view.unmount());
+ assert.equal(rows.length,0);await act(async()=>view.update(<GuestCareSchedule trips={[{id:'t',title:'QA',bookings:[{...b,notification_revision:2}]}]} service={service}/>));
+ const before=sent.length;await act(async()=>view.root.findByType('form').props.onSubmit({preventDefault(){}}));assert.equal(sent.length,before);assert.match(JSON.stringify(view.toJSON()),/Booking details changed/);
+ await act(async()=>view.root.findAllByType('button').find(b=>b.children.includes('Rebuild from latest booking details')).props.onClick());await act(async()=>view.root.findByType('form').props.onSubmit({preventDefault(){}}));assert.equal(sent.at(-1).expected_booking_revision,2);
+ await act(async()=>view.unmount());
  await act(async()=>{view=TestRenderer.create(<ExperienceEssentials activity={{title:'Example',catalogStatus:'planning-example',duration:'2 hours'}}/>);});
  assert.match(JSON.stringify(view.toJSON()),/Planning example/);assert.match(JSON.stringify(view.toJSON()),/guide details will be shared/);await act(async()=>view.unmount());
  console.log('PASS: schedule preview, Costa Rica time conversion, retained errors, save/cancel and honest sample essentials.');

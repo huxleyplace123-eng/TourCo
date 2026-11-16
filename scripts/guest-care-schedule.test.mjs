@@ -29,6 +29,7 @@ await db.exec(await readFile('supabase/transactional_notifications.sql','utf8'))
 
 await db.exec(await readFile('supabase/guest_care_schedule.sql','utf8'));
 await db.exec(await readFile('supabase/guest_care_schedule.sql','utf8'));
+await db.exec(await readFile('supabase/guest_care_review_guard.sql','utf8'));
 const staff='77000000-0000-0000-0000-000000000001',customer='77000000-0000-0000-0000-000000000002',trip='77000000-0000-0000-0000-000000000003',booking='77000000-0000-0000-0000-000000000004',schedule='77000000-0000-0000-0000-000000000005';
 await db.query("insert into auth.users(id,email,email_confirmed_at) values($1,'staff@example.test',now()),($2,'customer@example.test',now())",[staff,customer]);
 await db.query("insert into team_members values($1,'manager')",[staff]);
@@ -38,15 +39,18 @@ await db.query("insert into bookings(id,trip_id,user_id,name,status,date,time,op
 await db.query("select set_config('request.jwt.claim.sub',$1,false)",[customer]);
 await db.exec('set role authenticated');
 assert.equal((await db.query('select * from guest_care_schedule')).rows.length,0);
-await assert.rejects(()=>db.query("select save_guest_care_schedule($1,$2,'preparation','QA message body',now()+interval '1 hour',null)",[schedule,booking]),/Team access/);
+await assert.rejects(()=>db.query("select save_guest_care_schedule($1,$2,'preparation','QA message body',now()+interval '1 hour',null)",[schedule,booking]),/Team access|permission denied/);
 await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[staff]);
-let row=(await db.query("select * from save_guest_care_schedule($1,$2,'preparation','QA message body',now()+interval '1 hour',null)",[schedule,booking])).rows[0];
+await assert.rejects(()=>db.query("select save_reviewed_guest_care_schedule($1,$2,'preparation','QA stale message',now()+interval '1 hour',999,null)",[schedule,booking]),/Booking details changed/);
+await db.exec('set role authenticated');await assert.rejects(()=>db.query("select save_guest_care_schedule($1,$2,'preparation','QA message body',now()+interval '1 hour',null)",[schedule,booking]),/permission denied/);await db.exec('reset role');
+let row=(await db.query("select * from save_reviewed_guest_care_schedule($1,$2,'preparation','QA message body',now()+interval '1 hour',1,null)",[schedule,booking])).rows[0];
 await assert.rejects(()=>db.query("select save_guest_care_schedule($1,$2,'preparation','Duplicate without version',now()+interval '1 hour',null)",[schedule,booking]),/Schedule changed/);
 await db.exec("update guest_care_schedule set send_at=now()-interval '1 minute';select dispatch_guest_care_schedule();");
 assert.equal((await db.query("select count(*)::int n from messages where id=$1",[schedule])).rows[0].n,0,'off mode does not send');
 await db.exec("update email_notification_settings set mode='live';select dispatch_guest_care_schedule();select dispatch_guest_care_schedule();");
 assert.equal((await db.query("select count(*)::int n from messages where id=$1",[schedule])).rows[0].n,1,'retry inserts only one message');
 assert.equal((await db.query("select count(*)::int n from email_notifications where source_id=$1",[schedule])).rows[0].n,1,'one customer notification');
+assert.equal((await db.query("select subject from email_notifications where source_id=$1",[schedule])).rows[0].subject,'Your TicoWild activity preparation is ready');
 await db.exec("update guest_care_schedule set state='scheduled';update bookings set bring='Changed packing note';select dispatch_guest_care_schedule();");
 assert.equal((await db.query('select state from guest_care_schedule')).rows[0].state,'needs_review');
 await db.exec("update guest_care_schedule set state='scheduled';update trips set status='Cancelled';select dispatch_guest_care_schedule();");
