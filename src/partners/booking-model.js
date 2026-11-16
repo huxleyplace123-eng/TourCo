@@ -1,3 +1,8 @@
+export function upcomingPartnerBookings(bookings, responses, today) {
+  return bookings.filter(b => b.date >= today && !['Cancelled','Declined','Completed'].includes(b.status) && responses[b.id] !== 'declined')
+    .sort((a,b) => String(a.date).localeCompare(String(b.date)) || String(a.time).localeCompare(String(b.time)));
+}
+
 export function optionalCoordinate(value, limit) {
   if (value == null || String(value).trim() === '') return null;
   const number = Number(value);

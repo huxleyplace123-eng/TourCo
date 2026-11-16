@@ -3,6 +3,7 @@ import {AgreementDocuments} from "../agreements/AgreementCenter.jsx";
 import {validPoint} from '../portal/meeting-point.js';
 import NotificationCenter from '../notifications/NotificationCenter.jsx';
 import OperatorConversation from '../partners/OperatorConversation.jsx';
+import {upcomingPartnerBookings} from '../partners/booking-model.js';
 // OPERATOR PORTAL (prototype) — the scoped, operator-facing view of one
 // operator's TicoWild relationship. Opened from the CRM via "Preview portal",
 // so the team can see exactly what a partner sees. On the real backend this is
@@ -259,7 +260,8 @@ function SectionTitle({ children, right }) {
 
 // ── Home ──────────────────────────────────────────────────────────────────────
 function HomeTab({ prof, bookings, responses, availableDays, tours, agreement, go }) {
-  const next = bookings[0];
+  const upcoming = upcomingPartnerBookings(bookings, responses, todayIso());
+  const next = upcoming[0];
   const pending = bookings.filter((b) => b.pending && !responses[b.id]).length;
   const stat = (label, value, col, onClick) => (
     <div onClick={onClick} className="opp-card" style={{ padding: "14px 16px", cursor: onClick ? "pointer" : "default" }}>
@@ -287,7 +289,7 @@ function HomeTab({ prof, bookings, responses, availableDays, tours, agreement, g
       <div>
         <SectionTitle right={<button onClick={() => go("bookings")} style={linkBtn}>See all</button>}>Upcoming bookings</SectionTitle>
         <div style={{ display: "grid", gap: 10 }}>
-          {bookings.slice(0, 3).map((b) => <BookingCard key={b.id} b={b} status={responses[b.id]} compact />)}
+          {upcoming.slice(0, 3).map((b) => <BookingCard key={b.id} b={b} status={responses[b.id]} compact />)}
         </div>
       </div>
     </div>
