@@ -1,3 +1,4 @@
+import {experienceReady} from '../experience/standards.js';
 const APPROVED_PUBLICATION_STATUS = "approved";
 
 /**
@@ -15,7 +16,7 @@ export function approvedOperatorForActivity(activity, operatorRecords = []) {
 }
 
 export function isActivityPublishable(activity, operatorRecords = []) {
-  return isExplicitlyApproved(activity) && !!approvedOperatorForActivity(activity, operatorRecords);
+  return isExplicitlyApproved(activity) && !!approvedOperatorForActivity(activity, operatorRecords) && (activity.catalogStatus === "planning-example" || experienceReady(activity));
 }
 
 export function publishedCatalog(operatorRecords = [], activityRecords = []) {

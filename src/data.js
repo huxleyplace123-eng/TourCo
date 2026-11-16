@@ -52,6 +52,7 @@ const activityRecords = [
 ].map((activity) => ({
   ...activity,
   publicationStatus: activityPublicationStatus[activity.id],
+  catalogStatus: "planning-example",
 }));
 
 const published = publishedCatalog(operatorRecords, activityRecords);

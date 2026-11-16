@@ -1,0 +1,8 @@
+import React from 'react';
+import {preparationQueue} from './journey-operations.js';
+import {trackedRequests} from '../portal/request-tracking.js';
+export default function OperationsQueue({trips,messages,profiles,onCustomer}){
+ const rows=preparationQueue(trips),requests=trackedRequests(messages).filter(r=>r.status!=='Resolved');
+ const urgent=requests.filter(r=>['Operator has not arrived','Meeting-point help','Experience follow-up'].includes(r.title));
+ return <section aria-label="Guest care priorities"><h2>Guest care priorities</h2><p>{rows.filter(r=>r.today).length} activities today · {rows.filter(r=>r.missing.length).length} bookings need preparation details · {requests.length} open requests</p><details open={urgent.length>0}><summary>Time-sensitive issues and experience follow-ups ({urgent.length})</summary>{urgent.map(r=><article key={r.id}><b>{r.title}</b><p>{r.status} · Responsible: {r.owner} · Received {new Date(r.at).toLocaleString()}</p><button onClick={()=>onCustomer(r.user_id)}>Open customer conversation</button></article>)}{!urgent.length&&<p>No open issues in this queue.</p>}</details><details><summary>Upcoming booking readiness</summary>{rows.map(({trip,booking,missing,today})=><article key={booking.id}><b>{today?'Today · ':''}{booking.name}</b><p>{booking.date} · {booking.time||'Time needed'} · {trip.title}</p><p>{missing.length?`Needs: ${missing.join(', ')}`:'Published preparation details are complete.'}</p><button onClick={()=>onCustomer(trip.user_id)}>Review customer trip</button></article>)}{!rows.length&&<p>No upcoming active bookings.</p>}</details></section>;
+}

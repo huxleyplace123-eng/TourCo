@@ -1,3 +1,4 @@
+import ExperienceEssentials from '../experience/ExperienceEssentials.jsx';
 import React from "react";
 import { ArrowLeft, MapPin, Clock, Compass, Check, Plus, ShieldCheck, MessageCircle, Package, Backpack, Calendar } from "lucide-react";
 import { c, grad, gradFor, money } from "../theme.js";
@@ -104,6 +105,8 @@ export function Detail({ activeId, go, addToTrip, trip, viewActivity }) {
                 ))}
               </div>
             </div>
+
+            <ExperienceEssentials activity={a}/>
 
             {/* TicoWild Vibe Scores — the brain, not a directory */}
             <VibeScores activity={a} />

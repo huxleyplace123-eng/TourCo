@@ -1,3 +1,5 @@
+import {experienceFields,experienceGaps} from '../experience/standards.js';
+import {costaRicaDate} from '../portal/journey-model.js';
 import {listAgreements} from "../agreements/data.js";
 import {AgreementDocuments} from "../agreements/AgreementCenter.jsx";
 import {validPoint} from '../portal/meeting-point.js';
@@ -29,7 +31,7 @@ import {
 const money = (v) => (v === null || v === undefined ? "—" : `$${Math.round(v).toLocaleString()}`);
 const p2 = (n) => String(n).padStart(2, "0");
 const iso = (y, m, d) => `${y}-${p2(m + 1)}-${p2(d)}`;
-const todayIso = () => { const d = new Date(); return iso(d.getFullYear(), d.getMonth(), d.getDate()); };
+const todayIso = () => costaRicaDate();
 
 const inputBase = {
   width: "100%", background: "rgba(255,255,255,.06)", border: `1px solid ${c.line}`,
@@ -279,6 +281,7 @@ function HomeTab({ prof, bookings, responses, availableDays, tours, agreement, g
         </div>
       </div>
 
+      <section className="opp-card" style={{padding:16}}><h2 style={{fontSize:18,marginTop:0}}>Today’s priorities</h2><p>{upcoming.filter(b=>b.date===todayIso()).length} activities today · {pending} requests awaiting your response</p><p>{upcoming.filter(b=>!validPoint(b.meetingPoint)).length} upcoming bookings need a meeting pin checked with TicoWild.</p><p>{tours.filter(t=>experienceGaps(t).length).length} tours have incomplete guest information.</p><div style={{display:"flex",gap:12,flexWrap:"wrap"}}><button style={linkBtn} onClick={()=>go("bookings")}>Review bookings</button><button style={linkBtn} onClick={()=>go("tours")}>Complete tour details</button><button style={linkBtn} onClick={()=>go("messages")}>Coordinate with TicoWild</button></div></section>
       <div className="opp-grid2">
         {stat("Pending requests", pending, pending ? "#FB7042" : c.stone, () => go("bookings"))}
         {stat("Days open this month", availableDays, c.teal, () => go("calendar"))}
@@ -506,7 +509,7 @@ function ToursTab({ tours, takeRate, onEdit, onAdd, onDelete }) {
         Your tours & rates
       </SectionTitle>
       <div style={{ color: c.stone, fontSize: 12.5, fontWeight: 600, margin: "-6px 2px 2px" }}>
-        These are your listings on TicoWild. Tap <Pencil size={12} style={{ verticalAlign: -1 }} /> to rename or re-price — you always see what you net after the referral fee.
+        These are your tour drafts for TicoWild review. Saving does not publish them. Tap <Pencil size={12} style={{ verticalAlign: -1 }} /> to rename or re-price — you always see what you net after the referral fee.
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
@@ -545,6 +548,7 @@ function TourCard({ t, takeRate, onEdit, onDelete }) {
           </button>
         </div>
         <div style={{ fontWeight: 800, fontSize: 15.5, lineHeight: 1.25, flex: 1 }}>{t.product}</div>
+        <small>{experienceGaps(t).length?`${experienceGaps(t).length} guest information sections need completion`:"Guest information complete — awaiting staff verification"}</small>
         <SuitabilityBadge value={t.kidSuitability} minimumAge={t.minimumAge} compact />
         {t.familyNotes && <div title={t.familyNotes} style={{ color: c.stone, fontSize: 11.5, lineHeight: 1.45, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{t.familyNotes}</div>}
         {t.duration && <div style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.stone, fontSize: 12, fontWeight: 600 }}><Clock size={12} /> {t.duration}</div>}
@@ -565,6 +569,7 @@ function TourCard({ t, takeRate, onEdit, onDelete }) {
 
 function TourEditor({ init, onSave, onCancel, onDelete }) {
   const [f, setF] = useState({
+    experienceDetails: init?.experienceDetails || {},
     product: init?.product || "",
     category: init?.category || "",
     retail: init?.retail ?? "",
@@ -581,15 +586,15 @@ function TourEditor({ init, onSave, onCancel, onDelete }) {
   return (
     <div className="opp-card" style={{ padding: "14px 15px", display: "grid", gap: 9, border: `1px solid ${c.teal}55` }}>
       <div style={{ ...label, marginBottom: 0 }}>{init ? "Edit tour" : "New tour"}</div>
-      <input autoFocus value={f.product} onChange={set("product")} placeholder="Tour name" style={field} />
+      <input aria-label="Tour name" autoFocus value={f.product} onChange={set("product")} placeholder="Tour name" style={field} />
       <div style={{ display: "flex", gap: 8 }}>
-        <input value={f.category} onChange={set("category")} placeholder="Category" style={{ ...field, flex: 1 }} />
+        <input aria-label="Category" value={f.category} onChange={set("category")} placeholder="Category" style={{ ...field, flex: 1 }} />
         <div style={{ position: "relative", width: 120 }}>
           <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: c.stone, fontWeight: 700 }}>$</span>
-          <input value={f.retail} onChange={set("retail")} placeholder="Price" inputMode="numeric" style={{ ...field, paddingLeft: 22 }} />
+          <input aria-label="Retail price" value={f.retail} onChange={set("retail")} placeholder="Price" inputMode="numeric" style={{ ...field, paddingLeft: 22 }} />
         </div>
       </div>
-      <input value={f.duration} onChange={set("duration")} placeholder="Duration (e.g. 3 hours)" style={field} />
+      <input aria-label="Duration" value={f.duration} onChange={set("duration")} placeholder="Duration (e.g. 3 hours)" style={field} />
       <div style={{ marginTop: 2, paddingTop: 10, borderTop: `1px solid ${c.line}` }}>
         <div style={{ ...label, marginBottom: 7 }}>Kid-friendly suitability</div>
         <div className="opp-family-status" role="group" aria-label="Kid-friendly suitability">
@@ -609,6 +614,7 @@ function TourEditor({ init, onSave, onCancel, onDelete }) {
           })}
         </div>
       </div>
+      <details><summary>Guest information and local story ({experienceFields.length-experienceGaps(f).length}/{experienceFields.length} complete)</summary><p>Save a draft at any time. Complete every section for staff review before publication. Do not claim credentials that have not been checked.</p>{experienceFields.map(([key,title])=><label key={key} style={{display:"block",marginBottom:10}}>{title}<textarea rows={3} maxLength={2000} value={f.experienceDetails[key]||""} onChange={e=>setF(x=>({...x,experienceDetails:{...x.experienceDetails,[key]:e.target.value}}))} style={field}/></label>)}</details>
       <div className="opp-family-fields">
         <label style={{ display: "block" }}>
           <div style={{ ...label, marginBottom: 5 }}>Minimum age</div>
@@ -621,6 +627,7 @@ function TourEditor({ init, onSave, onCancel, onDelete }) {
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
         <button disabled={!canSave} onClick={() => onSave({
+          experienceDetails: Object.fromEntries(experienceFields.map(([key])=>[key,String(f.experienceDetails[key]||"").trim()])),
           product: f.product.trim(), category: f.category.trim(), retail: Number(f.retail), duration: f.duration.trim(),
           kidSuitability: normalizeKidSuitability(f.kidSuitability),
           minimumAge: parsedAge === null ? null : Math.round(parsedAge),
