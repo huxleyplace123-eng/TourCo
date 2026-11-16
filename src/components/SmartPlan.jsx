@@ -14,7 +14,7 @@ export function SmartPlan({ chosen, pax = 2, budget, monthIdx, planOverride = nu
   const ids = chosen.map((x) => (x.a ? x.a.id : x.id));
   const computedPlan = useMemo(() => buildPlan(ids, { pax, budget, monthIdx, maxPerDay: 2 }), [ids.join(","), pax, budget, monthIdx]);
   const plan = planOverride || computedPlan;
-  if (!plan.days.length) return <p style={{color:c.stone,lineHeight:1.6}}>We don’t have matching activity suggestions for these choices yet. Send your preferences below so the team can help; no tour or availability has been confirmed.</p>;
+  if (!plan.days.length) return <div style={{color:c.stone,lineHeight:1.6}}><p>No activity suggestions fit the available days and preferences. Send your preferences below so the team can help; no tour or availability has been confirmed.</p>{plan.warnings.map((warning,index)=><p key={index}>{warning}</p>)}</div>;
 
   return (
     <div>

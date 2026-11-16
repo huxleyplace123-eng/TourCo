@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {checkOperations,sendOperationsAlert} from './operations-monitor.mjs';
+const healthy=async()=>new Response('<html><script src="/assets/app.js"></script></html>');
+assert.equal((await checkOperations({fetchImpl:healthy})).failures.length,0);
+assert.equal((await checkOperations({fetchImpl:async()=>new Response('maintenance',{status:503})})).failures.length,5);
+assert.equal((await checkOperations({fetchImpl:async()=>{throw Error('offline')}})).failures.length,5);
+assert.equal((await checkOperations({fetchImpl:healthy,health:async()=>{throw Error('offline')}})).failures.length,1);
+await assert.rejects(sendOperationsAlert({}),/requires/);
+let sent;await sendOperationsAlert({checkedAt:'test',failures:['Worker delayed']},{key:'test-only',to:'qa@example.test',incidentId:'same',fetchImpl:async(url,args)=>{sent=args;return new Response('{}');}});
+assert.equal(sent.headers['Idempotency-Key'],'operations/same');assert.deepEqual(JSON.parse(sent.body).to,['qa@example.test']);
+await assert.rejects(sendOperationsAlert({failures:[]},{key:'test',to:'qa@example.test',incidentId:'x',fetchImpl:async()=>new Response('',{status:429})}),/HTTP 429/);
+console.log('PASS: route outages, network failure, health failure, alert configuration gate, stable alert identity and provider rejection. No email sent.');

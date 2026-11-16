@@ -94,10 +94,13 @@ export function Section({ children, bg, pad = 52, id, className = "", style = {}
 
 // ── Form field label ──
 export function Field({ label, children, htmlFor }) {
+  const generated=React.useId();
+  const control=React.isValidElement(children)&&(['input','select','textarea'].includes(children.type)||children.type===Select||children.type===TextInput);
+  const id=htmlFor||children?.props?.id||generated;
   return (
-    <div className="form-field" style={{ marginBottom: 12 }}>
-      <label htmlFor={htmlFor} style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: c.charcoal, marginBottom: 6 }}>{label}</label>
-      {children}
+    <div className="form-field" role={control?undefined:'group'} aria-labelledby={control?undefined:`${generated}-label`} style={{ marginBottom: 12 }}>
+      <label id={`${generated}-label`} htmlFor={control?id:htmlFor} style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: c.charcoal, marginBottom: 6 }}>{label}</label>
+      {control?React.cloneElement(children,{id}):children}
     </div>
   );
 }
@@ -126,11 +129,11 @@ export function TextInput({ value, onChange, placeholder, icon: Icon, type = "te
   );
 }
 
-export function Select({ value, onChange, options, icon: Icon, id }) {
+export function Select({ value, onChange, options, icon: Icon, id, 'aria-label': ariaLabel }) {
   return (
     <div style={{ position: "relative" }}>
       {Icon && <Icon size={16} color={c.stone} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />}
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} onFocus={focusControl} onBlur={blurControl} style={{ ...inputBase, appearance: "none", paddingRight: 34, cursor: "pointer" }}>
+      <select id={id} aria-label={ariaLabel} value={value} onChange={(e) => onChange(e.target.value)} onFocus={focusControl} onBlur={blurControl} style={{ ...inputBase, appearance: "none", paddingRight: 34, cursor: "pointer" }}>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
     </div>

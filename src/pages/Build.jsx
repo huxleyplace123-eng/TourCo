@@ -42,7 +42,7 @@ function ChipRow({ options, value, onToggle, single }) {
       {options.map((o) => {
         const on = single ? value === o.v : value.includes(o.v);
         return (
-          <button key={o.v} onClick={() => onToggle(o.v)} style={{
+          <button key={o.v} type="button" aria-pressed={on} onClick={() => onToggle(o.v)} style={{
             display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 14px", borderRadius: 999, cursor: "pointer",
             fontWeight: 700, fontSize: 13.5, transition: "all .15s",
             background: on ? "rgba(34,211,238,.14)" : "rgba(255,255,255,.05)",
@@ -90,7 +90,7 @@ export function PlanContactCard({ plannerForm, result, deliver=deliverInquiry })
     try { const activities = result.plan.days.flatMap((day) => day.activities);
     const response = await deliver({
       ...contact,
-      notes: [contact.notes, `Group: ${plannerForm.who}; interests: ${plannerForm.vibe}`, `Activity budget per person, per experience: ${{ low:'under USD 100', mid:'up to USD 200', high:'premium', any:'open' }[plannerForm.budget] || plannerForm.budget}`, `Requirements: ${[plannerForm.youngKids && 'young children; confirm ages and suitability', plannerForm.avoidLongDrives && 'avoid long drives', ...(plannerForm.fears || []).map(item => `avoid ${item}`)].filter(Boolean).join('; ') || 'none specified'}`, ...result.plan.days.map((day,index) => `Day ${index + 1}: ${day.activities.map(activity => activity.title).join('; ')}`)].filter(Boolean).join('\n'),
+      notes: [contact.notes, `Route: ${plannerForm.stops.map(stop=>`${stop.region}: ${stop.nights} nights`).join("; ")}`, ...(result.plan.warnings||[]), `Group: ${plannerForm.who}; interests: ${plannerForm.vibe}`, `Activity budget per person, per experience: ${{ low:'under USD 100', mid:'up to USD 200', high:'premium', any:'open' }[plannerForm.budget] || plannerForm.budget}`, `Requirements: ${[plannerForm.youngKids && 'young children; confirm ages and suitability', plannerForm.avoidLongDrives && 'avoid long drives', ...(plannerForm.fears || []).map(item => `avoid ${item}`)].filter(Boolean).join('; ') || 'none specified'}`, ...result.plan.days.map((day,index) => `Day ${day.n}: ${day.activities.map(activity => activity.title).join('; ')}`)].filter(Boolean).join('\n'),
       intent: "planning",
       destination: plannerForm.stops.map((stop) => stop.region).join(", "),
       arrival: plannerForm.arrival,
@@ -169,6 +169,7 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
 
   const build = () => {
     const dateNights = nightsBetween(form.arrival, form.departure);
+    const routeNights = form.stops.reduce((sum,stop)=>sum+Number(stop.nights||0),0);
     if ((form.arrival && !form.departure) || (!form.arrival && form.departure)) {
       setError("Choose both arrival and departure dates so Rico can pace the trip correctly.");
       return;
@@ -177,6 +178,11 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
       setError("Departure must be after arrival.");
       return;
     }
+    if(form.arrival && dateNights!==routeNights){
+      setError(`Your dates cover ${dateNights} nights, but your stops total ${routeNights}. Update the nights at each stop or your dates so they match.`);
+      return;
+    }
+    if(routeNights>14){setError('The automatic planner covers up to 14 nights. Shorten this plan or ask the team to help with a longer trip.');return;}
     setError("");
     setBuilding(true);
     setTimeout(() => {
@@ -248,8 +254,8 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
                     {form.stops.map((stop, index) => (
                       <div key={`${index}-${stop.region}`} className="route-stop-grid" style={{ display: "grid", gridTemplateColumns: "38px minmax(0,1fr) 112px auto", gap: 10, alignItems: "center", background: "rgba(255,255,255,.045)", border: `1px solid ${c.line}`, borderRadius: 16, padding: 11 }}>
                         <span style={{ width: 36, height: 36, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", background: index === 0 ? grad.sunset : "rgba(34,211,238,.12)", color: index === 0 ? c.ink : c.teal, fontWeight: 900, fontSize: 12 }}>{String(index + 1).padStart(2, "0")}</span>
-                        <Select value={stop.region} onChange={(value) => updateStop(index, { region: value })} icon={MapPinned} options={REGIONS} />
-                        <Select value={String(stop.nights)} onChange={(value) => updateStop(index, { nights: Number(value) })} icon={Calendar} options={["1", "2", "3", "4", "5", "6", "7"]} />
+                        <Select aria-label={`Destination for stop ${index+1}`} value={stop.region} onChange={(value) => updateStop(index, { region: value })} icon={MapPinned} options={REGIONS} />
+                        <Select aria-label={`Nights at stop ${index+1}`} value={String(stop.nights)} onChange={(value) => updateStop(index, { nights: Number(value) })} icon={Calendar} options={["1", "2", "3", "4", "5", "6", "7"]} />
                         <div style={{ display: "flex", gap: 3, justifyContent: "flex-end" }}>
                           <button type="button" aria-label={`Move ${stop.region} earlier`} onClick={() => moveStop(index, -1)} disabled={index === 0} style={routeIconButton}><ArrowUp size={14} /></button>
                           <button type="button" aria-label={`Move ${stop.region} later`} onClick={() => moveStop(index, 1)} disabled={index === form.stops.length - 1} style={routeIconButton}><ArrowDown size={14} /></button>
@@ -264,8 +270,8 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
                   </div>
                 </Field>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }} className="trip-date-grid">
-                  <Field label="Arrival date (optional)"><input type="date" aria-label="Arrival date" value={form.arrival} onChange={(e) => set("arrival", e.target.value)} style={dateInputStyle} /></Field>
-                  <Field label="Departure date (optional)"><input type="date" aria-label="Departure date" min={form.arrival || undefined} value={form.departure} onChange={(e) => set("departure", e.target.value)} style={dateInputStyle} /></Field>
+                  <Field label="Arrival date (optional)"><input type="date" aria-label="Arrival date" value={form.arrival} onInput={(e) => set("arrival", e.currentTarget.value)} onChange={(e) => set("arrival", e.target.value)} style={dateInputStyle} /></Field>
+                  <Field label="Departure date (optional)"><input type="date" aria-label="Departure date" min={form.arrival || undefined} value={form.departure} onInput={(e) => set("departure", e.currentTarget.value)} onChange={(e) => set("departure", e.target.value)} style={dateInputStyle} /></Field>
                 </div>
                 <Field label="How many travelers?"><Select value={form.pax} onChange={(v) => set("pax", v)} icon={Users} options={["1", "2", "3", "4", "5", "6", "8", "10"]} /></Field>
                 <div className="planner-stage-actions"><Button variant="ghost" onClick={() => setStage(0)}><ChevronLeft size={16} />Back</Button><Button variant="primary" onClick={() => setStage(2)}>Final touches <ArrowRight size={17} /></Button></div>

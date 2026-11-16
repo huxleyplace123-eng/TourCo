@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {trackedRequests,requestUpdate} from '../src/portal/request-tracking.js';
+const request={id:'r1',user_id:'one',from:'customer',at:'2026-01-01',text:'[Trip request: Pickup help]\nTrip: Test\nPlease confirm pickup.'};
+const update={id:'u1',user_id:'one',from:'team',at:'2026-01-02',text:requestUpdate('r1','Being reviewed','John','Checking with the operator.')};
+assert.equal(trackedRequests([request])[0].status,'Received');
+assert.equal(trackedRequests([update,request])[0].owner,'John');
+assert.equal(trackedRequests([request,{...update,from:'customer'}])[0].status,'Received');
+assert.equal(trackedRequests([request,{...update,user_id:'two'}])[0].status,'Received');
+assert.equal(trackedRequests([request,{...update,at:'2025-01-01'}])[0].status,'Received');
+assert.equal(trackedRequests([request,update,{...update,at:'2026-01-03',text:requestUpdate('r1','Resolved','John','Pickup instructions are now published.')}])[0].status,'Resolved');
+assert.throws(()=>requestUpdate('r1','Fake','John','Test note'));assert.throws(()=>requestUpdate('r1','Resolved','John\nInjected','Test note'));
+console.log('PASS: request lifecycle, stable references, ordering, sender spoof prevention and cross-customer isolation.');

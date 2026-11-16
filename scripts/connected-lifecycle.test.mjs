@@ -67,4 +67,22 @@ assert.equal((await as(customer,()=>db.query('select * from operator_messages'))
 assert.equal((await as(op,()=>db.query('select * from operator_messages'))).rows.length,2);
 const queued=(await db.query('select count(*)::int n from email_notifications')).rows[0].n;assert.ok(queued>=5);
 console.log('PASS: one connected isolated lifecycle: invite, verified acceptance, agreement signing, application submission, staff approval, CRM booking, operator acceptance, customer confirmation/meeting point, private two-way conversation and notification generation. Queued events: '+queued+'. No external emails or production records.');
+// Positive controls for a second populated customer and operator, not merely an
+// empty outsider account. Both directions must deny cross-account access.
+const customer2=crypto.randomUUID(),op2=crypto.randomUUID(),booking2=crypto.randomUUID();
+await db.query("insert into auth.users(id,email,email_confirmed_at) values($1,'customer2@example.test',now()),($2,'operator2@example.test',now())",[customer2,op2]);
+await db.query("insert into crm_customers values('customer-two',$1)",[{email:'customer2@example.test',name:'Second sample customer'}]);
+await db.exec("insert into operators(id,name,status) values('operator-two','Second sample operator','active')");
+await db.query("insert into operator_memberships(operator_id,user_id,role,status) values('operator-two',$1,'owner','active')",[op2]);
+await as(staff,()=>db.query('select publish_customer_trip($1,$2,0)',['customer-two',{request_id:crypto.randomUUID(),title:'Second isolated trip',travelers:1,start_date:'2026-12-01',end_date:'2026-12-02',status:'Planning',bookings:[{id:booking2,name:'Second activity',date:'2026-12-01',status:'Requested',operator_id:'operator-two'}]}]));
+for(const [id,own,other] of [[customer,bookingId,booking2],[customer2,booking2,bookingId],[op,bookingId,booking2],[op2,booking2,bookingId]]){
+  const rows=(await as(id,()=>db.query('select id from bookings'))).rows;
+  assert.ok(rows.some(r=>r.id===own));assert.ok(!rows.some(r=>r.id===other));
+}
+await assert.rejects(as(op,()=>db.query("select respond_operator_booking($1,'accepted')",[booking2])),/access denied/);
+await assert.rejects(as(op2,()=>db.query("select respond_operator_booking($1,'accepted')",[bookingId])),/access denied/);
+await as(op2,()=>db.query("select respond_operator_booking($1,'declined')",[booking2]));
+assert.equal((await as(customer2,()=>db.query('select status from bookings where id=$1',[booking2]))).rows[0].status,'Declined');
+assert.equal((await as(customer,()=>db.query('select status from bookings where id=$1',[bookingId]))).rows[0].status,'Confirmed');
+console.log('PASS: two populated customers and two populated operators; bidirectional isolation, forbidden responses, and decline propagation without changing the other booking.');
 await db.close();

@@ -3,6 +3,7 @@ import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "./supa
 import Login from "./Login.jsx";
 import Portal from "./Portal.jsx";
 import { Logo } from "../components/Logo.jsx";
+import {saveDraft} from './session-draft.js';
 
 const DEMO_SESSION_KEY = "ticowild_portal_session";
 
@@ -55,6 +56,7 @@ export default function Root() {
   const signOut = async () => {
     try{
       if(hasSupabase){const {error}=await withTimeout(supabase.auth.signOut({scope:"local"}),10000,"Sign out");if(error)throw error;}
+      if(typeof sessionStorage!=='undefined')saveDraft(sessionStorage,session?.user?.id||session?.user?.email||session?.email,'');
       localStorage.removeItem(DEMO_SESSION_KEY);setSession(null);
     }catch(error){setError(error.message||"Sign out failed. Please try again.");}
   };
@@ -63,7 +65,7 @@ export default function Root() {
   if (error) return <PortalStatus title="Customer portal needs attention" message={error} action="Try again" onAction={() => window.location.reload()} />;
   if (!session) return <Login onSignIn={signIn} onPasswordSignIn={signInWithPassword} />;
   const email = session.user?.email || session.email || "";
-  return <Portal key={session.user?.id||email} email={email} onSignOut={signOut} />;
+  return <Portal key={session.user?.id||email} accountId={session.user?.id||email} email={email} onSignOut={signOut} />;
 }
 
 function PortalStatus({ title, message = "Securely connecting to TicoWild.", action, onAction }) {

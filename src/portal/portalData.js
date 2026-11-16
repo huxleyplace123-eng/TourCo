@@ -5,6 +5,7 @@
 import { hasSupabase, supabase, withTimeout, friendlyBackendError } from "./supabase.js";
 import { cdnImage } from "../images.js";
 import { profilePayload } from './profile-model.js';
+import {deliverCustomerMessage} from './message-delivery.js';
 
 const DEMO_MSG_KEY = "ticowild_portal_demo_messages";
 const DEMO_PROFILE_KEY = "ticowild_portal_demo_profile";
@@ -140,9 +141,11 @@ export async function sendMessage(text) {
     return all;
   }
   const user = await currentUser();
-  const { error } = await withTimeout(supabase.from("messages").insert({ user_id: user.id, text, from: "customer" }), 12000, "Message delivery");
-  if (error) throw friendlyBackendError(error, "Your message was not sent.");
-  return getMessages();
+  return deliverCustomerMessage({userId:user.id,text,
+    storage:typeof sessionStorage==='undefined'?undefined:sessionStorage,
+    insert:async row=>{const {error}=await withTimeout(supabase.from('messages').insert(row),12000,'Message delivery');if(error)throw friendlyBackendError(error,'Message delivery could not be confirmed. Retry safely.');},
+    find:async id=>{const {data,error}=await withTimeout(supabase.from('messages').select('*').eq('id',id).eq('user_id',user.id).maybeSingle(),12000,'Delivery confirmation');if(error)throw error;return data;},
+    list:getMessages});
 }
 
 // ── Profile ───────────────────────────────────────────────────────────────────

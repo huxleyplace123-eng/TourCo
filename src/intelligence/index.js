@@ -8,6 +8,7 @@
 import { activities } from "../data.js";
 import { activityInsights, vibeScores, monthIndexNow, MONTHS, climateFor, SEASONS, driveHours } from "./context.js";
 import { planTrip } from "./planner.js";
+import { planRoute } from './route-plan.js';
 
 // TOOL: recommend activities for a traveler profile (who/vibe/budget/month).
 export function recommendActivities(profile = {}) {
@@ -77,7 +78,7 @@ export function buildMyCostaRica(profile = {}) {
     && (!profile.youngKids || (r.a.family && r.a.level !== 'High')));
   const ranked = (routeRegions.length ? allRanked.filter((r) => routeRegions.includes(r.a.region)) : allRanked).slice(0, want);
   const reasonById = Object.fromEntries(ranked.map((r) => [r.a.id, r.reasons]));
-  const plan = planTrip(ranked.map((r) => r.a), {
+  const planOptions = {
     monthIdx: Number.isInteger(profile.monthIdx) ? profile.monthIdx : undefined,
     maxPerDay: perDay,
     pax: profile.pax || 2,
@@ -86,7 +87,11 @@ export function buildMyCostaRica(profile = {}) {
     maxDays: days,
     regionOrder: routeRegions,
     strictRegions: true,
-  });
+    avoidLongDrives: !!profile.avoidLongDrives,
+  };
+  const plan = profile.stops?.length
+    ? planRoute(allRanked.map(r=>r.a),profile.stops,planOptions)
+    : planTrip(ranked.map(r=>r.a),planOptions);
   const coveredRegions = new Set(plan.days.flatMap((day) => day.region));
   const uncoveredRegions = routeRegions.filter((region) => !coveredRegions.has(region));
   if (uncoveredRegions.length) plan.warnings.push(`No matching activity suggestions were included for ${uncoveredRegions.join(" and ")}. Ask the team to review these stops; no availability is implied.`);

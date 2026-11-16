@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {deliverCustomerMessage} from '../src/portal/message-delivery.js';
+const rows=new Map(),cache=new Map();let inserts=0,failList=true;
+const storage={getItem:k=>cache.get(k),setItem:(k,v)=>cache.set(k,v),removeItem:k=>cache.delete(k)};
+const args={userId:'one',text:'Please confirm pickup',storage,insert:async row=>{if(rows.has(row.id))throw Error('duplicate');rows.set(row.id,row);inserts++;throw Error('response lost');},find:async id=>rows.get(id),list:async()=>{if(failList)throw Error('offline');return [...rows.values()];}};
+await assert.rejects(deliverCustomerMessage(args),/offline/);failList=false;
+await deliverCustomerMessage(args);assert.equal(inserts,1);assert.equal(cache.size,0);
+await deliverCustomerMessage({...args,userId:'two'});assert.equal(inserts,2);
+await assert.rejects(deliverCustomerMessage({...args,userId:'three',insert:async()=>{throw Error('denied');},find:async()=>({user_id:'one',from:'customer',text:args.text})}),/denied/);
+await deliverCustomerMessage({...args,userId:'four',storage:{getItem(){throw Error('blocked')},setItem(){throw Error('blocked')},removeItem(){throw Error('blocked')}}});
+console.log('PASS: committed-but-lost response, safe retry, failed refresh recovery, account isolation and storage-disabled delivery.');

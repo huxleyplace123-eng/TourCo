@@ -1,4 +1,6 @@
 import NotificationCenter from '../notifications/NotificationCenter.jsx';
+import RequestTracker from './RequestTracker.jsx';
+import {readDraft,saveDraft} from './session-draft.js';
 import CustomerJourney, {NextAdventureCard, TripSharing} from './CustomerJourney.jsx';
 import {useSavedList} from './useSavedList.js';
 import TravelerNames from './TravelerNames.jsx';
@@ -323,9 +325,10 @@ export function PortalStyles(){return (<style>{`
         @media(prefers-reduced-motion:reduce){.portal-skeleton-block:after,.portal-skeleton{animation:none!important}.pt-tab-icon{transition:none!important}}
       `}</style>);}
 
-export default function Portal({ email, onSignOut }) {
+export default function Portal({ email, accountId=email, onSignOut }) {
   const [tab, setTab] = useState("trip");
-  const [messageDraft,setMessageDraft] = useState('');
+  const [messageDraft,setMessageDraft] = useState(()=>typeof sessionStorage==='undefined'?'':readDraft(sessionStorage,accountId));
+  useEffect(()=>{if(typeof sessionStorage!=='undefined')saveDraft(sessionStorage,accountId,messageDraft);},[accountId,messageDraft]);
   const openMessages = text => {if(typeof text === 'string')setMessageDraft(text);setTab('messages');};
   const [trip, setTrip] = useState(undefined);
   const [trips, setTrips] = useState([]);
@@ -729,6 +732,7 @@ export function MessagesTab({ trip, initialDraft='', onSent, onDraftChange }) {
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <div className="consumer-section-label">Your trip support</div>
+      <RequestTracker messages={messages}/>
       <section className="pt-card concierge-shell">
         <div className="concierge-head">
           <button type="button" onClick={refreshMessages} disabled={busy}>Refresh messages</button>

@@ -1,5 +1,59 @@
 # TicoWild operations and recovery
 
+## November 15 synthetic reliability expansion
+
+Customer requests now show progress in Messages, with a responsible team member
+and timestamp. Staff send explicit status updates from the CRM customer thread;
+updates are normal authorized team messages and use the existing notification
+pipeline. Only team-authored updates for the same customer's request can change
+the displayed status. Resolved does not change the booking. Unlinked customer
+threads have the same controls. No schema migration is required.
+
+Customer message delivery now reuses a stable per-account request ID after an
+ambiguous failure and verifies the existing row before treating a retry as sent.
+Unsent concierge drafts survive refresh in the same browser tab, are scoped to
+the signed-in account, and clear after successful sign-out. Browser storage may
+be disabled; the app still works, but persistence is unavailable in that case.
+
+The planner reserves arrival/transfer days, caps activity days at each stop's
+nights, leaves departure open, rejects date/night mismatches, and sends these
+planning notes to staff. Unspecified routes with the short-drive preference use
+one suggested region. These are planning constraints, not verified road times.
+
+Run `node scripts/run-regression.mjs` from the repository root. Database tests
+need `@electric-sql/pglite` installed or PGLITE_MODULE_PATH pointing to its module.
+Results are written to ignored artifacts/regression-results.json. The connected
+lifecycle includes two populated customers and two populated operators with
+bidirectional access checks and independent accept/decline outcomes. This is
+isolated database-role evidence, not four live browser sign-ins.
+
+### External monitoring and backup activation still required
+
+`node scripts/operations-monitor.mjs` performs a read-only public availability
+check. Its tested alert function accepts a private Resend key, configured
+recipient and stable incident ID from an external runner. The runner must poll
+notification health through a separately authorized service, persist incident
+state, suppress repeated alerts, report its own missed heartbeat and be scheduled
+outside the app's host. No schedule or alert delivery is activated by this file.
+Keep the selected alert recipient and credentials in private configuration.
+
+`scripts/protected-backup.mjs` prepares a portable AES-256-GCM protected database
+export. Configure PGSERVICE with a read-only export role and PostgreSQL password
+file, certificate-verified TLS, BACKUP_ENCRYPTION_KEY (64 hexadecimal characters)
+from a separate secret store, and BACKUP_OUTPUT (new absolute private path).
+PG_DUMP_BINARY can point to a compatible installed PostgreSQL client. It writes
+only authenticated ciphertext, refuses overwrite, verifies encryption round-trip
+in memory, and limits exports to 256 MiB. It does not upload, schedule, recover
+Storage object contents or recreate hosted authentication/functions/secrets.
+
+Before enabling backups, select private off-site storage, retention and a durable
+secret store independent of the export location. Restore a fresh export into a
+separate non-production service with outbound workers disabled; verify records,
+roles, storage, auth configuration and the lifecycle. Record recovery time and
+data-loss window. Synthetic encryption tests do not establish production backup
+or recovery readiness. No credentials, external storage or scheduler were
+provisioned in this pass.
+
 ## Verified architecture
 
 Cloudflare Pages serves the Vite build from main. Supabase owns authentication, CRM/portal records and row-level access rules. The portal-email Edge Function dispatches queued transactional email through Resend. Browser mailbox access and direct Microsoft Graph sending are separate paths; Graph restrictions must not be confused with transactional-provider delivery.

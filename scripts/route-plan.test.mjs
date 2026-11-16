@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {buildMyCostaRica} from '../src/intelligence/index.js';
+const profile={days:5,pax:2,budget:'any',regions:['Uvita','Manuel Antonio'],stops:[{region:'Uvita',nights:2},{region:'Manuel Antonio',nights:3}]};
+const {plan}=buildMyCostaRica(profile);
+assert.ok(plan.days.length);assert.ok(plan.days.every(d=>d.n!==1&&d.n!==3&&d.n<=5));
+assert.ok(plan.days.filter(d=>d.n===2).every(d=>d.region.every(r=>r==='Uvita')));
+assert.ok(plan.days.filter(d=>d.n>3).every(d=>d.region.every(r=>r==='Manuel Antonio')));
+assert.equal(plan.totals.cost,plan.days.flatMap(d=>d.activities).reduce((sum,a)=>sum+a.price*2,0));
+assert.match(plan.warnings.join(' '),/Departure day is left open/);
+const short=buildMyCostaRica({...profile,days:1,stops:[{region:'Uvita',nights:1}]}).plan;
+assert.equal(short.days.length,0);assert.equal(short.totals.cost,0);
+const unmatched=buildMyCostaRica({...profile,regions:['La Fortuna'],stops:[{region:'La Fortuna',nights:5}]}).plan;
+assert.equal(unmatched.days.length,0);assert.ok(unmatched.warnings.some(w=>w.includes('No matching')));
+console.log('PASS: per-stop night limits, arrival/transfer days, departure guidance, short trips, empty inventory and totals.');
