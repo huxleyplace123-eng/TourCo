@@ -82,7 +82,7 @@ assert.match(customerPortal, /Open turn-by-turn directions/, "customer booking d
 assert.match(customerPortal, /Private operator CRM information stays private/, "customer booking details must explain the privacy boundary");
 assert.match(customerPortal, /Preview a sample trip/, "empty customer accounts need a safe sample-trip preview");
 assert.match(customerPortal, /Nothing has been added to your account/, "sample trips must be clearly separated from real customer data");
-assert.match(customerPortal, /Upcoming itinerary/, "the customer portal needs a clear itinerary-first summary");
+assert.match(customerPortal, /<h2>\{presentation.itineraryHeading\}<\/h2>/, "the customer portal needs an itinerary summary that respects trip status");
 assert.match(customerPortal, /Meeting details/, "the next activity needs a direct meeting-details action");
 assert.match(customerPortal, /className="simple-trip-summary"/, "the trip home needs a compact, readable trip summary");
 assert.match(customerPortal, /Change password/, "customer accounts need a visible password security control");

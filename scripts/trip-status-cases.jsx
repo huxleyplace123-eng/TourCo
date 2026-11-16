@@ -11,6 +11,7 @@ export function run() {
   for(const misleading of ['Your upcoming trip','days to go','You are ready to go','Trip passes','Meeting details']) assert.ok(!html.includes(misleading),misleading);
   const empty=renderToStaticMarkup(<TripTab trip={{...trip,status:'Planning',days:[]}}/>);
   assert.match(empty,/No activities scheduled/);
+  assert.match(empty,/Upcoming itinerary/);
   assert.ok(!empty.includes('confirming the remaining'));
   const mixed=tripPresentation({...trip,status:'Planning'},[{status:'Confirmed'},{status:'Cancelled'},{status:'Declined'},{status:'Requested'}],3);
   assert.equal(mixed.status,'1 of 2 experiences confirmed');assert.equal(mixed.progress,50);
