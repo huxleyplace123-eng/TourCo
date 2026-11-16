@@ -3,8 +3,11 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import assert from 'node:assert/strict';
 import {TripTab} from '../src/portal/Portal.jsx';
 import {tripPresentation} from '../src/portal/trip-status.js';
+import {hasMeetingPoint} from '../src/admin/OperatorMeetingMap.jsx';
 
 export function run() {
+  for(const meetingPoint of [{lat:'',lng:''},{lat:null,lng:null},{lat:91,lng:0}]) assert.equal(hasMeetingPoint({meetingPoint}),false);
+  assert.equal(hasMeetingPoint({meetingPoint:{lat:0,lng:0}}),true);
   const trip={title:'Test trip',region:'Costa Rica',start:'2099-12-15',end:'2099-12-19',travelers:2,status:'Cancelled',days:[{date:'2099-12-15',items:[{id:'b1',name:'Test hike',status:'Confirmed'}]}]};
   const html=renderToStaticMarkup(<TripTab trip={trip}/>);
   assert.match(html,/Trip cancelled/);

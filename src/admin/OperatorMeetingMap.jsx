@@ -4,13 +4,14 @@ import "leaflet/dist/leaflet.css";
 import { Crosshair, ExternalLink, MapPin, Navigation, UsersRound, X } from "lucide-react";
 import { c, FONT, radius, shadow } from "../theme.js";
 import "./operator-map.css";
+import { validPoint } from '../portal/meeting-point.js';
 
 const COSTA_RICA = [9.7489, -83.7534];
 const DEFAULT_ZOOM = 7;
 
 export const hasMeetingPoint = (operator) => {
   const point = operator?.meetingPoint;
-  return Number.isFinite(Number(point?.lat)) && Number.isFinite(Number(point?.lng));
+  return validPoint(point);
 };
 
 const cleanPoint = (point = {}) => ({
@@ -21,12 +22,12 @@ const cleanPoint = (point = {}) => ({
 });
 
 const mapUrl = (point) => {
-  if (!Number.isFinite(Number(point?.lat)) || !Number.isFinite(Number(point?.lng))) return "";
+  if (!validPoint(point)) return "";
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${Number(point.lat)},${Number(point.lng)}`)}`;
 };
 
 function createMap(node, point, zoom = DEFAULT_ZOOM) {
-  const hasPoint = Number.isFinite(Number(point?.lat)) && Number.isFinite(Number(point?.lng));
+  const hasPoint = validPoint(point);
   const map = L.map(node, { zoomControl: false, attributionControl: true }).setView(
     hasPoint ? [Number(point.lat), Number(point.lng)] : COSTA_RICA,
     hasPoint ? 13 : zoom,
@@ -85,7 +86,7 @@ export function MeetingPointPicker({ value, onChange, compact = false }) {
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    const valid = Number.isFinite(Number(point.lat)) && Number.isFinite(Number(point.lng));
+    const valid = validPoint(point);
     if (!valid) {
       if (markerRef.current) markerRef.current.remove();
       markerRef.current = null;
