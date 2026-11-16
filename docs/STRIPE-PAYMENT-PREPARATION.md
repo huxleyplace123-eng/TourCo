@@ -5,6 +5,8 @@ database migration, live UI, Stripe account connection or payment collection has
 
 ## Agreed customer flow
 
+Adam confirmed: the 20% retained by TicoWild is its commission; the operator keeps the remaining 80% collected directly from the customer. This is the normal completed-booking split; cancellation exceptions remain governed by the accepted policy.
+
 For each excursion, collect 20% of the approved total through TicoWild's Stripe
 account. Customer pays the remaining 80% directly to that excursion's operator at
 the excursion. A $500 excursion means $100 online and $400 to the operator.
