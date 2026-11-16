@@ -30,4 +30,7 @@ for(const days of [1,4,7])for(const budget of ['low','mid','any']){
   }
   assert.ok(plan.warnings.every(w=>!w.includes('over your')),'per-person activity budget must not invent a total-trip cap');
 }
+const limited = buildMyCostaRica({who:'family',vibe:'water',budget:'low',days:4,pax:2,youngKids:true,fears:['boats','heights']}).plan;
+assert.ok(limited.days.flatMap(d=>d.activities).every(a=>a.category!=='Private Transportation'),'airport transfers must not pad activity days');
+assert.ok(limited.days.length<4,'show fewer suggestions when compatible experiences run out');
 console.log('PASS: time-slot conflicts, transfer buffers, day-cap totals, exclusions, regional grouping and budget semantics.');

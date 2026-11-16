@@ -71,6 +71,7 @@ export function buildMyCostaRica(profile = {}) {
   const want = days * perDay + 1; // a little extra so the optimizer can choose
   const routeRegions = (profile.regions || []).filter((region) => region && region !== "Not sure yet");
   const allRanked = recommendActivities(profile).filter((r) => r.score > 0
+    && r.a.category !== 'Private Transportation'
     && (profile.budget !== 'low' || r.a.price < 100)
     && (profile.budget !== 'mid' || r.a.price <= 200)
     && (!profile.youngKids || (r.a.family && r.a.level !== 'High')));
