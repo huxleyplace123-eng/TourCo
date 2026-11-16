@@ -12,6 +12,8 @@ export function run() {
   const empty=renderToStaticMarkup(<TripTab trip={{...trip,status:'Planning',days:[]}}/>);
   assert.match(empty,/No activities scheduled/);
   assert.match(empty,/Upcoming itinerary/);
+  assert.match(empty,/Your upcoming trip/);
+  assert.ok(!empty.includes('images.unsplash.com/undefined'));
   assert.ok(!empty.includes('confirming the remaining'));
   const mixed=tripPresentation({...trip,status:'Planning'},[{status:'Confirmed'},{status:'Cancelled'},{status:'Declined'},{status:'Requested'}],3);
   assert.equal(mixed.status,'1 of 2 experiences confirmed');assert.equal(mixed.progress,50);
