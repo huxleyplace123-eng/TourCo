@@ -2,6 +2,7 @@ import NotificationCenter from '../notifications/NotificationCenter.jsx';
 import {useSavedList} from './useSavedList.js';
 import TravelerNames from './TravelerNames.jsx';
 import {tripCalendar} from './calendar.js';
+import {tripPresentation} from './trip-status.js';
 import SavedIdeas from './SavedIdeas.jsx';
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
@@ -568,7 +569,7 @@ function SupportSection({ bookings, onMessage }) {
   </div>;
 }
 
-function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSample, onMessage, onAccount }) {
+export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSample, onMessage, onAccount }) {
   const [voucher, setVoucher] = useState(null);
   const [tripSection, setTripSection] = useState("overview");
   const [itineraryQuery, setItineraryQuery] = useState("");
@@ -579,9 +580,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
   const until = daysUntil(trip.start);
   const heroPhoto = trip.days?.[0]?.items?.[0]?.photo;
   const bookings = trip.days.flatMap((day) => day.items.map((item) => ({ ...item, date: day.date })));
-  const confirmedCount = bookings.filter((item) => item.status === "Confirmed").length;
-  const allExperiencesReady = bookings.length > 0 && confirmedCount === bookings.length;
-  const nextUp = bookings.find((item) => item.status === "Confirmed") || bookings[0];
+  const presentation = tripPresentation(trip, bookings, until);
   const concierge = trip.concierge || { name: "TicoWild Concierge Team", role: "Local trip coordination", availability: "Available in your private trip conversation" };
   const conciergeInitials = concierge.name === "TicoWild Concierge Team" ? "TW" : concierge.name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
   const normalizedQuery = itineraryQuery.trim().toLocaleLowerCase();
@@ -605,7 +604,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
       <section className="simple-trip-summary" aria-label="Trip summary">
         <img className="simple-trip-photo" src={activityPhoto(heroPhoto, 600)} alt="" />
         <div className="simple-trip-copy">
-          <div className="simple-eyebrow"><Sparkles size={12}/> Your upcoming trip</div>
+          <div className="simple-eyebrow"><Sparkles size={12}/> {presentation.heading}</div>
           <h1>{trip.title}</h1>
           <div className="simple-trip-meta">
             <span><MapPin size={12}/>{trip.region}</span>
@@ -613,31 +612,31 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
             <span><Users size={12}/>{trip.travelers} travelers</span>
           </div>
         </div>
-        <div className="simple-countdown"><b>{until > 0 ? until : until === 0 ? "Today" : "Live"}</b><span>{until > 0 ? "days to go" : "trip status"}</span></div>
+        <div className="simple-countdown"><b>{presentation.countdown}</b><span>{presentation.countdownLabel}</span></div>
       </section>
 
       <div className="premium-journey-grid">
         <section className="premium-itinerary">
-          <div className="premium-itinerary-head"><div><span>Your journey</span><h2>Upcoming itinerary</h2><p>Everything scheduled for your Costa Rica trip.</p></div><button onClick={() => { setTripSection("itinerary"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>View full itinerary <ChevronRight size={13}/></button></div>
+          <div className="premium-itinerary-head"><div><span>Your journey</span><h2>{presentation.itineraryHeading}</h2><p>Activity records for your Costa Rica trip.</p></div><button onClick={() => { setTripSection("itinerary"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>View full itinerary <ChevronRight size={13}/></button></div>
           <div className="premium-itinerary-list">
             {bookings.map((item) => {
-              const ready = item.status === "Confirmed";
+              const ready = !presentation.cancelled && item.status === "Confirmed";
               return <div key={item.id} className="premium-activity-row" data-ready={ready} onClick={() => ready && setVoucher(item)}>
                 <img src={activityPhoto(item.photo, 400)} alt="" />
                 <div className="premium-activity-copy"><span className="premium-activity-date">{fmt(item.date)} · {item.time}</span><h3>{item.name}</h3><p><span><MapPin size={11}/>{item.meet}</span><span>{item.operator}</span></p></div>
-                <div className="premium-activity-state"><span data-pending={!ready}>{ready ? <CheckCircle2 size={11}/> : <Hourglass size={11}/>} {ready ? "Ready" : "Confirming"}</span>{ready && <span className="premium-detail-link">Meeting details <ChevronRight size={12}/></span>}</div>
+                <div className="premium-activity-state"><span data-pending={!ready}>{ready ? <CheckCircle2 size={11}/> : <Hourglass size={11}/>} {presentation.cancelled ? 'Cancelled' : ready ? "Ready" : item.status === 'Requested' ? "Confirming" : item.status}</span>{ready && <span className="premium-detail-link">Meeting details <ChevronRight size={12}/></span>}</div>
               </div>;
             })}
           </div>
         </section>
         <aside className="premium-sidebar">
           <section className="simple-status-card">
-            <div className="simple-status-row"><span className="simple-status-icon"><Check size={18}/></span><span className="simple-status-copy"><span>Trip status</span><b>{allExperiencesReady ? "Everything is confirmed" : `${confirmedCount} of ${bookings.length} experiences confirmed`}</b></span></div>
-            <div className="simple-progress"><span style={{width:`${bookings.length ? Math.round((confirmedCount / bookings.length) * 100) : 0}%`}} /></div>
-            <div className="simple-status-caption">{allExperiencesReady ? "You are ready to go." : "TicoWild is confirming the remaining activity."}</div>
+            <div className="simple-status-row"><span className="simple-status-icon"><Check size={18}/></span><span className="simple-status-copy"><span>Trip status</span><b>{presentation.status}</b></span></div>
+            <div className="simple-progress"><span style={{width:`${presentation.progress}%`}} /></div>
+            <div className="simple-status-caption">{presentation.caption}</div>
             <button className="simple-concierge-button" onClick={onMessage}><span className="simple-concierge-avatar">{conciergeInitials}</span><span><b>Message {concierge.name}</b><small>Your Costa Rica concierge</small></span><ChevronRight size={15}/></button>
           </section>
-          <TripCommandCenter compact trip={trip} bookings={bookings} onVoucher={setVoucher} />
+          {!presentation.cancelled && <TripCommandCenter compact trip={trip} bookings={bookings} onVoucher={setVoucher} />}
         </aside>
       </div>
       </div>}
@@ -658,7 +657,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
             <div className="guest-day" key={day.date}>
               <div className="guest-day-date" style={{ fontWeight: 800, fontSize: 13.5, margin: "4px 2px 8px" }}>{fmt(day.date)}</div>
               {day.items.map((it) => {
-                const confirmed = it.status === "Confirmed";
+                const confirmed = !presentation.cancelled && it.status === "Confirmed";
                 return (
                   <div key={it.id} className="pt-card guest-booking-card" data-clickable={confirmed} onClick={() => confirmed && setVoucher({ ...it, date: day.date })}
                     style={{ overflow: "hidden", marginBottom: 10, cursor: confirmed ? "pointer" : "default" }}>
@@ -670,7 +669,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
                           <div style={{ color: "#fff", fontWeight: 800, fontSize: 16 }}>{it.name}</div>
                           <div style={{ color: "rgba(255,255,255,.85)", fontSize: 12.5 }}>{it.operator}</div>
                         </div>
-                        <StatusBadge status={it.status} />
+                        <StatusBadge status={presentation.cancelled ? 'Cancelled' : it.status} />
                       </div>
                     </div>
                     <div className="guest-booking-body" style={{ padding: "12px 15px", display: "grid", gap: 8 }}>
@@ -701,7 +700,7 @@ function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSamp
         <ShieldCheck size={15} color="#34D399" /> Vetted local operators · TicoWild coordinates every confirmation
       </div>
 
-      {voucher && <Voucher booking={voucher} trip={trip} onClose={() => setVoucher(null)} />}
+      {voucher && !presentation.cancelled && <Voucher booking={voucher} trip={trip} onClose={() => setVoucher(null)} />}
     </div>
   );
 }
