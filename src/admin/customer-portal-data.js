@@ -1,5 +1,6 @@
 import { supabase, withTimeout } from '../portal/supabase.js';
 import { getTeamAccess } from './applications-data.js';
+import {deliverCustomerMessage} from '../portal/message-delivery.js';
 export async function requirePortalTeam() {
   const access=await getTeamAccess();
   if (!access.member) throw new Error('Sign in with an authorized TicoWild team account to manage customer trips and messages.');
@@ -24,6 +25,10 @@ export async function publishPortalTrip(customerId,trip) {
   return result(supabase.rpc('publish_customer_trip',{customer_id:customerId,trip_data:trip,expected_revision:trip.portal_revision||0}),'Publish customer trip');
 }
 export async function replyToCustomer(userId,text) {
-  await requirePortalTeam();text=text.trim();if(!text||text.length>5000)throw new Error('Write 1 to 5,000 characters.');
-  return result(supabase.from('messages').insert({user_id:userId,from:'team',text}).select().single(),'Customer reply');
+  const access=await requirePortalTeam();text=text.trim();if(!text||text.length>5000)throw new Error('Write 1 to 5,000 characters.');
+  return deliverCustomerMessage({userId,text,sender:'team',actorId:access.session.user.id,
+    storage:typeof sessionStorage==='undefined'?undefined:sessionStorage,
+    insert:row=>result(supabase.from('messages').insert(row),'Customer reply'),
+    find:id=>result(supabase.from('messages').select('*').eq('id',id).eq('user_id',userId).maybeSingle(),'Reply confirmation'),
+    list:async()=>true});
 }

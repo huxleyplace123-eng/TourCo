@@ -11,6 +11,10 @@ export async function run(){
  active=true;await act(async()=>refresh.props.onClick());assert.match(JSON.stringify(ui.toJSON()),/Verified QA operator/);
  await act(async()=>globalThis.__partnerTest.watch({user:{id:'other'}}));assert.doesNotMatch(JSON.stringify(ui.toJSON()),/Verified QA operator/);
  await act(async()=>secondResolve({kind:'active',operator:{id:'other-op',name:'Other operator'},portal:{},bookings:[]}));assert.match(JSON.stringify(ui.toJSON()),/Other operator/);
+ await act(async()=>globalThis.__partnerTest.watch(null));assert.doesNotMatch(JSON.stringify(ui.toJSON()),/Other operator/);
+ await act(async()=>globalThis.__partnerTest.watch({user:{id:'other'}}));
+ await act(async()=>globalThis.__partnerTest.watch(null));
+ await act(async()=>secondResolve({kind:'active',operator:{id:'stale-op',name:'Stale private operator'},portal:{},bookings:[]}));assert.doesNotMatch(JSON.stringify(ui.toJSON()),/Stale private operator/);
  await act(async()=>ui.unmount());delete globalThis.__partnerTest;
- console.log('PASS: fresh auth events beat stale initial sessions, pending-review refresh reaches approved portal, and account changes hide previous operator context.');
+ console.log('PASS: auth races, pending-review refresh, account switching, expired session and late private responses after sign-out.');
 }

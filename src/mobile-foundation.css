@@ -1,4 +1,12 @@
 /* Shared phone ergonomics across public, customer, operator and staff apps. */
+/* Keyboard focus must remain visible on desktop as well as phones. Two rings
+   stay visible against both the light customer portal and dark staff surfaces. */
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 3px solid #087f8c !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px #fff !important;
+}
 @media (max-width: 820px) {
   *, *::before, *::after { box-sizing: border-box; }
   input:not([type="checkbox"]):not([type="radio"]), select, textarea {
