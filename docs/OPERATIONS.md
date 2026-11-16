@@ -65,7 +65,7 @@ Follow-up at 00:20 Arizona on November 15: desktop control recovered. The comple
 - Complete a consenting real operator/customer trial after synthetic QA.
 - Booking customer/operator notices, application needs-changes, operator overdue and team follow-up emails were observed in the recipient inboxes on November 14, 2026. The reminder fixture used an aged timestamp and prequeued scoped recipients; the real cron worker dispatched it. Real elapsed 12-hour operation and a consenting operator trial remain distinct from synthetic delivery QA.
 - Assign incident/alert ownership and confirm capacity for expected traffic; conduct an agreed isolated load test before claiming scale readiness.
-- Payments and automatic WhatsApp synchronization remain outside the current enabled scope.
+- Payments and automatic WhatsApp synchronization remain outside the current enabled scope. A separate local payment rehearsal now covers the 20% TicoWild commission, 80% operator balance, email previews and document examples; see `STRIPE-PAYMENT-PREPARATION.md`. It does not enable payments or send emails and is excluded from the production build.
 
 ## November 14 reminder correction and isolated burst
 

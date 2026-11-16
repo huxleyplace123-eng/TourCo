@@ -1,7 +1,8 @@
 # Stripe payment preparation — November 15, 2026
 
-Status: design and isolated calculation helpers only. No checkout endpoint, webhook,
-database migration, live UI, Stripe account connection or payment collection has been enabled.
+Status: an interactive, isolated payment rehearsal plus calculation helpers and an
+implementation plan are prepared. No production checkout endpoint, webhook,
+database migration, live payment UI, Stripe connection or payment collection is enabled.
 
 ## Agreed customer flow
 
@@ -206,3 +207,61 @@ and pass. Preparation is saved locally; no payment UI or backend has been deploy
 The currently tested booking/messaging journey must not be described as a tested
 payment journey. An accountant/business owner must confirm billing entity, tax,
 invoice treatment and refund policy; Stripe connection is also still required.
+
+## Interactive rehearsal implemented
+
+Run `node node_modules/vite/bin/vite.js --config vite.payment-rehearsal.config.js`,
+then open `http://127.0.0.1:5181/payment-rehearsal/`. This uses a separate entry/build
+and is excluded from the production site's build. It contains no API requests to
+Stripe, Supabase or the email provider. Sample data persists in one browser only.
+Role selectors are demonstrations, not authentication or authorization boundaries.
+
+The five views are Customer, CRM, Operator, Emails and Readiness. Start in CRM to
+approve a sample price, use Operator to accept, then enter the Customer sample,
+accept its illustrative terms and simulate checkout. A paid event creates a
+receipt and one confirmation-email outbox record. The Emails view previews the
+message and exercises failed, provider-accepted and delivered states. These are
+all simulations; no inbox delivery is established by this rehearsal.
+
+The customer can reopen their history, view the full booking statement or separate
+sample invoice/receipt and use browser Print/Save PDF. The invoice labels the
+commission as included in the total and preserves the original receipt amount.
+Two excursions demonstrate separate operator balances. Operators can record
+partial collections, cannot exceed the balance, and cannot make a completion
+action silently mark the balance paid. Staff can cancel, simulate refunds and
+disputes, review financial exceptions and inspect an audit trail.
+
+On November 15 the 23 automated workflow scenario groups passed, as did the
+document-rendering checks, existing deposit checks, existing email-worker checks
+and separate rehearsal build. Browser interactions verified approval, operator
+acceptance, prerequisite blocking, processing, paid, email failure/retry/delivery,
+receipt display, reload/re-entry persistence, partial operator collection,
+overcollection blocking, completion, a second operator, decline/retry and
+cancellation/refund. The 390-pixel customer/receipt views had no horizontal overflow.
+Final refund-warning fixes are covered by automated tests; the earlier browser
+cancellation run preceded those fixes. No real authentication, provider callback,
+bank movement, tax invoice or email delivery was exercised by this sample.
+
+Rehearsal entry commands and tests:
+
+```text
+node scripts/payment-rehearsal.test.mjs
+node scripts/payment-document.test.mjs
+node scripts/deposit-model.test.mjs
+node scripts/transactional-email-worker.test.mjs
+node node_modules/vite/bin/vite.js build --config vite.payment-rehearsal.config.js
+node scripts/export-payment-rehearsal.mjs <output-html-path>
+```
+
+The portable export embeds its assets and includes a separate plain-text sample
+confirmation email. Browser automation permits HTTP(S) only, so the exported
+file itself was not opened through browser automation; the same application was
+exercised on the loopback development server. Actual PDF printing remains a
+browser/user action; the printable document view was rendered and inspected.
+
+Additional planned production work remains outside this sample: signed provider
+webhooks, transactional ledger/outbox persistence, real portal wiring, live login
+recovery, tax/invoice setup, availability/price revisions, reminders and waiver
+gates, refund approvals/adjustments, dispute resolution, reconciliation exports,
+bank payouts and monitoring. The existing booking/messaging production tests
+are separate evidence and must not be presented as payment integration tests.
