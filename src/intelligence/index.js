@@ -14,7 +14,13 @@ export function recommendActivities(profile = {}) {
   const hasMonth = Number.isInteger(profile.monthIdx);
   const monthIdx = hasMonth ? profile.monthIdx : null;
   const selectedRegions = (profile.regions || []).filter((region) => region && region !== "Not sure yet");
-  const scored = activities.map((a) => {
+  const scored = activities.filter((a) => {
+    const category = a.category || '';
+    if (profile.fears?.includes('water') && /Fishing|Catamaran|Snorkel|Surf|Whale|Rafting/i.test(category)) return false;
+    if (profile.fears?.includes('heights') && /Paragl|Zip/i.test(category)) return false;
+    if (profile.fears?.includes('boats') && /Fishing|Catamaran|Whale|Snorkel/i.test(category)) return false;
+    return true;
+  }).map((a) => {
     let s = a.rating || 0;
     const reasons = [];
     if (profile.who === "family" && a.family) { s += 3; reasons.push("listed for families"); }
@@ -74,18 +80,16 @@ export function buildMyCostaRica(profile = {}) {
     monthIdx: Number.isInteger(profile.monthIdx) ? profile.monthIdx : undefined,
     maxPerDay: perDay,
     pax: profile.pax || 2,
-    budget: profile.budget === "low" ? days * 240 : profile.budget === "high" ? Infinity : days * 400,
+    // The form asks for a per-person activity price, not a total trip budget.
+    budget: Infinity,
+    maxDays: days,
     regionOrder: routeRegions,
-    strictRegions: routeRegions.length > 1,
+    strictRegions: true,
   });
-  // trim to the requested number of days
-  plan.days = plan.days.slice(0, days);
-  plan.reasoning = plan.reasoning.slice(0, days);
-  plan.totals.days = plan.days.length;
-  plan.totals.cost = plan.days.reduce((s, d) => s + d.cost, 0);
   const coveredRegions = new Set(plan.days.flatMap((day) => day.region));
   const uncoveredRegions = routeRegions.filter((region) => !coveredRegions.has(region));
-  if (uncoveredRegions.length) plan.warnings.push(`Rico is still curating approved experiences for ${uncoveredRegions.join(" and ")}; these stops remain in your route without placeholder tours.`);
+  if (uncoveredRegions.length) plan.warnings.push(`No matching activity suggestions were included for ${uncoveredRegions.join(" and ")}. Ask the team to review these stops; no availability is implied.`);
+  if (profile.youngKids) plan.warnings.push('Share children’s ages with the team. Provider age limits, supervision and suitability still need confirmation.');
   return { plan, reasonById, brief: Number.isInteger(profile.monthIdx) ? monthBriefing(profile.monthIdx) : null, route: profile.stops || [], uncoveredRegions };
 }
 

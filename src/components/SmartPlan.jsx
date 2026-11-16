@@ -14,21 +14,24 @@ export function SmartPlan({ chosen, pax = 2, budget, monthIdx, planOverride = nu
   const ids = chosen.map((x) => (x.a ? x.a.id : x.id));
   const computedPlan = useMemo(() => buildPlan(ids, { pax, budget, monthIdx, maxPerDay: 2 }), [ids.join(","), pax, budget, monthIdx]);
   const plan = planOverride || computedPlan;
+  if (!plan.days.length) return <p style={{color:c.stone,lineHeight:1.6}}>We don’t have matching activity suggestions for these choices yet. Send your preferences below so the team can help; no tour or availability has been confirmed.</p>;
 
   return (
     <div>
       {/* engine header */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 7, ...glass, color: c.teal, padding: "7px 13px", borderRadius: 999, fontWeight: 800, fontSize: 12.5 }}>
-          <Brain size={14} /> Sequenced by TicoWild
+          <Brain size={14} /> Suggested activity plan
         </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.stone, fontSize: 12.5, fontWeight: 600 }}>
-          <Route size={13} />{plan.totals.days} {plan.totals.days === 1 ? "day" : "days"} · {plan.totals.drive ? `${plan.totals.drive}h estimated drive` : "no between-activity transfer"}
+          <Route size={13} />{plan.totals.days} {plan.totals.days === 1 ? "day" : "days"} · Transfers to be confirmed
         </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: c.stone, fontSize: 12.5, fontWeight: 600 }}>
-          <DollarSign size={13} />{money(plan.totals.cost)} for {pax}
+          <DollarSign size={13} />Illustrative activity total: {money(plan.totals.cost)} USD for {pax}
         </span>
       </div>
+
+      <p style={{color:c.stone,fontSize:13,lineHeight:1.55,margin:'0 0 18px'}}>Suggested times are not departure times. Prices are planning examples, not a final quote; the team must confirm taxes, transport, inclusions and any child or group rates before you pay.</p>
 
       {/* warnings / smart nudges */}
       {plan.warnings.length > 0 && (
@@ -79,10 +82,10 @@ export function SmartPlan({ chosen, pax = 2, budget, monthIdx, planOverride = nu
                         </div>
                         <div style={{ flex: 1, minWidth: 0, padding: "8px 12px 8px 0" }}>
                           <div style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 800, color: c.gold, textTransform: "uppercase", letterSpacing: 0.5 }}>
-                            <TIcon size={12} />{TIME_WORD[time]}
+                            <TIcon size={12} />Suggested {TIME_WORD[time]}
                           </div>
                           <div style={{ color: "#fff", fontWeight: 800, fontSize: 14.5, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.title}</div>
-                          <div style={{ color: c.stone, fontSize: 12.5 }}>{a.duration} · {money(a.price)}</div>
+                          <div style={{ color: c.stone, fontSize: 12.5 }}>{a.duration} · {money(a.price)} USD / person (example)</div>
                         </div>
                       </div>
                     );

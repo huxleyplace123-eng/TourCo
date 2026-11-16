@@ -27,9 +27,9 @@ const HOME_FAMILY_IMAGE = "/images/tico-wild-family-coast-v1.jpg";
 const HOME_ARTICLES = BLOG_POSTS.slice(0, 3);
 
 const PROMISES = [
-  { icon: MapPin, step: "01", title: "Share your route", body: "Add your destinations, dates and who is traveling." },
-  { icon: Users, step: "02", title: "We match the local fit", body: "TicoWild organizes experiences around your group, pace and travel time." },
-  { icon: ShieldCheck, step: "03", title: "The provider confirms", body: "We check current timing, availability, requirements and final price before payment." },
+  { icon: MapPin, step: "01", title: "Tell us about your trip", body: "Choose your destinations, dates, group and interests. Still deciding? You can start with an open route." },
+  { icon: Users, step: "02", title: "Explore your starting plan", body: "See activity ideas grouped by area and suggested time of day. Review the plan before sending it to our team." },
+  { icon: ShieldCheck, step: "03", title: "Review the checked options", body: "Our team checks availability, pickup details, requirements and prices with providers before you decide to book." },
 ];
 
 export function Home({ go, viewActivity, viewBlogPost, browseActivities }) {

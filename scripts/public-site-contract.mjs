@@ -88,7 +88,7 @@ assert.match(builder, /Destinations and dates/);
 assert.match(builder, /Budget and needs/);
 assert.ok(builder.indexOf("Who is traveling and what do you want to do?") < builder.indexOf("Where are you going and when?"), "the planning flow must ask about travelers and interests before route logistics");
 assert.match(builder, /result\.brief\?\.month/, "the planner must not invent a travel month when dates are blank");
-assert.match(builder, /Want us to confirm this trip\?/, "the completed planner must visibly ask for contact information");
+assert.match(builder, /Have our team check this plan/, "the completed planner must visibly ask for contact information");
 assert.match(builder, /Send my plan to TicoWild/, "the completed planner needs a direct CRM handoff");
 assert.match(builder, /deliverInquiry/, "the completed planner contact form must use the live inquiry pipeline");
 

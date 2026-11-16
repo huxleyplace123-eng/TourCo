@@ -13,9 +13,12 @@ const TIME_RANK = { morning: 0, afternoon: 1, evening: 2 };
 function sameDayFit(a, b, strictRegions = false) {
   if (strictRegions && a.region !== b.region) return -Infinity;
   const ca = activityContext(a), cb = activityContext(b);
+  // Catalog slots are suggestions, not live departure times. Never put two
+  // activities in the same slot and pretend the operator can move one.
+  if (ca.idealTime === cb.idealTime) return -Infinity;
   if (/full day/i.test(a.duration) || /full day/i.test(b.duration) || ca.hours + cb.hours > 8) return -Infinity;
   let s = 0;
-  if (a.region === b.region) s += 3;                 // same place = no transfer
+  if (a.region === b.region) s += 3;                 // same region, pickup still unknown
   else s -= driveHours(a.region, b.region);          // penalize distance
   if (ca.idealTime !== cb.idealTime) s += 1.5;        // different slots pair well
   if (ca.energy + cb.energy > 4) s -= 2;              // two hard things = too much
@@ -29,12 +32,13 @@ export function planTrip(items, opts = {}) {
   const hasMonth = Number.isInteger(opts.monthIdx);
   const monthIdx = hasMonth ? opts.monthIdx : null;
   const maxPerDay = opts.maxPerDay ?? 2;
+  const maxDays = Number.isFinite(opts.maxDays) ? Math.max(1, Math.floor(opts.maxDays)) : Infinity;
   const budget = opts.budget ?? Infinity;
   const pax = opts.pax ?? 2;
   const regionOrder = opts.regionOrder?.length ? opts.regionOrder : REGION_ORDER;
   const strictRegions = opts.strictRegions === true;
 
-  if (acts.length === 0) return { days: [], reasoning: [], totals: { activities: 0, cost: 0, drive: 0 }, warnings: [] };
+  if (acts.length === 0) return { days: [], reasoning: [], totals: { activities: 0, cost: 0, drive: 0, days: 0 }, warnings: [] };
 
   // sort anchors: region-clustered (coast order) then energy desc then rating
   const pool = [...acts].sort((x, y) => {
@@ -51,6 +55,7 @@ export function planTrip(items, opts = {}) {
   const reasoning = [];
 
   for (const anchor of pool) {
+    if (days.length >= maxDays) break;
     if (used.has(anchor.id)) continue;
     used.add(anchor.id);
     const day = [anchor];
@@ -60,6 +65,11 @@ export function planTrip(items, opts = {}) {
       let best = null, bestScore = -Infinity;
       for (const cand of pool) {
         if (used.has(cand.id)) continue;
+        const proposed = [...day, cand].sort((a,b) => TIME_RANK[activityContext(a).idealTime] - TIME_RANK[activityContext(b).idealTime]);
+        const hours = proposed.reduce((sum, a) => sum + activityContext(a).hours, 0);
+        // Reserve a buffer even within one region; addresses are not known yet.
+        const transfer = proposed.slice(1).reduce((sum,a,index) => sum + (a.region === proposed[index].region ? 1 : driveHours(proposed[index].region,a.region) + 1),0);
+        if (hours + transfer > 8) continue;
         // total fit against every item already on the day
         const score = day.reduce((acc, d) => acc + sameDayFit(d, cand, strictRegions), 0);
         if (score > bestScore) { bestScore = score; best = cand; }
@@ -98,7 +108,7 @@ export function planTrip(items, opts = {}) {
   });
 
   const cl = hasMonth ? climateFor(monthIdx) : null;
-  if (cl?.rain > 0.45) warnings.push(`${cl.m}: ${cl.note.toLowerCase()}. Water tours are set for mornings.`);
+  if (cl?.rain > 0.45) warnings.push(`${cl.m}: seasonal rain is possible. Ask the operator to confirm conditions; this is not a live weather forecast.`);
   if (cost > budget && budget !== Infinity) warnings.push(`This plan is ${money(cost - budget)} over your ~${money(budget)} budget — trim a premium day or drop group size.`);
 
   return {
@@ -111,7 +121,7 @@ export function planTrip(items, opts = {}) {
       cost: day.reduce((s, a) => s + a.price * pax, 0),
     })),
     reasoning,
-    totals: { activities: acts.length, cost, drive: Math.round(drive * 10) / 10, days: days.length },
+    totals: { activities: days.reduce((sum, day) => sum + day.length, 0), cost, drive: Math.round(drive * 10) / 10, days: days.length },
     climate: cl,
     warnings,
   };
@@ -124,10 +134,10 @@ function buildWhy(day, times) {
   }
   const sameRegion = new Set(day.map((a) => a.region)).size === 1;
   const pieces = [];
-  if (sameRegion) pieces.push(`Both in ${day[0].region}, so zero transfer time`);
-  else pieces.push(`Paired for a short hop between ${day[0].region} and ${day[day.length - 1].region}`);
-  if (new Set(times).size > 1) pieces.push(`sequenced ${times.join(" → ")} to flow with the day`);
-  return pieces.join(", ") + ".";
+  if (sameRegion) pieces.push(`Grouped in ${day[0].region}`);
+  else pieces.push(`Suggested stops: ${day[0].region} → ${day[day.length - 1].region}`);
+  if (new Set(times).size > 1) pieces.push(`suggested order: ${times.join(" → ")}`);
+  return pieces.join("; ") + ". Pickup locations, transfer time and departures need confirmation.";
 }
 
 function money(n) { return "$" + Math.round(n).toLocaleString(); }

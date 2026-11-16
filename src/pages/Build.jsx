@@ -65,14 +65,12 @@ function buildFlags(form) {
 }
 
 function solIntro(form, result) {
-  const bits = [];
-  if (form.stops.length > 1) bits.push(`I kept your stops in the order you chose: ${form.stops.map((stop) => stop.region).join(" → ")}`);
-  if (result.brief?.inSeason.length) bits.push(`the seasonal pattern favors ${result.brief.inSeason[0].toLowerCase()}, so I built around it`);
-  if (form.avoidLongDrives) bits.push("I kept the driving short and grouped each day by area");
-  if (form.youngKids) bits.push("your young-child requirements still need confirmation with each provider");
-  if (form.fears.length) bits.push(`and I steered clear of ${form.fears.join(" & ")}`);
-  const tail = bits.length ? ` — ${bits.join(", ")}.` : ".";
-  return `I sequenced each day using TicoWild's route and timing model${tail} Enter your contact details below and TicoWild will confirm the current timing, conditions, operator and availability.`;
+  return 'These activity ideas are grouped by area and suggested time of day. They are a starting point, not a reservation or a confirmed schedule. Send the plan to our team to check departure times, pickup locations, travel between stops, suitability and final prices with the providers.';
+}
+
+function routeLabel(stops) {
+  const regions = stops.map(stop => stop.region).filter(region => region && region !== 'Not sure yet');
+  return regions.length ? `Your chosen stops: ${regions.join(' → ')}` : 'Exploring Costa Rica — your route is still open';
 }
 
 const contactInput = { width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,.07)", border: `1.5px solid ${c.line}`, borderRadius: 12, color: "#fff", padding: "12px 13px", fontSize: 14, outline: "none" };
@@ -92,7 +90,7 @@ export function PlanContactCard({ plannerForm, result, deliver=deliverInquiry })
     try { const activities = result.plan.days.flatMap((day) => day.activities);
     const response = await deliver({
       ...contact,
-      notes: [contact.notes, `Group: ${plannerForm.who}; interests: ${plannerForm.vibe}`, `Budget per experience: ${{ low:'under USD 100', mid:'USD 100–200', high:'premium', any:'open' }[plannerForm.budget] || plannerForm.budget}`, `Requirements: ${[plannerForm.youngKids && 'young children; confirm ages and suitability', plannerForm.avoidLongDrives && 'avoid long drives', ...(plannerForm.fears || []).map(item => `avoid ${item}`)].filter(Boolean).join('; ') || 'none specified'}`, ...result.plan.days.map((day,index) => `Day ${index + 1}: ${day.activities.map(activity => activity.title).join('; ')}`)].filter(Boolean).join('\n'),
+      notes: [contact.notes, `Group: ${plannerForm.who}; interests: ${plannerForm.vibe}`, `Activity budget per person, per experience: ${{ low:'under USD 100', mid:'up to USD 200', high:'premium', any:'open' }[plannerForm.budget] || plannerForm.budget}`, `Requirements: ${[plannerForm.youngKids && 'young children; confirm ages and suitability', plannerForm.avoidLongDrives && 'avoid long drives', ...(plannerForm.fears || []).map(item => `avoid ${item}`)].filter(Boolean).join('; ') || 'none specified'}`, ...result.plan.days.map((day,index) => `Day ${index + 1}: ${day.activities.map(activity => activity.title).join('; ')}`)].filter(Boolean).join('\n'),
       intent: "planning",
       destination: plannerForm.stops.map((stop) => stop.region).join(", "),
       arrival: plannerForm.arrival,
@@ -121,14 +119,14 @@ export function PlanContactCard({ plannerForm, result, deliver=deliverInquiry })
     <Reveal>
       <form className="plan-contact-card" onSubmit={submit}>
         <div className="plan-contact-heading">
-          <div><span>Next step</span><h2>Want us to confirm this trip?</h2></div>
-          <p>Add your contact information and this complete plan will go directly into the TicoWild CRM. No payment or obligation.</p>
+          <div><span>Next step</span><h2>Have our team check this plan</h2></div>
+          <p>Send these ideas to our team. We’ll contact you to review your route and requirements, check the providers, and share the available options and final prices. Nothing is booked or charged by sending this request.</p>
         </div>
         <div className="plan-contact-grid">
           <Field label="Name"><input required autoComplete="name" maxLength={120} value={contact.name} onChange={setContactField("name")} style={contactInput} placeholder="Your name" /></Field>
           <Field label="Email"><input required type="email" autoComplete="email" maxLength={320} value={contact.email} onChange={setContactField("email")} style={contactInput} placeholder="you@email.com" /></Field>
           <Field label="Phone / WhatsApp (optional)"><input autoComplete="tel" maxLength={50} value={contact.phone} onChange={setContactField("phone")} style={contactInput} placeholder="Best number to reach you" /></Field>
-          <Field label="Anything else? (optional)"><input maxLength={5000} value={contact.notes} onChange={setContactField("notes")} style={contactInput} placeholder="Hotel, timing or special needs" /></Field>
+          <Field label="Anything else? (optional)"><input maxLength={5000} value={contact.notes} onChange={setContactField("notes")} style={contactInput} placeholder="Hotel, ages of children, timing or special needs" /></Field>
         </div>
         <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}><label>Website<input tabIndex={-1} autoComplete="off" value={contact.website} onChange={setContactField("website")} /></label></div>
         {status === "error" && <p role="alert" className="plan-contact-error">We couldn’t save the request automatically. {fallbackHref?<a href={fallbackHref}>Open a ready-to-send email instead.</a>:"Your details are still here. Please try again."}</p>}
@@ -281,9 +279,9 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
                   <h2>What is your budget and what should we avoid?</h2>
                   <p>Add your budget, driving preference and any activities your group needs to avoid.</p>
                 </div>
-                <Field label="Comfortable budget per experience">
+                <Field label="Activity budget per person (USD, per experience)">
                   <ChipRow single value={form.budget} onToggle={(v) => set("budget", v)} options={[
-                    { v: "low", label: "Under $100" }, { v: "mid", label: "$100–200" }, { v: "high", label: "Treat us 💎" }, { v: "any", label: "Keep it open" },
+                    { v: "low", label: "Under $100" }, { v: "mid", label: "Up to $200" }, { v: "high", label: "Premium options" }, { v: "any", label: "Keep it open" },
                   ]} />
                 </Field>
                 <Field label="Anything the plan should avoid?">
@@ -313,8 +311,8 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
                   <span style={{ width: 44, height: 44, borderRadius: 999, background: grad.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 19, color: c.ink }}>S</span>
                   <div>
-                    <div style={{ color: "#fff", fontWeight: 800, fontSize: 17 }}>Here’s your {result.plan.totals.days}-day activity plan 🌴</div>
-                    <div style={{ color: c.stone, fontSize: 13 }}>Built through {form.stops.map((stop) => stop.region).join(" → ")} · {form.pax} traveler{form.pax !== "1" ? "s" : ""}{result.brief?.month ? ` · ${result.brief.month}` : ""}</div>
+                    <div style={{ color: "#fff", fontWeight: 800, fontSize: 17 }}>{result.plan.totals.days ? `${result.plan.totals.days} suggested activity days for your trip` : 'Let’s find the right activities with you'}</div>
+                    <div style={{ color: c.stone, fontSize: 13 }}>{routeLabel(form.stops)} · {form.pax} traveler{form.pax !== "1" ? "s" : ""}{result.brief?.month ? ` · ${result.brief.month}` : ""}</div>
                   </div>
                 </div>
                 <p style={{ color: "rgba(243,247,255,.85)", fontSize: 15, lineHeight: 1.6, margin: 0 }}>{solIntro(form, result)}</p>
@@ -322,9 +320,9 @@ export function Build({ go, trip, addToTrip, removeFromTrip, initialPlan, consum
               </div>
             </Reveal>
 
-            <PlanContactCard plannerForm={form} result={result} />
-
             <SmartPlan chosen={result.plan.days.flatMap((d) => d.activities)} pax={parseInt(form.pax, 10) || 2} planOverride={result.plan} />
+
+            <PlanContactCard plannerForm={form} result={result} />
 
             <div className="mobile-cta-row" style={{ display: "flex", gap: 10, marginTop: 26, flexWrap: "wrap" }}>
               <Button variant="primary" onClick={addAll}><Plus size={16} />Save all to trip</Button>

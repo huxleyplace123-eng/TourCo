@@ -9,7 +9,7 @@ import { themedSlides } from "../images.js";
 // they're about to get. Real activity names from the catalog.
 const PLAN = [
   { day: "Day 1", region: "Manuel Antonio", items: ["Rainforest zipline", "Sunset catamaran"], mood: "excited" },
-  { day: "Day 2", region: "Uvita", items: ["Whale watching", "Nauyaca waterfalls"], mood: "happy" },
+  { day: "Day 2", region: "Uvita", items: ["Whale watching", "Free afternoon"], mood: "happy" },
   { day: "Day 3", region: "Quepos", items: ["Offshore sport fishing", "Beachfront ceviche"], mood: "proud" },
 ];
 
