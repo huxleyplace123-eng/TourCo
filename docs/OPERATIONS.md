@@ -72,3 +72,34 @@ Follow-up at 00:20 Arizona on November 15: desktop control recovered. The comple
 Apply supabase/booking_reminder_current_request.sql after crm_outbound_email.sql. It preserves composed-mail authorization and rejects a queued overdue reminder unless its event key matches the current booking response timestamp, the booking still requests a response, and the 12-hour deadline has passed. This migration was applied to production and its function definition verified. Reopening a request must never revive the prior reminder.
 
 Run scripts/isolated-burst.test.mjs for bounded isolated reliability coverage: 100 synthetic customers, 1,000 trips, 100 submitted read requests and 20 worker claim requests. The test verifies each customer's ten trips, no duplicate claims, and a 40-message budget with 60 remaining pending. PGlite serializes database work; these numbers do not establish production throughput, concurrent network capacity or a recovery-time objective.
+
+## November 15 customer travel tools
+
+The customer portal now includes a next-confirmed-adventure card (Costa Rica
+time), a readiness checklist, private account-saved personal reminders, a
+downloadable offline HTML trip pack, selective itinerary-copy sharing, structured
+change/weather/alternative requests, itinerary-based Rico answers and private
+post-activity feedback. Documents, traveler details, payments and support have
+explicit section navigation. Prepared requests/feedback open as editable drafts
+in the existing Messages channel; the customer must send them. Draft edits persist
+while switching portal tabs. No database migration or expanded data-access policy
+is required; existing message and own-account preference permissions apply.
+
+Boundaries: sharing creates a user-reviewed copy, not a revocable live guest link
+or companion login. Location sharing is opt-in; financial fields, profile data,
+messages and pass codes are omitted. The offline pack is a dated snapshot without
+external assets/scripts, not a boarding/admission pass. Rico is a deterministic
+helper over the loaded itinerary, not a live weather, inventory or payment service.
+Requests do not alter dates/prices or automatically accept an alternative. Feedback
+is private for every rating, with no new public-review integration or automatic
+feedback-email campaign. Payment verification and operator balances remain manual
+until the separate Stripe implementation is connected. The public Rico payment
+answers were corrected to match that state and the included 20% commission.
+
+Verification: all 53 regression suites passed, including 16 customer journey
+model/privacy scenario groups and component interactions. Targeted follow-up
+checks proved request-to-draft handoff without automatic sending. The production
+build passed. Browser preview verified field-selective sharing, weather-request
+preview, itinerary-grounded Rico and narrow-screen layout; an actual offline pack
+download was found and inspected. Live deployment verification is recorded in the
+customer-experience output report after publication.

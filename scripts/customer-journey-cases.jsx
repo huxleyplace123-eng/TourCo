@@ -1,0 +1,31 @@
+import React from 'react';
+import TestRenderer,{act} from 'react-test-renderer';
+import {renderToStaticMarkup} from 'react-dom/server';
+import assert from 'node:assert/strict';
+import CustomerJourney,{NextAdventureCard,TripSharing} from '../src/portal/CustomerJourney.jsx';
+const trip={id:'demo-trip',title:'Test journey',region:'Arenal',start:'2099-12-15',end:'2099-12-17',travelers:2,status:'Confirmed',days:[{date:'2099-12-15',items:[{id:'one',name:'Rainforest walk',operator:'Sample operator',status:'Confirmed',time:'09:00',meet:'Sample meeting point',bring:'Water',meetingPoint:{lat:10,lng:-84,name:'Sample center'}}]}]};
+export async function run(){
+ const next=renderToStaticMarkup(<NextAdventureCard trip={trip} now={new Date('2099-12-15T12:00:00Z')}/>);assert.match(next,/Rainforest walk/);assert.match(next,/Costa Rica time/);assert.match(next,/verified statement/);
+ assert.equal(renderToStaticMarkup(<NextAdventureCard trip={{...trip,status:'Cancelled'}}/>),'');
+ const share=renderToStaticMarkup(<TripSharing trip={trip}/>);assert.match(share,/does not give them an account/);assert.match(share,/cannot be revoked/);
+ let view;let drafts=[];
+ await act(async()=>{view=TestRenderer.create(<CustomerJourney trip={trip} sampleMode={true} onMessage={text=>drafts.push(text)}/>);});
+ const button=text=>view.root.findAllByType('button').find(b=>b.children.some(x=>x===text));
+ await act(async()=>button('Change requests').props.onClick());
+ await act(async()=>view.root.findByType('textarea').props.onChange({target:{value:'Please move my pickup to the visitor center.'}}));
+ await act(async()=>view.root.findByType('form').props.onSubmit({preventDefault(){}}));
+ assert.ok(JSON.stringify(view.toJSON()).includes('Sample preview only. No message will be sent.'));assert.equal(drafts.length,0);
+ await act(async()=>button('Ask Rico').props.onClick());await act(async()=>button('How do payments work?').props.onClick());
+ assert.ok(JSON.stringify(view.toJSON()).includes('cannot verify payments'));
+ await act(async()=>button('Feedback').props.onClick());assert.ok(JSON.stringify(view.toJSON()).includes('Private feedback opens after'));
+ await act(async()=>view.unmount());
+ await act(async()=>{view=TestRenderer.create(<CustomerJourney trip={trip} sampleMode={false} onMessage={text=>drafts.push(text)}/>);});
+ await act(async()=>button('Change requests').props.onClick());
+ await act(async()=>view.root.findByType('textarea').props.onChange({target:{value:'Please confirm the pickup time for my party.'}}));
+ await act(async()=>view.root.findByType('form').props.onSubmit({preventDefault(){}}));
+ assert.equal(drafts.length,0);
+ await act(async()=>button('Review in Messages before sending').props.onClick());
+ assert.equal(drafts.length,1);assert.match(drafts[0],/demo-trip/);assert.match(drafts[0],/not a confirmed change/);
+ await act(async()=>view.unmount());
+ console.log('PASS: customer next-card rendering, safe-sharing copy, request preview, sample send isolation, contextual Rico and feedback eligibility.');
+}

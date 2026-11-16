@@ -70,7 +70,7 @@ function shapeTrip(row) {
       operator: booking.operator || "Local partner",
       time: booking.time || "Time pending",
       meet: booking.meet || "Meeting details pending",
-      bring: booking.bring || "Comfortable clothing",
+      bring: booking.bring || "Preparation details pending — ask TicoWild",
       photo: booking.photo || "photo-1432405972618-c60b0225b8f9",
       price: Number(booking.price || 0),
       status: booking.status || "Requested",

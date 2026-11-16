@@ -19,17 +19,17 @@ export const CHAT_SUGGESTIONS = [
 const INTENTS = [
   {
     keys: ["deposit", "pay", "upfront", "how much to reserve", "down payment"],
-    answer: "You only put down a 20% deposit to lock in a tour — the rest is paid to the operator on the day. No surprises, and no full payment upfront. Pura vida.",
+    answer: "The planned payment arrangement is 20% upfront to TicoWild, included in the excursion total, and 80% paid directly to the operator at the excursion. Online payments are not enabled yet. The team confirms availability, final pricing and payment instructions before you book.",
     action: { label: "Start planning", page: "build" },
   },
   {
     keys: ["book", "booking", "reserve", "how does it work", "how do i book"],
-    answer: "Easy: add experiences to your trip, put down the listed deposit, and TicoWild coordinates confirmation with the approved partner before you go. You can also tell me your dates and I'll build the whole day-by-day for you.",
+    answer: "Start by sharing your dates and the experiences that interest you. TicoWild checks the operator, availability, final price and terms, then sends your confirmed arrangements and payment instructions. Saving an activity or sending a planning request does not book or charge it.",
     action: { label: "Build my trip", page: "build" },
   },
   {
     keys: ["fee", "booking fee", "commission", "hidden", "extra cost"],
-    answer: "No booking fees here. Big sites (OTAs) tack on 5–10% — I book you direct with the local operators, so you keep that money.",
+    answer: "Under the standard arrangement, TicoWild's 20% commission is included in the full excursion price. The remaining 80% is paid directly to the operator. Ask the team to confirm the complete price, currency, taxes and any exclusions before booking.",
   },
   {
     keys: ["best time", "when to visit", "season", "weather", "rain", "dry season", "green season"],

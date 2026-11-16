@@ -1,4 +1,5 @@
 import NotificationCenter from '../notifications/NotificationCenter.jsx';
+import CustomerJourney, {NextAdventureCard, TripSharing} from './CustomerJourney.jsx';
 import {useSavedList} from './useSavedList.js';
 import TravelerNames from './TravelerNames.jsx';
 import {tripCalendar} from './calendar.js';
@@ -44,26 +45,7 @@ const TABS = [
 const input = { width: "100%", boxSizing: "border-box", background: "#fff", border: "1px solid #DDE2E6", borderRadius: radius.sm, color: "#172532", fontFamily: FONT, fontSize: 15, padding: "12px 13px", outline: "none" };
 const label = { fontSize: 11.5, fontWeight: 800, color: "#65727D", textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 6 };
 
-export default function Portal({ email, onSignOut }) {
-  const [tab, setTab] = useState("trip");
-  const [trip, setTrip] = useState(undefined);
-  const [trips, setTrips] = useState([]);
-  const [sampleMode, setSampleMode] = useState(() => new URLSearchParams(window.location.search).get("sample") === "1");
-  const [tripError, setTripError] = useState("");
-  const loadTrip = () => { setTripError(""); getTrips().then(rows=>{setTrips(rows);setTrip(previous=>rows.find(x=>x.id===previous?.id)||rows[0]||null);}).catch((err) => { setTrip(null); setTripError(err.message); }); };
-  useEffect(() => { loadTrip(); const timer=setInterval(loadTrip,30000); return()=>clearInterval(timer); }, []);
-  const displayedTrip = sampleMode && trip !== undefined ? DEMO_TRIP : trip;
-  const toggleSample = (on) => {
-    setSampleMode(on);
-    const url = new URL(window.location.href);
-    if (on) url.searchParams.set("sample", "1"); else url.searchParams.delete("sample");
-    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  return (
-    <div className="customer-portal" style={{ minHeight: "100vh", background: "#F2F1EC", color: "#172532", fontFamily: FONT }}>
-      <style>{`
+export function PortalStyles(){return (<style>{`
         .customer-trip-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;padding:12px 14px;background:#fff;border:1px solid #dce5e7;border-radius:14px}.customer-trip-toolbar label{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:750}.customer-trip-toolbar select{max-width:100%;min-width:180px}.customer-trip-toolbar button,.customer-trip-toolbar select,.portal-account-tools button,.portal-account-tools input{font:inherit;padding:9px 12px;border:1px solid #cbd9dd;border-radius:9px;background:#fff;color:#173748}.customer-trip-toolbar button,.portal-account-tools button{cursor:pointer;font-size:12px;font-weight:750}.customer-trip-toolbar button:hover,.portal-account-tools button:hover{background:#eaf7f4}.customer-trip-toolbar button:focus-visible,.customer-trip-toolbar select:focus-visible,.portal-account-tools input:focus-visible{outline:2px solid #078d80;outline-offset:2px}@media(max-width:600px){.customer-trip-toolbar label{width:100%;flex-wrap:wrap}.customer-trip-toolbar select{width:100%}}.pt-wrap{max-width:1180px;margin:0 auto;padding:14px clamp(16px,3vw,34px) 64px}
         .customer-app-bar{position:sticky;top:0;z-index:12;display:grid!important;grid-template-columns:1fr auto 1fr;background:#0C2133!important;border-bottom:1px solid rgba(255,255,255,.08)!important;backdrop-filter:blur(16px)}
         .customer-brand{display:flex;align-items:center}.customer-brand>span{padding:0;background:transparent;box-shadow:none}
@@ -339,7 +321,30 @@ export default function Portal({ email, onSignOut }) {
           .portal-skeleton-hero{height:245px}.portal-skeleton-progress{height:50px}.portal-skeleton-row{grid-template-columns:88px 1fr;gap:12px}.portal-skeleton-thumb,.portal-skeleton-copy{height:110px}.portal-skeleton-account-hero{height:150px}.portal-skeleton-columns{grid-template-columns:1fr;gap:14px}.portal-skeleton-panel{height:520px}.portal-skeleton-security{height:390px}
         }
         @media(prefers-reduced-motion:reduce){.portal-skeleton-block:after,.portal-skeleton{animation:none!important}.pt-tab-icon{transition:none!important}}
-      `}</style>
+      `}</style>);}
+
+export default function Portal({ email, onSignOut }) {
+  const [tab, setTab] = useState("trip");
+  const [messageDraft,setMessageDraft] = useState('');
+  const openMessages = text => {if(typeof text === 'string')setMessageDraft(text);setTab('messages');};
+  const [trip, setTrip] = useState(undefined);
+  const [trips, setTrips] = useState([]);
+  const [sampleMode, setSampleMode] = useState(() => new URLSearchParams(window.location.search).get("sample") === "1");
+  const [tripError, setTripError] = useState("");
+  const loadTrip = () => { setTripError(""); getTrips().then(rows=>{setTrips(rows);setTrip(previous=>rows.find(x=>x.id===previous?.id)||rows[0]||null);}).catch((err) => { setTrip(null); setTripError(err.message); }); };
+  useEffect(() => { loadTrip(); const timer=setInterval(loadTrip,30000); return()=>clearInterval(timer); }, []);
+  const displayedTrip = sampleMode && trip !== undefined ? DEMO_TRIP : trip;
+  const toggleSample = (on) => {
+    setSampleMode(on);
+    const url = new URL(window.location.href);
+    if (on) url.searchParams.set("sample", "1"); else url.searchParams.delete("sample");
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <div className="customer-portal" style={{ minHeight: "100vh", background: "#F2F1EC", color: "#172532", fontFamily: FONT }}>
+      <PortalStyles/>
 
       {/* app bar */}
       <div className="customer-app-bar" style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px clamp(12px,3vw,22px)" }}>
@@ -373,8 +378,8 @@ export default function Portal({ email, onSignOut }) {
       <div className="pt-wrap">
         {tab === "trip" && !sampleMode && <div className="customer-trip-toolbar"><label>Your trips <select aria-label="Choose trip" value={trip?.id||""} onChange={e=>setTrip(trips.find(t=>t.id===e.target.value))}>{!trips.length&&<option value="">No published trips yet</option>}{trips.map(t=><option key={t.id} value={t.id}>{t.title} · {t.start||"Dates pending"}</option>)}</select></label><button onClick={loadTrip}>Refresh trips</button><button onClick={()=>setTab("ideas")}>Saved ideas</button></div>}
         {tab === "ideas" && <SavedIdeas/>}
-        {tab === "trip" && <TripTab key={displayedTrip?.id||"empty"} trip={displayedTrip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={() => setTab("messages")} onAccount={() => setTab("account")} />}
-        {tab === "messages" && <MessagesTab trip={trip} />}
+        {tab === "trip" && <TripTab key={displayedTrip?.id||"empty"} trip={displayedTrip} error={sampleMode ? "" : tripError} onRetry={loadTrip} sampleMode={sampleMode} onPreviewSample={() => toggleSample(true)} onExitSample={() => toggleSample(false)} onMessage={openMessages} onAccount={() => setTab("account")} />}
+        {tab === "messages" && <MessagesTab trip={trip} initialDraft={messageDraft} onDraftChange={setMessageDraft} onSent={()=>setMessageDraft('')} />}
         {tab === "account" && <AccountTab email={email} onSignOut={onSignOut} onMessage={() => setTab("messages")} />}
       </div>
 
@@ -496,13 +501,6 @@ function TripCommandCenter({ trip, bookings, onVoucher, compact = false }) {
   const packingError=packingState.error;
   const setPacking=(item)=>packingState.save(packed.includes(item)?packed.filter(value=>value!==item):[...packed,item]);
   const packedCount=packing.filter(item=>packed.includes(item)).length;
-  const share = async () => {
-    const data = { title: trip.title, text: `My TicoWild Costa Rica journey: ${trip.region}, ${fmt(trip.start)} – ${fmt(trip.end)}`, url: window.location.href };
-    try {
-      if (navigator.share) await navigator.share(data);
-      else { await navigator.clipboard.writeText(`${data.text}\n${data.url}`); setNotice("Trip summary copied. The link requires your account; it does not give others access."); }
-    } catch (error) { if (error?.name !== "AbortError") setNotice("Your trip is ready to share from this page."); }
-  };
   const packPercent = packing.length ? Math.round((packedCount / packing.length) * 100) : 100;
   const togglePanel = (name) => { setPanel((current) => current === name ? "" : name); setNotice(""); };
   return (
@@ -514,10 +512,11 @@ function TripCommandCenter({ trip, bookings, onVoucher, compact = false }) {
         <button className="trip-tool-action" data-active={panel === "passes"} onClick={() => togglePanel("passes")}><span className="trip-tool-icon"><ClipboardCheck size={17}/></span><span>Trip passes</span></button>
         <button className="trip-tool-action" data-active={panel === "packing"} onClick={() => togglePanel("packing")}><span className="trip-tool-icon"><ListChecks size={17}/></span><span>Packing list</span></button>
         <button className="trip-tool-action" onClick={() => { if(downloadTripCalendar(trip, bookings))setNotice("Trip calendar downloaded. Open it to add every activity."); }}><span className="trip-tool-icon"><CalendarPlus size={17}/></span><span>Add calendar</span></button>
-        <button className="trip-tool-action" onClick={share}><span className="trip-tool-icon"><Share2 size={17}/></span><span>Share journey</span></button>
+        <button className="trip-tool-action" onClick={()=>togglePanel('sharing')}><span className="trip-tool-icon"><Share2 size={17}/></span><span>Share journey</span></button>
       </div>
       {panel === "passes" && <div className="trip-tool-panel"><div className="trip-tool-panel-head"><div><b>Your trip wallet</b><span>Open any confirmed pass for its QR code, meeting pin, and arrival details.</span></div><button onClick={() => setPanel("")} aria-label="Close trip wallet"><X size={15}/></button></div><div className="trip-pass-grid">{bookings.map((item) => <button key={item.id} className="trip-pass" disabled={item.status !== "Confirmed"} onClick={() => item.status === "Confirmed" && onVoucher(item)}><span className="trip-pass-icon">{item.status === "Confirmed" ? <QrCode size={16}/> : <Hourglass size={15}/>}</span><span className="trip-pass-copy"><b>{item.name}</b><span>{item.status === "Confirmed" ? `${fmt(item.date)} · Ready to open` : "TicoWild is coordinating this"}</span></span><ChevronRight size={14}/></button>)}</div></div>}
       {panel === "packing" && <div className="trip-tool-panel"><div className="trip-tool-panel-head"><div><b>Your smart packing list</b><span>Built from your itinerary. Checkmarks save to your account.</span></div><button onClick={() => setPanel("")} aria-label="Close packing list"><X size={15}/></button></div><div className="packing-progress"><div className="packing-progress-ring">{packPercent}%</div><div><b>{packedCount === packing.length ? "You are packed" : `${packing.length - packedCount} items still to pack`}</b><span>Tap each item as it goes into your bag.</span></div></div>{packingError&&<p role="alert">{packingError} {!packingState.ready&&<button onClick={packingState.retry}>Retry loading packing list</button>}</p>}<div className="packing-list">{packing.map((item) => <button key={item} disabled={packingBusy} className="packing-item" data-checked={packed.includes(item)} onClick={() => setPacking(item)}><span className="packing-check">{packed.includes(item) && <Check size={13}/>}</span>{item}</button>)}</div></div>}
+      {panel === 'sharing' && <div className="trip-tool-panel"><TripSharing trip={trip}/></div>}
       {notice && <div className="trip-tool-toast">{notice}</div>}
     </section>
   );
@@ -531,7 +530,7 @@ function DocumentsSection({ trip, bookings, onVoucher, onPayments }) {
   const confirmed = bookings.filter((item) => item.status === "Confirmed");
   return <div className="trip-section-page"><PortalSectionHeading eyebrow="Travel wallet" title="Documents & passes" body="Every trip document a traveler may need, organized around the itinerary instead of buried in email." badge={`${confirmed.length} passes ready`} />
     <div className="portal-enterprise-grid">
-      <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><QrCode size={19}/></div><div><h2>Activity passes</h2><p>Confirmed bookings open into a booking reference and any available meeting details.</p></div></div><div className="document-list">{bookings.map((item) => <div className="document-row" data-pending={item.status !== "Confirmed"} key={item.id}><span className="document-row-icon">{item.status === "Confirmed" ? <QrCode size={16}/> : <Hourglass size={15}/>}</span><div><b>{item.name}</b><span>{item.status === "Confirmed" ? `${fmt(item.date)} · Pass ready` : "Awaiting operator confirmation"}</span></div>{item.status === "Confirmed" && <button onClick={() => onVoucher(item)} aria-label={`Open ${item.name} pass`}><ChevronRight size={15}/></button>}</div>)}</div></section>
+      <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><QrCode size={19}/></div><div><h2>Activity passes</h2><p>Confirmed bookings open into a booking reference and any available meeting details.</p></div></div><div className="document-list">{bookings.map((item) => <div className="document-row" data-pending={item.status !== "Confirmed"} key={item.id}><span className="document-row-icon">{item.status === "Confirmed" ? <QrCode size={16}/> : <Hourglass size={15}/>}</span><div><b>{item.name}</b><span>{item.status === "Confirmed" ? `${fmt(item.date)} · Pass ready` : ["Cancelled","Declined","Completed"].includes(item.status) ? item.status : "Awaiting operator confirmation"}</span></div>{item.status === "Confirmed" && <button onClick={() => onVoucher(item)} aria-label={`Open ${item.name} pass`}><ChevronRight size={15}/></button>}</div>)}</div></section>
       <div style={{display:"grid",gap:14}}>
         <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><CalendarPlus size={19}/></div><div><h2>Trip calendar</h2><p>Download every scheduled activity, location, and preparation note into the traveler’s calendar.</p></div></div><button className="portal-enterprise-action" onClick={() => downloadTripCalendar(trip, bookings)}><CalendarPlus size={15}/> Download complete calendar</button></section>
         <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><ReceiptText size={19}/></div><div><h2>Payment records</h2><p>Review amounts entered by the team. Request verified receipts from TicoWild.</p></div></div><button className="portal-enterprise-action secondary" onClick={onPayments}><ReceiptText size={15}/> View trip amounts</button></section>
@@ -541,14 +540,13 @@ function DocumentsSection({ trip, bookings, onVoucher, onPayments }) {
 }
 
 function TravelersSection({ trip, onAccount }) {
+  const [showShare,setShowShare]=useState(false);
   const travelers = Array.from({ length: Math.max(1, Number(trip.travelers || 1)) }, (_, index) => index);
-  const share = async () => {
-    const data = { title: trip.title, text: `Our TicoWild journey: ${trip.region}, ${fmt(trip.start)} – ${fmt(trip.end)}`, url: window.location.href };
-    try { if (navigator.share) await navigator.share(data); else await navigator.clipboard.writeText(`${data.text}\n${data.url}`); } catch { /* customer cancelled */ }
-  };
+  const share = () => setShowShare(value=>!value);
   return <div className="trip-section-page"><PortalSectionHeading eyebrow="Travel party" title="Travelers" body="A clear view of who TicoWild is coordinating, with personal trip preferences kept in the lead traveler’s private account." badge={`${trip.travelers} travelers`} />
     <div className="traveler-party-hero"><div className="traveler-party-count">{trip.travelers}</div><div><b>Your Costa Rica travel party</b><span>One shared itinerary, one source of truth, and concierge support connected to the entire journey.</span></div><button onClick={share}><Share2 size={14}/> Share trip summary</button></div>
-    <div className="portal-enterprise-grid"><section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><Users size={19}/></div><div><h2>Party members</h2><p>Party size is recorded for coordination. Add traveler names below; this does not create separate sign-in accounts.</p></div></div><div className="traveler-list">{travelers.map((index) => <div className="traveler-row" key={index}><span className="traveler-row-icon"><User size={16}/></span><div><b>{index === 0 ? "Lead traveler" : `Travel companion ${index + 1}`}</b><span>{index === 0 ? "Manages the trip account and concierge conversation" : "Included in tour counts and operator coordination"}</span></div><CheckCircle2 size={16} color="#0A8174"/></div>)}</div></section>
+    {showShare&&<section className="pt-card portal-enterprise-card"><TripSharing trip={trip}/></section>}
+    <div className="portal-enterprise-grid"><section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><Users size={19}/></div><div><h2>Party members</h2><p>Party size is recorded for coordination. Add traveler names below; this does not create separate sign-in accounts.</p></div></div><div className="traveler-list">{travelers.map((index) => <div className="traveler-row" key={index}><span className="traveler-row-icon"><User size={16}/></span><div><b>{index === 0 ? "Lead traveler" : `Travel companion ${index + 1}`}</b><span>{index === 0 ? "Manages the trip account and concierge conversation" : "Included in tour counts and operator coordination"}</span></div></div>)}</div></section>
       <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><ClipboardCheck size={19}/></div><div><h2>Traveler preferences</h2><p>Dietary needs, mobility considerations, celebrations, phone, country, and pickup preferences stay in the private profile.</p></div></div><button className="portal-enterprise-action" onClick={onAccount}><User size={15}/> Review traveler profile</button><TravelerNames key={trip.id} trip={trip}/></section></div>
   </div>;
 }
@@ -556,11 +554,11 @@ function TravelersSection({ trip, onAccount }) {
 function PaymentsSection({trip}) { return <section className="pt-card" style={{padding:24}}><h2>Trip amounts</h2><p>This portal does not verify payments or issue payment receipts. Contact TicoWild for a verified payment statement and payment instructions.</p><p>Trip amount entered by the team: {money(trip.total)}</p><p>Deposit amount entered by the team: {money(trip.deposit)}</p></section>; }
 
 function SupportSection({ bookings, onMessage }) {
-  const pending = bookings.filter((item) => item.status !== "Confirmed");
+  const pending = bookings.filter((item) => !['Confirmed','Cancelled','Declined','Completed'].includes(item.status));
   const needs = [
     ["Pickup or meeting help", "Ask about timing, directions, transfers, or where to meet.", Navigation],
     ["Change a trip detail", "Request traveler, timing, accessibility, or booking changes.", CalendarDays],
-    ["Operator confirmation", pending.length ? `${pending.length} activity is still being coordinated by TicoWild.` : "Every activity is currently confirmed.", BellRing],
+    ["Operator confirmation", pending.length ? `${pending.length} activity is still being coordinated by TicoWild.` : "No outstanding operator requests are shown. Check the current status of each activity in your itinerary.", BellRing],
   ];
   return <div className="trip-section-page"><PortalSectionHeading eyebrow="Human support" title="Help throughout the journey" body="The support experience keeps every request attached to the trip so travelers never need to repeat booking details." badge="Concierge connected" />
     <div className="support-hero"><div className="support-hero-copy"><span>TicoWild concierge</span><h2>A real local team is with you</h2><p>Questions, changes, pickup coordination, and operator follow-up stay in one private conversation connected to this journey.</p></div><button onClick={onMessage}><MessageCircle size={16}/> Message concierge</button></div>
@@ -600,6 +598,7 @@ export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onE
           <button onClick={onExitSample}><ArrowLeft size={12}/> Exit</button>
         </div>
       )}
+      <nav className="customer-journey-nav" aria-label="Trip sections">{[['overview','Overview'],['itinerary','Itinerary'],['documents','Documents'],['travelers','Travelers'],['payments','Payments'],['support','Support']].map(([key,text])=><button key={key} aria-current={tripSection===key?'page':undefined} onClick={()=>setTripSection(key)}>{text}</button>)}</nav>
       {tripSection === "overview" && <div className="trip-section-page">
       <section className="simple-trip-summary" aria-label="Trip summary" style={!heroPhoto ? {gridTemplateColumns:'minmax(0,1fr)'} : undefined}>
         {heroPhoto && <img className="simple-trip-photo" src={activityPhoto(heroPhoto, 600)} alt="" />}
@@ -615,6 +614,8 @@ export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onE
         <div className="simple-countdown"><b>{presentation.countdown}</b><span>{presentation.countdownLabel}</span></div>
       </section>
 
+      <NextAdventureCard trip={trip} onVoucher={setVoucher} onMessage={onMessage}/>
+      <CustomerJourney trip={trip} sampleMode={sampleMode} onMessage={onMessage} onAccount={onAccount} onTravelers={()=>setTripSection('travelers')}/>
       <div className="premium-journey-grid">
         <section className="premium-itinerary">
           <div className="premium-itinerary-head"><div><span>Your journey</span><h2>{presentation.itineraryHeading}</h2><p>Activity records for your Costa Rica trip.</p></div><button onClick={() => { setTripSection("itinerary"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>View full itinerary <ChevronRight size={13}/></button></div>
@@ -641,6 +642,10 @@ export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onE
       </div>
       </div>}
 
+      {tripSection==='documents'&&<><DocumentsSection trip={trip} bookings={presentation.cancelled?bookings.map(b=>({...b,status:'Cancelled'})):bookings} onVoucher={setVoucher} onPayments={()=>setTripSection('payments')}/><section className="pt-card portal-enterprise-card"><TripSharing trip={trip}/></section></>}
+      {tripSection==='travelers'&&<TravelersSection trip={trip} onAccount={onAccount}/>}
+      {tripSection==='payments'&&<PaymentsSection trip={trip}/>}
+      {tripSection==='support'&&<SupportSection bookings={presentation.cancelled?[]:bookings} onMessage={onMessage}/>}
       {/* itinerary */}
       {tripSection === "itinerary" && <div className="trip-section-page">
         <button className="trip-back" onClick={() => { setTripSection("overview"); window.scrollTo({ top: 0, behavior: "smooth" }); }}><ArrowLeft size={14}/> Back to trip</button>
@@ -697,7 +702,7 @@ export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onE
       </div>}
 
       <div className="guest-trust" style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center", fontSize: 12.5 }}>
-        <ShieldCheck size={15} color="#34D399" /> Vetted local operators · TicoWild coordinates every confirmation
+        <ShieldCheck size={15} color="#34D399" /> Check current confirmation and meeting details with TicoWild before traveling
       </div>
 
       {voucher && !presentation.cancelled && <Voucher booking={voucher} trip={trip} onClose={() => setVoucher(null)} />}
@@ -706,16 +711,17 @@ export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onE
 }
 
 // ── Messages ────────────────────────────────────────────────────────────────
-function MessagesTab({ trip }) {
+export function MessagesTab({ trip, initialDraft='', onSent, onDraftChange }) {
   const [messages, setMessages] = useState([]);
-  const [draft, setDraft] = useState("");
+  const [draft, setDraft] = useState(initialDraft);
+  useEffect(()=>{onDraftChange?.(draft);},[draft,onDraftChange]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const sendLock = useRef(false);
   const messageRequest = useRef(0);
   const refreshMessages = async () => { if (sendLock.current) return; const request = ++messageRequest.current; try { const data = await getMessages(); if (request === messageRequest.current) { setMessages(data); setError(''); } } catch (err) { if (request === messageRequest.current) setError(err.message); } };
   useEffect(() => { refreshMessages(); const timer=setInterval(refreshMessages,30000); return () => { messageRequest.current++; clearInterval(timer); }; }, []);
-  const send = async () => { const t = draft.trim(); if (!t || sendLock.current) return; sendLock.current=true; messageRequest.current++; setBusy(true); setError(""); try { setMessages(await sendMessage(t)); setDraft(""); } catch (err) { setError(err.message); } finally { sendLock.current=false;setBusy(false); } };
+  const send = async () => { const t = draft.trim(); if (!t || sendLock.current) return; sendLock.current=true; messageRequest.current++; setBusy(true); setError(""); try { setMessages(await sendMessage(t)); setDraft(""); onSent?.(); } catch (err) { setError(err.message); } finally { sendLock.current=false;setBusy(false); } };
   const time = (value) => { const d = new Date(value); return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); };
   const prompts = ["What should I pack?", "Confirm my pickup", "I need help with my trip"];
   const concierge = trip?.concierge || { name: "TicoWild Concierge Team", role: "Local trip coordination", availability: "Available in your private trip conversation" };
@@ -743,7 +749,7 @@ function MessagesTab({ trip }) {
         </div>
         <div className="concierge-quick">{prompts.map((prompt) => <button key={prompt} onClick={() => setDraft(prompt)}>{prompt}</button>)}</div>
         <div className="concierge-compose">
-          <input value={draft} disabled={busy} maxLength={5000} aria-label="Message your concierge" onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) send(); }} placeholder="Message your concierge…" style={input} />
+          <textarea rows={initialDraft?6:2} value={draft} disabled={busy} maxLength={5000} aria-label="Message your concierge" onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && (e.ctrlKey||e.metaKey) && !e.nativeEvent.isComposing) {e.preventDefault();send();} }} placeholder="Message your concierge…" style={{...input,resize:'vertical'}} />
           <button onClick={send} disabled={busy || !draft.trim()} aria-label="Send message" style={{ opacity: busy || !draft.trim() ? .45 : 1 }}><Send size={18} /></button>
         </div>
       </section>
