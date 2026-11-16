@@ -601,7 +601,7 @@ export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onE
         </div>
       )}
       {tripSection === "overview" && <div className="trip-section-page">
-      <section className="simple-trip-summary" aria-label="Trip summary">
+      <section className="simple-trip-summary" aria-label="Trip summary" style={!heroPhoto ? {gridTemplateColumns:'minmax(0,1fr)'} : undefined}>
         {heroPhoto && <img className="simple-trip-photo" src={activityPhoto(heroPhoto, 600)} alt="" />}
         <div className="simple-trip-copy">
           <div className="simple-eyebrow"><Sparkles size={12}/> {presentation.heading}</div>
