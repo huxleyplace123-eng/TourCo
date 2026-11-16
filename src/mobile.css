@@ -162,7 +162,7 @@
   }
 
   .tico-page-title {
-    font-size: clamp(42px, 12vw, 54px) !important;
+    font-size: clamp(30px, 8vw, 36px) !important;
     line-height: .97 !important;
     letter-spacing: -.045em !important;
   }
@@ -272,7 +272,7 @@
   }
 
   .section-head h2 {
-    font-size: clamp(36px, 10vw, 46px) !important;
+    font-size: clamp(25px, 6.8vw, 30px) !important;
     line-height: 1 !important;
     letter-spacing: -.04em !important;
   }
@@ -344,7 +344,7 @@
   }
 
   .tn-hero .tn-h1 {
-    font-size: clamp(33px, 9.2vw, 43px) !important;
+    font-size: clamp(30px, 8vw, 36px) !important;
     line-height: 1.04 !important;
     letter-spacing: -1.35px !important;
   }
@@ -380,7 +380,7 @@
   }
 
   .page-hero .tn-phero h1 {
-    font-size: clamp(30px, 8.5vw, 38px) !important;
+    font-size: clamp(28px, 7.5vw, 34px) !important;
     line-height: 1.04 !important;
   }
 
@@ -608,7 +608,7 @@
   }
 
   .detail-hero-content h1 {
-    font-size: clamp(29px, 8.2vw, 38px) !important;
+    font-size: clamp(27px, 7.2vw, 33px) !important;
     line-height: 1.03 !important;
   }
 
@@ -662,7 +662,7 @@
   }
 
   .insider-hero h1 {
-    font-size: clamp(32px, 9vw, 40px) !important;
+    font-size: clamp(28px, 7.5vw, 34px) !important;
     line-height: 1.01 !important;
     letter-spacing: -1.25px !important;
   }
@@ -691,7 +691,7 @@
   }
 
   .meet-tico-hero .tico-hero-copy h1 {
-    font-size: clamp(36px, 10vw, 48px) !important;
+    font-size: clamp(28px, 7.5vw, 34px) !important;
     line-height: 1 !important;
     letter-spacing: -1.45px !important;
   }

@@ -44,3 +44,55 @@
   html { scroll-behavior: auto !important; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Phone visual scale: compact hierarchy without shrinking form controls. */
+@media (max-width: 700px) {
+  .public-site .public-page.public-page-home h1.tn-h1 { font-size: 34px !important; line-height: 1.08 !important; letter-spacing: -.035em !important; }
+  .public-site .public-page.public-page-home h2 { font-size: 28px !important; line-height: 1.15 !important; letter-spacing: -.025em !important; }
+  .public-site .public-page.public-page-article h1 { font-size: 30px !important; line-height: 1.15 !important; }
+  .public-site .public-page.public-page-article h2 { font-size: 23px !important; line-height: 1.3 !important; }
+  .public-site .tn-hero-search .tn-search-field { padding-block: 8px !important; }
+  .tpl-editor-head, .tpl-editor-grid, .tpl-editor-foot { padding: 16px !important; }
+  .tpl-editor-head h2, .tpl-preview-head h2 { font-size: 22px !important; line-height: 1.25; }
+  .tpl-editor-grid textarea { min-height: 170px !important; height: 170px; resize: vertical; }
+  .tpl-modal-bg, .tpl-preview-bg { padding: 12px !important; }
+  .tpl-editor, .tpl-preview { max-height: calc(100dvh - 24px) !important; overflow-y: auto; }
+  html:has(.tpl-modal-bg), html:has(.tpl-preview-bg),
+  body:has(.tpl-modal-bg), body:has(.tpl-preview-bg) { overflow: hidden; }
+  .pt-wrap { padding-inline: 14px; }
+  .trip-section-heading h1, .guest-empty h1 { font-size: 26px !important; line-height: 1.2 !important; letter-spacing: -.025em !important; }
+  .guest-trip-title { font-size: 26px !important; }
+  .guest-booking-hero h2, .trip-command-copy h2 { font-size: 23px !important; line-height: 1.2 !important; }
+  .guest-booking-hero { min-height: 170px !important; }
+  .cj-next { padding: 16px !important; gap: 12px; }
+  .cj-next h2, .customer-journey h2 { font-size: 21px !important; line-height: 1.25; }
+  .cj-panel h3, .cj-sharing h3 { font-size: 18px !important; line-height: 1.3; }
+  .cj-check { gap: 9px; }
+  .cj-check > div { min-width: 0; }
+  .cj-check b { font-size: 13px; }
+  .customer-journey .cj-check button { font-size: 12px; }
+  .cj-check p, .cj-small, .cj-emergency { font-size: 12px !important; }
+  .cj-panel p, .cj-sharing p { font-size: 14px; line-height: 1.55; }
+  .customer-journey, .portal-enterprise-card, .account-card { border-radius: 16px !important; }
+  .portal-enterprise-card-head h2, .account-card h2 { font-size: 18px !important; }
+  .portal-enterprise-card-head p, .trip-section-heading p { font-size: 13px !important; line-height: 1.5; }
+  .document-row b, .traveler-row b, .support-row b, .payment-step b { font-size: 13px !important; }
+  .document-row span, .traveler-row span, .support-row span, .payment-step span { font-size: 12px !important; line-height: 1.45; }
+  .password-modal { max-height: calc(100dvh - 16px); overflow-y: auto; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)) !important; }
+  .password-modal-head > div:nth-child(2) { min-width: 0; }
+  .password-modal-head h2 { font-size: 20px; }
+  .crm-desktop h1, .approval-hero h1, .tpl-hero h1, .onboard-card h1 { font-size: 26px !important; line-height: 1.2 !important; }
+  .crm-desktop h2 { font-size: 20px; line-height: 1.3; }
+  .onboard-card { padding: 18px !important; }
+  .opp-card { border-radius: 14px; }
+  .opp-wrap { padding-top: 14px; }
+  .ops-utility-actions { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; margin-top: 8px; }
+  .ops-utility-actions > button { margin: 0 !important; min-width: 0; padding: 8px 6px !important; font-size: 12px !important; line-height: 1.3; white-space: normal; }
+  .ops-utility-actions svg { flex-shrink: 0; }
+  .ops-drawer .ag-card { padding: 16px; border-radius: 14px; }
+  .ops-drawer .ag-card h3 { font-size: 17px; }
+}
+@media (min-width: 360px) and (max-width: 560px) {
+  .opp-shell .opp-family-status { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .opp-shell .opp-family-status button { font-size: 12px !important; padding-inline: 5px !important; }
+}
