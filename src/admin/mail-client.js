@@ -2,7 +2,12 @@ import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/ms
 import { mailConfig } from "./mail-config.js";
 import { outgoingMessage } from "./mail-model.js";
 
-const scopes = ["User.Read", "Mail.Read", "Mail.Send"];
+const scopes = ["User.Read", "Mail.Read.Shared", "Mail.Send.Shared"];
+const mailboxPath = `users/${encodeURIComponent(mailConfig.mailbox)}/`;
+function allowedAccount(account) {
+  return account?.tenantId === mailConfig.tenantId &&
+    mailConfig.signInAccounts.includes(account.username?.toLowerCase());
+}
 let clientPromise;
 export const mailConfigured = Boolean(mailConfig.clientId);
 async function client() {
@@ -20,7 +25,8 @@ async function client() {
   return clientPromise;
 }
 function accountFor(app) {
-  return app.getAllAccounts().find(a => a.username.toLowerCase() === mailConfig.mailbox);
+  const active = app.getActiveAccount();
+  return allowedAccount(active) ? active : app.getAllAccounts().find(allowedAccount);
 }
 export async function mailAccount() {
   if (!mailConfigured) return null;
@@ -28,11 +34,12 @@ export async function mailAccount() {
 }
 export async function connectMail() {
   const app = await client();
-  const result = await app.loginPopup({ scopes, loginHint: mailConfig.mailbox, prompt: "select_account" });
-  if (result.account?.username.toLowerCase() !== mailConfig.mailbox) {
+  const result = await app.loginPopup({ scopes, prompt: "select_account" });
+  if (!allowedAccount(result.account)) {
     await app.clearCache({ account: result.account });
-    throw new Error(`Please connect ${mailConfig.mailbox}. No email was sent.`);
+    throw new Error("Use your approved TicoWild Microsoft account (info@ticowild.com or john@ticowild.com). No email was sent.");
   }
+  app.setActiveAccount(result.account);
   return result.account;
 }
 export async function disconnectMail() {
@@ -40,7 +47,7 @@ export async function disconnectMail() {
 }
 async function token() {
   const app = await client(), account = accountFor(app);
-  if (!account) throw new Error(`Connect ${mailConfig.mailbox} first.`);
+  if (!account) throw new Error("Connect your TicoWild Microsoft account first.");
   try { return (await app.acquireTokenSilent({ scopes, account })).accessToken; }
   catch (error) {
     if (error instanceof InteractionRequiredAuthError) throw new Error("Microsoft needs you to reconnect your mailbox. Your message has not been sent.");
@@ -49,7 +56,10 @@ async function token() {
 }
 async function graph(path, options = {}) {
   const url = new URL(path, "https://graph.microsoft.com/v1.0/");
-  if (url.origin !== "https://graph.microsoft.com" || !url.pathname.startsWith("/v1.0/me/")) throw new Error("Invalid mailbox request.");
+  const parts = url.pathname.split("/");
+  if (url.origin !== "https://graph.microsoft.com" || url.username || url.password ||
+      parts[1] !== "v1.0" || parts[2] !== "users" ||
+      decodeURIComponent(parts[3] || "").toLowerCase() !== mailConfig.mailbox || !parts[4]) throw new Error("Invalid mailbox request.");
   const accessToken = await token();
   let response;
   try {
@@ -66,15 +76,15 @@ async function graph(path, options = {}) {
 }
 export function listMail(folder = "inbox", next) {
   if (!["inbox", "sentitems"].includes(folder)) throw new Error("Invalid folder.");
-  return graph(next || `me/mailFolders/${folder}/messages?$top=50&$orderby=receivedDateTime%20desc&$select=id,subject,from,toRecipients,receivedDateTime,sentDateTime,bodyPreview,isRead,webLink,conversationId`);
+  return graph(next || `${mailboxPath}mailFolders/${folder}/messages?$top=50&$orderby=receivedDateTime%20desc&$select=id,subject,from,toRecipients,receivedDateTime,sentDateTime,bodyPreview,isRead,webLink,conversationId`);
 }
 export function readMail(id) {
-  return graph(`me/messages/${encodeURIComponent(id)}?$select=id,subject,from,toRecipients,body,receivedDateTime,sentDateTime,webLink,conversationId`);
+  return graph(`${mailboxPath}messages/${encodeURIComponent(id)}?$select=id,subject,from,toRecipients,body,receivedDateTime,sentDateTime,webLink,conversationId`);
 }
 export function sendMail(draft) {
-  return graph("me/sendMail", { method: "POST", body: JSON.stringify({ message: outgoingMessage(draft), saveToSentItems: true }) });
+  return graph(`${mailboxPath}sendMail`, { method: "POST", body: JSON.stringify({ message: outgoingMessage(draft), saveToSentItems: true }) });
 }
 export function replyMail(id, body) {
   if (!body.trim() || /{{[^}]+}}/.test(body)) throw new Error("Write a reply and replace any template placeholders.");
-  return graph(`me/messages/${encodeURIComponent(id)}/reply`, { method: "POST", body: JSON.stringify({ message: { body: { contentType: "Text", content: body } } }) });
+  return graph(`${mailboxPath}messages/${encodeURIComponent(id)}/reply`, { method: "POST", body: JSON.stringify({ message: { body: { contentType: "Text", content: body } } }) });
 }
