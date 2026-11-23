@@ -5,7 +5,7 @@ import { Mail, RefreshCw, Send, LogOut, PenLine, ArrowLeft, ExternalLink } from 
 import WorkspaceSwitch from "./WorkspaceSwitch.jsx";
 import { c, FONT } from "../theme.js";
 import { mailConfig } from "./mail-config.js";
-import { connectMail, disconnectMail, listMail, mailAccount, mailConfigured, readMail } from "./mail-client.js";
+import { connectMail, disconnectMail, listMail, mailAccount, mailConfigured, needsMailReconnect, readMail } from "./mail-client.js";
 import { messageMatches } from "./mail-model.js";
 import { loadCustomers } from "./store.js";
 import { loadOperatorOverlay, mergedOperators } from "./operators-store.js";
@@ -22,6 +22,8 @@ export default function EmailApp({ workspace, onWorkspace, onSignOut }) {
   const [draft, setDraft] = useState(initialDraft), [compose, setCompose] = useState(() => Boolean(initialDraft().to || initialDraft().bcc));
   const [replyId, setReplyId] = useState(null), [query, setQuery] = useState("");
   const [busy, setBusy] = useState(false), [sending, setSending] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState("");
+  const [reconnectRequired, setReconnectRequired] = useState(false);
+  function mailError(e) { setError(e.message); if (needsMailReconnect(e)) { setReconnectRequired(true); setMessages([]); setNext(null); setSelected(null); } }
   const sendKey=useRef(crypto.randomUUID());
   const sendLock = useRef(false), request = useRef(0), detailRequest = useRef(0);
   const templates = useMemo(allEmailTemplates, []);
@@ -34,21 +36,21 @@ export default function EmailApp({ workspace, onWorkspace, onSignOut }) {
       if (request.current !== generation) return;
       setMessages(old => append ? [...new Map([...old, ...data.value].map(m => [m.id, m])).values()] : data.value);
       setNext(data["@odata.nextLink"] || null);
-    } catch (e) { if (request.current === generation) setError(e.message); }
+    } catch (e) { if (request.current === generation) mailError(e); }
     finally { if (request.current === generation) setBusy(false); }
   }
-  useEffect(() => { let live = true; mailAccount().then(a => { if (live) setAccount(a); }).catch(e => { if (live) setError(e.message); });
+  useEffect(() => { let live = true; mailAccount().then(a => { if (live) setAccount(a); }).catch(e => { if (live) mailError(e); });
     // Remove draft text from the address bar after consuming the CRM handoff.
     window.history.replaceState(null, "", "/admin/?workspace=email");
     return () => { live = false; request.current++; detailRequest.current++; };
   }, []);
   useEffect(() => { detailRequest.current++; setSelected(null); setMessages([]); setNext(null); if (account) refresh(); }, [account, folder]);
-  async function connect() { setBusy(true); setError(""); try { setAccount(await connectMail()); } catch (e) { setError(e.message); } finally { setBusy(false); } }
+  async function connect() { setBusy(true); setError(""); try { const connected = await connectMail(); setReconnectRequired(false); setAccount({ ...connected }); } catch (e) { mailError(e); } finally { setBusy(false); } }
   async function disconnect() { await disconnectMail(); request.current++; detailRequest.current++; setAccount(null); setMessages([]); setSelected(null); setDraft(blank()); setCompose(false); setNotice(""); }
   async function open(message) {
     const generation = ++detailRequest.current; setCompose(false); setSelected(null); setError(""); setBusy(true);
     try { const detail = await readMail(message.id); if (detailRequest.current === generation) setSelected(detail); }
-    catch (e) { if (detailRequest.current === generation) setError(e.message); }
+    catch (e) { if (detailRequest.current === generation) mailError(e); }
     finally { if (detailRequest.current === generation) setBusy(false); }
   }
   async function submit(event) {
@@ -58,7 +60,7 @@ export default function EmailApp({ workspace, onWorkspace, onSignOut }) {
       setDraft(blank()); setReplyId(null); setCompose(false); setSelected(null);
       setNotice("Queued from info@ticowild.com. Check CRM email delivery below for acceptance or delivery. This message is stored in the CRM, not Outlook Sent mail.");
       
-    } catch (e) { setError(e.message); }
+    } catch (e) { mailError(e); }
     finally { sendLock.current = false; setSending(false); }
   }
   const edit = key => event => setDraft(d => ({ ...d, [key]: event.target.value }));
@@ -93,9 +95,9 @@ export default function EmailApp({ workspace, onWorkspace, onSignOut }) {
       @media(max-width:800px){.mail-app{height:auto;min-height:100dvh;overflow:visible;padding:12px}.mail-grid{display:flex;flex-direction:column;overflow:visible;flex:none}.mail-sidebar{max-height:420px}.mail-list-scroll{min-height:100px}.mail-detail{overflow:visible;padding:16px}.mail-top{gap:8px}.mail-heading h1{font-size:22px}.mail-body{max-width:100%}}
     `}</style>
     <header className="mail-top"><strong style={{fontSize:22}}>Tico<span style={{color:c.gold}}>Wild</span> CRM</strong><WorkspaceSwitch workspace={workspace} onWorkspace={onWorkspace}/><button style={{marginLeft:"auto"}} onClick={async () => { await disconnect(); onSignOut(); }}><LogOut size={16}/>Sign out</button></header>
-    <div className="mail-heading"><div><h1>Email</h1><div className="mail-muted">{mailConfig.mailbox} · {account ? `Connected as ${account.username}` : "Connect your business mailbox"}</div></div><div className="mail-tools"><a className="mail-outlook" href="https://outlook.cloud.microsoft/mail/info@ticowild.com/" target="_blank" rel="noreferrer"><ExternalLink size={15}/>Open Outlook</a>{account && <button onClick={disconnect}>Disconnect mailbox</button>}</div></div>
+    <div className="mail-heading"><div><h1>Email</h1><div className="mail-muted">{mailConfig.mailbox} · {reconnectRequired ? "Email connection expired" : account ? `Connected as ${account.username}` : "Connect your business mailbox"}</div></div><div className="mail-tools"><a className="mail-outlook" href="https://outlook.cloud.microsoft/mail/info@ticowild.com/" target="_blank" rel="noreferrer"><ExternalLink size={15}/>Open Outlook</a>{account && <button onClick={disconnect}>Disconnect mailbox</button>}</div></div>
     <EmailDeliveryStatus/>
-    {error && <div role="alert" className="mail-alert mail-error">{error}</div>}{notice && <div role="status" className="mail-alert">{notice}</div>}
+    {error && <div role="alert" className="mail-alert mail-error">{error}{reconnectRequired && <div style={{marginTop:10}}><button className="primary" disabled={busy} onClick={connect}>{busy ? "Connecting…" : "Reconnect email"}</button></div>}</div>}{notice && <div role="status" className="mail-alert">{notice}</div>}
     {!account && <section className="mail-panel"><Mail size={32} color={c.teal}/><h2>Your mailbox, inside the CRM</h2><p className="mail-muted">Sign in with your own approved TicoWild Microsoft account to read info@ticowild.com. John uses john@ticowild.com; mailbox sharing must be enabled first. You can send new messages below using the verified TicoWild sender.</p><button className="primary" disabled={busy || !mailConfigured} onClick={connect}>{busy ? "Connecting…" : "Connect my TicoWild account"}</button>{!mailConfigured && <p className="mail-muted">Microsoft app registration is being completed. Outlook remains available above.</p>}{compose && <><h3>Prepared CRM message</h3><p>To: {draft.to || "Bcc recipients"}</p><p>Subject: {draft.subject}</p><OutlookDraft draft={draft}/><pre className="mail-body">{draft.body}</pre></>}</section>}<div className="mail-grid">
       <section className="mail-panel mail-sidebar"><div className="mail-tools"><button onClick={() => setFolder("inbox")} aria-pressed={folder === "inbox"}>Inbox</button><button onClick={() => setFolder("sentitems")} aria-pressed={folder === "sentitems"}>Sent mail</button><button aria-label="Refresh email" disabled={busy} onClick={() => refresh()}><RefreshCw size={16}/></button></div><button className="primary" onClick={newMessage}><PenLine size={16}/>New message</button><label style={{marginTop:18}}>Find in loaded messages<input aria-label="Find in loaded messages" value={query} onChange={e => setQuery(e.target.value)} placeholder="Email address, name, or subject"/></label><div className="mail-muted">{matches.length} of {messages.length} loaded messages{next ? " · More available" : ""}</div><div className="mail-list-scroll"><div className="mail-list">{matches.map(m => <button key={m.id} aria-current={selected?.id === m.id ? "true" : undefined} onClick={() => open(m)}><span className="mail-row-top"><small className="mail-sender">{folder === "sentitems" ? m.toRecipients?.map(r => r.emailAddress?.address).join(", ") : m.from?.emailAddress?.name || m.from?.emailAddress?.address}</small><time className="mail-date" title={new Date(m.receivedDateTime || m.sentDateTime).toLocaleString()}>{new Date(m.receivedDateTime || m.sentDateTime).toDateString() === new Date().toDateString() ? new Date(m.receivedDateTime || m.sentDateTime).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}) : new Date(m.receivedDateTime || m.sentDateTime).toLocaleDateString([], {month:"short",day:"numeric"})}</time></span><strong>{m.subject || "(No subject)"}</strong><span className="mail-preview">{m.bodyPreview}</span></button>)}</div>{!busy && !matches.length && <p className="mail-empty">No matching messages loaded.</p>}{busy && <p role="status">Loading…</p>}{next && <button disabled={busy} onClick={() => refresh(true)}>Load more</button>}</div></section>
       <section className="mail-panel mail-detail">{compose ? <form onSubmit={submit}><h2>{replyId ? "Reply" : "New message"}</h2><p className="mail-muted">From: {mailConfig.mailbox}</p><label>To<input required={!draft.bcc} disabled={Boolean(replyId) || sending} value={draft.to} onChange={edit("to")} list="crm-email-contacts"/></label><datalist id="crm-email-contacts">{contacts.map((x,i) => <option key={i} value={x.email}>{x.name || x.companyName}</option>)}</datalist>{!replyId && <>{draft.bcc&&<p role="alert">This draft has Bcc recipients. CRM sending supports one recipient at a time. Use Outlook for this draft, or start a new message.</p>}<label>Use a template<select defaultValue="" disabled={sending} onChange={e => {const t=templates.find(t=>t.id===e.target.value);if(t)setDraft(d=>({...d,subject:t.subject,body:t.body}));}}><option value="">Choose a template</option>{templates.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></label></>}<label>Subject<input required value={draft.subject} disabled={Boolean(replyId) || sending} onChange={edit("subject")}/></label><label>Message<textarea required value={draft.body} onChange={edit("body")} disabled={sending}/></label><p className="mail-muted">Sent from info@ticowild.com. Replies arrive in the connected inbox. Outgoing copies and delivery status are kept in CRM email delivery.</p>{replyId&&<p className="mail-muted">This sends a new email with your reply subject. Use Outlook to preserve the original conversation thread.</p>}<button className="primary" disabled={sending} type="submit"><Send size={16}/>{sending?'Queueing…':'Send from CRM'}</button><details><summary>Optional: open in Outlook instead</summary><OutlookDraft draft={draft} disabled={sending}/></details><button type="button" disabled={sending} onClick={() => setCompose(false)}>Close draft</button></form> : selected ? <><h2>{selected.subject || "(No subject)"}</h2><p className="mail-muted">From: {selected.from?.emailAddress?.address}<br/>To: {selected.toRecipients?.map(r=>r.emailAddress?.address).join(", ")}<br/>{new Date(selected.receivedDateTime || selected.sentDateTime).toLocaleString()}</p><div className="mail-tools">{folder === "inbox" && <button onClick={() => {setReplyId(selected.id);setDraft({to:selected.from?.emailAddress?.address || "",bcc:"",subject:`Re: ${selected.subject || ""}`,body:""});setCompose(true);}}><ArrowLeft size={16}/>Reply</button>}{selected.webLink?.startsWith("https://outlook.") && <a className="mail-outlook" href={selected.webLink} target="_blank" rel="noreferrer">Open in Outlook</a>}<button onClick={() => setQuery(selected.from?.emailAddress?.address || "")}>Find sender’s messages</button></div><pre className="mail-body">{selected.body?.content}</pre></> : <div className="mail-empty"><Mail size={32}/><h2>Select a message</h2><p>Inbox and Sent mail come directly from Microsoft 365.<br/>Delivery failures appear in your inbox.</p></div>}</section>

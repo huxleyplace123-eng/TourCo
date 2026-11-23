@@ -3,6 +3,13 @@ import { mailConfig } from "./mail-config.js";
 import { outgoingMessage } from "./mail-model.js";
 
 const scopes = ["User.Read", "Mail.Read.Shared", "Mail.Send.Shared"];
+export function needsMailReconnect(error) {
+  return error instanceof InteractionRequiredAuthError ||
+    ["invalid_grant", "interaction_required", "login_required", "consent_required", "refresh_token_expired", "mail_reconnect_required"].includes(error?.errorCode || error?.code);
+}
+function reconnectError() {
+  return Object.assign(new Error("Your Microsoft email session needs to be renewed. Choose Reconnect email and sign in with your approved TicoWild account. Your CRM login and unsent draft are unchanged."), { code: "mail_reconnect_required" });
+}
 const mailboxPath = `users/${encodeURIComponent(mailConfig.mailbox)}/`;
 function allowedAccount(account) {
   return account?.tenantId === mailConfig.tenantId &&
@@ -34,7 +41,9 @@ export async function mailAccount() {
 }
 export async function connectMail() {
   const app = await client();
-  const result = await app.loginPopup({ scopes, prompt: "select_account" });
+  let result;
+  try { result = await app.loginPopup({ scopes, prompt: "select_account" }); }
+  catch (error) { if (needsMailReconnect(error)) throw reconnectError(); throw error; }
   if (!allowedAccount(result.account)) {
     await app.clearCache({ account: result.account });
     throw new Error("Use your approved TicoWild Microsoft account (info@ticowild.com or john@ticowild.com). No email was sent.");
@@ -47,10 +56,10 @@ export async function disconnectMail() {
 }
 async function token() {
   const app = await client(), account = accountFor(app);
-  if (!account) throw new Error("Connect your TicoWild Microsoft account first.");
+  if (!account) throw reconnectError();
   try { return (await app.acquireTokenSilent({ scopes, account })).accessToken; }
   catch (error) {
-    if (error instanceof InteractionRequiredAuthError) throw new Error("Microsoft needs you to reconnect your mailbox. Your message has not been sent.");
+    if (needsMailReconnect(error)) throw reconnectError();
     throw error;
   }
 }
@@ -69,6 +78,8 @@ async function graph(path, options = {}) {
     throw new Error(options.method === "POST" ? "Send status is unknown. Check Sent mail before trying again to avoid a duplicate." : "Microsoft did not respond. Please refresh.");
   }
   if (!response.ok) {
+    if (response.status === 401) throw reconnectError();
+    if (response.status === 403) throw new Error("Microsoft signed you in, but denied access to info@ticowild.com. A Microsoft 365 administrator must check shared-mailbox access and app permissions for your account.");
     const detail = await response.json().catch(() => ({}));
     throw new Error(detail.error?.message || `Microsoft mailbox request failed (${response.status}).`);
   }
