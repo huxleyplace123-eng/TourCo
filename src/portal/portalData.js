@@ -59,7 +59,7 @@ async function currentUser() {
   return data.user;
 }
 
-function shapeTrip(row) {
+export function shapeTrip(row) {
   if (!row) return null;
   const days = new Map();
   for (const booking of row.bookings || []) {

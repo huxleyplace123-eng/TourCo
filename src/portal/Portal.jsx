@@ -489,7 +489,7 @@ function EmptyTripState({ onPreviewSample, onMessage }) {
   );
 }
 
-function TripCommandCenter({ trip, bookings, onVoucher, compact = false }) {
+function TripCommandCenter({ trip, bookings, onVoucher, compact = false, readOnly = false }) {
   const storageKey = `ticowild_packing_${trip.id}`;
   const packing = [...bookings.flatMap((item) => String(item.bring || "").split(",").map((part) => part.trim()).filter(Boolean)).reduce((items, item) => {
     const key = item.toLocaleLowerCase();
@@ -498,9 +498,9 @@ function TripCommandCenter({ trip, bookings, onVoucher, compact = false }) {
   }, new Map()).values()];
   const [panel, setPanel] = useState("");
   const [notice, setNotice] = useState("");
-  const packingState=useSavedList(storageKey,{demo:trip.id==='demo-trip'});
+  const packingState=useSavedList(storageKey,{demo:readOnly||trip.id==='demo-trip'});
   const packed=packingState.value;
-  const packingBusy=packingState.busy||!packingState.ready;
+  const packingBusy=readOnly||packingState.busy||!packingState.ready;
   const packingError=packingState.error;
   const setPacking=(item)=>packingState.save(packed.includes(item)?packed.filter(value=>value!==item):[...packed,item]);
   const packedCount=packing.filter(item=>packed.includes(item)).length;
@@ -542,7 +542,7 @@ function DocumentsSection({ trip, bookings, onVoucher, onPayments }) {
   </div>;
 }
 
-function TravelersSection({ trip, onAccount }) {
+function TravelersSection({ trip, onAccount, readOnly = false }) {
   const [showShare,setShowShare]=useState(false);
   const travelers = Array.from({ length: Math.max(1, Number(trip.travelers || 1)) }, (_, index) => index);
   const share = () => setShowShare(value=>!value);
@@ -550,7 +550,7 @@ function TravelersSection({ trip, onAccount }) {
     <div className="traveler-party-hero"><div className="traveler-party-count">{trip.travelers}</div><div><b>Your Costa Rica travel party</b><span>One shared itinerary, one source of truth, and concierge support connected to the entire journey.</span></div><button onClick={share}><Share2 size={14}/> Share trip summary</button></div>
     {showShare&&<section className="pt-card portal-enterprise-card"><TripSharing trip={trip}/></section>}
     <div className="portal-enterprise-grid"><section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><Users size={19}/></div><div><h2>Party members</h2><p>Party size is recorded for coordination. Add traveler names below; this does not create separate sign-in accounts.</p></div></div><div className="traveler-list">{travelers.map((index) => <div className="traveler-row" key={index}><span className="traveler-row-icon"><User size={16}/></span><div><b>{index === 0 ? "Lead traveler" : `Travel companion ${index + 1}`}</b><span>{index === 0 ? "Manages the trip account and concierge conversation" : "Included in tour counts and operator coordination"}</span></div></div>)}</div></section>
-      <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><ClipboardCheck size={19}/></div><div><h2>Traveler preferences</h2><p>Dietary needs, mobility considerations, celebrations, phone, country, and pickup preferences stay in the private profile.</p></div></div><button className="portal-enterprise-action" onClick={onAccount}><User size={15}/> Review traveler profile</button><TravelerNames key={trip.id} trip={trip}/></section></div>
+      <section className="pt-card portal-enterprise-card"><div className="portal-enterprise-card-head"><div className="portal-enterprise-card-icon"><ClipboardCheck size={19}/></div><div><h2>Traveler preferences</h2><p>Dietary needs, mobility considerations, celebrations, phone, country, and pickup preferences stay in the private profile.</p></div></div><button className="portal-enterprise-action" onClick={onAccount}><User size={15}/> Review traveler profile</button>{readOnly?<p>Private traveler names and preferences are not included in staff preview.</p>:<TravelerNames key={trip.id} trip={trip}/>}</section></div>
   </div>;
 }
 
@@ -570,7 +570,7 @@ function SupportSection({ bookings, onMessage }) {
   </div>;
 }
 
-export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onExitSample, onMessage, onAccount }) {
+export function TripTab({ trip, error, onRetry, readOnly = false, sampleMode, onPreviewSample, onExitSample, onMessage, onAccount }) {
   const [voucher, setVoucher] = useState(null);
   const [tripSection, setTripSection] = useState("overview");
   const [itineraryQuery, setItineraryQuery] = useState("");
@@ -618,7 +618,7 @@ export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onE
       </section>
 
       <NextAdventureCard trip={trip} onVoucher={setVoucher} onMessage={onMessage}/>
-      <CustomerJourney trip={trip} sampleMode={sampleMode} onMessage={onMessage} onAccount={onAccount} onTravelers={()=>setTripSection('travelers')}/>
+      <CustomerJourney trip={trip} sampleMode={sampleMode || readOnly} onMessage={onMessage} onAccount={onAccount} onTravelers={()=>setTripSection('travelers')}/>
       <div className="premium-journey-grid">
         <section className="premium-itinerary">
           <div className="premium-itinerary-head"><div><span>Your journey</span><h2>{presentation.itineraryHeading}</h2><p>Activity records for your Costa Rica trip.</p></div><button onClick={() => { setTripSection("itinerary"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>View full itinerary <ChevronRight size={13}/></button></div>
@@ -640,13 +640,13 @@ export function TripTab({ trip, error, onRetry, sampleMode, onPreviewSample, onE
             <div className="simple-status-caption">{presentation.caption}</div>
             <button className="simple-concierge-button" onClick={onMessage}><span className="simple-concierge-avatar">{conciergeInitials}</span><span><b>Message {concierge.name}</b><small>Your Costa Rica concierge</small></span><ChevronRight size={15}/></button>
           </section>
-          {!presentation.cancelled && <TripCommandCenter compact trip={trip} bookings={bookings} onVoucher={setVoucher} />}
+          {!presentation.cancelled && <TripCommandCenter compact readOnly={readOnly} trip={trip} bookings={bookings} onVoucher={setVoucher} />}
         </aside>
       </div>
       </div>}
 
       {tripSection==='documents'&&<><DocumentsSection trip={trip} bookings={presentation.cancelled?bookings.map(b=>({...b,status:'Cancelled'})):bookings} onVoucher={setVoucher} onPayments={()=>setTripSection('payments')}/><section className="pt-card portal-enterprise-card"><TripSharing trip={trip}/></section></>}
-      {tripSection==='travelers'&&<TravelersSection trip={trip} onAccount={onAccount}/>}
+      {tripSection==='travelers'&&<TravelersSection trip={trip} onAccount={onAccount} readOnly={readOnly}/>}
       {tripSection==='payments'&&<PaymentsSection trip={trip}/>}
       {tripSection==='support'&&<SupportSection bookings={presentation.cancelled?[]:bookings} onMessage={onMessage}/>}
       {/* itinerary */}
